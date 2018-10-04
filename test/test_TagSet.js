@@ -34,7 +34,6 @@ describe('TagSet', function() {
         })
     }),
     describe('setTags', function() {
-
         it('should add all tags', function() {
             let ts = new TagSet()
             let testObj = {'descr': 'described'}
@@ -59,7 +58,7 @@ describe('TagSet', function() {
             assert.equal(ts.changedTags.size, 2)
             assert.equal(ts.activeSendTimer, timerId)
             // clean up timer
-            clearTimeout(timerId)
+            clearInterval(timerId)
         })
     }),
     describe('sendChangedTags', function() {
@@ -71,14 +70,14 @@ describe('TagSet', function() {
             let called = 0
 
             let dummyClientList = new Set([
-                {sendTags: (tagsToSend) => {
-                    assert.equal(tagsToSend.testTp1.value, 'newValue1')
-                    assert.equal(tagsToSend.testTp2.value, 'newValue2')
+                {sendMessage: (msg) => {
+                    assert.equal(msg['TagSet:updateTags'].testTp1.value, 'newValue1')
+                    assert.equal(msg['TagSet:updateTags'].testTp2.value, 'newValue2')
                     called++
                 }},
-                {sendTags: (tagsToSend) => {
-                    assert.equal(tagsToSend.testTp1.value, 'newValue1')
-                    assert.equal(tagsToSend.testTp2.value, 'newValue2')
+                {sendMessage: (msg) => {
+                    assert.equal(msg['TagSet:updateTags'].testTp1.value, 'newValue1')
+                    assert.equal(msg['TagSet:updateTags'].testTp2.value, 'newValue2')
                     called++
                 }}
             ])

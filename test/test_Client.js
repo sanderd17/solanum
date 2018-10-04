@@ -28,8 +28,8 @@ describe('Client', function() {
 
             cl.initPing()
 
-            assert(cl.pingTimer != 0)
-            clearInterval(cl.pingTimer)
+            assert(cl.pingTimerId != 0)
+            clearInterval(cl.pingTimerId)
         })
     }),
     describe('addMessageHandler', function() {
@@ -50,8 +50,12 @@ describe('Client', function() {
                 assert.equal(msg, 'testMessage')
                 assert.equal(client, cl1)
             }
-            Client.addMessageHandler('testHandler', fn)
-            assert.fail()
+            Client.addMessageHandler('test:Handle', fn)
+
+            cl1.handleMessage({'test:Handle': 'testMessage'})
+            assert.equal(execCount, 1)
+            cl1.handleMessage({'test:Handle': 'testMessage'})
+            assert.equal(execCount, 2)
         })
     })
 })
