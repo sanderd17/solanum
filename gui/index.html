@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>ScaDom</title>
+  <meta name="description" content="ScaDom">
+  <meta name="author" content="Sander Deryckere">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+  <svg id="body" style="position:absolute;left:0;top:0" viewbox="0 0 1000 500"></svg>
+  <div id="errorOverlay">
+  <script type="module" >
+    import MainWindow from "./index.js"
+    import ts from "./lib/TagSet.js"
+    import wsState from "./lib/webSocket.js"
+
+    let mainWindow = new MainWindow()
+    let svg = document.querySelector("#body")
+    svg.setAttribute('width', window.innerWidth)
+    svg.setAttribute('height', window.innerHeight)
+    mainWindow.writeSvg(svg)
+  </script>
+</body>
+</html>

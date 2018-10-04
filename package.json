@@ -1,0 +1,27 @@
+{
+  "name": "scadom",
+  "version": "0.0.1",
+  "description": "Experimental Scada package that uses web standards to display data in the browser",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha -r esm"
+  },
+  "author": "Sander Deryckere",
+  "license": "GPL-2.0-only",
+  "dependencies": {
+    "chokidar": "^2.0.4",
+    "esm": "^3.0.82",
+    "express": "^4.16.3",
+    "express-ws": "^4.0.0",
+    "level": "^4.0.0",
+    "mongodb": "^3.1.4",
+    "node-persist": "^3.0.1",
+    "svg.js": "^2.6.6",
+    "svgdom": "0.0.15",
+    "ws": "^6.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
+}
