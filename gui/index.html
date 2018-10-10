@@ -18,7 +18,11 @@
   <script type="module" >
     import MainWindow from "./index.js"
     import ts from "./lib/TagSet.js"
-    import wsState from "./lib/webSocket.js"
+    import messager from "./lib/Messager.js"
+    for (let msgName in ts.messages) {
+        messager.registerMessageHandler(msgName, ts.messages[msgName])
+    }
+    messager.connectToServer("127.0.0.1:8840")
 
     let mainWindow = new MainWindow()
     let svg = document.querySelector("#body")

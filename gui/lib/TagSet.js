@@ -1,7 +1,9 @@
-import {registerMessageHandler} from "./webSocket.js"
-
 function TagSet() {
     this.guiBindings = new Map()
+}
+
+TagSet.prototype.messageHandlers = {
+    "TagSet:updateTags": (tags) => {this.updateTags(tags)}
 }
 
 TagSet.prototype.updateTags = function(tags) {
@@ -34,5 +36,3 @@ let ts = new TagSet()
 export default ts
 // expose the TagSet prototype to enable extensions
  export { TagSet }
-
-registerMessageHandler("TagSet:updateTags", (tags) => {ts.updateTags(tags)})
