@@ -2,9 +2,11 @@ function Messager () {
     this.ws = null
     this.intervalId = 0
     this.messages = {}
+    this.server = null
 }
 
 Messager.prototype.connectToServer = function(server, WS=WebSocket) {
+    this.server = server
     try{
         this.ws = new WS(`ws://${server}/socket`)
         this.ws.onopen = function(event) {
@@ -46,7 +48,7 @@ Messager.prototype.checkWebSocketOpened = function() {
             // and they should definately be resolved by this time, or the server~
             // is down
         }
-        connectToWebSocket()
+        this.connectToServer(this.server)
     } else {
         document.getElementById('errorOverlay').style.visibility = 'hidden'
     }
