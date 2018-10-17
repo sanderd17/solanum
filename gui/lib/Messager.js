@@ -13,18 +13,18 @@ Messager.prototype.connectToServer = function(server, WS=WebSocket) {
             console.log("connection established")
             document.getElementById('errorOverlay').style.visibility = 'hidden'
         }
-        this.ws.onmessage = function (event) {
+        this.ws.onmessage = (event) => {
             let data = JSON.parse(event.data)
             for (let k in data) {
                 console.log("Received message " + k)
-                handleMessage(k, data[k])
+                this.handleMessage(k, data[k])
             }
         }
-        this.ws.onclose = function(event) {
+        this.ws.onclose = (event) => {
             console.log("WebSocket connection closed")
             document.getElementById('errorOverlay').style.visibility = 'visible'
         }
-        this.ws.onerror = function(event) {
+        this.ws.onerror = (event) => {
             console.error("WebSocket connection error: " + event)
         }
     } catch (e) {
@@ -56,11 +56,11 @@ Messager.prototype.checkWebSocketOpened = function() {
 }
 
 Messager.prototype.handleMessage = function(msgName, data) {
-    messages[msgName](data)
+    this.messages[msgName](data)
 }
 
 Messager.prototype.registerMessageHandler = function(msgName, handler) {
-    messages[msgName] = handler
+    this.messages[msgName] = handler
 }
 
 let messager = new Messager()

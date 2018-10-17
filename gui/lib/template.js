@@ -24,9 +24,7 @@ Template.prototype.addHandlers = function() {
 Template.prototype.addTagBindings = function() {
     let tagBindings = this.getTagBindings()
     for (let path in tagBindings) {
-        for (let b of tagBindings[path]) {
-            ts.addGuiBinding(path, this)
-        }
+        ts.addTagHandler(path, (p, t) => this.triggerTagChanged(p, t))
     }
 }
 
@@ -65,7 +63,7 @@ Template.prototype.triggerTagChanged = function(path, tag) {
 
 Template.prototype.data = {}
 
-Template.prototype.getSvg = function() {return "<text>NOT IMPLEMENTED</text>"}
+Template.prototype.getSvg = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
 Template.prototype.getReplacements = () => []
 Template.prototype.getHandlers = () => []
 Template.prototype.tagBindings = {}

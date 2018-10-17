@@ -10,7 +10,7 @@ let tags = {
 for (let i = 0; i < 3000; i++) {
     tags[`Motors/M${i}`] = {
         type: FileTag,
-        filePath: `${__dirname}/myVar.txt`,
+        filePath: `${__dirname}/myVar${i}.txt`,
     }
 }
     /*testTag: {

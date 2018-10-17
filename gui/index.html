@@ -19,8 +19,9 @@
     import MainWindow from "./index.js"
     import ts from "./lib/TagSet.js"
     import messager from "./lib/Messager.js"
-    for (let msgName in ts.messages) {
-        messager.registerMessageHandler(msgName, ts.messages[msgName])
+    let handlers = ts.getMessageHandlers()
+    for (let msgName in handlers) {
+        messager.registerMessageHandler(msgName, handlers[msgName])
     }
     messager.connectToServer("127.0.0.1:8840")
 
