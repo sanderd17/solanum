@@ -65,7 +65,7 @@ Everything else should be implemented as an optional module. This means implemen
 It is meant to run on a local network, where the server has a direct, wired connection to most clients.
 The software will assume fast ping times, and should be able to send high volumes of data over the network.
 
-### Security:i
+### Security:
 Security should be handled by other layers, from firewall blocking access to VPN security.
 
 ### Old software support:
