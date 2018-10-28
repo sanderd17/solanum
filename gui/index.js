@@ -12,10 +12,7 @@ MainWindow.prototype.size = [300, 500]
 MainWindow.prototype.getReplacements = function() {
     let repl = {}
     for (let i = 0; i < 3000; i++) {
-        repl["motor_" + i] = {
-            "_type": Motor,
-            "st_motor": `Motors/M${i}`
-        }
+        repl["motor_" + i] = Motor
     }
     return repl
 }
@@ -28,24 +25,12 @@ MainWindow.prototype.getHandlers = function() {
     }
 }
 
-MainWindow.prototype.getTagBindings = function() {
-    return {
-        "testFileTag": [
-            {
-                "element": 'button_1',
-                "attribute": 'fill',
-                "binding": (tag) => {return tag.value},
-            }
-
-        ]
-    }
-}
 
 MainWindow.getSvg = function(parentId) {
     let svg = []
     for (let i = 0; i < 3000; i++) {
         let id = `${parentId}.motor_${i}`
-        svg.push(`<svg id="${id}" width="10" height="10" x="${12 * Math.floor(i/40)}" y="${(i%40) * 12}" viewBox="0 0 ${Motor.prototype.size[0]} ${Motor.prototype.size[1]}">${Motor.getSvg(id)}</svg>`)
+        svg.push(`<svg id="${id}" width="10" height="10" x="${12 * Math.floor(i/40)}" y="${(i%40) * 12}" viewBox="0 0 500 500" sd:st_motor="Motors/M${i}" sd:size="40">${Motor.getSvg(id)}</svg>`)
     }
     svg = svg.join("\n") + `
         <rect id="${parentId}.button_1" x="0" y="480" width="150" height="50" class="translation">

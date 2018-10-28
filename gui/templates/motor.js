@@ -24,13 +24,12 @@ Motor.prototype.getHandlers = function() {
 
 Motor.prototype.getTagBindings = function() {
     return {
-        [this.data.st_motor] : [
-            {
-                "element": "icon_1",
-                "attribute": "fill",
-                "binding": (tag) => {return tag.value},
-            }
-        ]
+        st_motor : (path, tag) => this.getElementById('icon_1').setAttribute('fill', tag.value)
+    }
+}
+Motor.prototype.getDomBindings = function() {
+    return {
+        size : v => this.getElementById('icon_2').setAttribute('width', v)
     }
 }
 

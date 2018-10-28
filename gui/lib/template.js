@@ -9,6 +9,7 @@ Template.prototype.writeSvg = function(node) {
     this.createSubTemplates(node)
     this.addHandlers()
     this.addTagBindings()
+    this.addDomBindings()
 }
 
 Template.prototype.addHandlers = function() {
@@ -16,36 +17,55 @@ Template.prototype.addHandlers = function() {
     for (let h in handlers) {
         let handlerNode = this.getElementById(h)
 
-        //handlerNode.onclick = eval("() => {" + handlers[h].onclick + "}");
         handlerNode.onclick = handlers[h].onclick
     }
 }
 
 Template.prototype.addTagBindings = function() {
     let tagBindings = this.getTagBindings()
-    for (let path in tagBindings) {
-        ts.addTagHandler(path, (p, t) => this.triggerTagChanged(p, t))
+    for (let attr in tagBindings) {
+        let path = this.parent.getAttribute('sd:' + attr)
+        ts.addTagHandler(path, tagBindings[attr])
     }
 }
 
-Template.prototype.createSubTemplates = function(parent, tmpData=null) {
-    this.parent = parent
-    this.data = {}
-    for (let k in tmpData) {
-        if (k[0] == "_")
-            continue
-        this.parent.dataset[k] = tmpData[k]
-        this.data[k] = tmpData[k]
+Template.prototype.addDomBindings = function() {
+    let domBindings = this.getDomBindings()
+    for (let attr in domBindings) {
+        // apply fist setting
+        domBindings[attr](this.parent.getAttribute('sd:' + attr))
     }
+    // Callback function to execute when mutations are observed
+    let callback = (mutationsList, observer) => {
+        for(let mutation of mutationsList) {
+            if (mutation.type != 'attributes' || !mutation.attributeName.startsWith('sd:'))
+                continue
+            let attr = mutation.attributeName.substring(3)
+            if (attr in domBindings)
+            {
+                domBindings[attr](this.parent.getAttribute(mutation.attributeName))
+            }
+        }
+    };
+
+    // Create an observer instance linked to the callback function
+    let observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    observer.observe(this.parent, {attributes: true});
+}
+
+Template.prototype.createSubTemplates = function(parent) {
+    this.parent = parent
     let subTemplates = this.getReplacements()
     for (let s in subTemplates) {
         let childSvg = this.getElementById(s)
-        let tmpData = subTemplates[s]
-        let subTemplate = new tmpData._type()
+        let subTemplate = new subTemplates[s]()
 
-        subTemplate.createSubTemplates(childSvg, tmpData)
+        subTemplate.createSubTemplates(childSvg)
         subTemplate.addHandlers()
         subTemplate.addTagBindings()
+        subTemplate.addDomBindings()
     }
 }
 
@@ -53,20 +73,13 @@ Template.prototype.getElementById = function(id) {
     return this.parent.getElementById(this.parent.id + '.' + id)
 }
 
-Template.prototype.triggerTagChanged = function(path, tag) {
-    let tagBindings = this.getTagBindings()
-    for (let b of tagBindings[path]) {
-        let triggeredElement  = this.getElementById(b.element)
-        triggeredElement.setAttribute(b.attribute, b.binding(tag))
-    }
-}
-
 Template.prototype.data = {}
 
 Template.prototype.getSvg = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
 Template.prototype.getReplacements = () => []
 Template.prototype.getHandlers = () => []
-Template.prototype.tagBindings = {}
+Template.prototype.getTagBindings = () => {}
+Template.prototype.getDomBindings = () => {}
 
 export default Template
 
