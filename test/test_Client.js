@@ -45,7 +45,7 @@ describe('Client', function() {
             let cl1 = new Client(dummyWebSocket(['message']), ip)
             let cl2 = new Client(dummyWebSocket(['message']), ip)
             let execCount = 0
-            let fn = (msg, client) => {
+            let fn = (client, msg) => {
                 execCount++
                 assert.equal(msg, 'testMessage')
                 assert.equal(client, cl1)

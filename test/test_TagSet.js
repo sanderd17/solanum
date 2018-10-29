@@ -61,12 +61,14 @@ describe('TagSet', function() {
             clearInterval(timerId)
         })
     }),
-    describe('sendChangedTags', function() {
+    describe('sendTags', function() {
         it('should notify a list of clients', function() {
             let ts = new TagSet()
 
-            ts.changedTags.add({tagPath: 'testTp1', value: 'newValue1'})
-            ts.changedTags.add({tagPath: 'testTp2', value: 'newValue2'})
+            ts.tags.set('testTp1', {value: 'newValue1'})
+            ts.tags.set('testTp2', {value: 'newValue2'})
+            ts.changedTags.add('testTp1')
+            ts.changedTags.add('testTp2')
             let called = 0
 
             let dummyClientList = new Set([
@@ -82,7 +84,7 @@ describe('TagSet', function() {
                 }}
             ])
 
-            ts.sendChangedTags(dummyClientList)
+            ts.sendTags(dummyClientList)
             assert.equal(called, 2)
             assert.equal(ts.changedTags.size, 0)
         })

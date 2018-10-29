@@ -6,6 +6,7 @@ import Client from "./src/Client.js"
 import clientList from "./src/ClientList.js"
 import ts from './src/TagSet.js'
 
+ts.initMessageHandlers()
 ts.setTags()
 
 app.use(function (req, res, next) {

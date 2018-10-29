@@ -1,3 +1,6 @@
+import ts from './TagSet.js'
+// TODO support sending messages and use it to initialse tag subscriptions
+
 function Messager () {
     this.ws = null
     this.intervalId = 0
@@ -9,9 +12,10 @@ Messager.prototype.connectToServer = function(server, WS=WebSocket) {
     this.server = server
     try{
         this.ws = new WS(`ws://${server}/socket`)
-        this.ws.onopen = function(event) {
+        this.ws.onopen = (event) => {
             console.log("connection established")
             document.getElementById('errorOverlay').style.visibility = 'hidden'
+            this.sendMessage({'TagSet:setSubscriptions': [...ts.handlers.keys()]})
         }
         this.ws.onmessage = (event) => {
             let data = JSON.parse(event.data)
@@ -33,6 +37,10 @@ Messager.prototype.connectToServer = function(server, WS=WebSocket) {
     if (!this.intervalId) {
         this.intervalId = setInterval(() => this.checkWebSocketOpened(), 10000) // TODO: should be setting, determines when disconnects are discovered and reconnects are attempted
     }
+}
+
+Messager.prototype.sendMessage = function(msg) {
+    this.ws.send(JSON.stringify(msg))
 }
 
 Messager.prototype.checkWebSocketOpened = function() {

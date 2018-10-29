@@ -1,4 +1,6 @@
 import ts from "./TagSet.js"
+const namespace = 'sd:'
+
 
 function Template() {}
 
@@ -16,15 +18,17 @@ Template.prototype.addHandlers = function() {
     let handlers = this.getHandlers()
     for (let h in handlers) {
         let handlerNode = this.getElementById(h)
+        for (let handlerType in handlers[h]) {
+            handlerNode[handlerType] = handlers[h][handlerType]
+        }
 
-        handlerNode.onclick = handlers[h].onclick
     }
 }
 
 Template.prototype.addTagBindings = function() {
     let tagBindings = this.getTagBindings()
     for (let attr in tagBindings) {
-        let path = this.parent.getAttribute('sd:' + attr)
+        let path = this.parent.getAttribute(namespace + attr)
         ts.addTagHandler(path, tagBindings[attr])
     }
 }
@@ -33,12 +37,12 @@ Template.prototype.addDomBindings = function() {
     let domBindings = this.getDomBindings()
     for (let attr in domBindings) {
         // apply fist setting
-        domBindings[attr](this.parent.getAttribute('sd:' + attr))
+        domBindings[attr](this.parent.getAttribute(namespace + attr))
     }
     // Callback function to execute when mutations are observed
     let callback = (mutationsList, observer) => {
         for(let mutation of mutationsList) {
-            if (mutation.type != 'attributes' || !mutation.attributeName.startsWith('sd:'))
+            if (mutation.type != 'attributes' || !mutation.attributeName.startsWith(namespace))
                 continue
             let attr = mutation.attributeName.substring(3)
             if (attr in domBindings)

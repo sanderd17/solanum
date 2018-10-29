@@ -4,7 +4,7 @@ function Client (ws, ip) {
     this.pingTimerId = 0
 
     ws.on('message', (msg) => {
-        this.handleMessage(msg)
+        this.handleMessage(JSON.parse(msg))
     });
 }
 
@@ -28,9 +28,12 @@ Client.prototype.initPing = function() {
 Client.prototype.handleMessage = function(msg) {
     for (let key in msg) {
         // TODO log somewhere if a message doesn't exist
-        Client.messageTypes[key](msg[key], this)
+        if (!Client.messageTypes[key]) {
+            console.log("Message not found: " + key)
+            continue
+        }
+        Client.messageTypes[key](this, msg[key])
     }
-
 }
 
 Client.prototype.sendMessage = function(msg) {

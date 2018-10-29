@@ -8,7 +8,7 @@
   <meta name="description" content="ScaDom">
   <meta name="author" content="Sander Deryckere">
 
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
 
 </head>
 
@@ -23,13 +23,14 @@
     for (let msgName in handlers) {
         messager.registerMessageHandler(msgName, handlers[msgName])
     }
-    messager.connectToServer("127.0.0.1:8840")
 
     let mainWindow = new MainWindow()
     let svg = document.querySelector("#body")
     svg.setAttribute('width', window.innerWidth)
     svg.setAttribute('height', window.innerHeight)
     mainWindow.writeSvg(svg)
+
+    messager.connectToServer("127.0.0.1:8840")
   </script>
 </body>
 </html>
