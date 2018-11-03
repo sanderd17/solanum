@@ -7,17 +7,27 @@ function MainWindow () {}
 MainWindow.prototype = Object.create(Template.prototype)
 MainWindow.prototype.constructor = MainWindow
 
-MainWindow.prototype.size = [300, 500]
-
 MainWindow.prototype.getReplacements = function() {
     let repl = {}
     for (let i = 0; i < 3000; i++) {
-        repl["motor_" + i] = Motor
+        repl["motor_" + i] = {
+            type: Motor,
+            data: {
+                st_motor: `Motors/M${i}`,
+                size: 40
+            },
+            loc: {
+                x: 10 * Math.floor(i/40),
+                y: (i%40) * 12,
+                width: 10,
+                height: 10,
+            },
+        }
     }
     return repl
 }
 
-MainWindow.prototype.getHandlers = function() {
+MainWindow.prototype.getEventHandlers = function() {
     return {
         "button_1": {
             "onclick": () => alert("clicked")
@@ -25,26 +35,20 @@ MainWindow.prototype.getHandlers = function() {
     }
 }
 
-
-MainWindow.getSvg = function(parentId) {
+MainWindow.prototype.getSvg = function() {
     let svg = []
-    for (let i = 0; i < 3000; i++) {
-        let id = `${parentId}.motor_${i}`
-        svg.push(`<svg id="${id}" width="10" height="10" x="${12 * Math.floor(i/40)}" y="${(i%40) * 12}" viewBox="0 0 500 500" sd:st_motor="Motors/M${i}" sd:size="40">${Motor.getSvg(id)}</svg>`)
+    for (let c in this.children) {
+        svg.push(this.children[c].getSvg())
     }
-    svg = svg.join("\n") + `
-        <rect id="${parentId}.button_1" x="0" y="480" width="150" height="50" class="translation">
-<!--            <animateTransform
-                attributeName="transform"
-                attributeType="XML"
-                type="translate"
-                from="0 480"
-                to="100 480"
-                begin="0s"
-                dur="5s"
-                repeatCount="indefinite"/>
--->
-        </rect>`
-    return svg
+    return svg.join("\n") + `
+        <rect
+            id="${this.id}.button_1"
+            x="0"
+            y="480"
+            width="150"
+            height="50"
+            class="translation"
+        >minimum voltage</rect>`
 }
+
 export default MainWindow

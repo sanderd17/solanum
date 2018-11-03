@@ -1,89 +1,82 @@
 import ts from "./TagSet.js"
-const namespace = 'sd:'
-
 
 function Template() {}
 
-
-Template.prototype.writeSvg = function(node) {
-    node.innerHTML = this.constructor.getSvg(node.id)
-
-    this.createSubTemplates(node)
-    this.addHandlers()
-    this.addTagBindings()
-    this.addDomBindings()
+Template.prototype.init = function(parent, id, data, loc) {
+    this.parent = parent
+    this.id = id
+    this.data = data
+    this.loc = loc
+    this.createSubTemplates()
 }
 
-Template.prototype.addHandlers = function() {
-    let handlers = this.getHandlers()
-    for (let h in handlers) {
-        let handlerNode = this.getElementById(h)
-        for (let handlerType in handlers[h]) {
-            handlerNode[handlerType] = handlers[h][handlerType]
-        }
-
+Template.prototype.createSubTemplates = function() {
+    this.children = {}
+    let subTemplates = this.getReplacements()
+    for (let [subId, template] of Object.entries(subTemplates)) {
+        let child = new template.type()
+        child.init(this, this.id + '.' + subId, template.data, template.loc)
+        this.children[subId] = child
     }
 }
 
 Template.prototype.addTagBindings = function() {
     let tagBindings = this.getTagBindings()
     for (let attr in tagBindings) {
-        let path = this.parent.getAttribute(namespace + attr)
+        let path = this.data[attr]
         ts.addTagHandler(path, tagBindings[attr])
     }
+    for (let child of Object.values(this.children)) {
+        child.addTagBindings()
+    }
 }
 
-Template.prototype.addDomBindings = function() {
-    let domBindings = this.getDomBindings()
-    for (let attr in domBindings) {
+Template.prototype.addDataBindings = function() {
+    this.dataBindings = this.getDataBindings()
+    for (let attr in this.dataBindings) {
         // apply fist setting
-        domBindings[attr](this.parent.getAttribute(namespace + attr))
+        this.dataBindings[attr](this.data[attr], null)
     }
-    // Callback function to execute when mutations are observed
-    let callback = (mutationsList, observer) => {
-        for(let mutation of mutationsList) {
-            if (mutation.type != 'attributes' || !mutation.attributeName.startsWith(namespace))
-                continue
-            let attr = mutation.attributeName.substring(3)
-            if (attr in domBindings)
-            {
-                domBindings[attr](this.parent.getAttribute(mutation.attributeName))
-            }
-        }
-    };
-
-    // Create an observer instance linked to the callback function
-    let observer = new MutationObserver(callback);
-
-    // Start observing the target node for configured mutations
-    observer.observe(this.parent, {attributes: true});
+    for (let child of Object.values(this.children)) {
+        child.addDataBindings()
+    }
 }
 
-Template.prototype.createSubTemplates = function(parent) {
-    this.parent = parent
-    let subTemplates = this.getReplacements()
-    for (let s in subTemplates) {
-        let childSvg = this.getElementById(s)
-        let subTemplate = new subTemplates[s]()
-
-        subTemplate.createSubTemplates(childSvg)
-        subTemplate.addHandlers()
-        subTemplate.addTagBindings()
-        subTemplate.addDomBindings()
+Template.prototype.addEventHandlers = function() {
+    let handlers = this.getEventHandlers()
+    for (let h in handlers) {
+        let handlerNode = this.getElementById(h)
+        for (let handlerType in handlers[h]) {
+            handlerNode[handlerType] = handlers[h][handlerType]
+        }
     }
+    for (let child of Object.values(this.children)) {
+        child.addEventHandlers()
+    }
+}
+
+Template.prototype.setAttr = function(key, value) {
+    let oldValue = this.data[key]
+    this.data[key] = value
+    // call modification
+    if (key in this.dataBindings) {
+        this.dataBindings[key](value, oldValue)
+    }
+}
+
+Template.prototype.getAttr = function(key) {
+    return this.data[key]
 }
 
 Template.prototype.getElementById = function(id) {
-    return this.parent.getElementById(this.parent.id + '.' + id)
+    return document.getElementById(this.id + '.' + id)
 }
-
-Template.prototype.data = {}
 
 Template.prototype.getSvg = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
 Template.prototype.getReplacements = () => []
-Template.prototype.getHandlers = () => []
+Template.prototype.getEventHandlers = () => []
 Template.prototype.getTagBindings = () => {}
-Template.prototype.getDomBindings = () => {}
+Template.prototype.getDataBindings = () => {}
 
 export default Template
 

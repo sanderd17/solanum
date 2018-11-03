@@ -1,10 +1,13 @@
-const express = require('express');
-const app = express();
-const expressWs = require('express-ws')(app);
+import config from './config.js'
+
+const express = require('express')
+const app = express()
+const expressWs = require('express-ws')(app)
 
 import Client from "./src/Client.js"
 import clientList from "./src/ClientList.js"
 import ts from './src/TagSet.js'
+
 
 ts.initMessageHandlers()
 ts.setTags()
@@ -34,5 +37,5 @@ app.ws('/socket', function(ws, req) {
     })
 })
 
-app.listen(8840);
-console.log('Listening on port 8840')
+app.listen(config.app.port);
+console.log(`Listening on port ${config.app.port}`)

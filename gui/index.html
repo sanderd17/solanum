@@ -25,12 +25,18 @@
     }
 
     let mainWindow = new MainWindow()
+    mainWindow.init(null, 'body', {}, {x:0, y:0, width: window.innerWidth, height: window.innerHeight})
     let svg = document.querySelector("#body")
-    svg.setAttribute('width', window.innerWidth)
-    svg.setAttribute('height', window.innerHeight)
-    mainWindow.writeSvg(svg)
+    svg.innerHTML = mainWindow.getSvg(svg)
 
-    messager.connectToServer("127.0.0.1:8840")
+    mainWindow.addDataBindings()
+    mainWindow.addTagBindings()
+    mainWindow.addEventHandlers()
+
+    messager.connectToServer(location.host)
+    // expose singletons for debugging purposes (via browser console)
+    window['ts'] = ts
+    window['messager'] = messager
   </script>
 </body>
 </html>
