@@ -1,6 +1,6 @@
-# ScaDom
+# Solanum
 
-ScaDom is a project that aims to bring big Scada applications to the browser via regular DOM handling
+Solanum is a project that aims to bring big Scada applications to the browser via regular DOM handling
 
 
 ## Structure
