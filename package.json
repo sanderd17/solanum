@@ -1,5 +1,5 @@
 {
-  "name": "scadom",
+  "name": "solanum",
   "version": "0.0.1",
   "description": "Experimental Scada package that uses web standards to display data in the browser",
   "main": "index.js",

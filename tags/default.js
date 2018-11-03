@@ -1,16 +1,16 @@
-import FileTag from '../src/FileTag.js'
+import MemoryTag from '../src/MemoryTag.js'
 
 let tags = {
-    'testFileTag': {
-        type: FileTag,
-        filePath: `${__dirname}/myVar.txt`,
+    'testMemoryTag': {
+        type: MemoryTag,
+        defaultValue: 0,
     },
 }
 
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 3000; i++) {
     tags[`Motors/M${i}`] = {
-        type: FileTag,
-        filePath: `${__dirname}/myVar.txt`,
+        type: MemoryTag,
+        defaultValue: `hsl(${i}, 100%, 50%)`
     }
 }
     /*testTag: {
