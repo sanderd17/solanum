@@ -1,11 +1,9 @@
-import ts from './TagSet.js'
-// TODO support sending messages and use it to initialse tag subscriptions
-
 function Messager () {
     this.ws = null
     this.intervalId = 0
     this.messages = {}
     this.server = null
+    this.onopenHandlers = []
 }
 
 Messager.prototype.connectToServer = function(server, WS=WebSocket) {
@@ -15,7 +13,9 @@ Messager.prototype.connectToServer = function(server, WS=WebSocket) {
         this.ws.onopen = (event) => {
             console.log("connection established")
             document.getElementById('errorOverlay').style.visibility = 'hidden'
-            this.sendMessage({'TagSet:setSubscriptions': [...ts.handlers.keys()]})
+            for (let handler of this.onopenHandlers) {
+                handler(event)
+            }
         }
         this.ws.onmessage = (event) => {
             let data = JSON.parse(event.data)
@@ -69,6 +69,10 @@ Messager.prototype.handleMessage = function(msgName, data) {
 
 Messager.prototype.registerMessageHandler = function(msgName, handler) {
     this.messages[msgName] = handler
+}
+
+Messager.prototype.registerOnopenHandler = function(handler) {
+    this.onopenHandlers.push(handler)
 }
 
 let messager = new Messager()

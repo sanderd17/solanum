@@ -1,11 +1,17 @@
+import messager from './Messager.js'
+
 function TagSet() {
     this.handlers = new Map()
 }
 
-TagSet.prototype.getMessageHandlers = function() {
-    return {
-        "TagSet:updateTags": (tags) => {this.updateTags(tags)}
-    }
+TagSet.prototype.initMessageHandlers = function() {
+    messager.registerMessageHandler('TagSet:updateTags', (tags) => this.updateTags(tags))
+    // refresh all tags when new connection is made
+    messager.registerOnopenHandler(() => this.refreshAllTags())
+}
+
+TagSet.prototype.refreshAllTags = function(tags) {
+    messager.sendMessage({'TagSet:setSubscriptions': [...this.handlers.keys()]})
 }
 
 TagSet.prototype.updateTags = function(tags) {
@@ -16,8 +22,12 @@ TagSet.prototype.updateTags = function(tags) {
     }
 }
 
+TagSet.prototype.writeTag = function(path, value) {
+    messager.sendMessage({'TagSet:writeTag': {path, value}})
+}
+
 TagSet.prototype.addTagHandler = function(path, handler) {
-    // Append to the bindings for that tag
+    // Handler to fire functions when a tag change is received
     if (this.handlers.has(path)) {
         this.handlers.get(path).push(handler)
     } else {

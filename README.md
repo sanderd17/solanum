@@ -9,9 +9,9 @@ The app consists of a server and a client part. The client keeps a web socket op
 
 ### Client
 
-Client visualisation happens via plain SVGa.
+Client visualisation happens via plain SVG.
 
-These SVG DOM elements can have tag bindings, which means an SVG attribute (style, content or position) can be bound to a tag value directly or via a function.
+These SVG DOM elements can have tag bindings, which means a function can be bound to a tag change. This function can in turn change an SVG attribute (style, content or position).
 The SVG elements can also have event handlers (click, right-click, drag, ...) by the means of custom functions.
 These functions can change the visualisation (for local effects) or message the server back f.e. to write tag values.
 
@@ -31,8 +31,8 @@ This means everything should be event based, and update precisely the objects th
 
 ### Performance
 JS and the DOM are often considered slow.
-There are certain ways we try to mitigate that:
-* Native JS: by working with native JS (no additional libraries or frameworks), we avoid performance bottlenecks that are introduced by frameworks or other libraries.
+There are certain ways we can mitigate that:
+* Native JS: by working with native JS, we avoid performance bottlenecks that are introduced by frameworks or other libraries.
 * Update only the changes: As we work with update events instead of polling, we can update only the changed elements. The smaller the part of the DOM you update, the faster it goes.
 * Reference by id: all SVG tags get a unique id in the entire document. Which means very fast lookups can be performed.
 

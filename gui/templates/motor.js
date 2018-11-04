@@ -1,4 +1,5 @@
-import Template from "../lib/template.js"
+import Template from '../lib/template.js'
+import ts from '../lib/TagSet.js'
 
 function Motor () {}
 
@@ -9,14 +10,7 @@ Motor.prototype.constructor = Motor
 Motor.prototype.getEventHandlers = function() {
     return {
         "icon_1" : {
-            "onclick": () => {
-                let button = this.getElementById('icon_2')
-                if (button.getAttribute("fill") == "red") {
-                    button.setAttribute("fill", "blue")
-                } else {
-                    button.setAttribute("fill", "red")
-                }
-            }
+            "onclick": () => ts.writeTag(this.data.st_motor, 'red')
         }
     }
 }

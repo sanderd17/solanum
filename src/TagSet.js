@@ -22,6 +22,13 @@ TagSet.prototype.initMessageHandlers = function() {
             this.sendTags([client], tags)
         }
     )
+    Client.addMessageHandler(
+        'TagSet:writeTag',
+        (client, data) => {
+            let tag = this.tags.get(data.path)
+            tag.write(data.value)
+        }
+    )
 }
 
 TagSet.prototype.setTags = function(tagList=tags) {

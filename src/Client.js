@@ -27,6 +27,7 @@ Client.prototype.initPing = function() {
 
 Client.prototype.handleMessage = function(msg) {
     for (let key in msg) {
+        console.log('received message ' + key)
         // TODO log somewhere if a message doesn't exist
         if (!Client.messageTypes[key]) {
             console.log("Message not found: " + key)

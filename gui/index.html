@@ -19,14 +19,13 @@
     import MainWindow from "./index.js"
     import ts from "./lib/TagSet.js"
     import messager from "./lib/Messager.js"
-    let handlers = ts.getMessageHandlers()
-    for (let msgName in handlers) {
-        messager.registerMessageHandler(msgName, handlers[msgName])
-    }
+    ts.initMessageHandlers()
 
     let mainWindow = new MainWindow()
     mainWindow.init(null, 'body', {}, {x:0, y:0, width: window.innerWidth, height: window.innerHeight})
     let svg = document.querySelector("#body")
+    svg.setAttribute('width', window.innerWidth)
+    svg.setAttribute('height', window.innerHeight)
     svg.innerHTML = mainWindow.getSvg(svg)
 
     mainWindow.addDataBindings()
