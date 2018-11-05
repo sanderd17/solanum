@@ -27,11 +27,9 @@ MainWindow.prototype.getReplacements = function() {
     return repl
 }
 
-MainWindow.prototype.getEventHandlers = function() {
-    return {
-        "button_1": {
-            "onclick": () => alert("clicked")
-        }
+MainWindow.prototype.eventHandlers = {
+    'button_1':{
+        'onclick': function() {alert("clicked")}
     }
 }
 

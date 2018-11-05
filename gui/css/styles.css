@@ -8,6 +8,7 @@ div#errorOverlay {
   top:        0;
   left:       0;
   position:   fixed;
+  user-select: none;
 }
 
 .motor > .icon_1:hover {

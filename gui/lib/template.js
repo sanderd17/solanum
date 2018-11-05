@@ -7,6 +7,7 @@ Template.prototype.init = function(parent, id, data, loc) {
     this.id = id
     this.data = data
     this.loc = loc
+    this.dataBindings = {}
     this.createSubTemplates()
 }
 
@@ -20,38 +21,36 @@ Template.prototype.createSubTemplates = function() {
     }
 }
 
-Template.prototype.addTagBindings = function() {
-    let tagBindings = this.getTagBindings()
-    for (let attr in tagBindings) {
-        let path = this.data[attr]
-        ts.addTagHandler(path, tagBindings[attr])
-    }
+Template.prototype.forEach = function(fn) {
+    // call function on self:
+    fn(this)
     for (let child of Object.values(this.children)) {
-        child.addTagBindings()
+        child.forEach(fn)
+    }
+}
+
+Template.prototype.addEventHandlers = function(id, eventType, fn) {
+    for (let id in this.eventHandlers) {
+        for (let eventType in this.eventHandlers[id]) {
+            let fn = this.eventHandlers[id][eventType]
+            let handlerNode = this.getElementById(id)
+            handlerNode[eventType] = fn.bind(this)
+        }
+    }
+}
+
+Template.prototype.addTagBindings = function() {
+    for (let [path, fn] of this.tagBindings) {
+        if (path instanceof Function)
+            path = path.bind(this)()
+        ts.addTagHandler(path, fn.bind(this))
     }
 }
 
 Template.prototype.addDataBindings = function() {
-    this.dataBindings = this.getDataBindings()
-    for (let attr in this.dataBindings) {
-        // apply fist setting
-        this.dataBindings[attr](this.data[attr], null)
-    }
-    for (let child of Object.values(this.children)) {
-        child.addDataBindings()
-    }
-}
-
-Template.prototype.addEventHandlers = function() {
-    let handlers = this.getEventHandlers()
-    for (let h in handlers) {
-        let handlerNode = this.getElementById(h)
-        for (let handlerType in handlers[h]) {
-            handlerNode[handlerType] = handlers[h][handlerType]
-        }
-    }
-    for (let child of Object.values(this.children)) {
-        child.addEventHandlers()
+    for (let key in this.dataBindings) {
+        this.dataBindings[key] = this.dataBindings[key].bind(this)
+        this.dataBindings[key](this.data[key], null)
     }
 }
 
@@ -74,9 +73,9 @@ Template.prototype.getElementById = function(id) {
 
 Template.prototype.getSvg = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
 Template.prototype.getReplacements = () => []
-Template.prototype.getEventHandlers = () => []
-Template.prototype.getTagBindings = () => {}
-Template.prototype.getDataBindings = () => {}
+Template.prototype.eventHandlers = {}
+Template.prototype.tagBindings = []
+Template.prototype.dataBindings = {}
 
 export default Template
 

@@ -7,24 +7,21 @@ Motor.prototype = Object.create(Template.prototype)
 Motor.prototype.constructor = Motor
 
 
-Motor.prototype.getEventHandlers = function() {
-    return {
-        "icon_1" : {
-            "onclick": () => ts.writeTag(this.data.st_motor, 'red')
-        }
+Motor.prototype.eventHandlers = {
+    'icon_1': {
+        'onclick':  function() {ts.writeTag(this.data.st_motor, 'red')}
     }
 }
 
-Motor.prototype.getTagBindings = function() {
-    // TODO should support hard-coded paths, and paths depending on other data (this.data. this.id, ...)
-    return {
-        st_motor : (path, tag) => this.getElementById('icon_1').setAttribute('fill', tag.value)
-    }
-}
-Motor.prototype.getDataBindings = function() {
-    return {
-        size : v => this.getElementById('icon_2').setAttribute('width', v)
-    }
+Motor.prototype.tagBindings = [
+    [
+        function() {return this.data.st_motor},
+        function(path, tag) {this.getElementById('icon_1').setAttribute('fill', tag.value)}
+    ]
+]
+
+Motor.prototype.dataBindings = {
+    'size': function(v) {this.getElementById('icon_2').setAttribute('width', v)}
 }
 
 Motor.prototype.getSvg = function() {

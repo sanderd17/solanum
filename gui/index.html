@@ -28,9 +28,9 @@
     svg.setAttribute('height', window.innerHeight)
     svg.innerHTML = mainWindow.getSvg(svg)
 
-    mainWindow.addDataBindings()
-    mainWindow.addTagBindings()
-    mainWindow.addEventHandlers()
+    mainWindow.forEach(tmp => tmp.addDataBindings())
+    mainWindow.forEach(tmp => tmp.addTagBindings())
+    mainWindow.forEach(tmp => tmp.addEventHandlers())
 
     messager.connectToServer(location.host)
     // expose singletons for debugging purposes (via browser console)
