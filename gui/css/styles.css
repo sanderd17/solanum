@@ -10,11 +10,6 @@ div#errorOverlay {
   position:   fixed;
   user-select: none;
 }
-
-.motor > .icon_1:hover {
-    filter: brightness(85%);
-}
-
 /*
 .translation {
   animation: tr 2s linear alternate infinite;

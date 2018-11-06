@@ -21,14 +21,6 @@ Template.prototype.createSubTemplates = function() {
     }
 }
 
-Template.prototype.forEach = function(fn) {
-    // call function on self:
-    fn(this)
-    for (let child of Object.values(this.children)) {
-        child.forEach(fn)
-    }
-}
-
 Template.prototype.addEventHandlers = function(id, eventType, fn) {
     for (let id in this.eventHandlers) {
         for (let eventType in this.eventHandlers[id]) {
@@ -36,6 +28,9 @@ Template.prototype.addEventHandlers = function(id, eventType, fn) {
             let handlerNode = this.getElementById(id)
             handlerNode[eventType] = fn.bind(this)
         }
+    }
+    for (let child of Object.values(this.children)) {
+        child.addEventHandlers()
     }
 }
 
@@ -45,12 +40,18 @@ Template.prototype.addTagBindings = function() {
             path = path.bind(this)()
         ts.addTagHandler(path, fn.bind(this))
     }
+    for (let child of Object.values(this.children)) {
+        child.addTagBindings()
+    }
 }
 
 Template.prototype.addDataBindings = function() {
     for (let key in this.dataBindings) {
         this.dataBindings[key] = this.dataBindings[key].bind(this)
         this.dataBindings[key](this.data[key], null)
+    }
+    for (let child of Object.values(this.children)) {
+        child.addDataBindings()
     }
 }
 
@@ -71,11 +72,25 @@ Template.prototype.getElementById = function(id) {
     return document.getElementById(this.id + '.' + id)
 }
 
+Template.prototype.getCssMap = function() {
+    let cssMap = {}
+    for (let child of Object.values(this.children)) {
+        if (cssMap[child.class])
+            continue
+        cssMap = {...child.getCssMap(), ...cssMap}
+    }
+    if (this.class && this.css)
+        cssMap[this.class] = this.css.map(rule => '.' + this.class + ' > ' + rule).join('\n')
+    return cssMap
+}
+
 Template.prototype.getSvg = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
 Template.prototype.getReplacements = () => []
 Template.prototype.eventHandlers = {}
 Template.prototype.tagBindings = []
 Template.prototype.dataBindings = {}
+Template.prototype.class = ''
+Template.prototype.css = []
 
 export default Template
 

@@ -26,11 +26,19 @@
     let svg = document.querySelector("#body")
     svg.setAttribute('width', window.innerWidth)
     svg.setAttribute('height', window.innerHeight)
-    svg.innerHTML = mainWindow.getSvg(svg)
+    svg.innerHTML = mainWindow.getSvg()
 
-    mainWindow.forEach(tmp => tmp.addDataBindings())
-    mainWindow.forEach(tmp => tmp.addTagBindings())
-    mainWindow.forEach(tmp => tmp.addEventHandlers())
+    let styleEl = document.createElement('style')
+    document.head.appendChild(styleEl)
+    let rules = ''
+    for (let rule of Object.values(mainWindow.getCssMap())) {
+        rules += rule + ' \n'
+    }
+    styleEl.innerHTML = rules
+
+    mainWindow.addDataBindings()
+    mainWindow.addTagBindings()
+    mainWindow.addEventHandlers()
 
     messager.connectToServer(location.host)
     // expose singletons for debugging purposes (via browser console)

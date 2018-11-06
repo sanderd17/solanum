@@ -6,6 +6,12 @@ function Motor () {}
 Motor.prototype = Object.create(Template.prototype)
 Motor.prototype.constructor = Motor
 
+Motor.prototype.class = 'motor'
+Motor.prototype.css = [
+    `.icon_1:hover {
+        filter: brightness(85%);
+    }`,
+]
 
 Motor.prototype.eventHandlers = {
     'icon_1': {
@@ -38,13 +44,6 @@ Motor.prototype.getSvg = function() {
         <circle id="${this.id}.icon_1" class="icon_1" cx="250" cy="250" r="200" fill="blue"></circle>
         <rect id="${this.id}.icon_2" height="100" width="100" x="400" y="400" fill="red"></rect>
     </svg>`
-}
-
-Motor.prototype.getCss = function() {
-    return `
-        .motor > .icon_1:hover {
-            filter: brightness(85%);
-        }`
 }
 
 export default Motor
