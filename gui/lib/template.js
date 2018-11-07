@@ -8,7 +8,22 @@ Template.prototype.init = function(parent, id, data, loc) {
     this.data = data
     this.loc = loc
     this.dataBindings = {}
+    this.dom = this.getDomProxy()
     this.createSubTemplates()
+}
+
+Template.prototype.getDomProxy = function() {
+    return new Proxy({}, {
+        // get a proxy to the next DOM nodes by id
+        get: (obj, prop) => {
+            let domObj = this.getElementById(prop)
+            // get a proxy to the DOM attributes
+            return new Proxy(domObj, {
+                set: (obj, prop, val) => domObj.setAttribute(prop, val) || true,
+                get: (obj, prop) => domObj.getAttribute(prop)
+            })
+        }
+    })
 }
 
 Template.prototype.createSubTemplates = function() {

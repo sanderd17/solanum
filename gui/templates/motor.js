@@ -10,24 +10,26 @@ Motor.prototype.class = 'motor'
 Motor.prototype.css = [
     `.icon_1:hover {
         filter: brightness(85%);
+        cursor: pointer;
     }`,
 ]
 
 Motor.prototype.eventHandlers = {
     'icon_1': {
-        'onclick':  function() {ts.writeTag(this.data.st_motor, 'red')}
+        'onclick':  function() {ts.writeTag(this.data.st_motor, 'black')}
     }
 }
 
 Motor.prototype.tagBindings = [
     [
         function() {return this.data.st_motor},
-        function(path, tag) {this.getElementById('icon_1').setAttribute('fill', tag.value)}
+        function(path, tag) {this.dom.icon_1.fill = tag.value}
+        //function(path, tag) {this.getElementById('icon_1').setAttribute('fill', tag.value)}
     ]
 ]
 
 Motor.prototype.dataBindings = {
-    'size': function(v) {this.getElementById('icon_2').setAttribute('width', v)}
+    'size': function(v) {this.dom.icon_2.width = v}
 }
 
 Motor.prototype.getSvg = function() {
