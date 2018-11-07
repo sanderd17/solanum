@@ -5,15 +5,19 @@ function Template() {}
 Template.prototype.init = function(parent, id, data, loc) {
     this.parent = parent
     this.id = id
-    this.data = data
+    this.data = new Proxy(data, {
+        get: (obj, prop) => obj[prop],
+        set: (obj, prop, val) => {
+            let oldVal = obj[prop]
+            obj[prop] = val
+            if (prop in this.dataBindings) {
+                this.dataBindings[prop].bind(this)(val, oldVal)
+            }
+            return true
+        }
+    })
     this.loc = loc
-    this.dataBindings = {}
-    this.dom = this.getDomProxy()
-    this.createSubTemplates()
-}
-
-Template.prototype.getDomProxy = function() {
-    return new Proxy({}, {
+    this.dom = new Proxy({}, {
         // get a proxy to the next DOM nodes by id
         get: (obj, prop) => {
             let domObj = this.getElementById(prop)
@@ -24,6 +28,7 @@ Template.prototype.getDomProxy = function() {
             })
         }
     })
+    this.createSubTemplates()
 }
 
 Template.prototype.createSubTemplates = function() {
@@ -62,25 +67,11 @@ Template.prototype.addTagBindings = function() {
 
 Template.prototype.addDataBindings = function() {
     for (let key in this.dataBindings) {
-        this.dataBindings[key] = this.dataBindings[key].bind(this)
-        this.dataBindings[key](this.data[key], null)
+        this.dataBindings[key].bind(this)(this.data[key], null)
     }
     for (let child of Object.values(this.children)) {
         child.addDataBindings()
     }
-}
-
-Template.prototype.setAttr = function(key, value) {
-    let oldValue = this.data[key]
-    this.data[key] = value
-    // call modification
-    if (key in this.dataBindings) {
-        this.dataBindings[key](value, oldValue)
-    }
-}
-
-Template.prototype.getAttr = function(key) {
-    return this.data[key]
 }
 
 Template.prototype.getElementById = function(id) {

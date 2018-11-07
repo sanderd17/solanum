@@ -17,6 +17,9 @@ Motor.prototype.css = [
 Motor.prototype.eventHandlers = {
     'icon_1': {
         'onclick':  function() {ts.writeTag(this.data.st_motor, 'black')}
+    },
+    'icon_2': {
+        'onclick':  function() {this.data.size = 20}
     }
 }
 
@@ -24,7 +27,6 @@ Motor.prototype.tagBindings = [
     [
         function() {return this.data.st_motor},
         function(path, tag) {this.dom.icon_1.fill = tag.value}
-        //function(path, tag) {this.getElementById('icon_1').setAttribute('fill', tag.value)}
     ]
 ]
 
