@@ -46,7 +46,7 @@ Template.prototype.addEventHandlers = function(id, eventType, fn) {
         for (let eventType in this.eventHandlers[id]) {
             let fn = this.eventHandlers[id][eventType]
             let handlerNode = this.getElementById(id)
-            handlerNode[eventType] = fn.bind(this)
+            handlerNode.addEventListener(eventType, fn.bind(this))
         }
     }
     for (let child of Object.values(this.children)) {

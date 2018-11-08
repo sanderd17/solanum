@@ -16,10 +16,10 @@ Motor.prototype.css = [
 
 Motor.prototype.eventHandlers = {
     'icon_1': {
-        'onclick':  function() {ts.writeTag(this.data.st_motor, 'black')}
+        'click':  function(event) {ts.writeTag(this.data.st_motor, 'black')}
     },
     'icon_2': {
-        'onclick':  function() {this.data.size = 20}
+        'click':  function(event) {this.data.size = 20}
     }
 }
 
