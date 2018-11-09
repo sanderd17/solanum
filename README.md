@@ -1,5 +1,5 @@
 
-[![Build Status](https://api.travis-ci.com/sanderd17/solanum.png?branch=master)](https://travis-ci.org/sanderd17/solanum)
+[![Build Status](https://api.travis-ci.com/sanderd17/solanum.png?branch=master)](https://travis-ci.com/sanderd17/solanum)
 
 # Solanum
 
