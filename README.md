@@ -1,3 +1,6 @@
+
+[![Build Status](https://api.travis-ci.com/sanderd17/solanum.png?branch=master)](https://travis-ci.org/sanderd17/solanum)
+
 # Solanum
 
 Solanum is a project that aims to bring big Scada applications to the browser via regular DOM handling
