@@ -56,7 +56,7 @@ Client.prototype.sendMessage = function(msg) {
 }
 
 Client.messageTypes = {}
-Client.addMessageHandler = function(name, fn) {
+Client.on = function(name, fn) {
     // TODO warn for double message adding      +1
 
     Client.messageTypes[name] = fn

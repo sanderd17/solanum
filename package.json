@@ -5,15 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "inspect": "node --inspect index.js",
+    "sample-server": "node tools/sample-server.js",
     "test": "mocha -r esm"
   },
   "author": "Sander Deryckere",
   "license": "AGPL-3.0",
   "dependencies": {
-    "chokidar": "^2.0.4",
     "esm": "^3.0.82",
     "express": "^4.16.3",
     "express-ws": "^4.0.0",
+    "node-opcua": "^0.5.0",
     "svgedit": "^3.0.0-rc.3"
   },
   "devDependencies": {

@@ -11,7 +11,7 @@ function TagSet () {
 
 TagSet.prototype.initMessageHandlers = function() {
     // Let clients set their subscribed tags
-    Client.addMessageHandler(
+    Client.on(
         'TagSet:setSubscriptions',
         // on subscription, store the subscribed tags,
         // and resend all tags now subscribed to
@@ -22,7 +22,7 @@ TagSet.prototype.initMessageHandlers = function() {
             this.sendTags([client], tags)
         }
     )
-    Client.addMessageHandler(
+    Client.on(
         'TagSet:writeTag',
         (client, data) => {
             let tag = this.tags.get(data.path)

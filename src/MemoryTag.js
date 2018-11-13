@@ -1,8 +1,6 @@
 import Tag from './Tag.js'
 import ts from './TagSet.js'
 
-const fs = require('fs')
-
 function MemoryTag(tagPath, data) {
     this.tagPath = tagPath
     this.value = data.defaultValue

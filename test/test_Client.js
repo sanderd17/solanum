@@ -32,10 +32,10 @@ describe('Client', function() {
             clearInterval(cl.pingTimerId)
         })
     }),
-    describe('addMessageHandler', function() {
+    describe('on', function() {
         it('adds a message handling function', function () {
             let fn = (msg, client) => assert.fail() // should never be executed
-            Client.addMessageHandler('testHandler', fn)
+            Client.on('testHandler', fn)
             assert.equal(Client.messageTypes.testHandler, fn)
         })
     }),
@@ -50,7 +50,7 @@ describe('Client', function() {
                 assert.equal(msg, 'testMessage')
                 assert.equal(client, cl1)
             }
-            Client.addMessageHandler('test:Handle', fn)
+            Client.on('test:Handle', fn)
 
             cl1.handleMessage({'test:Handle': 'testMessage'})
             assert.equal(execCount, 1)

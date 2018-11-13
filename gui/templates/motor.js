@@ -9,7 +9,8 @@ Motor.prototype.constructor = Motor
 Motor.prototype.class = 'motor'
 Motor.prototype.css = [
     `.icon_1:hover {
-        filter: brightness(85%);
+        stroke: blue;
+        stroke-width: 50px;
         cursor: pointer;
     }`,
 ]
