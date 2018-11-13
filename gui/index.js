@@ -2,6 +2,9 @@
 import Template from "./lib/template.js"
 import Motor from "./templates/motor.js"
 
+/** 
+ * @constructor
+ */
 function MainWindow () {}
 
 MainWindow.prototype = Object.create(Template.prototype)
@@ -45,8 +48,8 @@ MainWindow.prototype.getSvg = function() {
             y="480"
             width="150"
             height="50"
-            class="translation"
-        >minimum voltage</rect>`
+            class="translation">
+        </rect>`
 }
 
 export default MainWindow

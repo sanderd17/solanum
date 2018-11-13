@@ -1,7 +1,7 @@
 function Client (ws, ip) {
     this.ws = ws
     this.ip = ip
-    this.pingTimerId = 0
+    this.pingTimerId = null
 
     ws.on('message', (msg) => {
         this.handleMessage(JSON.parse(msg))

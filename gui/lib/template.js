@@ -1,12 +1,29 @@
 import ts from "./TagSet.js"
 
+/** @constructor */
 function Template() {}
+
+Template.prototype.parent
+Template.prototype.id
+Template.prototype.data
+Template.prototype.dom
+Template.prototype.loc
+Template.prototype.children
 
 Template.prototype.init = function(parent, id, data, loc) {
     this.parent = parent
     this.id = id
     this.data = new Proxy(data, {
+        /**
+         * @arg {Object} obj
+         * @arg {string} prop
+         */
         get: (obj, prop) => obj[prop],
+        /**
+         * @arg {Object} obj
+         * @arg {string} prop
+         * @arg {Object} val
+         */
         set: (obj, prop, val) => {
             let oldVal = obj[prop]
             obj[prop] = val
@@ -23,16 +40,28 @@ Template.prototype.init = function(parent, id, data, loc) {
             let domObj = this.getElementById(prop)
             // get a proxy to the DOM attributes
             return new Proxy(domObj, {
-                set: (obj, prop, val) => domObj.setAttribute(prop, val) || true,
-                get: (obj, prop) => domObj.getAttribute(prop)
+                /**
+                 * @arg {Object} obj
+                 * @arg {string} prop
+                 */
+                get: (obj, prop) => domObj.getAttribute(prop),
+                /**
+                 * @arg {Object} obj
+                 * @arg {string} prop
+                 * @arg {Object} val
+                 */
+                set: (obj, prop, val) => {
+                    domObj.setAttribute(prop, val)
+                    return true
+                },
             })
         }
     })
+    this.children = {}
     this.createSubTemplates()
 }
 
 Template.prototype.createSubTemplates = function() {
-    this.children = {}
     let subTemplates = this.getReplacements()
     for (let [subId, template] of Object.entries(subTemplates)) {
         let child = new template.type()

@@ -13,11 +13,11 @@
   "author": "Sander Deryckere",
   "license": "AGPL-3.0",
   "dependencies": {
-    "esm": "^3.0.82",
-    "express": "^4.16.3",
+    "esm": "^3.0.84",
+    "express": "^4.16.4",
     "express-ws": "^4.0.0",
     "node-opcua": "^0.5.0",
-    "svgedit": "^3.0.0-rc.3"
+    "svgedit": "^3.2.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
