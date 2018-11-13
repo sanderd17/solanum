@@ -1,6 +1,6 @@
 function Messager () {
     this.ws = null
-    this.intervalId = 0
+    this.intervalId = null
     this.messages = {}
     this.server = null
     this.onopenHandlers = []

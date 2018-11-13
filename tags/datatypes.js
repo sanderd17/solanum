@@ -22,4 +22,4 @@ let datatypes = {
         }
 }
 
-module.export = datatypes
+module.exports = datatypes

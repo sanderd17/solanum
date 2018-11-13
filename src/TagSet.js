@@ -3,7 +3,7 @@ import clientList from './ClientList.js'
 import Client from './Client.js'
 
 function TagSet () {
-    this.activeSendTimer = 0
+    this.activeSendTimer = null
     this.changedTags = new Set()
     this.tags = new Map()
     this.subscribedTags = new WeakMap()// link clients to their subscribed tags
@@ -19,7 +19,7 @@ TagSet.prototype.initMessageHandlers = function() {
             this.subscribedTags.set(client, subscriptionList)
 
             let tags = new Set(subscriptionList)
-            this.sendTags([client], tags)
+            this.sendTags(new Set([client]), tags)
         }
     )
     Client.on(
@@ -31,6 +31,9 @@ TagSet.prototype.initMessageHandlers = function() {
     )
 }
 
+/**
+ * @param {Object} tagList 
+ */
 TagSet.prototype.setTags = function(tagList=tags) {
     for (let tagpath in tagList) {
         this.addTag(tagpath, tagList[tagpath])
@@ -68,4 +71,6 @@ TagSet.prototype.sendTags = function(clients=clientList, tagPaths=null) {
 let ts = new TagSet()
 
 export default ts
+
+export {TagSet} // only exported for testing/inspection
 

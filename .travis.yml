@@ -3,6 +3,6 @@ node_js:
   - "node"
 install:
   - "npm ci"
-  - "npm run build"
 test:
+  - "npm run build"
   - "npm test"

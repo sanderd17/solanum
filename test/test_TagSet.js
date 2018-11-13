@@ -1,8 +1,7 @@
 const assert = require('assert')
 
-import ts from '../src/TagSet.js'
+import {TagSet} from '../src/TagSet.js'
 
-const TagSet = ts.constructor
 
 let DummyTag = function(tagPath, otherArgs) {
     this.tagPath = tagPath
@@ -50,13 +49,14 @@ describe('TagSet', function() {
             let ts = new TagSet()
 
             ts.triggerChange({tagPath: 'testTp1', value: 'newValue1'})
-            assert.notEqual(ts.activeSendTimer, 0)
+            assert.notEqual(ts.activeSendTimer, null)
             let timerId = ts.activeSendTimer
             assert.equal(ts.changedTags.size, 1)
             // Make sure only one notification is send for 2 changes in the same event loop
             ts.triggerChange({tagPath: 'testTp2', value: 'newValue2'})
             assert.equal(ts.changedTags.size, 2)
             assert.equal(ts.activeSendTimer, timerId)
+            // @ts-ignore
             // clean up timer
             clearInterval(timerId)
         })

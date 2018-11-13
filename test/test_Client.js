@@ -18,7 +18,7 @@ describe('Client', function() {
             assert.equal(cl.ws, ws)
             assert.equal(cl.ip, ip)
             assert.equal(cl.pingTimerId, 0)
-            assert.equal(cl.messageTypes, null)
+            assert.equal(Client.messageTypes, null)
         })
     }),
     describe('initPing', function() {
@@ -28,7 +28,7 @@ describe('Client', function() {
 
             cl.initPing()
 
-            assert(cl.pingTimerId != 0)
+            assert(cl.pingTimerId != null)
             clearInterval(cl.pingTimerId)
         })
     }),
