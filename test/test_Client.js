@@ -17,8 +17,8 @@ describe('Client', function() {
 
             assert.equal(cl.ws, ws)
             assert.equal(cl.ip, ip)
-            assert.equal(cl.pingTimerId, 0)
-            assert.equal(Client.messageTypes, null)
+            assert.equal(cl.pingTimerId, null)
+            assert.deepEqual(Client.messageTypes, {})
         })
     }),
     describe('initPing', function() {

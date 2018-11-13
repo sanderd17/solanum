@@ -13,7 +13,7 @@ describe('TagSet', function() {
     describe('constructor', function() {
         it('should construct a tagset', function() {
             let ts = new TagSet()
-            assert.equal(ts.activeSendTimer, 0)
+            assert.equal(ts.activeSendTimer, null)
             assert.equal(ts.changedTags.constructor, Set)
             assert.equal(ts.changedTags.size, 0)
             assert.equal(ts.tags.constructor, Map)
