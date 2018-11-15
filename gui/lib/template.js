@@ -1,7 +1,6 @@
 import ts from "./TagSet.js"
 
-/** @constructor */
-function Template() {}
+class Template {}
 
 Template.prototype.parent
 Template.prototype.id
@@ -120,7 +119,7 @@ Template.prototype.getCssMap = function() {
 }
 
 Template.prototype.getSvg = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
-Template.prototype.getReplacements = () => []
+Template.prototype.getReplacements = () => ({})
 Template.prototype.eventHandlers = {}
 Template.prototype.tagBindings = []
 Template.prototype.dataBindings = {}

@@ -2,13 +2,7 @@
 import Template from "./lib/template.js"
 import Motor from "./templates/motor.js"
 
-/** 
- * @constructor
- */
-function MainWindow () {}
-
-MainWindow.prototype = Object.create(Template.prototype)
-MainWindow.prototype.constructor = MainWindow
+class MainWindow extends Template {}
 
 MainWindow.prototype.getReplacements = function() {
     let repl = {}

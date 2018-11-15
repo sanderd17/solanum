@@ -1,3 +1,4 @@
+/*
 import Template from "../../lib/template.js"
 
 function Button () {}
@@ -54,3 +55,4 @@ Button.getCss = function() {
 }
 
 export default Button
+*/

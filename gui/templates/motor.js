@@ -1,10 +1,7 @@
 import Template from '../lib/template.js'
 import ts from '../lib/TagSet.js'
 
-function Motor () {}
-
-Motor.prototype = Object.create(Template.prototype)
-Motor.prototype.constructor = Motor
+class Motor extends Template {}
 
 Motor.prototype.class = 'motor'
 Motor.prototype.css = [
@@ -48,7 +45,7 @@ Motor.prototype.getSvg = function() {
         >
         <circle id="${this.id}.icon_1" class="icon_1" cx="250" cy="250" r="200" fill="blue"></circle>
         <rect id="${this.id}.icon_2" height="100" width="100" x="400" y="400" fill="red"></rect>
-    </svg>`
-}
+    </svg>`;
+    }
 
 export default Motor

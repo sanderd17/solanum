@@ -21,6 +21,7 @@ app.use(express.static('gui'))
 app.use('/svgedit/editor', express.static('editor'))
 app.use('/svgedit', express.static('node_modules/svgedit'))
 
+// @ts-ignore -- Wait until websockets are native in express
 app.ws('/socket', function(ws, req) {
     let cl = new Client(ws, req.connection.remoteAddress)
     clientList.add(cl)
