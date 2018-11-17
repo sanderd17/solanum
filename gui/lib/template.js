@@ -2,13 +2,13 @@ import ts from "./TagSet.js"
 
 class Template {}
 
-Template.prototype.parent
-Template.prototype.id
-Template.prototype.data
-Template.prototype.dom
-Template.prototype.loc
-Template.prototype.children
-
+/**
+ * 
+ * @param {Template | null} parent 
+ * @param {string} id 
+ * @param {Object} data 
+ * @param {{x:number, y:number, width:number, height:number}} loc 
+ */
 Template.prototype.init = function(parent, id, data, loc) {
     this.parent = parent
     this.id = id
@@ -34,7 +34,11 @@ Template.prototype.init = function(parent, id, data, loc) {
     })
     this.loc = loc
     this.dom = new Proxy({}, {
-        // get a proxy to the next DOM nodes by id
+        /**
+         * get a proxy to the next DOM nodes by id
+         * @param {Object} obj
+         * @param {string} prop 
+         */
         get: (obj, prop) => {
             let domObj = this.getElementById(prop)
             // get a proxy to the DOM attributes
@@ -69,6 +73,12 @@ Template.prototype.createSubTemplates = function() {
     }
 }
 
+/**
+ * 
+ * @param {string} id 
+ * @param {string} eventType 
+ * @param {Function} fn 
+ */
 Template.prototype.addEventHandlers = function(id, eventType, fn) {
     for (let id in this.eventHandlers) {
         for (let eventType in this.eventHandlers[id]) {
@@ -102,6 +112,10 @@ Template.prototype.addDataBindings = function() {
     }
 }
 
+/**
+ * 
+ * @param {string} id 
+ */
 Template.prototype.getElementById = function(id) {
     return document.getElementById(this.id + '.' + id)
 }
@@ -121,9 +135,11 @@ Template.prototype.getCssMap = function() {
 Template.prototype.getSvg = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
 Template.prototype.getReplacements = () => ({})
 Template.prototype.eventHandlers = {}
+/** @type {Array.<Array>} */
 Template.prototype.tagBindings = []
 Template.prototype.dataBindings = {}
 Template.prototype.class = ''
+/** @type {Array.<string>} */
 Template.prototype.css = []
 
 export default Template

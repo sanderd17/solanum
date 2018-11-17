@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "checkJs": true,
-        "target": "es2017"
+        "target": "es2017",
+        "_noImplicitAny": true
     },
     "exclude": [
         "node_modules",

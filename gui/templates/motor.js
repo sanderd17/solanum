@@ -14,9 +14,11 @@ Motor.prototype.css = [
 
 Motor.prototype.eventHandlers = {
     'icon_1': {
+        /** @param {event} event */
         'click':  function(event) {ts.writeTag(this.data.st_motor, 'black')}
     },
     'icon_2': {
+        /** @param {event} event */
         'click':  function(event) {this.data.size = 20}
     }
 }
@@ -24,11 +26,17 @@ Motor.prototype.eventHandlers = {
 Motor.prototype.tagBindings = [
     [
         function() {return this.data.st_motor},
+        /**
+         * @param {string} path 
+         */
         function(path, tag) {this.dom.icon_1.fill = tag.value}
     ]
 ]
 
 Motor.prototype.dataBindings = {
+    /**
+     * @param {Object} v
+     */
     'size': function(v) {this.dom.icon_2.width = v}
 }
 
