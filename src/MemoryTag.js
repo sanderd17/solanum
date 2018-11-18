@@ -1,21 +1,35 @@
 import Tag from './Tag.js'
 import ts from './TagSet.js'
 
-function MemoryTag(tagPath, data) {
-    this.tagPath = tagPath
-    this.value = data.defaultValue
-    this.quality = 'GOOD'
+class MemoryTag extends Tag {
+    /**
+     * @param {string} tagPath 
+     * @param {{defaultValue: Object}} data 
+     */
+    constructor(tagPath, data) {
+        super(tagPath, data)
+        this.quality = 'GOOD'
+    }
 }
-
-MemoryTag.prototype = Object.create(Tag.prototype)
 
 MemoryTag.prototype.triggerChange = function() {
     ts.triggerChange(this)
 }
 
+/**
+ * @param {Object} value 
+ */
 MemoryTag.prototype.write = function(value) {
     this.value = value
     this.triggerChange()
+}
+
+/**
+ * @param {string} tagPath 
+ * @param {{defaultValue: Object}} data 
+ */
+MemoryTag.createTag = function(tagPath, data) {
+    return new MemoryTag(tagPath, data)
 }
 
 export default MemoryTag

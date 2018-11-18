@@ -3,9 +3,13 @@ function Messager () {
     this.intervalId = null
     this.messages = {}
     this.server = null
+    /** @type {Array<(event: Event) => undefined>} */
     this.onopenHandlers = []
 }
 
+/**
+ * @param {string} server 
+ */
 Messager.prototype.connectToServer = function(server, WS=WebSocket) {
     this.server = server
     try{
@@ -35,10 +39,15 @@ Messager.prototype.connectToServer = function(server, WS=WebSocket) {
         console.log("Failed to make WebSocket connection")
     }
     if (!this.intervalId) {
-        this.intervalId = setInterval(() => this.checkWebSocketOpened(), 10000) // TODO: should be setting, determines when disconnects are discovered and reconnects are attempted
+        // TODO: should be setting, determines when disconnects are discovered and reconnects are attempted
+        this.intervalId = setInterval(() => this.checkWebSocketOpened(), 10000) 
     }
 }
 
+/**
+ * Send a message to the server
+ * @param {Object} msg 
+ */
 Messager.prototype.sendMessage = function(msg) {
     this.ws.send(JSON.stringify(msg))
 }
@@ -63,14 +72,28 @@ Messager.prototype.checkWebSocketOpened = function() {
 
 }
 
+/**
+ * Handle a received
+ * @param {string} msgName 
+ * @param {Object} data 
+ */
 Messager.prototype.handleMessage = function(msgName, data) {
     this.messages[msgName](data)
 }
 
+/**
+ * Register a message handler
+ * @param {string} msgName -- Message name to react on
+ * @param {function(Object)} handler -- Function to execute on message received
+ */
 Messager.prototype.registerMessageHandler = function(msgName, handler) {
     this.messages[msgName] = handler
 }
 
+/**
+ * Register a function to execute on WebSocket open
+ * @param {function(Event)} handler 
+ */
 Messager.prototype.registerOnopenHandler = function(handler) {
     this.onopenHandlers.push(handler)
 }

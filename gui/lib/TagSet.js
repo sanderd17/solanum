@@ -1,19 +1,35 @@
 import messager from './Messager.js'
 
+/**
+ * Singleton class to guide all tag writing and handle triggers
+ * @typedef {Object} Tag
+ * @property {Object} value
+ */
+
 function TagSet() {
     this.handlers = new Map()
 }
 
+/**
+ * Register some messages over the WebSocket
+ */
 TagSet.prototype.initMessageHandlers = function() {
-    messager.registerMessageHandler('TagSet:updateTags', (tags) => this.updateTags(tags))
+    messager.registerMessageHandler('TagSet:updateTags', this.updateTags.bind(this))
     // refresh all tags when new connection is made
     messager.registerOnopenHandler(() => this.refreshAllTags())
 }
 
-TagSet.prototype.refreshAllTags = function(tags) {
+/**
+ * Reset the subscriptions to get updated values of all tags back
+ */
+TagSet.prototype.refreshAllTags = function() {
     messager.sendMessage({'TagSet:setSubscriptions': [...this.handlers.keys()]})
 }
 
+/**
+ * Handle updated tags received from the server: execute all triggers
+ * @param {Object<string,Tag>} tags 
+ */
 TagSet.prototype.updateTags = function(tags) {
     for (let path in tags) {
         if (this.handlers.has(path)) {
@@ -22,10 +38,20 @@ TagSet.prototype.updateTags = function(tags) {
     }
 }
 
+/**
+ * Write to a tag on the server
+ * @param {string} path 
+ * @param {Object} value 
+ */
 TagSet.prototype.writeTag = function(path, value) {
     messager.sendMessage({'TagSet:writeTag': {path, value}})
 }
 
+/**
+ * 
+ * @param {string} path 
+ * @param {Function} handler 
+ */
 TagSet.prototype.addTagHandler = function(path, handler) {
     // Handler to fire functions when a tag change is received
     if (this.handlers.has(path)) {
@@ -35,6 +61,11 @@ TagSet.prototype.addTagHandler = function(path, handler) {
     }
 }
 
+/**
+ * 
+ * @param {string} path 
+ * @param {Tag} tag 
+ */
 TagSet.prototype.triggerTagBinding = function(path, tag) {
     let handlers = this.handlers.get(path)
     for (let handler of handlers) {

@@ -2,6 +2,18 @@ import tags from '../tags/default.js'
 import clientList from './ClientList.js'
 import Client from './Client.js'
 
+/**
+ * @typedef {Object} TagDescription
+ * @property {function} type -- Constructor of the tag type
+ * @property {Object} defaultValue -- default value assigned
+ */
+
+/**
+ * @typedef {Object} Tag
+ * @property {string} tagPath
+ * @property {Object} value
+ */
+
 function TagSet () {
     this.activeSendTimer = null
     this.changedTags = new Set()
@@ -13,8 +25,11 @@ TagSet.prototype.initMessageHandlers = function() {
     // Let clients set their subscribed tags
     Client.on(
         'TagSet:setSubscriptions',
-        // on subscription, store the subscribed tags,
-        // and resend all tags now subscribed to
+        /**
+         * On subscription, store the subscribed tags,
+         * and resend all tags now subscribed to
+         * @param {Client} client
+         */
         (client, subscriptionList) => {
             this.subscribedTags.set(client, subscriptionList)
 
@@ -24,6 +39,10 @@ TagSet.prototype.initMessageHandlers = function() {
     )
     Client.on(
         'TagSet:writeTag',
+        /**
+         * @param {Client} client
+         * @param {{path: string, value: Object}} data
+         */
         (client, data) => {
             let tag = this.tags.get(data.path)
             tag.write(data.value)
@@ -40,11 +59,20 @@ TagSet.prototype.setTags = function(tagList=tags) {
     }
 }
 
+/**
+ * 
+ * @param {string} tagpath 
+ * @param {TagDescription} tagDescr 
+ */
 TagSet.prototype.addTag = function(tagpath, tagDescr) {
-    let type = tagDescr.type
-    this.tags.set(tagpath, new type(tagpath, tagDescr))
+    let tagType = tagDescr.type
+    this.tags.set(tagpath, tagType.createTag(tagpath, tagDescr))
 }
 
+/**
+ * 
+ * @param {Tag} tag 
+ */
 TagSet.prototype.triggerChange = function(tag) {
     this.changedTags.add(tag.tagPath)
     if (!this.activeSendTimer) {

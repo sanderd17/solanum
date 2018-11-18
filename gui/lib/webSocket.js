@@ -1,4 +1,5 @@
-let ws // websocket instance
+/** @type {WebSocket} - WebSocket instance to the server */
+let ws
 
 function connectToWebSocket() {
     try {

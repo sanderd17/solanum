@@ -1,5 +1,10 @@
 import MemoryTag from '../src/MemoryTag.js'
+import { TagDescription } from '../src/TagSet.js';
 
+
+/**
+ * @type {Object<string, TagDescription>}
+ */
 let tags = {
     'testMemoryTag': {
         type: MemoryTag,

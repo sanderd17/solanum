@@ -1,6 +1,12 @@
 import ts from "./TagSet.js"
 
 class Template {
+    /**
+     * 
+     * @param {?Template} parent 
+     * @param {string} id 
+     * @param {Object} props 
+     */
     constructor(parent, id, props={}) {
         this.parent = parent
         this.id = id

@@ -1,3 +1,4 @@
+// @ts-nocheck
 const assert = require('assert')
 
 import Client from '../src/Client.js'

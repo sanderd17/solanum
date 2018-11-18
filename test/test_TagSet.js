@@ -1,3 +1,4 @@
+// @ts-nocheck
 const assert = require('assert')
 
 import {TagSet} from '../src/TagSet.js'

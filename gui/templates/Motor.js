@@ -1,5 +1,9 @@
 import Template from '../lib/template.js'
 import ts from '../lib/TagSet.js'
+/**
+ * @typedef {Object} Tag
+ * @property {Object} value
+ */
 
 class Motor extends Template {}
 
@@ -28,6 +32,7 @@ Motor.prototype.tagBindings = [
         function() {return this.props.st_motor},
         /**
          * @param {string} path 
+         * @param {Tag} tag
          */
         function(path, tag) {this.dom.icon_1.fill = tag.value}
     ]

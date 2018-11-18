@@ -22,6 +22,9 @@ mainWindow.addEventHandlers()
 
 messager.connectToServer(location.host)
 // expose singletons for debugging purposes (via browser console)
+// @ts-ignore
 window['ts'] = ts
+// @ts-ignore
 window['messager'] = messager
+// @ts-ignore
 window['mainWindow'] = mainWindow
