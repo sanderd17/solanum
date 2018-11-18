@@ -32,7 +32,7 @@ Button.prototype.getDataBindings = function() {
     }
 }
 
-Button.getSvg = function(id, width, height, x, y, data) {
+Button.render = function(id, width, height, x, y, data) {
     return `
     <svg
             id="${id}"

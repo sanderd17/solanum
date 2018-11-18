@@ -1,49 +1,27 @@
-// import whatever gui template/screens needed
-import Template from "./lib/template.js"
-import Motor from "./templates/motor.js"
+import MainWindow from "./templates/MainWindow.js"
+import ts from "./lib/TagSet.js"
+import messager from "./lib/Messager.js"
+ts.initMessageHandlers()
 
-class MainWindow extends Template {}
+const mainWindow = new MainWindow(null, 'MainWindow', {x:0, y:0, width: window.innerWidth, height: window.innerHeight})
+mainWindow.createSubTemplates()
+let div = document.querySelector("#root")
+div.innerHTML = mainWindow.render()
 
-MainWindow.prototype.getReplacements = function() {
-    let repl = {}
-    for (let i = 0; i < 3000; i++) {
-        repl["motor_" + i] = {
-            type: Motor,
-            data: {
-                st_motor: `Motors/M${i}`,
-                size: 40
-            },
-            loc: {
-                x: 10 * Math.floor(i/40),
-                y: (i%40) * 12,
-                width: 10,
-                height: 10,
-            },
-        }
-    }
-    return repl
+let styleEl = document.createElement('style')
+document.head.appendChild(styleEl)
+let rules = ''
+for (let rule of Object.values(mainWindow.getCssMap())) {
+    rules += rule + ' \n'
 }
+styleEl.innerHTML = rules
 
-MainWindow.prototype.eventHandlers = {
-    'button_1':{
-        'onclick': function() {alert("clicked")}
-    }
-}
+mainWindow.addDataBindings()
+mainWindow.addTagBindings()
+mainWindow.addEventHandlers()
 
-MainWindow.prototype.getSvg = function() {
-    let svg = []
-    for (let c in this.children) {
-        svg.push(this.children[c].getSvg())
-    }
-    return svg.join("\n") + `
-        <rect
-            id="${this.id}.button_1"
-            x="0"
-            y="480"
-            width="150"
-            height="50"
-            class="translation">
-        </rect>`
-}
-
-export default MainWindow
+messager.connectToServer(location.host)
+// expose singletons for debugging purposes (via browser console)
+window['ts'] = ts
+window['messager'] = messager
+window['mainWindow'] = mainWindow
