@@ -1,11 +1,18 @@
 import tags from '../tags/default.js'
 import clientList from './ClientList.js'
 import Client from './Client.js'
+import Tag from './Tag.js'
+
+/**
+ * @typedef {object} TagDescription
+ * @property {typeof Tag} type
+ * @property {any} defaultValue
+ */
 
 function TagSet () {
     this.activeSendTimer = null
     this.changedTags = new Set()
-    /** @type {Map<string, server.Tag>} */
+    /** @type {Map<string, Tag>} */
     this.tags = new Map()
     this.subscribedTags = new WeakMap()// link clients to their subscribed tags
 }
@@ -70,9 +77,15 @@ TagSet.prototype.triggerChange = function(tag) {
     }
 }
 
+/**
+ * 
+ * @param {Set<Client>} clients 
+ * @param {Set<string>} tagPaths 
+ */
 TagSet.prototype.sendTags = function(clients=clientList, tagPaths=null) {
     let specificPaths = tagPaths || this.changedTags // default to changed tags
     this.activeSendTimer = 0
+    /** @type {Object<string,{value: any}>} */
     let tagsToSend = {}
     for (let path of specificPaths) {
         let tag = this.tags.get(path)

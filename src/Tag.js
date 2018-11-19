@@ -1,3 +1,5 @@
+import ts from './TagSet.js'
+
 class Tag {
     /**
      * @param {string} tagPath 
@@ -9,7 +11,17 @@ class Tag {
     }
 }
 
+Tag.prototype.triggerChange = function() {
+    ts.triggerChange(this)
+}
 
+/**
+ * @param {object} value 
+ * @returns {void}
+ */
+Tag.prototype.write = function(value) {
+    throw 'Not implemented'
+}
 
 
 

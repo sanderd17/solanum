@@ -10,6 +10,7 @@ class Template {
     constructor(parent, id, props={}) {
         this.parent = parent
         this.id = id
+        /** @type Object<string,Template> */
         this.children = {}
         this.props = new Proxy(props, {
             /**
@@ -23,6 +24,7 @@ class Template {
              * @arg {object} val
              */
             set: (obj, prop, val) => {
+                /** @type {any} */
                 let oldVal = obj[prop]
                 obj[prop] = val
                 if (prop in this.dataBindings) {
@@ -111,7 +113,11 @@ Template.prototype.getElementById = function(id) {
     return document.getElementById(this.id + '.' + id)
 }
 
+/**
+ * @returns {Object<string, string>}
+ */
 Template.prototype.getCssMap = function() {
+    /** @type {Object<string, string>} */
     let cssMap = {}
     for (let child of Object.values(this.children)) {
         if (cssMap[child.class])
@@ -124,10 +130,18 @@ Template.prototype.getCssMap = function() {
 }
 
 Template.prototype.render = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
+/** @typedef {Object} TemplateDescription
+ * @property {typeof Template} type
+ * @property {any} props
+ */
+/** @type  {() => Object<string,TemplateDescription>} */
 Template.prototype.getReplacements = () => ({})
+/** @typedef {(event:Event) => void} eventHandler */
+/** @type {Object<string,Object<string,eventHandler>>} */
 Template.prototype.eventHandlers = {}
 /** @type {Array.<Array>} */
 Template.prototype.tagBindings = []
+/** @type Object<string, (val:any, oldVal:any) => void> */
 Template.prototype.dataBindings = {}
 Template.prototype.class = ''
 /** @type {Array.<string>} */

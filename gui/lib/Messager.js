@@ -1,8 +1,9 @@
 function Messager () {
     this.ws = null
     this.intervalId = null
+    /** @type {Object<string,(data: any) => void>} */
     this.messages = {}
-    this.server = null
+    this.server = ""
     /** @type {Array<(event: Event) => undefined>} */
     this.onopenHandlers = []
 }
@@ -84,7 +85,7 @@ Messager.prototype.handleMessage = function(msgName, data) {
 /**
  * Register a message handler
  * @param {string} msgName -- Message name to react on
- * @param {function(Object)} handler -- Function to execute on message received
+ * @param {(data:any) => void} handler -- Function to execute on message received
  */
 Messager.prototype.registerMessageHandler = function(msgName, handler) {
     this.messages[msgName] = handler

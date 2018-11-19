@@ -42,7 +42,9 @@ Client.prototype.handleMessage = function(msg) {
             console.log("Message not found: " + key)
             continue
         }
-        Client.messageTypes[key](this, msg[key])
+        for (let handler of Client.messageTypes[key]){
+            handler(this, msg[key])
+        }
     }
 }
 
@@ -68,18 +70,24 @@ Client.prototype.sendMessage = function(msg) {
     })
 }
 
+/**
+ * @typedef {(c: Client, o: object) => void} MessageHandler
+ */
 
-/** @type {Object<string, server.ClientMessageHandler>} */
+/** @type {Object<string,Array<MessageHandler>>} */
 Client.messageTypes = {}
 /**
  * Register a message handler for a certain message coming from a client
  * @param {string} name - Name of the message
- * @param {server.ClientMessageHandler} fn - Function to handle message
+ * @param {MessageHandler} fn - Function to handle message
  */
 Client.on = function(name, fn) {
     // TODO warn for double message adding
 
-    Client.messageTypes[name] = fn
+    if (!(name in Client.messageTypes)) {
+        Client.messageTypes[name] = []
+    }
+    Client.messageTypes[name].push(fn)
 }
 
 export default Client

@@ -1,6 +1,8 @@
 import Template from '../lib/template.js'
 import ts from '../lib/TagSet.js'
 
+/** @typedef {import('../lib/template.js').eventHandler} eventHandler */
+
 class Motor extends Template {}
 
 Motor.prototype.class = 'motor'
@@ -14,11 +16,11 @@ Motor.prototype.css = [
 
 Motor.prototype.eventHandlers = {
     'icon_1': {
-        /** @param {event} event */
+        /** @type {eventHandler} */
         'click':  function(event) {ts.writeTag(this.props.st_motor, 'black')}
     },
     'icon_2': {
-        /** @param {event} event */
+        /** @type {eventHandler} */
         'click':  function(event) {this.props.size = 20}
     }
 }
@@ -28,7 +30,7 @@ Motor.prototype.tagBindings = [
         function() {return this.props.st_motor},
         /**
          * @param {string} path 
-         * @param {Tag} tag
+         * @param {import ('../lib/TagSet.js').Tag} tag
          */
         function(path, tag) {this.dom.icon_1.fill = tag.value}
     ]

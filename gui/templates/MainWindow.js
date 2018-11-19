@@ -1,10 +1,11 @@
 // import whatever gui template/screens needed
 import Template from "../lib/template.js"
 import Motor from "./Motor.js"
-
+/**  @typedef {import('../lib/template.js').TemplateDescription} TemplateDescription */
 class MainWindow extends Template {}
 
 MainWindow.prototype.getReplacements = function() {
+    /** @type {Object<string,TemplateDescription>} */
     let repl = {}
     for (let i = 0; i < 3000; i++) {
         repl["motor_" + i] = {

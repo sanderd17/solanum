@@ -52,13 +52,23 @@ connectToWebSocket()
 /******************************
  ****** Message handling ******
  ******************************/
-
+/** @type {Object<string,(data:any) => void>} */
 let messages = {}
 
+/**
+ * 
+ * @param {string} msgName 
+ * @param {any} data 
+ */
 function handleMessage(msgName, data) {
     messages[msgName](data)
 }
 
+/**
+ * 
+ * @param {string} msgName 
+ * @param {(data:any) => void} handler 
+ */
 function registerMessageHandler(msgName, handler) {
     messages[msgName] = handler
 }
