@@ -5,7 +5,7 @@ class Template {
      * 
      * @param {?Template} parent 
      * @param {string} id 
-     * @param {Object} props 
+     * @param {object} props 
      */
     constructor(parent, id, props={}) {
         this.parent = parent
@@ -13,14 +13,14 @@ class Template {
         this.children = {}
         this.props = new Proxy(props, {
             /**
-             * @arg {Object} obj
+             * @arg {object} obj
              * @arg {string} prop
              */
             get: (obj, prop) => obj[prop],
             /**
-             * @arg {Object} obj
+             * @arg {object} obj
              * @arg {string} prop
-             * @arg {Object} val
+             * @arg {object} val
              */
             set: (obj, prop, val) => {
                 let oldVal = obj[prop]
@@ -34,7 +34,7 @@ class Template {
         this.dom = new Proxy({}, {
             /**
              * get a proxy to the next DOM nodes by id
-             * @param {Object} obj
+             * @param {object} obj
              * @param {string} prop 
              */
             get: (obj, prop) => {

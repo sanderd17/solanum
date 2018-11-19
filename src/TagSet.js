@@ -1,18 +1,7 @@
 import tags from '../tags/default.js'
 import clientList from './ClientList.js'
 import Client from './Client.js'
-
-/**
- * @typedef {Object} TagDescription
- * @property {function} type -- Constructor of the tag type
- * @property {Object} defaultValue -- default value assigned
- */
-
-/**
- * @typedef {Object} Tag
- * @property {string} tagPath
- * @property {Object} value
- */
+import Tag from './Tag.js'
 
 function TagSet () {
     this.activeSendTimer = null
@@ -41,7 +30,7 @@ TagSet.prototype.initMessageHandlers = function() {
         'TagSet:writeTag',
         /**
          * @param {Client} client
-         * @param {{path: string, value: Object}} data
+         * @param {{path: string, value: object}} data
          */
         (client, data) => {
             let tag = this.tags.get(data.path)
@@ -51,7 +40,7 @@ TagSet.prototype.initMessageHandlers = function() {
 }
 
 /**
- * @param {Object} tagList 
+ * @param {object} tagList 
  */
 TagSet.prototype.setTags = function(tagList=tags) {
     for (let tagpath in tagList) {
@@ -66,12 +55,12 @@ TagSet.prototype.setTags = function(tagList=tags) {
  */
 TagSet.prototype.addTag = function(tagpath, tagDescr) {
     let tagType = tagDescr.type
-    this.tags.set(tagpath, tagType.createTag(tagpath, tagDescr))
+    this.tags.set(tagpath, new tagType(tagpath, tagDescr))
 }
 
 /**
  * 
- * @param {Tag} tag 
+ * @param {ServerTag} tag 
  */
 TagSet.prototype.triggerChange = function(tag) {
     this.changedTags.add(tag.tagPath)
