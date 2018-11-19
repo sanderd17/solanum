@@ -1,11 +1,11 @@
 import tags from '../tags/default.js'
 import clientList from './ClientList.js'
 import Client from './Client.js'
-import Tag from './Tag.js'
 
 function TagSet () {
     this.activeSendTimer = null
     this.changedTags = new Set()
+    /** @type {Map<string, server.Tag>} */
     this.tags = new Map()
     this.subscribedTags = new WeakMap()// link clients to their subscribed tags
 }
@@ -18,6 +18,7 @@ TagSet.prototype.initMessageHandlers = function() {
          * On subscription, store the subscribed tags,
          * and resend all tags now subscribed to
          * @param {Client} client
+         * @param {string[]} subscriptionList
          */
         (client, subscriptionList) => {
             this.subscribedTags.set(client, subscriptionList)
@@ -59,8 +60,7 @@ TagSet.prototype.addTag = function(tagpath, tagDescr) {
 }
 
 /**
- * 
- * @param {ServerTag} tag 
+ * @param {Tag} tag 
  */
 TagSet.prototype.triggerChange = function(tag) {
     this.changedTags.add(tag.tagPath)

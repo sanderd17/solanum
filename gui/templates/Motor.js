@@ -28,7 +28,7 @@ Motor.prototype.tagBindings = [
         function() {return this.props.st_motor},
         /**
          * @param {string} path 
-         * @param {ClientTag} tag
+         * @param {Tag} tag
          */
         function(path, tag) {this.dom.icon_1.fill = tag.value}
     ]

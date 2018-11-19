@@ -32,7 +32,7 @@ Client.prototype.initPing = function() {
 }
 
 /**
- * @param {Object<string, Object>} msg 
+ * @param {Object<string, object>} msg 
  */
 Client.prototype.handleMessage = function(msg) {
     for (let key in msg) {
@@ -47,12 +47,13 @@ Client.prototype.handleMessage = function(msg) {
 }
 
 /**
- * @param {Object} msg 
+ * @param {object} msg 
  */
 Client.prototype.sendMessage = function(msg) {
     return new Promise((resolve, reject) => {
         try {
-            this.ws.send(JSON.stringify(msg), (err) => {
+            let msgString = JSON.stringify(msg)
+            this.ws.send(msgString, (err) => {
                 if (err)
                     reject(err)
                 else
@@ -67,16 +68,13 @@ Client.prototype.sendMessage = function(msg) {
     })
 }
 
-/**
- * @typedef {function(Client, Object): undefined} MessageHandler
- */
 
-/** @type {Object<string, MessageHandler>} */
+/** @type {Object<string, server.ClientMessageHandler>} */
 Client.messageTypes = {}
 /**
  * Register a message handler for a certain message coming from a client
  * @param {string} name - Name of the message
- * @param {MessageHandler} fn - Function to handle message
+ * @param {server.ClientMessageHandler} fn - Function to handle message
  */
 Client.on = function(name, fn) {
     // TODO warn for double message adding
