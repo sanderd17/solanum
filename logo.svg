@@ -1,0 +1,29 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
+  <defs>
+    <clipPath id="r">
+      <rect x="0" y="69.1" width="200" height="60" />
+    </clipPath>
+  </defs>
+  <circle cx="100" cy="100" r="100"  fill="#677B36"/>
+  <circle cx="100" cy="0" r="117.56" id="c" clip-path="url(#r)" fill="#F9F9FE"/>
+  <use xlink:href="#c" transform="rotate(72 100 100)"/>
+  <use xlink:href="#c" transform="rotate(144 100 100)"/>
+  <use xlink:href="#c" transform="rotate(-144 100 100)"/>
+  <use xlink:href="#c" transform="rotate(-72 100 100)"/>
+  <circle cx="100" cy="100" r="20.9" fill="#C4AD33"/>
+</svg>
+<br/>
+
+
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1400" height="200">
+  <style>text { font: bold 230px roboto; }</style>
+  <defs> 
+    <clipPath id="r">
+      <rect x="100" y="69.1" width="200" height="60" />
+    </clipPath>
+  </defs>
+  <use xlink:href="#logo" transform="translate(140 0)"/>
+  <text x="0" y="180" fill="#677B36">S</text>
+  <text x="340" y="180" fill="#677B36">LANUM</text>
+</svg>
