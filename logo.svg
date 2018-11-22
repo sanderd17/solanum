@@ -8,7 +8,7 @@
   <circle cx="100" cy="0" r="117.56" id="c" clip-path="url(#r)" fill="#F9F9FE"/>
   <use xlink:href="#c" transform="rotate(72 100 100)"/>
   <use xlink:href="#c" transform="rotate(144 100 100)"/>
-  <use xlink:href="#c" transform="rotate(-144 101 100)"/>
+  <use xlink:href="#c" transform="rotate(-144 100 100)"/>
   <use xlink:href="#c" transform="rotate(-72 100 100)"/>
   <circle cx="100" cy="100" r="20.9" fill="#C4AD33"/>
 </svg>
