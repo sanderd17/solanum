@@ -1,5 +1,6 @@
 import config from './config.js'
 
+import path from 'path'
 const express = require('express')
 const app = express()
 const expressWs = require('express-ws')(app)
@@ -13,13 +14,12 @@ ts.initMessageHandlers()
 ts.setTags()
 
 app.use(function (req, res, next) {
-  // console.log('middleware');
-  return next();
+    // console.log('middleware');
+    return next();
 });
 
-app.use(express.static('gui'))
-app.use('/editor', express.static('editor'))
-app.use('/editor', express.static('node_modules/svgedit/editor'))
+app.use(express.static(path.join(__dirname, '../gui')))
+app.use('/editor', express.static(path.join(__dirname, '../node_modules/svgedit/editor')))
 
 // @ts-ignore -- Wait until websockets are native in express
 app.ws('/socket', function(ws, req) {

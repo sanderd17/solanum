@@ -1,7 +1,7 @@
 // @ts-nocheck
 const assert = require('assert')
 
-import Client from '../src/Client.js'
+import Client from '../server/src/Client.js'
 
 let dummyWebSocket = (expectedTypes) => ({
     'on': (type, fn) => {
@@ -35,9 +35,9 @@ describe('Client', function() {
     }),
     describe('on', function() {
         it('adds a message handling function', function () {
-            let fn = (msg, client) => assert.fail() // should never be executed
+            let fn = (msg, client) => assert.fail() // should not be executed
             Client.on('testHandler', fn)
-            assert.equal(Client.messageTypes.testHandler, fn)
+            assert.equal(Client.messageTypes.testHandler[0], fn)
         })
     }),
     describe('sendMessage', function() {
