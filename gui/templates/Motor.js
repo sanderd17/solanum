@@ -44,8 +44,9 @@ Motor.prototype.dataBindings = {
 }
 
 Motor.prototype.render = function() {
+    // TODO get rid of namespace, only needed for editor
     return `
-    <svg
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
             id="${this.id}"
             class="motor"
             width="${this.props.width}"

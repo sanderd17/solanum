@@ -1,6 +1,8 @@
+import path from 'path'
+import fs from 'fs'
+
 import config from './config.js'
 
-import path from 'path'
 const express = require('express')
 const app = express()
 const expressWs = require('express-ws')(app)
@@ -9,7 +11,7 @@ import Client from "./src/Client.js"
 import clientList from "./src/ClientList.js"
 import ts from './src/TagSet.js'
 
-
+const guiPath = path.join(__dirname, '../gui')
 ts.initMessageHandlers()
 ts.setTags()
 
@@ -18,8 +20,8 @@ app.use(function (req, res, next) {
     return next();
 });
 
-app.use(express.static(path.join(__dirname, '../gui')))
-app.use('/editor', express.static(path.join(__dirname, '../node_modules/svgedit/editor')))
+app.use(express.static(guiPath))
+app.use('/editor/svgedit', express.static(path.join(__dirname, '../node_modules/svgedit/editor')))
 
 // @ts-ignore -- Wait until websockets are native in express
 app.ws('/socket', function(ws, req) {
@@ -35,6 +37,14 @@ app.ws('/socket', function(ws, req) {
             }
         }
         console.log('Removed client: # ' + clientList.size)
+    })
+})
+
+app.get('/API/getComponentPaths', (req, res) => {
+    const dir = path.join(guiPath, 'templates')
+    fs.readdir(dir, (err, files) => {
+        console.log('Files: ', files)
+        res.send(files)
     })
 })
 

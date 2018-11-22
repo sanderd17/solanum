@@ -1,12 +1,10 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Minimal demo of SvgCanvas</title>
-    <script src="./jquery.min.js"></script>
-    <script src="./jquery-ui/jquery-ui-1.8.17.custom.min.js"></script>
+    <title>Editor</title>
+    <script src="./svgedit/jquery.min.js"></script>
+    <script src="./svgedit/jquery-ui/jquery-ui-1.8.17.custom.min.js"></script>
     <style> #svgroot { overflow: hidden; } </style>
-    <link rel="shortcut icon" type="image/x-icon" href="./images/logo.png" />
   </head>
 
   <body>
@@ -23,9 +21,12 @@
       <button onclick="canvas.clear(); canvas.updateCanvas(width, height);">Clear All</button>
       <button onclick="alert(canvas.getSvgString())">Get SVG</button>
     </div>
+    <ul id="componentList">
+
+    </ul>
 
     <script type="module">
-import SvgCanvas from './svgcanvas.js';
+import SvgCanvas from './svgedit/svgcanvas.js';
 
 const container = document.querySelector('#editorContainer');
 const {width, height} = {width: 500, height: 300};
@@ -50,6 +51,24 @@ window.fill = function (colour) {
     el.setAttribute('fill', colour);
   });
 };
+
+fetch('../API/getComponentPaths')
+  .then(async response => {
+    const components = await response.json()
+    const ul = document.getElementById('componentList')
+    for (let cmp of components) {
+      let li = document.createElement('li')
+      li.textContent = cmp
+      li.onclick = async () => {
+        const module = await import('/templates/' + cmp)
+        const inst = new (module.default)(null, '', {width:500, height:500, x:0, y:0})
+        const svg = inst.render()
+        console.log(svg)
+        canvas.setSvgString(svg, false)
+      }
+      ul.appendChild(li)
+    }
+  })
     </script>
   </body>
 </html>
