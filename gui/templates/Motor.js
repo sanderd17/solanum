@@ -26,7 +26,7 @@ Motor.prototype.domBindings = {
     icon_1: {
         fill: {
             type: 'tag',
-            tagPath: '{props.st_motor}',
+            tagPath: '{st_motor}',
         }
     },
     icon_2: {

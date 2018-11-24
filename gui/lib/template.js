@@ -86,7 +86,7 @@ Template.prototype.addEventHandlers = function() {
     }
 }
 
-const braceFinder = /\{([\w\.]+)\}/
+const braceFinder = /\{([\w\.]+)\}/g
 // TODO certainly test this part of code
 /**
  * Replace {-} parts with corresponding prop values
@@ -102,7 +102,7 @@ Template.prototype.addBindings = function() {
         for (let attr in this.domBindings[id]) {
             let binding = this.domBindings[id][attr]
             if (binding.type == 'tag') {
-                let path = EvalTagPath(this, binding.tagPath)
+                let path = EvalTagPath(this.props, binding.tagPath)
                 ts.addTagHandler(path, tag => {this.dom[id][attr] = tag.value})
             } else if (binding.type == 'prop') {
                 let key = binding.propName
