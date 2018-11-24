@@ -23,24 +23,19 @@ Motor.prototype.eventHandlers = {
     }
 }
 
-Motor.prototype.tagBindings = [
-    [
-        (cmp) => cmp.props.st_motor,
-        /**
-         * @param {Template} cmp
-         * @param {string} path 
-         * @param {import ('../lib/TagSet.js').Tag} tag
-         */
-        (cmp, path, tag) => {cmp.dom.icon_1.fill = tag.value}
-    ]
-]
-
-Motor.prototype.dataBindings = {
-    /**
-     * @param {Template} cmp
-     * @param {object} value
-     */
-    'icon_size': (cmp, value) => {cmp.dom.icon_2.width = value}
+Motor.prototype.domBindings = {
+    icon_1: {
+        fill: {
+            type: 'tag',
+            tagPath: '{st_motor}',
+        }
+    },
+    icon_2: {
+        width: {
+            type: 'prop',
+            propName: 'icon_size'
+        } 
+    },
 }
 
 Motor.prototype.render = function() {

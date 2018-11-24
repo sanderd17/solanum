@@ -69,7 +69,7 @@ TagSet.prototype.addTagHandler = function(path, handler) {
 TagSet.prototype.triggerTagBinding = function(path, tag) {
     let handlers = this.handlers.get(path)
     for (let handler of handlers) {
-        handler(path, tag)
+        handler(tag)
     }
 }
 

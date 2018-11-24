@@ -16,8 +16,7 @@ for (let rule of Object.values(mainWindow.getCssMap())) {
 }
 styleEl.innerHTML = rules
 
-mainWindow.addDataBindings()
-mainWindow.addTagBindings()
+mainWindow.addBindings()
 mainWindow.addEventHandlers()
 
 messager.connectToServer(location.host)

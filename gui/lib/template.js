@@ -1,5 +1,6 @@
 import ts from "./TagSet.js"
 
+
 class Template {
     /**
      * 
@@ -85,23 +86,33 @@ Template.prototype.addEventHandlers = function() {
     }
 }
 
-Template.prototype.addTagBindings = function() {
-    for (let [path, fn] of this.tagBindings) {
-        if (path instanceof Function)
-            path = path(this)
-        ts.addTagHandler(path, (path, tag) => fn(this, path, tag))
-    }
-    for (let child of Object.values(this.children)) {
-        child.addTagBindings()
-    }
+// TODO certainly test this part of code
+/**
+ * Replace {-} parts with corresponding prop values
+ * @param {string} tagPath 
+ * @returns {string} the tagpath with {-} replacements evaluated
+ */
+const EvalTagPath = function(ctx, tagPath) {
+    const re = /\{([\w\.]+)\}/
+    return tagPath.replace(re, (_, group) => ctx[group])
 }
 
-Template.prototype.addDataBindings = function() {
-    for (let key in this.dataBindings) {
-        this.dataBindings[key](this, this.props[key], null)
+Template.prototype.addBindings = function() {
+    for (let id in this.domBindings) {
+        for (let attr in this.domBindings[id]) {
+            let binding = this.domBindings[id][attr]
+            if (binding.type == 'tag') {
+                let path = EvalTagPath(this.props, binding.tagPath)
+                ts.addTagHandler(path, tag => {this.dom[id][attr] = tag.value})
+            } else if (binding.type == 'prop') {
+                let key = binding.propName
+                this.dom[id][attr] = this.props[key] // apply initial value now
+                this.dataBindings[key] = (cmp, val) => cmp.dom[id][attr] = val
+            }
+        }
     }
     for (let child of Object.values(this.children)) {
-        child.addDataBindings()
+        child.addBindings()
     }
 }
 
@@ -139,13 +150,13 @@ Template.prototype.getReplacements = () => ({})
 /** @typedef {(cmp:Template, event:Event) => void} eventHandler */
 /** @type {Object<string,Object<string,eventHandler>>} */
 Template.prototype.eventHandlers = {}
-/** @type {Array.<Array>} */
-Template.prototype.tagBindings = []
-/** @type Object<string, (val:any, oldVal:any) => void> */
+/** @type Object<string, (cmp:Template, val:any, oldVal:any) => void> */
 Template.prototype.dataBindings = {}
+Template.prototype.domBindings = {}
 Template.prototype.class = ''
 /** @type {Array.<string>} */
 Template.prototype.css = []
 
 export default Template
+export {EvalTagPath}
 
