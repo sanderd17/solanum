@@ -86,6 +86,7 @@ Template.prototype.addEventHandlers = function() {
     }
 }
 
+const braceFinder = /\{([\w\.]+)\}/
 // TODO certainly test this part of code
 /**
  * Replace {-} parts with corresponding prop values
@@ -93,8 +94,7 @@ Template.prototype.addEventHandlers = function() {
  * @returns {string} the tagpath with {-} replacements evaluated
  */
 const EvalTagPath = function(ctx, tagPath) {
-    const re = /\{([\w\.]+)\}/
-    return tagPath.replace(re, (_, group) => ctx[group])
+    return tagPath.replace(braceFinder, (_, group) => ctx[group])
 }
 
 Template.prototype.addBindings = function() {
@@ -102,7 +102,7 @@ Template.prototype.addBindings = function() {
         for (let attr in this.domBindings[id]) {
             let binding = this.domBindings[id][attr]
             if (binding.type == 'tag') {
-                let path = EvalTagPath(this.props, binding.tagPath)
+                let path = EvalTagPath(this, binding.tagPath)
                 ts.addTagHandler(path, tag => {this.dom[id][attr] = tag.value})
             } else if (binding.type == 'prop') {
                 let key = binding.propName
@@ -136,8 +136,29 @@ Template.prototype.getCssMap = function() {
         cssMap = {...child.getCssMap(), ...cssMap}
     }
     if (this.class && this.css)
-        cssMap[this.class] = this.css.map(rule => '.' + this.class + ' > ' + rule).join('\n')
+        cssMap[this.class] = this.css.join('\n')
     return cssMap
+}
+
+/**
+ * 
+ * @param {string} domStr Wrap the current string in a standard SVG element
+ * @param {boolean} forEditor Whether the string is meant for the editor
+ */
+Template.prototype.SVG = function(domStr, forEditor=false) {
+    let ns = 'version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
+    domStr =  `<svg ${forEditor ? ns : ''}
+            id="${this.id}"
+            class="${this.class}"
+            width="${this.props.width}"
+            height="${this.props.height}"
+            x="${this.props.x}"
+            y="${this.props.y}"
+            viewBox="0 0 ${this.size[0]} ${this.size[1]}"
+        >` + 
+        domStr.replace(braceFinder, (_, key) => this[key]) +
+        `</svg>`
+    return domStr
 }
 
 Template.prototype.render = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
@@ -153,6 +174,7 @@ Template.prototype.eventHandlers = {}
 /** @type Object<string, (cmp:Template, val:any, oldVal:any) => void> */
 Template.prototype.dataBindings = {}
 Template.prototype.domBindings = {}
+Template.prototype.size = [100, 100]
 Template.prototype.class = ''
 /** @type {Array.<string>} */
 Template.prototype.css = []
