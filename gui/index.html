@@ -14,6 +14,29 @@
 
 <body>
   <div id="root" style="position:absolute;left:0;top:0"></div>
+  <svg style="position:fixed;top:0;right:0" width="80" height="80" viewbox="0 0 200 200">
+    <clipPath id="r">
+      <rect x="0" y="69.1" width="200" height="60" />
+    </clipPath>
+    <g>
+      <circle cx="100" cy="100" r="100"  fill="#677B36"/>
+      <circle cx="100" cy="0" r="117.56" id="c" clip-path="url(#r)" fill="#F9F9FE"/>
+      <use xlink:href="#c" transform="rotate(72 100 100)"/>
+      <use xlink:href="#c" transform="rotate(144 100 100)"/>
+      <use xlink:href="#c" transform="rotate(-144 100 100)"/>
+      <use xlink:href="#c" transform="rotate(-72 100 100)"/>
+      <circle cx="100" cy="100" r="20.9" fill="#C4AD33"/>
+      <animateTransform
+        attributeType="xml"
+        attributeName="transform"
+        type="rotate"
+        from="0 100 100"
+        to="72 100 100"
+        dur="0.5s"
+        repeatCount="indefinite"
+        />
+    </g>
+  </svg>
   <div id="errorOverlay">
   <script type="module" src="index.js"></script>
 </body>

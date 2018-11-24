@@ -23,12 +23,6 @@ MainWindow.prototype.getReplacements = function() {
     return repl
 }
 
-MainWindow.prototype.eventHandlers = {
-    'button_1':{
-        'onclick': () => {alert("clicked")}
-    }
-}
-
 MainWindow.prototype.render = function() {
     let svg = []
     for (let c in this.children) {
@@ -44,14 +38,6 @@ MainWindow.prototype.render = function() {
             y="${this.props.y}"
             viewbox="0 0 1000 500">` + 
         svg.join("\n") + `
-        <rect
-            id="${this.id}.button_1"
-            x="0"
-            y="480"
-            width="150"
-            height="50"
-            class="icon_1">
-        </rect>
     </svg>`
 }
 
