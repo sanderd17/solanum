@@ -28,7 +28,7 @@ class Template {
                 let oldVal = obj[prop]
                 obj[prop] = val
                 if (prop in this.dataBindings) {
-                    this.dataBindings[prop].bind(this)(val, oldVal)
+                    this.dataBindings[prop](this, val, oldVal)
                 }
                 return true
             }
@@ -77,7 +77,7 @@ Template.prototype.addEventHandlers = function() {
         for (let eventType in this.eventHandlers[id]) {
             let fn = this.eventHandlers[id][eventType]
             let handlerNode = this.getElementById(id)
-            handlerNode.addEventListener(eventType, fn.bind(this))
+            handlerNode.addEventListener(eventType, (event) => fn(this, event))
         }
     }
     for (let child of Object.values(this.children)) {
@@ -88,8 +88,8 @@ Template.prototype.addEventHandlers = function() {
 Template.prototype.addTagBindings = function() {
     for (let [path, fn] of this.tagBindings) {
         if (path instanceof Function)
-            path = path.bind(this)()
-        ts.addTagHandler(path, fn.bind(this))
+            path = path(this)
+        ts.addTagHandler(path, (path, tag) => fn(this, path, tag))
     }
     for (let child of Object.values(this.children)) {
         child.addTagBindings()
@@ -98,7 +98,7 @@ Template.prototype.addTagBindings = function() {
 
 Template.prototype.addDataBindings = function() {
     for (let key in this.dataBindings) {
-        this.dataBindings[key].bind(this)(this.props[key], null)
+        this.dataBindings[key](this, this.props[key], null)
     }
     for (let child of Object.values(this.children)) {
         child.addDataBindings()
@@ -136,7 +136,7 @@ Template.prototype.render = function() {return '<rect width="100%" height="100%"
  */
 /** @type  {() => Object<string,TemplateDescription>} */
 Template.prototype.getReplacements = () => ({})
-/** @typedef {(event:Event) => void} eventHandler */
+/** @typedef {(cmp:Template, event:Event) => void} eventHandler */
 /** @type {Object<string,Object<string,eventHandler>>} */
 Template.prototype.eventHandlers = {}
 /** @type {Array.<Array>} */

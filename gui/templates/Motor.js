@@ -8,8 +8,6 @@ class Motor extends Template {}
 Motor.prototype.class = 'motor'
 Motor.prototype.css = [
     `.icon_1:hover {
-        stroke: blue;
-        stroke-width: 50px;
         cursor: pointer;
     }`,
 ]
@@ -17,30 +15,32 @@ Motor.prototype.css = [
 Motor.prototype.eventHandlers = {
     'icon_1': {
         /** @type {eventHandler} */
-        'click':  function(event) {ts.writeTag(this.props.st_motor, 'black')}
+        'click':  (cmp, event) => {ts.writeTag(cmp.props.st_motor, 'black')}
     },
     'icon_2': {
         /** @type {eventHandler} */
-        'click':  function(event) {this.props.size = 20}
+        'click':  (cmp, event) => {cmp.props.size = 20}
     }
 }
 
 Motor.prototype.tagBindings = [
     [
-        function() {return this.props.st_motor},
+        (cmp) => cmp.props.st_motor,
         /**
+         * @param {Template} cmp
          * @param {string} path 
          * @param {import ('../lib/TagSet.js').Tag} tag
          */
-        function(path, tag) {this.dom.icon_1.fill = tag.value}
+        (cmp, path, tag) => {cmp.dom.icon_1.fill = tag.value}
     ]
 ]
 
 Motor.prototype.dataBindings = {
     /**
-     * @param {Object} v
+     * @param {Template} cmp
+     * @param {object} value
      */
-    'icon_size': function(v) {this.dom.icon_2.width = v}
+    'icon_size': (cmp, value) => {cmp.dom.icon_2.width = value}
 }
 
 Motor.prototype.render = function() {
