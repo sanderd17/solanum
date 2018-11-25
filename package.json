@@ -1,7 +1,10 @@
 {
   "name": "solanum",
   "version": "0.0.1",
+  "author": "Sander Deryckere",
+  "license": "AGPL-3.0",
   "description": "Experimental Scada package that uses web standards to display data in the browser",
+  "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,13 +16,12 @@
     "low_bandwidth_netw": "sudo tc qdisc add dev lo root netem rate 300kbit # limil localhost speed to 300kbit",
     "reset_netw": "sudo tc qdisc del dev lo root netem # RESET localhost to full speed"
   },
-  "author": "Sander Deryckere",
-  "license": "AGPL-3.0",
   "dependencies": {
     "esm": "^3.0.84",
     "express": "^4.16.4",
     "express-ws": "^4.0.0",
     "node-opcua": "^0.5.1",
+    "steno": "^0.4.4",
     "svgedit": "^4.0.1"
   },
   "devDependencies": {

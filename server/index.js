@@ -1,14 +1,15 @@
 import path from 'path'
-import fs from 'fs'
 
 import config from './config.js'
 
-const express = require('express')
+import express from 'express'
+import bodyParser from 'body-parser'
 const app = express()
 const expressWs = require('express-ws')(app)
 
-import Client from "./src/Client.js"
-import clientList from "./src/ClientList.js"
+import CreateEditor from './src/Editor.js'
+import Client from './src/Client.js'
+import clientList from './src/ClientList.js'
 import ts from './src/TagSet.js'
 
 const guiPath = path.join(__dirname, '../gui')
@@ -19,6 +20,8 @@ app.use(function (req, res, next) {
     // console.log('middleware');
     return next();
 });
+app.use(bodyParser.json()) // auto parse json into req.body
+
 
 app.use(express.static(guiPath))
 app.use('/editor/svgedit', express.static(path.join(__dirname, '../node_modules/svgedit/editor')))
@@ -40,13 +43,7 @@ app.ws('/socket', function(ws, req) {
     })
 })
 
-app.get('/API/getComponentPaths', (req, res) => {
-    const dir = path.join(guiPath, 'templates')
-    fs.readdir(dir, (err, files) => {
-        console.log('Files: ', files)
-        res.send(files)
-    })
-})
+CreateEditor(app, guiPath)
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)
