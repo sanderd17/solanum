@@ -3,7 +3,7 @@ import ts from "./lib/TagSet.js"
 import messager from "./lib/Messager.js"
 ts.initMessageHandlers()
 
-const mainWindow = new MainWindow(null, 'MainWindow', {x:0, y:0, width: window.innerWidth, height: window.innerHeight})
+const mainWindow = new MainWindow(null, 'MainWindow', false, {x:0, y:0, width: window.innerWidth, height: window.innerHeight})
 mainWindow.createSubTemplates()
 let div = document.querySelector("#root")
 div.innerHTML = mainWindow.render()

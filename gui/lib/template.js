@@ -6,11 +6,13 @@ class Template {
      * 
      * @param {?Template} parent 
      * @param {string} id 
+     * @param {boolean} inEditor Whether this template is loaded to be edited
      * @param {object} props 
      */
-    constructor(parent, id, props={}) {
+    constructor(parent, id, inEditor, props={}) {
         this.parent = parent
         this.id = id
+        this.inEditor = inEditor
         /** @type Object<string,Template> */
         this.children = {}
         this.props = new Proxy(props, {
@@ -67,7 +69,7 @@ class Template {
 Template.prototype.createSubTemplates = function() {
     let subTemplates = this.getReplacements()
     for (let [subId, template] of Object.entries(subTemplates)) {
-        let child = new template.type(this, this.id + '.' + subId, template.props)
+        let child = new template.type(this, this.id + '.' + subId, this.inEditor, template.props)
         child.createSubTemplates()
         this.children[subId] = child
     }
@@ -143,11 +145,10 @@ Template.prototype.getCssMap = function() {
 /**
  * 
  * @param {string} domStr Wrap the current string in a standard SVG element
- * @param {boolean} forEditor Whether the string is meant for the editor
  */
-Template.prototype.SVG = function(domStr, forEditor=false) {
+Template.prototype.SVG = function(domStr) {
     let ns = 'version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
-    domStr =  `<svg ${forEditor ? ns : ''}
+    domStr =  `<svg ${this.inEditor ? ns : ''}
             id="${this.id}"
             class="${this.class}"
             width="${this.props.width}"
