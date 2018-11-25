@@ -6,11 +6,12 @@ const braceFinder = /\{([\w\.]+)\}/g
 // TODO copied from template.js. Should be shared code (shared client/server utils somewhere?)
 /**
  * Replace {-} parts with corresponding prop values
+ * @param {object} ctx
  * @param {string} template 
  * @returns {string} the template with {-} replacements evaluated
  */
-const EvalTagPath = function(ctx, tagPath) {
-    return tagPath.replace(braceFinder, (_, group) => ctx[group])
+const ReplaceBraces = function(ctx, template) {
+    return template.replace(braceFinder, (_, group) => ctx[group])
 }
 
 const template = `
@@ -82,18 +83,24 @@ Editor.prototype.openComponent = function(req, res) {
 Editor.prototype.saveComponent = function(req, res) {
     /** @type {TemplateDefinition} */
     const body = req.body
+    console.log(body)
     if (typeof body.name != "string")
         return res.status(400).send(`Error: No valid component name received: ${body.name}`)
     if (typeof body.svg != "string") 
         return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
     // context to pass on to the replacement function
-    const directory = body.name + '.js'
+    const fileName = body.name + '.js'
+    console.log(fileName)
     const ctx = {}
     ctx.cmpName = body.name.split("/").pop()
     ctx.svg = body.svg
     ctx.domBindings = JSON.stringify({})
     ctx.childImports = '' // derive from SVG
-
+    const moduleCode = ReplaceBraces(ctx, template)
+    steno.writeFile(this.guiPath + '/' + fileName, moduleCode, err => {
+        if (err) res.status(500).send(`Error while writing file ${fileName}: ${err}`)
+        else res.status(200).send('OK')
+    })
 }
 
 /**
