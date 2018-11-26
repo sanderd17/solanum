@@ -143,12 +143,13 @@ Template.prototype.getCssMap = function() {
 }
 
 /**
+ * Wrap svg contents in outer tags to perform scaling and translations
  * @param {TemplateStringsArray} rawStrings parts of the template strings
  * @param {string[]} values values to interpolate into the raw strings
  */
 Template.prototype.svg = function(rawStrings, ...values) {
     let ns = 'version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
-    let domStr =  `<svg ${this.inEditor ? ns : ''}
+    return `<svg ${this.inEditor ? ns : ''}
             id="${this.id}"
             class="${this.class}"
             width="${this.props.width}"
@@ -159,10 +160,9 @@ Template.prototype.svg = function(rawStrings, ...values) {
         >` + 
         String.raw(rawStrings, ...values).replace(braceFinder, (_, key) => this[key]) +
         `</svg>`
-    return domStr
 }
 
-Template.prototype.render = function() {return '<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>'}
+Template.prototype.render = function() {return this.svg`<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`}
 /** @typedef {Object} TemplateDescription
  * @property {typeof Template} type
  * @property {any} props

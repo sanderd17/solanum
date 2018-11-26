@@ -76,10 +76,15 @@ fetch('../API/Editor/getComponentPaths')
       li.textContent = cmp
       li.onclick = async () => {
         const module = await import('/templates/' + cmp)
-        const inst = new (module.default)(null, '', {width:500, height:500, x:0, y:0})
+        /** @type {typeof Template} */
+        const cmpClass = module.default
+        const [w, h] = cmpClass.prototype.size
+        const inst = new cmpClass(null, '', {width: w, height: h, x:0, y:0})
         const svg = inst.render()
         console.log(svg)
         canvas.setSvgString(svg, false)
+        canvas.setResolution(w, h)
+        canvas.updateCanvas(w, h)
       }
       ul.appendChild(li)
     }
