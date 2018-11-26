@@ -143,12 +143,12 @@ Template.prototype.getCssMap = function() {
 }
 
 /**
- * 
- * @param {string} domStr Wrap the current string in a standard SVG element
+ * @param {TemplateStringsArray} rawStrings parts of the template strings
+ * @param {string[]} values values to interpolate into the raw strings
  */
-Template.prototype.SVG = function(domStr) {
+Template.prototype.svg = function(rawStrings, ...values) {
     let ns = 'version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
-    domStr =  `<svg ${this.inEditor ? ns : ''}
+    let domStr =  `<svg ${this.inEditor ? ns : ''}
             id="${this.id}"
             class="${this.class}"
             width="${this.props.width}"
@@ -157,7 +157,7 @@ Template.prototype.SVG = function(domStr) {
             y="${this.props.y}"
             viewBox="0 0 ${this.size[0]} ${this.size[1]}"
         >` + 
-        domStr.replace(braceFinder, (_, key) => this[key]) +
+        String.raw(rawStrings, ...values).replace(braceFinder, (_, key) => this[key]) +
         `</svg>`
     return domStr
 }

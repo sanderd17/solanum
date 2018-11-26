@@ -38,10 +38,9 @@ Motor.prototype.domBindings = {
 }
 
 Motor.prototype.render = function() {
-    // TODO get rid of namespace, only needed for editor
-    return this.SVG(`
-        <circle id="{id}.icon_1" class="icon_1" cx="250" cy="250" r="200" fill="blue"></circle>
-        <rect id="{id}.icon_2" height="100" width="100" x="400" y="400" fill="red"></rect>`);
+    return this.svg`
+        <circle id="{id}.icon_1" class="icon_1" cx="250" cy="250" r="200" fill="blue"/>
+        <rect id="{id}.icon_2" height="100" width="100" x="400" y="400" fill="red"/>`
 }
 
 export default Motor
