@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'graceful-fs'
 import steno from 'steno'
+import xml2js from 'xml2js'
 
 const braceFinder = /\{([\w\.]+)\}/g
 // TODO copied from template.js. Should be shared code (shared client/server utils somewhere?)
@@ -38,7 +39,7 @@ class {cmpName} extends Template {}
 {cmpName}.prototype.domBindings = {domBindings}
 
 {cmpName}.prototype.render = function() {
-    return this.SVG({svg});
+    return this.svg\`{svg}\`
 }
 
 export default {cmpName}

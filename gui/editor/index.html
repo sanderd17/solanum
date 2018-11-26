@@ -20,13 +20,15 @@
       <button onclick="canvas.deleteSelectedElements()">Delete Selected</button>
       <button onclick="canvas.clear(); canvas.updateCanvas(width, height);">Clear All</button>
       <button onclick="alert(canvas.getSvgString())">Get SVG</button>
-      <button onclick="saveSvg('test', canvas.getSvgString())">Save</button>
+      <button onclick="saveSvg()">Save</button>
     </div>
     <ul id="componentList">
 
     </ul>
     <script>
-      function saveSvg(name, svg) {
+      function saveSvg() {
+        let name = 'test'
+        let svg = document.getElementById('svgcontent').children[0].innerHTML
         fetch('/API/Editor/saveComponent', {
           method: 'POST',
           body: JSON.stringify({
