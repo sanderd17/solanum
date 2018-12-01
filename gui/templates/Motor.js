@@ -39,6 +39,7 @@ Motor.prototype.domBindings = {
 
 Motor.prototype.render = function() {
     return this.svg`
+        <title style="pointer-events:inherit">Motor {st_motor}</title>
         <circle id="{id}.icon_1" class="icon_1" cx="250" cy="250" r="200" fill="blue"/>
         <rect id="{id}.icon_2" height="100" width="100" x="400" y="400" fill="red"/>`
 }

@@ -15,8 +15,10 @@
     <div>
       [<button onclick="canvas.setMode('select')">Select</button>
       <button onclick="canvas.setMode('circle')">Circle</button>
+      <button onclick="canvas.setMode('ellipse')">Ellipse</button>
       <button onclick="canvas.setMode('rect')">Rect</button>]
-      <button onclick="fill('#ff0000')">Fill Red</button>
+      <input type="color" id="fill" name="fill" value="#FF0000"/>
+      <input type="color" id="stroke" name="stroke" value="#000000"/>
       <button onclick="canvas.deleteSelectedElements()">Delete Selected</button>
       <button onclick="canvas.clear(); canvas.updateCanvas(width, height);">Clear All</button>
       <button onclick="alert(canvas.getSvgString())">Get SVG</button>
@@ -27,7 +29,7 @@
     </ul>
     <script>
       function saveSvg() {
-        let name = 'test'
+        let name = 'Motor'
         let svg = document.getElementById('svgcontent').children[0].innerHTML
         fetch('/API/Editor/saveComponent', {
           method: 'POST',
@@ -63,11 +65,10 @@ const config = {
 window.canvas = new SvgCanvas(container, config);
 canvas.updateCanvas(width, height);
 
-window.fill = function (colour) {
-  canvas.getSelectedElems().forEach((el) => {
-    el.setAttribute('fill', colour);
-  });
-};
+const updateSelectedElements = (attr, val) => canvas.getSelectedElems().forEach(el => el.setAttribute(attr, val))
+
+document.getElementById('fill').addEventListener('input', (ev) => updateSelectedElements('fill', ev.target.value))
+document.getElementById('stroke').addEventListener('input', (ev) => updateSelectedElements('stroke', ev.target.value))
 
 fetch('../API/Editor/getComponentPaths')
   .then(async response => {
@@ -81,9 +82,9 @@ fetch('../API/Editor/getComponentPaths')
         /** @type {typeof Template} */
         const cmpClass = module.default
         const [w, h] = cmpClass.prototype.size
-        const inst = new cmpClass(null, '', {width: w, height: h, x:0, y:0})
+        const inst = new cmpClass(null, 'id', true, {width: w, height: h, x:0, y:0})
+        inst.createSubTemplates()
         const svg = inst.render()
-        console.log(svg)
         canvas.setSvgString(svg, false)
         canvas.setResolution(w, h)
         canvas.updateCanvas(w, h)

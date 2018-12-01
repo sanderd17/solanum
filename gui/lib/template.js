@@ -11,6 +11,7 @@ class Template {
      */
     constructor(parent, id, inEditor, props={}) {
         this.parent = parent
+        this.isRoot = parent == null
         this.id = id
         this.inEditor = inEditor
         /** @type Object<string,Template> */
@@ -148,18 +149,52 @@ Template.prototype.getCssMap = function() {
  * @param {string[]} values values to interpolate into the raw strings
  */
 Template.prototype.svg = function(rawStrings, ...values) {
-    let ns = 'version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
-    return `<svg ${this.inEditor ? ns : ''}
-            id="${this.id}"
-            class="${this.class}"
-            width="${this.props.width}"
-            height="${this.props.height}"
-            x="${this.props.x}"
-            y="${this.props.y}"
-            viewBox="0 0 ${this.size[0]} ${this.size[1]}"
-        >` + 
-        String.raw(rawStrings, ...values).replace(braceFinder, (_, key) => this[key]) +
-        `</svg>`
+    const content = String.raw(rawStrings, ...values)
+    if (this.inEditor) {
+        if (this.isRoot) {
+            return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    id="${this.id}"
+                    class="${this.class}"
+                    width="${this.props.width}"
+                    height="${this.props.height}"
+                    x="${this.props.x}"
+                    y="${this.props.y}"
+                    viewBox="0 0 ${this.size[0]} ${this.size[1]}"
+                >
+                <g class="layer">
+                    ${content}
+                </g>
+                </svg>`
+        } else {
+            return `<symbol
+                    id="sym-${this.id}"
+                    class="${this.class}"
+                    viewBox="0 0 ${this.size[0]} ${this.size[1]}"
+                >
+                ${content}
+                </symbol>
+                <use
+                    id="${this.id}"
+                    xlink:href="#sym-${this.id}"
+                    x="${this.props.x}"
+                    y="${this.props.y}"
+                    width="${this.props.width}"
+                    height="${this.props.height}"
+                />`
+        }
+    } else {
+        return `<svg
+                id="${this.id}"
+                class="${this.class}"
+                width="${this.props.width}"
+                height="${this.props.height}"
+                x="${this.props.x}"
+                y="${this.props.y}"
+                viewBox="0 0 ${this.size[0]} ${this.size[1]}"
+            >
+            ${content.replace(braceFinder, (_, key) => this.props[key])}
+            </svg>`
+    }
 }
 
 Template.prototype.render = function() {return this.svg`<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`}

@@ -25,6 +25,7 @@ app.use(bodyParser.json()) // auto parse json into req.body
 
 app.use(express.static(guiPath))
 app.use('/editor/svgedit', express.static(path.join(__dirname, '../node_modules/svgedit/editor')))
+app.use('/scripts', express.static(path.join(__dirname, '../node_modules')))
 
 // @ts-ignore -- Wait until websockets are native in express
 app.ws('/socket', function(ws, req) {

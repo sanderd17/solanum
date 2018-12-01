@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'graceful-fs'
 import steno from 'steno'
-import xml2js from 'xml2js'
 
 const braceFinder = /\{([\w\.]+)\}/g
 // TODO copied from template.js. Should be shared code (shared client/server utils somewhere?)
@@ -12,14 +11,14 @@ const braceFinder = /\{([\w\.]+)\}/g
  * @returns {string} the template with {-} replacements evaluated
  */
 const ReplaceBraces = function(ctx, template) {
-    return template.replace(braceFinder, (_, group) => ctx[group])
+    return template.replace(braceFinder, (_, group) => group in ctx ? ctx[group] : '{' + group + '}')
 }
 
 const template = `
 import Template from '../lib/template.js'
 import ts from '../lib/TagSet.js'
 
-{childImports}
+//{childImports}
 
 class {cmpName} extends Template {}
 
@@ -36,7 +35,20 @@ class {cmpName} extends Template {}
     }
 }
 
-{cmpName}.prototype.domBindings = {domBindings}
+{cmpName}.prototype.domBindings = {
+     icon_1: {
+        fill: {
+            type: 'tag',
+            tagPath: '{st_motor}',
+        }
+    },
+    icon_2: {
+        width: {
+            type: 'prop',
+            propName: 'icon_size'
+        } 
+    },
+}
 
 {cmpName}.prototype.render = function() {
     return this.svg\`{svg}\`

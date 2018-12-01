@@ -22,14 +22,14 @@
     "express-ws": "^4.0.0",
     "node-opcua": "^0.5.1",
     "steno": "^0.4.4",
-    "svgedit": "^4.0.1"
+    "svgedit": "^4.1.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/express-ws": "^3.0.0",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.10",
+    "@types/node": "^10.12.11",
     "mocha": "^5.2.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.2.1"
   }
 }
