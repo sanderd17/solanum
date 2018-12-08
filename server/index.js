@@ -7,7 +7,6 @@ import bodyParser from 'body-parser'
 const app = express()
 const expressWs = require('express-ws')(app)
 
-import CreateEditor from './src/Editor.js'
 import Client from './src/Client.js'
 import clientList from './src/ClientList.js'
 import ts from './src/TagSet.js'
@@ -20,8 +19,8 @@ app.use(function (req, res, next) {
     // console.log('middleware');
     return next();
 });
-app.use(bodyParser.json()) // auto parse json into req.body
 
+app.use(bodyParser.json()) // auto parse json into req.body
 
 app.use(express.static(guiPath))
 app.use('/editor/svgedit', express.static(path.join(__dirname, '../node_modules/svgedit/editor')))
@@ -44,7 +43,8 @@ app.ws('/socket', function(ws, req) {
     })
 })
 
-CreateEditor(app, guiPath)
+import {default as initEditor} from '../editor'
+initEditor(app, guiPath)
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)

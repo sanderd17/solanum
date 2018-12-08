@@ -1,2 +1,3 @@
 node_modules/*
+editor/node_modules/*
 src/OpcTag.js

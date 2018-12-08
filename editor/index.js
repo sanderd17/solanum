@@ -1,0 +1,20 @@
+import express from 'express'
+import path from 'path'
+
+import Editor from './src/Editor.js'
+
+/**
+ * Add the editor api to the server instance
+ * @param {Express.Application} app The active express app
+ * @param {string} guiPath 
+ */
+function init(app, guiPath) {
+    const editor = new Editor(app, guiPath)
+
+    app.get('/API/Editor/getComponentPaths', (req, res) => editor.getComponentPaths(req, res))
+    app.get('/API/Editor/openComponent', (req, res) => editor.openComponent(req, res))
+    app.post('/API/Editor/saveComponent', (req, res) => editor.saveComponent(req, res))
+    app.use('/editor', express.static(path.join(__dirname, 'public')))
+}
+
+export default init
