@@ -8,7 +8,7 @@
   </head>
 
   <body>
-    <h1>Minimal demo of SvgCanvas</h1>
+    <h1>Solanum editor</h1>
 
     <div id="editorContainer"></div>
 
@@ -27,6 +27,9 @@
     <ul id="componentList">
 
     </ul>
+    <textarea id="domBindings" rows="5" cols="80">
+
+    </textarea>
     <script>
       function saveSvg() {
         let name = 'Motor'
@@ -88,6 +91,9 @@ fetch('../API/Editor/getComponentPaths')
         canvas.setSvgString(svg, false)
         canvas.setResolution(w, h)
         canvas.updateCanvas(w, h)
+
+        //document.getElementById('domBindings').innerHTML = JSON.stringify(cmpClass.prototype.domBindings)
+        document.getElementById('domBindings').innerHTML = cmpClass.toString()
       }
       ul.appendChild(li)
     }

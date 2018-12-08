@@ -17,10 +17,12 @@
     "reset_netw": "sudo tc qdisc del dev lo root netem # RESET localhost to full speed"
   },
   "dependencies": {
+    "babylon": "^6.18.0",
     "esm": "^3.0.84",
     "express": "^4.16.4",
     "express-ws": "^4.0.0",
     "node-opcua": "^0.5.1",
+    "recast": "^0.16.1",
     "steno": "^0.4.4",
     "svgedit": "^4.1.0"
   },

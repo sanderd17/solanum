@@ -8,7 +8,26 @@ Solanum is a project that aims to bring big Scada applications to the browser vi
 
 ## Structure
 
-The app consists of a server and a client part. The client keeps a web socket open towards the server, and most of the communication happens through that web socket.
+The structure must be modular. Modules can come from NPM, or can be installed locally to facilitate version management and allow testing parts of libraries.
+
+An example module structure can look like this, this project both uses the core libraries, and is used to develop libraries for other purposes
+
+ * HMI Showcase Project
+   * Solanum-Gauges
+   * Solanum-PowerTable
+   * Solanum-MyCustomPlcDriver
+   * ...
+   * node_modules
+     * Solanum-core
+     * Solanum-opc
+     * Solanum-editor
+
+
+Every module consists of a server and client part. Resp. placed in the `src` and `public` directories. The main directory has an `index.js` file which exposes a factory function.
+
+The factory is used to register public directories to the server, and can add hooks to the server in general, and specifically to the express app.
+
+This allows for small, chainable libraries that don't need to be compiled before they can be used.
 
 ### Client
 

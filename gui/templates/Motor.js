@@ -14,11 +14,11 @@ Motor.prototype.css = [
 ]
 
 Motor.prototype.eventHandlers = {
-    'icon_1': {
-        'click':  (cmp, event) => {ts.writeTag(cmp.props.st_motor, 'black')}
+    icon_1: {
+        click:  (cmp, event) => {ts.writeTag(cmp.props.st_motor, 'black')}
     },
-    'icon_2': {
-        'click':  (cmp, event) => {cmp.props.size = 20}
+    icon_2: {
+        click:  (cmp, event) => {cmp.props.size = 20}
     }
 }
 
