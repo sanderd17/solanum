@@ -11,7 +11,7 @@ import Client from './src/Client.js'
 import clientList from './src/ClientList.js'
 import ts from './src/TagSet.js'
 
-const guiPath = path.join(__dirname, '../gui')
+const guiPath = path.join(__dirname, '../core/public')
 ts.initMessageHandlers()
 ts.setTags()
 
@@ -23,7 +23,6 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json()) // auto parse json into req.body
 
 app.use(express.static(guiPath))
-app.use('/editor/svgedit', express.static(path.join(__dirname, '../node_modules/svgedit/editor')))
 app.use('/scripts', express.static(path.join(__dirname, '../node_modules')))
 
 // @ts-ignore -- Wait until websockets are native in express
@@ -48,3 +47,5 @@ initEditor(app, guiPath)
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)
+
+
