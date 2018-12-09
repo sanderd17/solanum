@@ -1,6 +1,6 @@
 // import whatever gui template/screens needed
 import Template from "../lib/template.js"
-import Motor from "../Motor.js"
+import Motor from "./Motor.js"
 /**  @typedef {import('../lib/template.js').TemplateDescription} TemplateDescription */
 class MainWindow extends Template {}
 

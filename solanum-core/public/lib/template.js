@@ -192,7 +192,7 @@ Template.prototype.svg = function(rawStrings, ...values) {
                 y="${this.props.y}"
                 viewBox="0 0 ${this.size[0]} ${this.size[1]}"
             >
-            ${content.replace(braceFinder, (_, key) => this.props[key])}
+            ${content.replace(braceFinder, (_, key) => this[key] || this.props[key])}
             </svg>`
     }
 }
