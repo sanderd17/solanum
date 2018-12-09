@@ -1,4 +1,4 @@
-import tags from '../tags/default.js'
+import tags from '../../tags/default.js'
 import clientList from './ClientList.js'
 import Client from './Client.js'
 import Tag from './Tag.js'
