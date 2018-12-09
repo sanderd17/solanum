@@ -1,0 +1,28 @@
+{
+  "name": "solanum-core",
+  "version": "0.0.1",
+  "author": "Sander Deryckere",
+  "license": "AGPL-3.0",
+  "description": "Experimental Scada package",
+  "repository": "https://github.com/sanderd17/solanum",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "inspect": "node --inspect index.js",
+    "test": "mocha -r esm */test/**/*.js"
+  },
+  "dependencies": {
+    "esm": "^3.0.84",
+    "express": "^4.16.4",
+    "express-ws": "^4.0.0",
+    "node-opcua": "^0.5.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "@types/express-ws": "^3.0.0",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.12",
+    "mocha": "^5.2.0",
+    "typescript": "^3.2.2"
+  }
+}
