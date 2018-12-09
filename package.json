@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Sander Deryckere",
   "license": "AGPL-3.0",
-  "description": "Experimental Scada package that uses web standards to display data in the browser",
+  "description": "Experimental Scada package",
   "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
   "scripts": {
