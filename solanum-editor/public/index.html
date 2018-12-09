@@ -34,7 +34,7 @@
       function saveSvg() {
         let name = 'Motor'
         let svg = document.getElementById('svgcontent').children[0].innerHTML
-        fetch('/API/Editor/saveComponent', {
+        fetch('/API/Editor/setComponentSvg', {
           method: 'POST',
           body: JSON.stringify({
             name: name,

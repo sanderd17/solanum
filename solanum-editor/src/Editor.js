@@ -1,7 +1,9 @@
 import path from 'path'
 import fs from 'graceful-fs'
+const xml2js =require('xml-js')
 import steno from 'steno'
 const recast = require('recast')
+
 
 const braceFinder = /\{([\w\.]+)\}/g
 // TODO copied from template.js. Should be shared code (shared client/server utils somewhere?)
@@ -140,24 +142,39 @@ Editor.prototype.setComponentSvg = function(req, res) {
     // context to pass on to the replacement function
     const fileName = body.name + '.js'
 
-    fs.readFile(__dirname + '/../../gui/templates/Motor.js', {encoding: 'utf-8'}, (err, code) => {
-        if (err) {
-            console.log(err)
-            res.status(500).send(`Error while reading file ${fileName}: ${err}`)
-            return
+    let svgData = xml2js.xml2js(body.svg)
+
+    // TODO filter out the <use> elements
+    for (let element of svgData.elements) {
+        if (element.attributes && element.attributes.style)
+            delete element.attributes.style
+    }
+
+    const reparsedSvg = xml2js.js2xml(svgData, {spaces: 4});
+    // FIXME Hard-coded path should refer to correct js file
+    fs.readFile(__dirname + '/../../solanum-core/public/templates/Motor.js',
+        {encoding: 'utf-8'},
+        (err, code) => {
+            if (err) {
+                console.log(err)
+                res.status(500).send(`Error while reading file ${fileName}: ${err}`)
+                return
+            }
+            const newCode = this.updateSvgViaAst(code, reparsedSvg)
+            if (newCode == false) {
+                res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
+                return
+            }
+            steno.writeFile(this.guiPath + '/' + fileName, newCode,
+                err => {
+                    if (err) 
+                        res.status(500).send(`Error while writing file ${fileName}: ${err}`)
+                    else 
+                        res.status(200).send('OK')
+                }
+            )
         }
-        const newCode = this.updateSvgViaAst(code, body.svg)
-        if (newCode == false) {
-            res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
-            return
-        }
-        steno.writeFile(this.guiPath + '/' + fileName, newCode, err => {
-            if (err) 
-                res.status(500).send(`Error while writing file ${fileName}: ${err}`)
-            else 
-                res.status(200).send('OK')
-        })
-    })
+    )
     // Open component from file
     // Take through AST parser
     // Set SVG
@@ -183,33 +200,5 @@ Editor.prototype.setComponentEventHandler = function(req, res) {
  * @property {string} name Name of the component, including the path. E.g. "objects/Motor"
  * @property {string} svg Inner SVG code
  */
-
-/**
- * 
- * @param {Request} req 
- * @param {Response} res 
- */
-Editor.prototype.saveComponent = function(req, res) {
-    /** @type {TemplateDefinition} */
-    const body = req.body
-    console.log(body)
-    if (typeof body.name != "string")
-        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
-    if (typeof body.svg != "string") 
-        return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
-    // context to pass on to the replacement function
-    const fileName = body.name + '.js'
-    console.log(fileName)
-    const ctx = {}
-    ctx.cmpName = body.name.split("/").pop()
-    ctx.svg = body.svg
-    ctx.domBindings = JSON.stringify({})
-    ctx.childImports = '' // derive from SVG
-    const moduleCode = ReplaceBraces(ctx, template)
-    steno.writeFile(this.guiPath + '/' + fileName, moduleCode, err => {
-        if (err) res.status(500).send(`Error while writing file ${fileName}: ${err}`)
-        else res.status(200).send('OK')
-    })
-}
 
 export default Editor
