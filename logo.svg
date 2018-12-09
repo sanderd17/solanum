@@ -1,13 +1,14 @@
 <svg id="logo" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
-  <clipPath id="r">
-    <rect x="0" y="69.1" width="200" height="60" />
-  </clipPath>
-  <circle cx="100" cy="100" r="100"  fill="#677B36"/>
-  <circle cx="100" cy="0" r="117.56" id="c" clip-path="url(#r)" fill="#F9F9FE"/>
-  <use xlink:href="#c" transform="rotate(72 100 100)"/>
-  <use xlink:href="#c" transform="rotate(144 100 100)"/>
-  <use xlink:href="#c" transform="rotate(-144 100 100)"/>
-  <use xlink:href="#c" transform="rotate(-72 100 100)"/>
-  <circle cx="100" cy="100" r="20.9" fill="#C4AD33"/>
+  <!-- nodejs green  background -->
+  <circle cx="100" cy="100" r="100"  fill="#8CC84B"/>
+  <!-- grey leafs as circle arcs-->
+  <path d="M 4.89 69.1
+    A 117.56 117.56 0 0 0 195.11 69.1
+    A 117.56 117.56 0 0 0 41.22 180.9
+    A 117.56 117.56 0 0 0 100 0
+    A 117.56 117.56 0 0 0 158.78 180.9
+    A 117.56 117.56 0 0 0 4.89 69.1"
+    fill="#F7F7F7"/>
+  <!-- ES/JS yellow  centre -->
+  <circle cx="100" cy="100" r="20.9" fill="#E9D44D"/>
 </svg>
-
