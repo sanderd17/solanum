@@ -10,7 +10,7 @@
     "start": "node index.js",
     "inspect": "node --inspect index.js",
     "sample-server": "node tools/sample-server.js",
-    "test": "mocha -r esm",
+    "test": "mocha -r esm */test/**/*.js",
     "build": "tsc --build jsconfig.json",
     "high_latency_netw": "sudo tc qdisc add dev lo root netem delay 50ms # add 50 ms latency to localhost (lo)",
     "low_bandwidth_netw": "sudo tc qdisc add dev lo root netem rate 300kbit # limil localhost speed to 300kbit",
