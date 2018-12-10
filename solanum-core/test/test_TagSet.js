@@ -4,7 +4,8 @@ const assert = require('assert')
 import TagSet from '../src/TagSet.js'
 
 
-let DummyTag = function(tagPath, otherArgs) {
+let DummyTag = function(tagSet, tagPath, otherArgs) {
+    this.tagSet = tagSet
     this.tagPath = tagPath
     this.otherArgs = otherArgs
     this.value = otherArgs.value
