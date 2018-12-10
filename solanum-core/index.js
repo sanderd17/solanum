@@ -6,20 +6,28 @@ import expressWs from 'express-ws'
 
 import Client from './src/Client.js'
 import clientList from './src/ClientList.js'
-import ts from './src/TagSet.js'
+import TagSet from './src/TagSet.js'
+
+class Solanum {
+    constructor(app, config) {
+        this.app = app
+        this.config = config
+        this.ts = new TagSet(config)
+        this.ts.initMessageHandlers()
+        this.ts.setTags()
+    }
+}
 
 function init(app, config) {
 
     expressWs(app)
     app.use(bodyParser.json()) // auto parse json into req.body
 
-    const guiPath = path.join(__dirname, '../solanum-core/public')
-    app.use(express.static(guiPath))
+    for (let dir of config.publicDirs) {
+        app.use(express.static(dir))
+    }
     app.use('/scripts', 
         express.static(path.join(__dirname, '../node_modules')))
-
-    ts.initMessageHandlers()
-    ts.setTags()
 
     // @ts-ignore -- Wait until websockets are native in express
     app.ws('/socket', function(ws, req) {
@@ -37,6 +45,8 @@ function init(app, config) {
             console.log('Removed client: # ' + clientList.size)
         })
     })
+
+    return new Solanum(app, config)
 }
 
 export default init

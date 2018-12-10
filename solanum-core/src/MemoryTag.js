@@ -1,13 +1,13 @@
 import Tag from './Tag.js'
-import ts from './TagSet.js'
 
 class MemoryTag extends Tag {
     /**
+     * @param {TagSet} tagSet
      * @param {string} tagPath 
      * @param {{defaultValue: object}} data 
      */
-    constructor(tagPath, data) {
-        super(tagPath, data)
+    constructor(tagSet, tagPath, data) {
+        super(tagSet, tagPath, data)
         this.quality = 'GOOD'
     }
 }

@@ -1,18 +1,20 @@
-import ts from './TagSet.js'
+import TagSet from './TagSet.js'
 
 class Tag {
     /**
+     * @param {TagSet} tagSet
      * @param {string} tagPath 
      * @param {{defaultValue: Object}} data 
      */
-    constructor(tagPath, data) {
+    constructor(tagSet, tagPath, data) {
         this.tagPath = tagPath
         this.value = data.defaultValue
+        this.ts = tagSet
     }
 }
 
 Tag.prototype.triggerChange = function() {
-    ts.triggerChange(this)
+    this.ts.triggerChange(this)
 }
 
 /**

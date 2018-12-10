@@ -9,7 +9,8 @@ import Tag from './Tag.js'
  * @property {any} defaultValue
  */
 
-function TagSet () {
+function TagSet (config) {
+    // TODO load tags list from config instead of hard coding
     this.activeSendTimer = null
     this.changedTags = new Set()
     /** @type {Map<string, Tag>} */
@@ -63,7 +64,7 @@ TagSet.prototype.setTags = function(tagList=tags) {
  */
 TagSet.prototype.addTag = function(tagpath, tagDescr) {
     let tagType = tagDescr.type
-    this.tags.set(tagpath, new tagType(tagpath, tagDescr))
+    this.tags.set(tagpath, new tagType(this, tagpath, tagDescr))
 }
 
 /**
@@ -98,9 +99,6 @@ TagSet.prototype.sendTags = function(clients=clientList, tagPaths=null) {
         this.changedTags.clear()
 }
 
-let ts = new TagSet()
-
-export default ts
-
-export {TagSet} // only exported for testing/inspection
+// Should only be instanced by the main Solanum class
+export default TagSet
 
