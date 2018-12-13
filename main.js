@@ -17,7 +17,7 @@ app.use(function (req, res, next) {
 const guiPath = path.join(__dirname, './solanum-core/public')
 
 initCore(app, config)
-initEditor(app, guiPath)
+initEditor(app, config)
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)

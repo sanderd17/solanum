@@ -14,6 +14,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "recast": "^0.16.1",
+    "recursive-readdir": "^2.2.2",
     "steno": "^0.4.4",
     "svgedit": "^4.1.0",
     "xml-js": "^1.6.8",

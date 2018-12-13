@@ -75,27 +75,35 @@ document.getElementById('stroke').addEventListener('input', (ev) => updateSelect
 
 fetch('../API/Editor/getComponentPaths')
   .then(async response => {
-    const components = await response.json()
+    const modules = await response.json()
     const ul = document.getElementById('componentList')
-    for (let cmp of components) {
+    for (let mod in modules) {
       let li = document.createElement('li')
-      li.textContent = cmp
-      li.onclick = async () => {
-        const module = await import('/templates/' + cmp)
-        /** @type {typeof Template} */
-        const cmpClass = module.default
-        const [w, h] = cmpClass.prototype.size
-        const inst = new cmpClass(null, 'id', true, {width: w, height: h, x:0, y:0})
-        inst.createSubTemplates()
-        const svg = inst.render()
-        canvas.setSvgString(svg, false)
-        canvas.setResolution(w, h)
-        canvas.updateCanvas(w, h)
-
-        //document.getElementById('domBindings').innerHTML = JSON.stringify(cmpClass.prototype.domBindings)
-        document.getElementById('domBindings').innerHTML = cmpClass.toString()
-      }
+      li.textContent = mod
       ul.appendChild(li)
+      let components = modules[mod]
+      let childUl = document.createElement('ul')
+      for (let cmp of components) {
+        let li = document.createElement('li')
+        li.textContent = cmp
+        li.onclick = async () => {
+          const module = await import('/templates/' + cmp)
+          /** @type {typeof Template} */
+          const cmpClass = module.default
+          const [w, h] = cmpClass.prototype.size
+          const inst = new cmpClass(null, 'id', true, {width: w, height: h, x:0, y:0})
+          inst.createSubTemplates()
+          const svg = inst.render()
+          canvas.setSvgString(svg, false)
+          canvas.setResolution(w, h)
+          canvas.updateCanvas(w, h)
+
+          //document.getElementById('domBindings').innerHTML = JSON.stringify(cmpClass.prototype.domBindings)
+          document.getElementById('domBindings').innerHTML = cmpClass.toString()
+        }
+        childUl.appendChild(li)
+      }
+      ul.appendChild(childUl)
     }
   })
     </script>

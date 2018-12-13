@@ -3,6 +3,7 @@ import fs from 'graceful-fs'
 const xml2js =require('xml-js')
 import steno from 'steno'
 const recast = require('recast')
+import readdir from 'recursive-readdir'
 
 
 const braceFinder = /\{([\w\.]+)\}/g
@@ -61,18 +62,27 @@ export default {cmpName}
 `
 
 class Editor {
-    constructor(app, guiPath) {
-        this.guiPath = guiPath
+    constructor(app, config) {
+        this.config = config
         this.locks = {}
     }
 }
 
-Editor.prototype.getComponentPaths = function(req, res) {
-    const dir = path.join(this.guiPath, 'templates')
-    fs.readdir(dir, (err, files) => {
-        console.log('Files: ', files)
-        res.send(files)
-    })
+Editor.prototype.getComponentPaths = async function(req, res) {
+    const modules = Object.keys(this.config.editableDirs)
+    const editableDirs = modules.map((k) => this.config.editableDirs[k])
+
+    const fileLists = await Promise.all(
+        editableDirs.map(dir => readdir(dir))
+    )
+    const filesPerModule = modules.reduce((obj, k, i) => ({...obj, [k]: fileLists[i] }), {})
+
+    for (let key in filesPerModule) {
+        let prefixLength = this.config.editableDirs[key].length
+        filesPerModule[key] = filesPerModule[key].map(f => f.substring(prefixLength))
+    }
+
+    res.send(filesPerModule)
 }
 
 /**

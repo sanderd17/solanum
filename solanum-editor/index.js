@@ -6,10 +6,10 @@ import Editor from './src/Editor.js'
 /**
  * Add the editor api to the server instance
  * @param {Express.Application} app The active express app
- * @param {string} guiPath 
+ * @param {any} config 
  */
-function init(app, guiPath) {
-    const editor = new Editor(app, guiPath)
+function init(app, config) {
+    const editor = new Editor(app, config)
 
     app.get('/API/Editor/getComponentPaths', (req, res) => editor.getComponentPaths(req, res))
     app.get('/API/Editor/openComponent', (req, res) => editor.openComponent(req, res))
