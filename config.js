@@ -14,6 +14,7 @@ const config = {
     editableDirs: {
         "main": path.join(__dirname, 'public/templates/'),
         "core": path.join(__dirname, 'solanum-core/public/templates/'),
+        "editor": path.join(__dirname, 'solanum-editor/public/templates/'),
     },
     tags: {
         files: [

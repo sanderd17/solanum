@@ -1,58 +1,24 @@
-/*
 import Template from "../../lib/template.js"
 
-function Button () {}
+class Button extends Template {}
 
-Button.prototype = Object.create(Template.prototype)
-Button.prototype.constructor = Button
+Button.prototype.class = 'button'
+Button.prototype.size = [50,50]
+Button.prototype.css = [
+    `.button:hover {
+        cursor: pointer;
+    }`,
+]
+
+Button.prototype.eventHandlers = {}
+Button.prototype.domBindings = {}
 
 
-Button.prototype.getHandlers = function() {
-    return {
-        "icon_1" : {
-            "onclick": () => {
-                let button = this.getElementById('icon_2')
-                if (button.getAttribute("fill") == "red") {
-                    button.setAttribute("fill", "blue")
-                } else {
-                    button.setAttribute("fill", "red")
-                }
-            }
-        }
-    }
-}
-
-Button.prototype.getTagBindings = function() {
-    return {}
-}
-
-Button.prototype.getDataBindings = function() {
-    return {
-        size : v => this.getElementById('icon_2').setAttribute('width', v)
-    }
-}
-
-Button.render = function(id, width, height, x, y, data) {
-    return `
-    <svg
-            id="${id}"
-            class="button"
-            width="${width}"
-            height="${height}"
-            x="${x}"
-            y="${y}"
-            viewBox="0 0 500 500"
-        >
-        <rect id="${id}.rect" height="100" width="100" x="400" y="400" fill="red"></rect>
-    </svg>`
-}
-
-Button.getCss = function() {
-    return `
-        .button > .rect:hover {
-            filter: brightness(85%);
-        }`
+Button.prototype.render = function(id, width, height, x, y, data) {
+    return this.svg`
+        <rect id="{id}.btn" width="100%" height="100%" rx="5" ry="5" fill="#E9E9E9" stroke="black"/>
+        <image id="{id}.img" href="{img}" height="100%" width="100%"/>
+        `
 }
 
 export default Button
-*/

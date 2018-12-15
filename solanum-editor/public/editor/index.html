@@ -8,15 +8,13 @@
   </head>
 
   <body>
+    <div id="root" style="position:absolute;left:0;top:0"></div>
+
     <h1>Solanum editor</h1>
 
     <div id="editorContainer"></div>
 
     <div>
-      [<button onclick="canvas.setMode('select')">Select</button>
-      <button onclick="canvas.setMode('circle')">Circle</button>
-      <button onclick="canvas.setMode('ellipse')">Ellipse</button>
-      <button onclick="canvas.setMode('rect')">Rect</button>]
       <input type="color" id="fill" name="fill" value="#FF0000"/>
       <input type="color" id="stroke" name="stroke" value="#000000"/>
       <button onclick="canvas.deleteSelectedElements()">Delete Selected</button>
@@ -107,5 +105,7 @@ fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
     }
   })
     </script>
+    <div id="errorOverlay">
+    <script type="module" src="index.js"></script>
   </body>
 </html>
