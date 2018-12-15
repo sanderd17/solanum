@@ -27,9 +27,6 @@
     <ul id="componentList">
 
     </ul>
-    <textarea id="domBindings" rows="5" cols="80">
-
-    </textarea>
     <script>
       function saveSvg() {
         let name = 'Motor'
@@ -37,7 +34,8 @@
         fetch('/API/Editor/setComponentSvg', {
           method: 'POST',
           body: JSON.stringify({
-            name: name,
+            module: window.currentModule,
+            component: window.currentComponent,
             svg: svg
           }),
           headers:{
@@ -73,7 +71,10 @@ const updateSelectedElements = (attr, val) => canvas.getSelectedElems().forEach(
 document.getElementById('fill').addEventListener('input', (ev) => updateSelectedElements('fill', ev.target.value))
 document.getElementById('stroke').addEventListener('input', (ev) => updateSelectedElements('stroke', ev.target.value))
 
-fetch('../API/Editor/getComponentPaths')
+window.currentModule = ''
+window.currentComponent = ''
+
+fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
   .then(async response => {
     const modules = await response.json()
     const ul = document.getElementById('componentList')
@@ -87,6 +88,8 @@ fetch('../API/Editor/getComponentPaths')
         let li = document.createElement('li')
         li.textContent = cmp
         li.onclick = async () => {
+          window.currentModule = mod
+          window.currentComponent = cmp
           const module = await import('/templates/' + cmp)
           /** @type {typeof Template} */
           const cmpClass = module.default
@@ -97,9 +100,6 @@ fetch('../API/Editor/getComponentPaths')
           canvas.setSvgString(svg, false)
           canvas.setResolution(w, h)
           canvas.updateCanvas(w, h)
-
-          //document.getElementById('domBindings').innerHTML = JSON.stringify(cmpClass.prototype.domBindings)
-          document.getElementById('domBindings').innerHTML = cmpClass.toString()
         }
         childUl.appendChild(li)
       }

@@ -145,13 +145,12 @@ Editor.prototype.setComponentSvg = function(req, res) {
     /** @type {TemplateDefinition} */
     const body = req.body
     console.log(body)
-    if (typeof body.name != "string")
+    if (typeof body.module != "string")
+        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
+    if (typeof body.component != "string")
         return res.status(400).send(`Error: No valid component name received: ${body.name}`)
     if (typeof body.svg != "string") 
         return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
-    // context to pass on to the replacement function
-    const fileName = body.name + '.js'
-
     let svgData = xml2js.xml2js(body.svg)
 
     // TODO filter out the <use> elements
@@ -161,8 +160,11 @@ Editor.prototype.setComponentSvg = function(req, res) {
     }
 
     const reparsedSvg = xml2js.js2xml(svgData, {spaces: 4});
+
+    const sourceDir = this.config.editableDirs[body.module]
+    const fileName = path.join(sourceDir, body.component)
     // FIXME Hard-coded path should refer to correct js file
-    fs.readFile(__dirname + '/../../solanum-core/public/templates/Motor.js',
+    fs.readFile(fileName,
         {encoding: 'utf-8'},
         (err, code) => {
             if (err) {
@@ -175,7 +177,7 @@ Editor.prototype.setComponentSvg = function(req, res) {
                 res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
                 return
             }
-            steno.writeFile(this.guiPath + '/' + fileName, newCode,
+            steno.writeFile(fileName, newCode,
                 err => {
                     if (err) 
                         res.status(500).send(`Error while writing file ${fileName}: ${err}`)
@@ -185,10 +187,6 @@ Editor.prototype.setComponentSvg = function(req, res) {
             )
         }
     )
-    // Open component from file
-    // Take through AST parser
-    // Set SVG
-    // Store to file
 }
 
 Editor.prototype.setComponentDomBinding = function(req, res) {
@@ -207,7 +205,8 @@ Editor.prototype.setComponentEventHandler = function(req, res) {
 
 /**
  * @typedef {object} TemplateDefinition
- * @property {string} name Name of the component, including the path. E.g. "objects/Motor"
+ * @property {string} module Name of the module the component is from
+ * @property {string} component Name of the component, including the path. E.g. "objects/Motor"
  * @property {string} svg Inner SVG code
  */
 
