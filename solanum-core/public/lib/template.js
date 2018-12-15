@@ -162,7 +162,7 @@ Template.prototype.svg = function(rawStrings, ...values) {
                     viewBox="0 0 ${this.size[0]} ${this.size[1]}"
                 >
                 <g class="layer">
-                    ${content}
+                    ${content.replace(braceFinder, (_, key) => this[key] || this.props[key] || '{' + key + '}')}
                 </g>
                 </svg>`
         } else {
@@ -171,7 +171,7 @@ Template.prototype.svg = function(rawStrings, ...values) {
                     class="${this.class}"
                     viewBox="0 0 ${this.size[0]} ${this.size[1]}"
                 >
-                ${content}
+                ${content.replace(braceFinder, (_, key) => this[key] || this.props[key] || '{' + key + '}')}
                 </symbol>
                 <use
                     id="${this.id}"
@@ -197,7 +197,9 @@ Template.prototype.svg = function(rawStrings, ...values) {
     }
 }
 
-Template.prototype.render = function() {return this.svg`<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`}
+Template.prototype.render = function(x=100, y=100, width=100, height=100, transform=undefined) {
+    return this.svg`<rect x="${x}" y="${y}" width="${width}" height="${height}" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`
+}
 /** @typedef {Object} TemplateDescription
  * @property {typeof Template} type
  * @property {any} props

@@ -92,6 +92,7 @@ fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
           /** @type {typeof Template} */
           const cmpClass = module.default
           const [w, h] = cmpClass.prototype.size
+          // TODO find a better string than id, but svgedit breaks on special characters
           const inst = new cmpClass(null, 'id', true, {width: w, height: h, x:0, y:0})
           inst.createSubTemplates()
           const svg = inst.render()
