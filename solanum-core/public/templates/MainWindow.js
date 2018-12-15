@@ -10,7 +10,7 @@ MainWindow.prototype.size = [1000,500]
 MainWindow.prototype.getReplacements = function() {
     /** @type {Object<string,TemplateDescription>} */
     let repl = {}
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3000; i++) {
         repl["motor_" + i] = {
             type: Motor,
             props: {
@@ -32,20 +32,6 @@ MainWindow.prototype.render = function() {
         svg.push(this.children[c].render())
     }
     return this.svg`${svg.join('\n')}`
-    return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-            id="${this.id}"
-            class="main"
-            style="position:absolute;left:0;top:0"
-            width="${this.props.width}"
-            height="${this.props.height}"
-            x="${this.props.x}"
-            y="${this.props.y}"
-            viewbox="0 0 1000 500">
-        <g class="Layer">
-            <title>Mainwindow</title>` +
-            svg.join("\n") + `
-        </g>
-    </svg>`
 }
 
 export default MainWindow

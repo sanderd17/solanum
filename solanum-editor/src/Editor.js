@@ -18,49 +18,6 @@ const ReplaceBraces = function(ctx, template) {
     return template.replace(braceFinder, (_, group) => group in ctx ? ctx[group] : '{' + group + '}')
 }
 
-const template = `
-import Template from '../lib/template.js'
-import ts from '../lib/TagSet.js'
-
-//{childImports}
-
-class {cmpName} extends Template {}
-
-{cmpName}.prototype.class = 'motor'
-{cmpName}.prototype.size = [500,500]
-{cmpName}.prototype.css = []
-
-{cmpName}.prototype.eventHandlers = {
-    'icon_1': {
-        'click':  (cmp, event) => {ts.writeTag(cmp.props.st_motor, 'black')}
-    },
-    'icon_2': {
-        'click':  (cmp, event) => {cmp.props.size = 20}
-    }
-}
-
-{cmpName}.prototype.domBindings = {
-     icon_1: {
-        fill: {
-            type: 'tag',
-            tagPath: '{st_motor}',
-        }
-    },
-    icon_2: {
-        width: {
-            type: 'prop',
-            propName: 'icon_size'
-        } 
-    },
-}
-
-{cmpName}.prototype.render = function() {
-    return this.svg\`{svg}\`
-}
-
-export default {cmpName}
-`
-
 class Editor {
     constructor(app, config) {
         this.config = config
