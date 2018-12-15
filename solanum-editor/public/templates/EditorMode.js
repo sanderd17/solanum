@@ -18,27 +18,19 @@ EditorMode.prototype.getReplacements = function() {
     let repl = {
         "select": {
             type: Button,
-            props: {x: 0, y: 0, width: 50, height: 50,
-                img: '../editor/svgedit/images/select.png', 
-            }
+            props: {img: '../editor/svgedit/images/select.png'}
         },
         "rect": {
             type: Button,
-            props: {x: 0, y: 60, width: 50, height: 50,
-                img: '../editor/svgedit/images/rect.png', 
-            }
+            props: {img: '../editor/svgedit/images/rect.png'}
         },
         "circle": {
             type: Button,
-            props: {x: 0, y: 120, width: 50, height: 50,
-                img: '../editor/svgedit/images/circle.png', 
-            }
+            props: {img: '../editor/svgedit/images/circle.png'}
         },
         "ellipse": {
             type: Button,
-            props: {x: 0, y: 180, width: 50, height: 50,
-                img: '../editor/svgedit/images/ellipse.png', 
-            }
+            props: {img: '../editor/svgedit/images/ellipse.png'}
         },
     }
     return repl
@@ -54,12 +46,12 @@ EditorMode.prototype.eventHandlers = {
 EditorMode.prototype.domBindings = {}
 
 EditorMode.prototype.render = function() {
+
     return this.svg`<title>EditorMode</title>
-        ${this.children.select.render()}
-        ${this.children.rect.render()}
-        ${this.children.circle.render()}
-        ${this.children.ellipse.render()}
-    `;
+        <use id="{id}.select" xlink:href="#cmp-{id}.select" x="0" y="0" width="50" height="50"/>
+        <use id="{id}.rect" xlink:href="#cmp-{id}.rect" x="0" y="60" width="50" height="50"/>
+        <use id="{id}.circle" xlink:href="#cmp-{id}.circle" x="0" y="120" width="50" height="50"/>
+        <use id="{id}.ellipse" xlink:href="#cmp-{id}.ellipse" x="0" y="180" width="50" height="50"/>`;
 }
 
 export default EditorMode

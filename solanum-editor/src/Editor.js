@@ -134,7 +134,7 @@ Editor.prototype.setComponentSvg = function(req, res) {
                 res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
                 return
             }
-            steno.writeFile(fileName, newCode,
+            steno.writeFile(fileName + ".js", newCode,
                 err => {
                     if (err) 
                         res.status(500).send(`Error while writing file ${fileName}: ${err}`)

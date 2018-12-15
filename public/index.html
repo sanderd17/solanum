@@ -13,7 +13,14 @@
 </head>
 
 <body>
-  <div id="root" style="position:absolute;left:0;top:0"></div>
+  <div id="root" style="position:absolute;left:0;top:0">
+    <svg id="symbols" width="0" height="0">
+
+    </svg>
+    <svg id="svgroot" width="1000" height="500">
+      <use id="mainWindow" xlink:href="#cmp-MainWindow" x="0" y="0" width="1000" height="500"/>
+    </svg>
+  </div>
   <!--<svg style="position:fixed;top:0;right:0" width="80" height="80" viewbox="0 0 200 200">
     <clipPath id="r">
       <rect x="0" y="69.1" width="200" height="60" />

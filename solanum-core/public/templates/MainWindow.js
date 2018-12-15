@@ -28,8 +28,9 @@ MainWindow.prototype.getReplacements = function() {
 
 MainWindow.prototype.render = function() {
     let svg = []
-    for (let c in this.children) {
-        svg.push(this.children[c].render())
+    for (let i = 0; i < 3000; i++) {
+        let c = "motor_" + i
+        svg.push(`<use id="{id}.${c}" xlink:href="#cmp-{id}.${c}" x="${10 * Math.floor(i/40)}" y="${(i%40) * 12}" width="10" height="10"/>`)
     }
     return this.svg`${svg.join('\n')}`
 }

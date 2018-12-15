@@ -150,51 +150,14 @@ Template.prototype.getCssMap = function() {
  */
 Template.prototype.svg = function(rawStrings, ...values) {
     const content = String.raw(rawStrings, ...values)
-    if (this.inEditor) {
-        if (this.isRoot) {
-            return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    id="${this.id}"
-                    class="${this.class}"
-                    width="${this.props.width}"
-                    height="${this.props.height}"
-                    x="${this.props.x}"
-                    y="${this.props.y}"
-                    viewBox="0 0 ${this.size[0]} ${this.size[1]}"
-                >
-                <g class="layer">
-                    ${content}
-                </g>
-                </svg>`
-        } else {
-            return `<symbol
-                    id="sym-${this.id}"
-                    class="${this.class}"
-                    viewBox="0 0 ${this.size[0]} ${this.size[1]}"
-                >
-                ${content}
-                </symbol>
-                <use
-                    id="${this.id}"
-                    xlink:href="#sym-${this.id}"
-                    x="${this.props.x}"
-                    y="${this.props.y}"
-                    width="${this.props.width}"
-                    height="${this.props.height}"
-                />`
-        }
-    } else {
-        return `<svg
-                id="${this.id}"
-                class="${this.class}"
-                width="${this.props.width}"
-                height="${this.props.height}"
-                x="${this.props.x}"
-                y="${this.props.y}"
-                viewBox="0 0 ${this.size[0]} ${this.size[1]}"
-            >
-            ${content.replace(braceFinder, (_, key) => this[key] || this.props[key] || '{' + key + '}')}
-            </svg>`
-    }
+
+    return `<symbol
+            id="cmp-${this.id}"
+            class="${this.class}"
+            viewBox="0 0 ${this.size[0]} ${this.size[1]}"
+        >
+        ${content.replace(braceFinder, (_, key) => this[key] || this.props[key] || '{' + key + '}')}
+        </symbol>`
 }
 
 Template.prototype.render = function() {return this.svg`<rect width="100%" height="100%" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`}
