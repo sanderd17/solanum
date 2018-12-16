@@ -18,6 +18,7 @@ EditorMode.prototype.getReplacements = function() {
     let repl = {
         "select": {
             type: Button,
+            // TODO coordinates here is ugly. They come from svg modifiable by editor, so should be applied directly in the svg part of the component
             props: {x: 0, y: 0, width: 50, height: 50,
                 img: '../editor/svgedit/images/select.png', 
             }

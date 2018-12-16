@@ -149,6 +149,12 @@ Template.prototype.getCssMap = function() {
  * @param {string[]} values values to interpolate into the raw strings
  */
 Template.prototype.svg = function(rawStrings, ...values) {
+    values.map(v => {
+        if (typeof v == 'object' && typeof v.id == 'string' && v.id.startsWith('{id}')) {
+            shortId = v.id.substring(4)
+            return this.children[shortId].render()
+        }
+    })
     const content = String.raw(rawStrings, ...values)
     if (this.inEditor) {
         if (this.isRoot) {

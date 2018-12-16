@@ -111,10 +111,23 @@ Editor.prototype.setComponentSvg = function(req, res) {
     let svgData = xml2js.xml2js(body.svg)
 
     // TODO filter out the <use> elements
-    for (let element of svgData.elements) {
-        if (element.attributes && element.attributes.style)
-            delete element.attributes.style
-    }
+    svgData.elements = svgData.elements.filter(el => el.name != 'symbol')
+    svgData.elements.forEach((el) => {
+            if (el.attributes && el.attributes.style)
+                delete el.attributes.style
+            if (el.attributes && el.attributes.id)
+                el.attributes.id = el.attributes.id.replace(/^id/, '{id}')
+            if (el.name == 'use') {
+                console.log(JSON.stringify(el))
+                if (el.attributes && el.attributes['xlink:href'])
+                    delete el.attributes['xlink:href']
+                el.type = 'text'
+                el.text = '\n${' + JSON.stringify(el.attributes) + '}'
+                delete el.attributes
+                delete el.name
+                console.log(JSON.stringify(el))
+            }
+        })
 
     const reparsedSvg = xml2js.js2xml(svgData, {spaces: 4});
 
@@ -134,7 +147,7 @@ Editor.prototype.setComponentSvg = function(req, res) {
                 res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
                 return
             }
-            steno.writeFile(fileName, newCode,
+            steno.writeFile(fileName + '.js', newCode,
                 err => {
                     if (err) 
                         res.status(500).send(`Error while writing file ${fileName}: ${err}`)
