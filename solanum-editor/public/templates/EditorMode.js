@@ -56,11 +56,10 @@ EditorMode.prototype.domBindings = {}
 
 EditorMode.prototype.render = function() {
     return this.svg`<title>EditorMode</title>
-        ${this.children.select.render()}
-        ${this.children.rect.render()}
-        ${this.children.circle.render()}
-        ${this.children.ellipse.render()}
-    `;
+    ${{"id":"{id}.select","x":"0","y":"0","width":"50","height":"50"}}
+    ${{"id":"{id}.rect","x":"0","y":"60","width":"50","height":"50"}}
+    ${{"id":"{id}.circle","x":"0","y":"120","width":"50","height":"50"}}
+    ${{"id":"{id}.ellipse","x":"-3","y":"231","width":"50","height":"50"}}`;
 }
 
 export default EditorMode

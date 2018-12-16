@@ -101,7 +101,6 @@ Editor.prototype.updateSvgViaAst = function(code, newSvg) {
 Editor.prototype.setComponentSvg = function(req, res) {
     /** @type {TemplateDefinition} */
     const body = req.body
-    console.log(body)
     if (typeof body.module != "string")
         return res.status(400).send(`Error: No valid component name received: ${body.name}`)
     if (typeof body.component != "string")
@@ -118,14 +117,12 @@ Editor.prototype.setComponentSvg = function(req, res) {
             if (el.attributes && el.attributes.id)
                 el.attributes.id = el.attributes.id.replace(/^id/, '{id}')
             if (el.name == 'use') {
-                console.log(JSON.stringify(el))
                 if (el.attributes && el.attributes['xlink:href'])
                     delete el.attributes['xlink:href']
                 el.type = 'text'
                 el.text = '\n${' + JSON.stringify(el.attributes) + '}'
                 delete el.attributes
                 delete el.name
-                console.log(JSON.stringify(el))
             }
         })
 
@@ -147,7 +144,7 @@ Editor.prototype.setComponentSvg = function(req, res) {
                 res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
                 return
             }
-            steno.writeFile(fileName + '.js', newCode,
+            steno.writeFile(fileName, newCode,
                 err => {
                     if (err) 
                         res.status(500).send(`Error while writing file ${fileName}: ${err}`)
