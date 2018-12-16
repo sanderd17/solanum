@@ -107,18 +107,29 @@ Editor.prototype.setComponentSvg = function(req, res) {
         return res.status(400).send(`Error: No valid component name received: ${body.name}`)
     if (typeof body.svg != "string") 
         return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
+    steno.writeFile('test.svg', body.svg, () => {})
     let svgData = xml2js.xml2js(body.svg)
 
-    // TODO filter out the <use> elements
-    svgData.elements = svgData.elements.filter(el => el.name != 'symbol')
+    // Filter out all symbol elements, those visualise child components
+    svgData.elements = svgData.elements[0].elements.filter(el => el.name != 'symbol')
     svgData.elements.forEach((el) => {
+            // editor sets pointer styles, remove those
             if (el.attributes && el.attributes.style)
                 delete el.attributes.style
+            // remove null attributes automatically added by editor
+            for (let at in el.attributes) {
+                if (el.attributes[at] == 'null')
+                    delete el.attributes[at]
+            }
+            // alter the ids
             if (el.attributes && el.attributes.id)
                 el.attributes.id = el.attributes.id.replace(/^id/, '{id}')
+            // replace use elements by references to their child components
             if (el.name == 'use') {
                 if (el.attributes && el.attributes['xlink:href'])
                     delete el.attributes['xlink:href']
+                if (el.attributes && el.attributes.id && el.attributes.id.startsWith('{id}'))
+                    el.attributes.id = el.attributes.id.substring(5)
                 el.type = 'text'
                 el.text = '\n${' + JSON.stringify(el.attributes) + '}'
                 delete el.attributes

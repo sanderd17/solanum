@@ -24,8 +24,8 @@ EditorWindow.prototype.getReplacements = function() {
 }
 
 EditorWindow.prototype.render = function() {
-    console.log(this.children)
-    return this.svg`${this.children.editorMode.render()}`
+    return this.svg`
+    ${{"id":"editorMode","x":"0","y":"0","width":"50","height":"500"}}`;
 }
 
 export default EditorWindow

@@ -21,7 +21,7 @@ class Solanum {
 function init(app, config) {
 
     expressWs(app)
-    app.use(bodyParser.json()) // auto parse json into req.body
+    app.use(bodyParser.json({'limit': '10MB'})) // auto parse json into req.body
 
     for (let dir of config.publicDirs) {
         app.use(express.static(dir))

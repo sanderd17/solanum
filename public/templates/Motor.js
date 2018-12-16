@@ -39,9 +39,9 @@ Motor.prototype.domBindings = {
 
 Motor.prototype.render = function() {
     return this.svg`<title>Motor {st_motor}</title>
-    <circle id="id.icon_1" class="icon_1" cx="250" cy="250" r="200" fill="blue"/>
-    <rect id="id.icon_2" height="100" width="100" x="201" y="174" fill="red"/>
-    <rect id="id.icon_3" height="100" width="100" x="0" y="400" fill="red"/>`;
+    <circle id="{id}.icon_1" class="icon_1" cx="267.49999713897705" cy="284" r="200" fill="blue"/>
+    <rect id="{id}.icon_2" height="100" width="100" x="46" y="21" fill="red"/>
+    <rect id="{id}.icon_3" height="100" width="100" x="0" y="400" fill="red"/>`;
 }
 
 export default Motor

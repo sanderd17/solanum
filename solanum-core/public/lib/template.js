@@ -45,6 +45,8 @@ class Template {
              */
             get: (obj, prop) => {
                 let domObj = this.getElementById(prop)
+                if (!domObj)
+                    return undefined
                 // get a proxy to the DOM attributes
                 return new Proxy(domObj, {
                     /**
@@ -81,7 +83,8 @@ Template.prototype.addEventHandlers = function() {
         for (let eventType in this.eventHandlers[id]) {
             let fn = this.eventHandlers[id][eventType]
             let handlerNode = this.getElementById(id)
-            handlerNode.addEventListener(eventType, (event) => fn(this, event))
+            if (handlerNode) // TODO warn about missing node
+                handlerNode.addEventListener(eventType, (event) => fn(this, event))
         }
     }
     for (let child of Object.values(this.children)) {
@@ -106,11 +109,16 @@ Template.prototype.addBindings = function() {
             let binding = this.domBindings[id][attr]
             if (binding.type == 'tag') {
                 let path = EvalTagPath(this.props, binding.tagPath)
-                ts.addTagHandler(path, tag => {this.dom[id][attr] = tag.value})
+                let node = this.dom[id]
+                if (node) // TODO warn about non-existing binding
+                    ts.addTagHandler(path, tag => {this.dom[id][attr] = tag.value})
             } else if (binding.type == 'prop') {
                 let key = binding.propName
-                this.dom[id][attr] = this.props[key] // apply initial value now
-                this.dataBindings[key] = (cmp, val) => cmp.dom[id][attr] = val
+                let node = this.dom[id]
+                if (node) { // TODO warn about missing binding
+                    node = this.props[key] // apply initial value now
+                    this.dataBindings[key] = (cmp, val) => cmp.dom[id][attr] = val
+                }
             }
         }
     }
@@ -150,9 +158,8 @@ Template.prototype.getCssMap = function() {
  */
 Template.prototype.svg = function(rawStrings, ...values) {
     values = values.map(v => {
-        if (typeof v == 'object' && typeof v.id == 'string' && v.id.startsWith('{id}')) {
-            const shortId = v.id.substring(5)
-            return this.children[shortId].render()
+        if (typeof v == 'object' && typeof v.id == 'string') {
+            return this.children[v.id].render()
         }
         return v
     })
