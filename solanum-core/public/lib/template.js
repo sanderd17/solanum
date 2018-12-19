@@ -78,6 +78,15 @@ Template.prototype.createSubTemplates = function() {
     }
 }
 
+Template.prototype.forEachChild = function(func, recursive) {
+    for (let childId in this.children) {
+        let child = this.children[childId]
+        func(child)
+        if (recursive)
+            child.forEachChild(func, recursive)
+    }
+}
+
 Template.prototype.addEventHandlers = function() {
     for (let id in this.eventHandlers) {
         for (let eventType in this.eventHandlers[id]) {
@@ -152,63 +161,22 @@ Template.prototype.getCssMap = function() {
 }
 
 /**
- * Wrap svg contents in outer tags to perform scaling and translations
  * @param {TemplateStringsArray} rawStrings parts of the template strings
  * @param {string[]} values values to interpolate into the raw strings
+ * @return {Document} DOM Document of an SVG element
  */
 Template.prototype.svg = function(rawStrings, ...values) {
-    values = values.map(v => {
-        if (typeof v == 'object' && typeof v.id == 'string') {
-            return this.children[v.id].render()
-        }
-        return v
-    })
+    // TODO cache based on values array
+    const parser = new DOMParser()
     const content = String.raw(rawStrings, ...values)
-    if (this.inEditor) {
-        if (this.isRoot) {
-            return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    id="${this.id}"
-                    class="${this.class}"
-                    width="${this.props.width}"
-                    height="${this.props.height}"
-                    x="${this.props.x}"
-                    y="${this.props.y}"
-                    viewBox="0 0 ${this.size[0]} ${this.size[1]}"
-                >
-                <g class="layer">
-                    ${content.replace(braceFinder, (_, key) => this[key] || this.props[key] || '{' + key + '}')}
-                </g>
-                </svg>`
-        } else {
-            return `<symbol
-                    id="sym-${this.id}"
-                    class="${this.class}"
-                    viewBox="0 0 ${this.size[0]} ${this.size[1]}"
-                >
-                ${content.replace(braceFinder, (_, key) => this[key] || this.props[key] || '{' + key + '}')}
-                </symbol>
-                <use
-                    id="${this.id}"
-                    xlink:href="#sym-${this.id}"
-                    x="${this.props.x}"
-                    y="${this.props.y}"
-                    width="${this.props.width}"
-                    height="${this.props.height}"
-                />`
-        }
-    } else {
-        return `<svg
-                id="${this.id}"
-                class="${this.class}"
-                width="${this.props.width}"
-                height="${this.props.height}"
-                x="${this.props.x}"
-                y="${this.props.y}"
-                viewBox="0 0 ${this.size[0]} ${this.size[1]}"
-            >
-            ${content.replace(braceFinder, (_, key) => this[key] || this.props[key] || '{' + key + '}')}
-            </svg>`
+    console.log(content)
+    const dom = parser.parseFromString(content, 'text/xml')
+    const childrenWithId = dom.documentElement.querySelectorAll['rect']
+    console.log(childrenWithId)
+    for (let child of childrenWithId) {
+        child.id = this.id + '.' + child.id
     }
+    return dom
 }
 
 Template.prototype.render = function(x=100, y=100, width=100, height=100, transform=undefined) {

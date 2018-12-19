@@ -55,11 +55,16 @@ EditorMode.prototype.eventHandlers = {
 EditorMode.prototype.domBindings = {}
 
 EditorMode.prototype.render = function() {
-    return this.svg`<title>EditorMode</title>
-    ${{"id":"select","x":"0","y":"0","width":"50","height":"50"}}
-    ${{"id":"rect","x":"0","y":"60","width":"50","height":"50"}}
-    ${{"id":"circle","x":"0","y":"120","width":"50","height":"50"}}
-    ${{"id":"ellipse","x":"0","y":"180","width":"50","height":"50"}}`;
+    return this.svg`<svg class="editorMode" viewBox="0 0 50 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g class="layer">
+            <title>EditorMode</title>
+            <use id="{id}.select" xlink:href="id.select" x="0" y="0" width="50" height="50"/>
+            <use id="{id}.rect" x="60" y="0" width="50" height="50"/>
+            <use id="{id}.circle" x="120" y="0" width="50" height="50"/>
+            <use id="{id}.ellipse" x="180" y="0" width="50" height="50"/>
+        </g>
+    </svg>
+`;
 }
 
 export default EditorMode

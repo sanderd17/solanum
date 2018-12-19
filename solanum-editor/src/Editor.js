@@ -94,6 +94,15 @@ Editor.prototype.updateSvgViaAst = function(code, newSvg) {
 }
 
 /**
+ * @typedef {object} TemplateDefinition
+ * @property {string} module Name of the module the component is from
+ * @property {string} component Name of the component, including the path. E.g. "objects/Motor"
+ * @property {string} svg Inner SVG code
+ * @property {string} class
+ * @property {number} width
+ * @property {number} height
+ */
+/**
  * 
  * @param {Request} req 
  * @param {Response} res 
@@ -107,12 +116,25 @@ Editor.prototype.setComponentSvg = function(req, res) {
         return res.status(400).send(`Error: No valid component name received: ${body.name}`)
     if (typeof body.svg != "string") 
         return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
-    steno.writeFile('test.svg', body.svg, () => {})
     let svgData = xml2js.xml2js(body.svg)
 
+    console.log(body.svg)
+    let rootElement = svgData.elements[0]
+    rootElement.name = 'svg'
+    rootElement.attributes = {
+        class: body.class || '',
+        viewBox: `0 0 ${body.width || 100} ${body.height || 100}`,
+        version: "1.1",
+        xmlns: 'http://www.w3.org/2000/svg',
+        'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+    }
+
     // Filter out all symbol elements, those visualise child components
-    svgData.elements = svgData.elements[0].elements.filter(el => el.name != 'symbol')
-    svgData.elements.forEach((el) => {
+    rootElement.elements = rootElement.elements.filter(el => el.name != 'symbol')
+    let gElement = rootElement.elements[0]
+    if (gElement.attributes.style)
+        delete gElement.attributes.style
+    gElement.elements.forEach((el) => {
             // editor sets pointer styles, remove those
             if (el.attributes && el.attributes.style)
                 delete el.attributes.style
@@ -136,8 +158,9 @@ Editor.prototype.setComponentSvg = function(req, res) {
                 delete el.name
             }
         })
+    svgData.elements[0] = rootElement
 
-    const reparsedSvg = xml2js.js2xml(svgData, {spaces: 4});
+    const reparsedSvg = xml2js.js2xml(svgData, {spaces: 4})
 
     const sourceDir = this.config.editableDirs[body.module]
     const fileName = path.join(sourceDir, body.component)
@@ -181,11 +204,5 @@ Editor.prototype.setComponentEventHandler = function(req, res) {
     // Store to file
 }
 
-/**
- * @typedef {object} TemplateDefinition
- * @property {string} module Name of the module the component is from
- * @property {string} component Name of the component, including the path. E.g. "objects/Motor"
- * @property {string} svg Inner SVG code
- */
 
 export default Editor
