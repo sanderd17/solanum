@@ -169,12 +169,13 @@ Template.prototype.svg = function(rawStrings, ...values) {
     // TODO cache based on values array
     const parser = new DOMParser()
     const content = String.raw(rawStrings, ...values)
-    console.log(content)
     const dom = parser.parseFromString(content, 'text/xml')
-    const childrenWithId = dom.documentElement.querySelectorAll['rect']
-    console.log(childrenWithId)
+    const childrenWithId = dom.documentElement.querySelectorAll('[id]')
     for (let child of childrenWithId) {
         child.id = this.id + '.' + child.id
+        if (child.nodeName == 'use') {
+            child.setAttribute('xlink:href', '#cmp-' + child.id)
+        }
     }
     return dom
 }

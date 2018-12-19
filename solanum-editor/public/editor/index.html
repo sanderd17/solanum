@@ -115,7 +115,7 @@ fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
           window.currentClass = svgDom.documentElement.getAttribute('class')
           const XmlS = new XMLSerializer()
           console.log(XmlS.serializeToString(svgDom))
-          canvas.setSvgString(XmlS.serializeToString(svgDom), false)
+          setTimeout(() => canvas.setSvgString(XmlS.serializeToString(svgDom), false), 0)
           canvas.setResolution(w, h)
           canvas.updateCanvas(w, h)
         }

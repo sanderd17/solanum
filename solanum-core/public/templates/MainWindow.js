@@ -30,10 +30,10 @@ MainWindow.prototype.render = function() {
     return this.svg`<svg class="window" viewBox="0 0 1000 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>no title</title>
-            <use id="{id}.motor_1" xlink:href="cmp-{id}.motor_1" x="0" y="0" width="10" height="10"/>
-            <use id="{id}.motor_2" xlink:href="cmp-{id}.motor_2" x="0" y="12" width="10" height="10"/>
-            <use id="{id}.motor_3" xlink:href="cmp-{id}.motor_3" x="0" y="24" width="10" height="10"/>
-            <use id="{id}.motor_4" xlink:href="cmp-{id}.motor_4" x="0" y="36" width="10" height="10"/>
+            <use id="motor_1" x="0" y="0" width="10" height="10"/>
+            <use id="motor_2" x="0" y="12" width="10" height="10"/>
+            <use id="motor_3" x="0" y="24" width="10" height="10"/>
+            <use id="motor_4" x="0" y="36" width="10" height="10"/>
         </g>
     </svg>`
 }
