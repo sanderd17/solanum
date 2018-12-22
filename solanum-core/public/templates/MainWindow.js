@@ -27,9 +27,15 @@ MainWindow.prototype.getReplacements = function() {
 }
 
 MainWindow.prototype.render = function() {
-    return this.svg`<svg class="window" viewBox="0 0 1000 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    let svg = []
+    for (let i = 0; i < 3000; i++) {
+        svg.push(`<use id="motor_${i}" x="${10 * Math.floor(i/40)}" y="${(i%40) * 12}" width="10" height="10"/>`)
+    }
+    
+    return this.svg`<svg class="window" viewBox="0 0 1000 500" version="2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>no title</title>
+            ${svg.join('\n')}
             <use id="motor_1" x="0" y="0" width="10" height="10"/>
             <use id="motor_2" x="0" y="12" width="10" height="10"/>
             <use id="motor_3" x="0" y="24" width="10" height="10"/>

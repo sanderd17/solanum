@@ -72,7 +72,7 @@ class Template {
 Template.prototype.createSubTemplates = function() {
     let subTemplates = this.getReplacements()
     for (let [subId, template] of Object.entries(subTemplates)) {
-        let child = new template.type(this, this.id + '.' + subId, this.inEditor, template.props)
+        let child = new template.type(this, this.id + '-' + subId, this.inEditor, template.props)
         child.createSubTemplates()
         this.children[subId] = child
     }
@@ -141,7 +141,7 @@ Template.prototype.addBindings = function() {
  * @param {string} id 
  */
 Template.prototype.getElementById = function(id) {
-    return document.getElementById(this.id + '.' + id)
+    return document.getElementById(this.id + '-' + id)
 }
 
 /**
@@ -172,9 +172,11 @@ Template.prototype.svg = function(rawStrings, ...values) {
     const dom = parser.parseFromString(content, 'text/xml')
     const childrenWithId = dom.documentElement.querySelectorAll('[id]')
     for (let child of childrenWithId) {
-        child.id = this.id + '.' + child.id
+        child.id = this.id + '-' + child.id
         if (child.nodeName == 'use') {
-            child.setAttribute('xlink:href', '#cmp-' + child.id)
+            // href for recent browsers, xlink:href for editor
+            child.setAttribute('href', '#--' + child.id)
+            child.setAttribute('xlink:href', '#--' + child.id)
         }
     }
     return dom
