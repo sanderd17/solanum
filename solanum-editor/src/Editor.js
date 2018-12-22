@@ -145,17 +145,11 @@ Editor.prototype.setComponentSvg = function(req, res) {
             }
             // alter the ids
             if (el.attributes && el.attributes.id)
-                el.attributes.id = el.attributes.id.replace(/^id/, '{id}')
+                el.attributes.id = el.attributes.id.replace(/^id-/, '')
             // replace use elements by references to their child components
             if (el.name == 'use') {
                 if (el.attributes && el.attributes['xlink:href'])
                     delete el.attributes['xlink:href']
-                if (el.attributes && el.attributes.id && el.attributes.id.startsWith('{id}'))
-                    el.attributes.id = el.attributes.id.substring(5)
-                el.type = 'text'
-                el.text = '\n${' + JSON.stringify(el.attributes) + '}'
-                delete el.attributes
-                delete el.name
             }
         })
     svgData.elements[0] = rootElement
