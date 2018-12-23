@@ -35,7 +35,7 @@ class Template {
                     this.dataBindings[prop](this, val, oldVal)
                 }
                 return true
-            }
+            },
         })
         this.dom = new Proxy({}, {
             /**
@@ -166,9 +166,12 @@ Template.prototype.getCssMap = function() {
  * @return {Document} DOM Document of an SVG element
  */
 Template.prototype.svg = function(rawStrings, ...values) {
-    // TODO cache based on values array
+    // TODO cache parsed dom?
     const parser = new DOMParser()
-    const content = String.raw(rawStrings, ...values)
+    let content = String.raw(rawStrings, ...values)
+
+    content = content.replace(braceFinder, (_, key) => key in this.props ? this.props[key] : key)
+
     const dom = parser.parseFromString(content, 'text/xml')
     const childrenWithId = dom.documentElement.querySelectorAll('[id]')
     for (let child of childrenWithId) {
@@ -179,6 +182,7 @@ Template.prototype.svg = function(rawStrings, ...values) {
             child.setAttribute('xlink:href', '#--' + child.id)
         }
     }
+    dom.documentElement.id = this.id
     return dom
 }
 

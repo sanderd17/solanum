@@ -10,10 +10,33 @@
   <body>
     <div id="root" style="position:absolute;left:0;top:0"></div>
 
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
     <svg style="display:none" id="childSvgs"></svg>
     <h1>Solanum editor</h1>
 
-    <div id="editorContainer"></div>
+    <!--<svg id="editorContainer" width="1000" height="500"></svg>-->
 
     <div>
       <input type="color" id="fill" name="fill" value="#FF0000"/>
@@ -30,10 +53,6 @@
       function saveSvg() {
         let name = 'Motor'
         let svgNode = document.getElementById('svgcontent')
-        /*const symbolNodes = svgNode.querySelectorAll('symbol')
-        for (let symbolNode of symbolNodes) {
-          svgNode.removeChild(symbolNode)
-        }*/
         let svg = svgNode.outerHTML
         fetch('/API/Editor/setComponentSvg', {
           method: 'POST',
@@ -52,10 +71,12 @@
       }
     </script>
 
+    <div id="errorOverlay">
+    <script type="module" src="index.js"></script>
     <script type="module">
 import SvgCanvas from './svgedit/svgcanvas.js';
 
-const container = document.querySelector('#editorContainer');
+const container = document.querySelector('#editorWindow-editorCanvas');
 window.currentModule = ''
 window.currentComponent = ''
 window.currentSize = [300, 300]
@@ -109,12 +130,14 @@ fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
             document.getElementById('childSvgs').appendChild(childDom.documentElement)
           }, true)
           const svgDom = inst.render()
+          //svgDom.setAttribute('version', '1.1')
+          //svgDom.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+          //svgDom.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
           const viewBox = svgDom.documentElement.getAttribute('viewBox')
           const [_1, _2, w, h] = viewBox.split(' ')
           window.currentSize = [w, h]
           window.currentClass = svgDom.documentElement.getAttribute('class')
           const XmlS = new XMLSerializer()
-          console.log(XmlS.serializeToString(svgDom))
           setTimeout(() => canvas.setSvgString(XmlS.serializeToString(svgDom), false), 0)
           canvas.setResolution(w, h)
           canvas.updateCanvas(w, h)
@@ -125,7 +148,5 @@ fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
     }
   })
     </script>
-    <div id="errorOverlay">
-    <script type="module" src="index.js"></script>
   </body>
 </html>

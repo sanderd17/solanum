@@ -32,7 +32,7 @@ MainWindow.prototype.render = function() {
         svg.push(`<use id="motor_${i}" x="${10 * Math.floor(i/40)}" y="${(i%40) * 12}" width="10" height="10"/>`)
     }
     
-    return this.svg`<svg class="window" viewBox="0 0 1000 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    return this.svg`<svg class="window" viewBox="0 0 2000 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>no title</title>
             <use id="motor_0" x="0" y="0" width="10" height="10"/>
