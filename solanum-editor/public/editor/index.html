@@ -33,10 +33,18 @@
     <br/>
     <br/>
     <br/>
-    <svg style="display:none" id="childSvgs"></svg>
-    <h1>Solanum editor</h1>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
     <!--<svg id="editorContainer" width="1000" height="500"></svg>-->
+    <!-- Editor stil refers to invisible elements, this should be part of canvas-->
+    <svg id="childSvgs" style="display:none"></svg>
 
     <div>
       <input type="color" id="fill" name="fill" value="#FF0000"/>
@@ -81,19 +89,6 @@ window.currentModule = ''
 window.currentComponent = ''
 window.currentSize = [300, 300]
 window.currentClass = ''
-
-const config = {
-  initFill: {color: 'FFFFFF', opacity: 1},
-  initStroke: {color: '000000', opacity: 1, width: 1},
-  text: {stroke_width: 0, font_size: 24, font_family: 'serif'},
-  initOpacity: 1,
-  imgPath: 'svgedit/images/',
-  dimensions: currentSize,
-  baseUnit: 'px',
-};
-
-window.canvas = new SvgCanvas(container, config);
-canvas.updateCanvas(...currentSize);
 
 const updateSelectedElements = (attr, val) => canvas.getSelectedElems().forEach(el => el.setAttribute(attr, val))
 

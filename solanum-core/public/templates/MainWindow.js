@@ -2724,7 +2724,7 @@ MainWindow.prototype.render = function() {
             <use id="motor_2686" x="670" y="72" width="10" height="10"/>
             <use id="motor_2687" x="670" y="84" width="10" height="10"/>
             <use id="motor_2688" x="670" y="96" width="10" height="10"/>
-            <use id="motor_2689" x="681.5480025272598" y="103.9629901887961" width="10" height="10" transform="matrix(10.3048 0 0 5.69729 -6234.22 -509.28)"/>
+            <use id="motor_2689" x="681.5480025272598" y="103.9629901887961" width="10" height="10" transform="matrix(6.05306 0 0 5.69729 -3355.96 -500.189)"/>
             <use id="motor_2690" x="670" y="120" width="10" height="10"/>
             <use id="motor_2691" x="670" y="132" width="10" height="10"/>
             <use id="motor_2692" x="670" y="144" width="10" height="10"/>

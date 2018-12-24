@@ -92,8 +92,12 @@ Template.prototype.addEventHandlers = function() {
         for (let eventType in this.eventHandlers[id]) {
             let fn = this.eventHandlers[id][eventType]
             let handlerNode = this.getElementById(id)
-            if (handlerNode) // TODO warn about missing node
-                handlerNode.addEventListener(eventType, (event) => fn(this, event))
+            if (handlerNode) {// TODO warn about missing node
+                if (eventType == "load")
+                    fn(this, null)
+                else
+                    handlerNode.addEventListener(eventType, (event) => fn(this, event))
+            }
         }
     }
     for (let child of Object.values(this.children)) {
@@ -141,6 +145,7 @@ Template.prototype.addBindings = function() {
  * @param {string} id 
  */
 Template.prototype.getElementById = function(id) {
+    if (id == '') return document.getElementById(this.id)
     return document.getElementById(this.id + '-' + id)
 }
 

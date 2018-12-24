@@ -25,15 +25,13 @@ EditorWindow.prototype.getReplacements = function() {
 }
 
 EditorWindow.prototype.render = function() {
-    return this.svg`
-    <svg class="editorMode" viewBox="0 0 1050 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    return this.svg`<svg class="editorMode" viewBox="0 0 1050 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>notitle</title>
-            <use id="editorMode" x="0" y="0" width="50" height="500"/>
+            <use id="editorMode" x="0.8181819915771484" y="10.18181824684143" width="50" height="500"/>
             <use id="editorCanvas" x="50" y="0" width="1000" height="500"/>
         </g>
-    </svg>
-    `;
+    </svg>`;
 }
 
 export default EditorWindow
