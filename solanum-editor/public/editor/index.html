@@ -10,13 +10,42 @@
   <body>
     <div id="root" style="position:absolute;left:0;top:0"></div>
 
-    <h1>Solanum editor</h1>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
-    <div id="editorContainer"></div>
+    <!-- Editor stil refers to invisible elements, this should be part of canvas-->
+    <svg id="childSvgs" style="display:none"></svg>
 
     <div>
-      <input type="color" id="fill" name="fill" value="#FF0000"/>
-      <input type="color" id="stroke" name="stroke" value="#000000"/>
       <button onclick="canvas.deleteSelectedElements()">Delete Selected</button>
       <button onclick="canvas.clear(); canvas.updateCanvas(width, height);">Clear All</button>
       <button onclick="alert(canvas.getSvgString())">Get SVG</button>
@@ -28,18 +57,17 @@
     <script>
       function saveSvg() {
         let name = 'Motor'
-        let svgNode = document.getElementById('svgcontent').children[0]
-        /*const symbolNodes = svgNode.querySelectorAll('symbol')
-        for (let symbolNode of symbolNodes) {
-          svgNode.removeChild(symbolNode)
-        }*/
+        let svgNode = document.getElementById('svgcontent')
         let svg = svgNode.outerHTML
         fetch('/API/Editor/setComponentSvg', {
           method: 'POST',
           body: JSON.stringify({
             module: window.currentModule,
             component: window.currentComponent,
-            svg: svg
+            svg: svg,
+            class: window.currentClass,
+            width: window.currentSize[0],
+            height: window.currentSize[1],
           }),
           headers:{
             'Content-Type': 'application/json'
@@ -48,34 +76,15 @@
       }
     </script>
 
+    <div id="errorOverlay">
+    <script type="module" src="index.js"></script>
     <script type="module">
 import SvgCanvas from './svgedit/svgcanvas.js';
 
-const container = document.querySelector('#editorContainer');
-const {width, height} = {width: 500, height: 300};
-window.width = width;
-window.height = height;
-
-const config = {
-  initFill: {color: 'FFFFFF', opacity: 1},
-  initStroke: {color: '000000', opacity: 1, width: 1},
-  text: {stroke_width: 0, font_size: 24, font_family: 'serif'},
-  initOpacity: 1,
-  imgPath: 'editor/images/',
-  dimensions: [width, height],
-  baseUnit: 'px',
-};
-
-window.canvas = new SvgCanvas(container, config);
-canvas.updateCanvas(width, height);
-
-const updateSelectedElements = (attr, val) => canvas.getSelectedElems().forEach(el => el.setAttribute(attr, val))
-
-document.getElementById('fill').addEventListener('input', (ev) => updateSelectedElements('fill', ev.target.value))
-document.getElementById('stroke').addEventListener('input', (ev) => updateSelectedElements('stroke', ev.target.value))
-
 window.currentModule = ''
 window.currentComponent = ''
+window.currentSize = [300, 300]
+window.currentClass = ''
 
 fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
   .then(async response => {
@@ -96,12 +105,26 @@ fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
           const module = await import('/templates/' + cmp)
           /** @type {typeof Template} */
           const cmpClass = module.default
-          const [w, h] = cmpClass.prototype.size
-          // TODO find a better string than id, but svgedit breaks on special characters
-          const inst = new cmpClass(null, 'id', true, {width: w, height: h, x:0, y:0})
+          // TODO find a better string than id, but svgedit breaks on special characters in use referals
+          const inst = new cmpClass(null, 'id', true, {})
           inst.createSubTemplates()
-          const svg = inst.render()
-          canvas.setSvgString(svg, false)
+          const parser = new DOMParser()
+
+          inst.forEachChild(child => {
+            let childDom = child.render()
+            childDom.documentElement.setAttribute('id', '--' + child.id)
+            document.getElementById('childSvgs').appendChild(childDom.documentElement)
+          }, true)
+          const svgDom = inst.render()
+          //svgDom.setAttribute('version', '1.1')
+          //svgDom.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+          //svgDom.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
+          const viewBox = svgDom.documentElement.getAttribute('viewBox')
+          const [_1, _2, w, h] = viewBox.split(' ')
+          window.currentSize = [w, h]
+          window.currentClass = svgDom.documentElement.getAttribute('class')
+          const XmlS = new XMLSerializer()
+          setTimeout(() => canvas.setSvgString(XmlS.serializeToString(svgDom), false), 0)
           canvas.setResolution(w, h)
           canvas.updateCanvas(w, h)
         }
@@ -111,7 +134,5 @@ fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
     }
   })
     </script>
-    <div id="errorOverlay">
-    <script type="module" src="index.js"></script>
   </body>
 </html>

@@ -14,10 +14,13 @@ Button.prototype.eventHandlers = {}
 Button.prototype.domBindings = {}
 
 
-Button.prototype.render = function(id, width, height, x, y, data) {
+Button.prototype.render = function() {
     return this.svg`
-        <rect id="{id}.btn" width="100%" height="100%" rx="5" ry="5" fill="#E9E9E9" stroke="black"/>
-        <image id="{id}.img" href="{img}" height="100%" width="100%"/>
+        <svg class="btn" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+        <rect id="btn" width="100%" height="100%" rx="5" ry="5" fill="#E9E9E9" stroke="black"/>
+        <image id="img" href="{img}" height="100%" width="100%"/>
+        </svg>
         `
 }
 

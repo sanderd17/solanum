@@ -49,4 +49,5 @@ function init(app, config) {
     return new Solanum(app, config)
 }
 
+
 export default init

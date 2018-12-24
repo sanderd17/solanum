@@ -38,10 +38,22 @@ Motor.prototype.domBindings = {
 }
 
 Motor.prototype.render = function() {
-    return this.svg`<title>Motor {st_motor}</title>
-    <circle id="{id}.icon_1" class="icon_1" cx="267.49999713897705" cy="284" r="200" fill="blue"/>
-    <rect id="{id}.icon_2" height="100" width="100" x="46" y="21" fill="red"/>
-    <rect id="{id}.icon_3" height="100" width="100" x="0" y="400" fill="red"/>`;
+    return this.svg`<svg class="motor" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g class="layer">
+            <title>Motor st_motor</title>
+            <circle id="icon_1" class="icon_1" cx="267.49999713897705" cy="284" r="200" fill="blue"/>
+            <rect id="icon_2" height="100" width="100" x="403.4545454978943" y="-5.090909004211426" fill="red"/>
+            <rect id="icon_3" height="100" width="100" x="0" y="400" fill="red"/>
+        </g>
+    </svg>`;
 }
+    /*
+    return this.svg`<svg class="" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <title>Motor {st_motor}</title>
+        <circle id="{id}.icon_1" class="icon_1" cx="267.49999713897705" cy="284" r="200" fill="blue"/>
+        <rect id="{id}.icon_2" height="100" width="100" x="46" y="21" fill="red"/>
+        <rect id="{id}.icon_3" height="100" width="100" x="0" y="400" fill="red"/>
+    </svg>`
+    */
 
 export default Motor

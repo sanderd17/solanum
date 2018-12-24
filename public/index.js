@@ -3,10 +3,21 @@ import ts from "./lib/TagSet.js"
 import messager from "./lib/Messager.js"
 ts.initMessageHandlers()
 
-const mainWindow = new MainWindow(null, 'MainWindow', false, {x:0, y:0, width: window.innerWidth, height: window.innerHeight})
+const mainWindow = new MainWindow(null, 'mw', false, {})
 mainWindow.createSubTemplates()
-let div = document.querySelector("#root")
-div.innerHTML = mainWindow.render()
+
+mainWindow.forEachChild(child => {
+    let childDom = child.render()
+    childDom.documentElement.setAttribute('id', '--' + child.id)
+    document.getElementById('childSvgs').appendChild(childDom.documentElement)
+}, true)
+
+const svgDom = mainWindow.render().documentElement
+svgDom.setAttribute("width", window.innerWidth)
+svgDom.setAttribute("height", window.innerHeight)
+
+let div = document.getElementById("root")
+div.appendChild(svgDom)
 
 let styleEl = document.createElement('style')
 document.head.appendChild(styleEl)
