@@ -23,20 +23,16 @@ const replaceUses = function(dom, cmp) {
         childDom.setAttribute("y", el.getAttribute("y"))
         childDom.setAttribute("width", el.getAttribute("width"))
         childDom.setAttribute("height", el.getAttribute("height"))
+        // TODO chrome doesn't impmlement SVG transforms for now, should wrap in <g>
+        childDom.setAttribute("transform", el.getAttribute("transform"))
 
         el.replaceWith(childDom)
+        // call recursively
         replaceUses(childDom, child)
     }
 }
 
 replaceUses(svgDom, mainWindow)
-/*
-mainWindow.forEachChild(child => {
-    let childDom = child.render()
-    childDom.documentElement.setAttribute('id', '--' + child.id)
-    document.getElementById('childSvgs').appendChild(childDom.documentElement)
-}, true)
-*/
 
 let div = document.getElementById("root")
 div.appendChild(svgDom)

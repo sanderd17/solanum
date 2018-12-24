@@ -42,13 +42,10 @@
     <br/>
     <br/>
 
-    <!--<svg id="editorContainer" width="1000" height="500"></svg>-->
     <!-- Editor stil refers to invisible elements, this should be part of canvas-->
     <svg id="childSvgs" style="display:none"></svg>
 
     <div>
-      <input type="color" id="fill" name="fill" value="#FF0000"/>
-      <input type="color" id="stroke" name="stroke" value="#000000"/>
       <button onclick="canvas.deleteSelectedElements()">Delete Selected</button>
       <button onclick="canvas.clear(); canvas.updateCanvas(width, height);">Clear All</button>
       <button onclick="alert(canvas.getSvgString())">Get SVG</button>
@@ -84,16 +81,10 @@
     <script type="module">
 import SvgCanvas from './svgedit/svgcanvas.js';
 
-const container = document.querySelector('#editorWindow-editorCanvas');
 window.currentModule = ''
 window.currentComponent = ''
 window.currentSize = [300, 300]
 window.currentClass = ''
-
-const updateSelectedElements = (attr, val) => canvas.getSelectedElems().forEach(el => el.setAttribute(attr, val))
-
-document.getElementById('fill').addEventListener('input', (ev) => updateSelectedElements('fill', ev.target.value))
-document.getElementById('stroke').addEventListener('input', (ev) => updateSelectedElements('stroke', ev.target.value))
 
 fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
   .then(async response => {
