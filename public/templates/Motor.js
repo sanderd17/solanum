@@ -42,7 +42,7 @@ Motor.prototype.render = function() {
         <g class="layer">
             <title>Motor st_motor</title>
             <circle id="icon_1" class="icon_1" cx="267.49999713897705" cy="284" r="200" fill="blue"/>
-            <rect id="icon_2" height="100" width="100" x="403.4545454978943" y="-5.090909004211426" fill="red"/>
+            <rect id="icon_2" height="100" width="100" x="375.29869985580444" y="8.207791328430176" fill="#ff0000"/>
             <rect id="icon_3" height="100" width="100" x="0" y="400" fill="red"/>
         </g>
     </svg>`;

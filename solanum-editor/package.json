@@ -9,7 +9,8 @@
   "scripts": {
     "inspect": "node --inspect index.js",
     "test": "mocha -r esm",
-    "build": "tsc --build jsconfig.json"
+    "build": "tsc --build jsconfig.json",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "express": "^4.16.4",

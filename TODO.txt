@@ -2,3 +2,10 @@
 
 *******************************
 Designer !!!
+
+
+CHANGES TO SVGEDIT
+==============================
+
+* Added 'use' to 'rect' list in coords.js: Lines 107 - 130
+* Remove 'use' from webkit handling in utilities.js: Line 648

@@ -59,9 +59,9 @@ EditorMode.prototype.render = function() {
         <g class="layer">
             <title>EditorMode</title>
             <use id="select" x="0" y="0" width="50" height="50"/>
-            <use id="rect" x="0" y="60" width="50" height="50"/>
-            <use id="circle" x="0" y="120" width="50" height="50"/>
-            <use id="ellipse" x="0" y="180" width="50" height="100"/>
+            <use id="rect" x="0" y="60" width="50" height="50" transform="rotate(-24.6423 25 85)"/>
+            <use id="circle" x="-0.9543405014202779" y="107.9741285866445" width="50" height="164.11215539911836" transform="rotate(-0.684067 24.0456 190.03)"/>
+            <use id="ellipse" x="4.920049334319961" y="206.238926069133" width="50" height="100"/>
         </g>
     </svg>`;
 }

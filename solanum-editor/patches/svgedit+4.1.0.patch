@@ -1,0 +1,44 @@
+patch-package
+--- a/node_modules/svgedit/editor/coords.js
++++ b/node_modules/svgedit/editor/coords.js
+@@ -104,7 +104,7 @@ export const remapElement = function (selected, changes, m) {
+   }
+ 
+   const elName = selected.tagName;
+-  if (elName === 'g' || elName === 'text' || elName === 'tspan' || elName === 'use') {
++  if (elName === 'g' || elName === 'text' || elName === 'tspan') {
+     // if it was a translate, then just update x,y
+     if (m.a === 1 && m.b === 0 && m.c === 0 && m.d === 1 && (m.e !== 0 || m.f !== 0)) {
+       // [T][M] = [M][T']
+@@ -128,6 +128,7 @@ export const remapElement = function (selected, changes, m) {
+   switch (elName) {
+   case 'foreignObject':
+   case 'rect':
++  case 'use':
+   case 'image': {
+     // Allow images to be inverted (give them matrix when flipped)
+     if (elName === 'image' && (m.a < 0 || m.d < 0)) {
+--- a/node_modules/svgedit/editor/recalculate.js
++++ b/node_modules/svgedit/editor/recalculate.js
+@@ -201,9 +201,9 @@ export const recalculateDimensions = function (selected) {
+   case 'foreignObject':
+   case 'rect':
+   case 'image':
++  case 'use':
+     attrs = ['width', 'height', 'x', 'y'];
+     break;
+-  case 'use':
+   case 'text':
+   case 'tspan':
+     attrs = ['x', 'y'];
+--- a/node_modules/svgedit/editor/utilities.js
++++ b/node_modules/svgedit/editor/utilities.js
+@@ -645,7 +645,7 @@ export const getBBox = function (elem) {
+     if (elname === 'use') {
+       ret = groupBBFix(selected); // , true);
+     }
+-    if (elname === 'use' || (elname === 'foreignObject' && isWebkit())) {
++    if (elname === 'foreignObject' && isWebkit()) {
+       if (!ret) { ret = selected.getBBox(); }
+       // This is resolved in later versions of webkit, perhaps we should
+       // have a featured detection for correct 'use' behavior?
