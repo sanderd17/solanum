@@ -41,9 +41,9 @@ Motor.prototype.render = function() {
     return this.svg`<svg class="motor" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>Motor st_motor</title>
-            <circle id="icon_1" class="icon_1" cx="267.49999713897705" cy="284" r="200" fill="blue"/>
+            <circle id="icon_1" class="icon_1" cx="236.33116626739502" cy="221.66233825683594" r="200" fill="blue"/>
             <rect id="icon_2" height="100" width="100" x="375.29869985580444" y="8.207791328430176" fill="#ff0000"/>
-            <rect id="icon_3" height="100" width="100" x="0" y="400" fill="red"/>
+            <rect id="icon_3" height="100" width="100" x="-1.0389610528945923" y="349.0909118652344" fill="red"/>
         </g>
     </svg>`;
 }

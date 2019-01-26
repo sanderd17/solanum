@@ -5,8 +5,8 @@ const mainWindow = new EditorWindow(null, 'EditorWindow', false, {})
 mainWindow.createSubTemplates()
 
 const svgDom = mainWindow.render().documentElement
-svgDom.setAttribute("width", 1050)
-svgDom.setAttribute("height", 500)
+svgDom.setAttribute("width", 1350)
+svgDom.setAttribute("height", 800)
 
 const replaceUses = function(dom, cmp) {
     for (let el of dom.querySelectorAll('use')) {

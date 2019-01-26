@@ -44,7 +44,7 @@ EditorMode.prototype.render = function() {
             <div
                 id="canvasRoot"
                 xmlns="http://www.w3.org/1999/xhtml"
-                style="max-width:950px; max-height:450px; overflow:auto; white-space:nowrap;">
+                style="max-width:1000px; max-height:500px; overflow:auto; white-space:nowrap;">
             </div>
         </foreignObject>
     </svg>

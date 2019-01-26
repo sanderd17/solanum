@@ -34,10 +34,10 @@ EditorAttributes.prototype.eventHandlers = {
 EditorAttributes.prototype.domBindings = {}
 
 EditorAttributes.prototype.render = function() {
-    return this.svg`<svg class="editorMode" viewBox="0 0 150 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    return this.svg`<svg class="editorMode" viewBox="0 0 300 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>EditorAttributes</title>
-        <foreignObject x="0" y="0" width="150" height="500">
+        <foreignObject x="0" y="0" width="300" height="300">
             <div
                 id="canvasRoot"
                 xmlns="http://www.w3.org/1999/xhtml"
