@@ -30,7 +30,7 @@ EditorTemplateList.prototype.SetComponentList = function(modules){
             li.setAttribute('draggable', true)
             li.ondragstart = (ev) => {
                 ev.dataTransfer.setData('module', mod)
-                ev.dataTransfer.setData('component', cmp)
+                ev.dataTransfer.setData('component', cmp.split(".")[0])
             } 
 
             li.onclick = async () => {

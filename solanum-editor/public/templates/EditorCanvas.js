@@ -44,6 +44,11 @@ EditorMode.prototype.eventHandlers = {
             let component = ev.dataTransfer.getData('component')
             console.log(module + ' ' + component)
             let thisRect = cmp.getElementById('canvasRoot').getBoundingClientRect()
+            let i = 1
+            let id = 'id.' + component + "-" + i
+            console.log(cmp.getElementById(id))
+            while (document.getElementById(id) != null)
+                id = 'id.' + component + "-" + (++i)
             console.log(ev.clientX, ev.clientY, ev.screenX, ev.screenY)
             window.canvas.addSVGElementFromJson({
                 element: 'rect',
@@ -53,8 +58,9 @@ EditorMode.prototype.eventHandlers = {
                     y: ev.clientY - thisRect.top,
                     height:100,
                     width:100,
-                    id: 'nextRect',
+                    id: id,
                     fill: 'black',
+                    opacity: 1,
                     style: 'pointer-events:none'
                 }
             })
