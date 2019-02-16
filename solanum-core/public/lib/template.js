@@ -92,11 +92,14 @@ Template.prototype.addEventHandlers = function() {
         for (let eventType in this.eventHandlers[id]) {
             let fn = this.eventHandlers[id][eventType]
             let handlerNode = this.getElementById(id)
-            if (handlerNode) {// TODO warn about missing node
+            if (handlerNode) {
                 if (eventType == "load")
                     fn(this, null)
                 else
                     handlerNode.addEventListener(eventType, (event) => fn(this, event))
+            }
+            else {
+                console.error("Node with id " + id + " not found")
             }
         }
     }

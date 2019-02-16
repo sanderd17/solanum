@@ -32,7 +32,34 @@ EditorMode.prototype.eventHandlers = {
             window.canvas = new SvgCanvas(container, config)
             window.canvas.updateCanvas(...currentSize);
         }
-    }
+    },
+    'canvasRoot': {
+        'dragover': (cmp, ev) => {
+            console.log("dragging")
+            ev.preventDefault()
+        },
+        'drop': (cmp, ev) => {
+            ev.preventDefault()
+            let module = ev.dataTransfer.getData('module')
+            let component = ev.dataTransfer.getData('component')
+            console.log(module + ' ' + component)
+            let thisRect = cmp.getElementById('canvasRoot').getBoundingClientRect()
+            console.log(ev.clientX, ev.clientY, ev.screenX, ev.screenY)
+            window.canvas.addSVGElementFromJson({
+                element: 'rect',
+                curStyles: true,
+                attr: {
+                    x: ev.clientX - thisRect.left,
+                    y: ev.clientY - thisRect.top,
+                    height:100,
+                    width:100,
+                    id: 'nextRect',
+                    fill: 'black',
+                    style: 'pointer-events:none'
+                }
+            })
+        },
+    },
 }
 
 EditorMode.prototype.domBindings = {}

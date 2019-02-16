@@ -26,6 +26,13 @@ EditorTemplateList.prototype.SetComponentList = function(modules){
         for (let cmp of components) {
             let li = document.createElement('li')
             li.textContent = cmp
+
+            li.setAttribute('draggable', true)
+            li.ondragstart = (ev) => {
+                ev.dataTransfer.setData('module', mod)
+                ev.dataTransfer.setData('component', cmp)
+            } 
+
             li.onclick = async () => {
                 window.currentModule = mod
                 window.currentComponent = cmp
