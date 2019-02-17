@@ -50,7 +50,7 @@ EditorMode.prototype.eventHandlers = {
             while (document.getElementById(id) != null)
                 id = 'id.' + component + "-" + (++i)
             console.log(ev.clientX, ev.clientY, ev.screenX, ev.screenY)
-            window.canvas.addSVGElementFromJson({
+            let el = window.canvas.addSVGElementFromJson({
                 element: 'rect',
                 curStyles: true,
                 attr: {
@@ -60,10 +60,17 @@ EditorMode.prototype.eventHandlers = {
                     width:100,
                     id: id,
                     fill: 'black',
-                    opacity: 1,
-                    style: 'pointer-events:none'
+                    opacity: 1
                 }
             })
+
+            window.canvas.cleanupElement(el);
+            window.canvas.selectOnly([el], true);
+            // we create the insert command that is stored on the stack
+            // undo means to call cmd.unapply(), redo means to call cmd.apply()
+            addCommandToHistory(new InsertElementCommand(el));
+
+            window.canvas.call('changed', [el])
         },
     },
 }
