@@ -12,17 +12,17 @@
     "test": "mocha -r esm */test/**/*.js"
   },
   "dependencies": {
-    "esm": "^3.0.84",
+    "esm": "^3.2.5",
     "express": "^4.16.4",
     "express-ws": "^4.0.0",
-    "node-opcua": "^0.5.3"
+    "node-opcua": "^0.5.8"
   },
   "devDependencies": {
-    "@types/express": "^4.16.0",
+    "@types/express": "^4.16.1",
     "@types/express-ws": "^3.0.0",
-    "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.12",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.26",
     "mocha": "^5.2.0",
-    "typescript": "^3.2.2"
+    "typescript": "^3.3.3"
   }
 }

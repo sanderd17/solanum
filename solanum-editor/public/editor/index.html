@@ -7,49 +7,18 @@
   </head>
 
   <body>
-    <div id="root" style="position:absolute;left:0;top:0"></div>
-
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-
-    <!-- Editor stil refers to invisible elements, this should be part of canvas-->
-    <svg id="childSvgs" style="display:none"></svg>
-
     <div>
       <button onclick="canvas.deleteSelectedElements()">Delete Selected</button>
       <button onclick="canvas.clear(); canvas.updateCanvas(width, height);">Clear All</button>
       <button onclick="alert(canvas.getSvgString())">Get SVG</button>
       <button onclick="saveSvg()">Save</button>
     </div>
+
+    <div id="root" style="position:absolute;left:0;top:50"></div>
+
+    <!-- Editor stil refers to invisible elements, this should be part of canvas-->
+    <svg id="childSvgs" style="display:none"></svg>
+
     <script>
       function saveSvg() {
         let name = 'Motor'

@@ -24,19 +24,20 @@ EditorTemplateList.prototype.SetComponentList = function(modules){
         let components = modules[mod]
         let childUl = document.createElement('ul')
         for (let cmp of components) {
+            cmp = cmp.split('.')[0]
             let li = document.createElement('li')
             li.textContent = cmp
 
             li.setAttribute('draggable', true)
             li.ondragstart = (ev) => {
                 ev.dataTransfer.setData('module', mod)
-                ev.dataTransfer.setData('component', cmp.split(".")[0])
+                ev.dataTransfer.setData('component', cmp)
             } 
 
             li.onclick = async () => {
                 window.currentModule = mod
                 window.currentComponent = cmp
-                const module = await import('/templates/' + cmp)
+                const module = await import('/templates/' + cmp + '.js')
                 /** @type {typeof Template} */
                 const cmpClass = module.default
                 // TODO find a better string than id, but svgedit breaks on special characters in use referals

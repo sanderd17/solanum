@@ -1,5 +1,6 @@
 import Template from '../lib/template.js'
 import SvgCanvas from '../editor/svgedit/svgcanvas.js'
+//import {InsertElementCommand} from '../editor/svgedit/history.js'
 
 /** @typedef {import('../lib/template.js').eventHandler} eventHandler */
 
@@ -34,41 +35,53 @@ EditorMode.prototype.eventHandlers = {
         }
     },
     'canvasRoot': {
-        'dragover': (cmp, ev) => {
-            console.log("dragging")
+        'dragover': (cmp, ev) => ev.preventDefault(),
+        'drop': async (cmp, ev) => {
             ev.preventDefault()
-        },
-        'drop': (cmp, ev) => {
-            ev.preventDefault()
-            let module = ev.dataTransfer.getData('module')
-            let component = ev.dataTransfer.getData('component')
-            console.log(module + ' ' + component)
-            let thisRect = cmp.getElementById('canvasRoot').getBoundingClientRect()
+            let moduleName = ev.dataTransfer.getData('module')
+            let componentName = ev.dataTransfer.getData('component')
+            console.log(moduleName + ' ' + componentName)
+            // DETERMINE NEW ID
             let i = 1
-            let id = 'id.' + component + "-" + i
+            let id = 'id-' + componentName + "_" + i
             console.log(cmp.getElementById(id))
             while (document.getElementById(id) != null)
-                id = 'id.' + component + "-" + (++i)
+                id = 'id-' + componentName + "_" + (++i)
+
+            // ADD CHILD TO DOM
+            const moduleFile = await import('/templates/' + componentName + '.js')
+            /** @type {typeof Template} */
+            const cmpClass = moduleFile.default
+            // TODO find a better string than id, but svgedit breaks on special characters in use referals
+            const child = new cmpClass(null, 'id', true, {})
+
+            let childDom = child.render()
+            childDom.documentElement.setAttribute('id', '--' + id)
+            document.getElementById('childSvgs').appendChild(childDom.documentElement)
+
+
+            // ADD USE TO SVG
+            let canvasRect = cmp.getElementById('canvasRoot').getBoundingClientRect()
             console.log(ev.clientX, ev.clientY, ev.screenX, ev.screenY)
             let el = window.canvas.addSVGElementFromJson({
-                element: 'rect',
+                element: 'use',
                 curStyles: true,
                 attr: {
-                    x: ev.clientX - thisRect.left,
-                    y: ev.clientY - thisRect.top,
+                    x: ev.clientX - canvasRect.left,
+                    y: ev.clientY - canvasRect.top,
                     height:100,
                     width:100,
                     id: id,
-                    fill: 'black',
+                    'xlink:href': '#--' + id,
                     opacity: 1
                 }
             })
 
             window.canvas.cleanupElement(el);
             window.canvas.selectOnly([el], true);
-            // we create the insert command that is stored on the stack
+            // TODO create the insert command that is stored on the stack
             // undo means to call cmd.unapply(), redo means to call cmd.apply()
-            addCommandToHistory(new InsertElementCommand(el));
+            //window.canvas.addCommandToHistory(new InsertElementCommand(el));
 
             window.canvas.call('changed', [el])
         },

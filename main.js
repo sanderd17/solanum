@@ -14,7 +14,6 @@ app.use(function (req, res, next) {
     return next();
 });
 
-const guiPath = path.join(__dirname, './solanum-core/public')
 
 initCore(app, config)
 initEditor(app, config)

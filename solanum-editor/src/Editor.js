@@ -157,7 +157,7 @@ Editor.prototype.setComponentSvg = function(req, res) {
     const reparsedSvg = xml2js.js2xml(svgData, {spaces: 4})
 
     const sourceDir = this.config.editableDirs[body.module]
-    const fileName = path.join(sourceDir, body.component)
+    const fileName = path.join(sourceDir, body.component + '.js')
     // FIXME Hard-coded path should refer to correct js file
     fs.readFile(fileName,
         {encoding: 'utf-8'},
