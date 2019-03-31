@@ -1,4 +1,3 @@
-import path from 'path'
 import express from 'express'
 
 
@@ -9,11 +8,11 @@ import {default as initEditor} from './solanum-editor'
 
 const app = express()
 
+/* optional middleware: listen to all requests coming from clients
 app.use(function (req, res, next) {
-    // optional middleware: listen to all requests coming from clients
     return next();
 });
-
+*/
 
 initCore(app, config)
 initEditor(app, config)

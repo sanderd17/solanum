@@ -18,13 +18,31 @@ const ReplaceBraces = function(ctx, template) {
     return template.replace(braceFinder, (_, group) => group in ctx ? ctx[group] : '{' + group + '}')
 }
 
+/**
+ * An editor instance will need to be created once for the app
+ * This interface offers the interface metods to read and modify
+ * resources.
+ */
 class Editor {
+    /**
+     * Construct the editor interface of the app
+     * @param {Express.Application} app 
+     * @param {*} config JSON configuration
+     */
     constructor(app, config) {
+        /** Configuration of the app (see /config.js)*/
         this.config = config
+        /** Object representing locked files */
         this.locks = {}
     }
 }
 
+/**
+ * Finds all files from the config.editableDirs
+ * and returns the paths.
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ */
 Editor.prototype.getComponentPaths = async function(req, res) {
     const modules = Object.keys(this.config.editableDirs)
     const editableDirs = modules.map((k) => this.config.editableDirs[k])
@@ -49,7 +67,9 @@ Editor.prototype.getComponentPaths = async function(req, res) {
  * @param {Response} res 
  */
 Editor.prototype.openComponent = function(req, res) {
-    res.sendstatus(501)
+    const body = req.body
+    const directory = this.config.editableDirs[body.module]
+    res.sendFile(path.join(directory, body.file))
 }
 
 
