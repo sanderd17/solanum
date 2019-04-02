@@ -43,5 +43,13 @@ describe('Editor', function() {
             editor.openComponent({body:{module: 'module2', file: 'file1.js'}}, response)
             done()
         })
+    }),
+    describe('updateSvgViaAst', function() {
+        it('Should return false when no SVG is found', function() {
+            let editor = new Editor({}, {})
+            assert.equal(editor.updateSvgViaAst('', ''), false)
+        }),
+        it.skip('Should replace found SVG content', function() {
+        })
     })
 })
