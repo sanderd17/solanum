@@ -59,20 +59,41 @@ describe('Editor', function() {
 
                     class MyComponent extends Template {}
 
-                    EditorMode.prototype.class = 'mycomponent'
-                    EditorMode.prototype.size = [10,10]
+                    MyComponent.prototype.class = 'mycomponent'
+                    MyComponent.prototype.size = [10,10]
 
 
-                    EditorMode.prototype.render = function() {
+                    MyComponent.prototype.render = function() {
                         return this.svg\`<svg>version${i}</svg>\`;
                     }
 
-                    export default EditorMode
+                    export default MyComponent
                 `)
             }
             let newCode = editor.updateSvgViaAst(codes[0], "<svg>version2</svg>");
 
             assert.equal(codes[1], newCode)
-        })
+        }),
+        it('Should do something on invalid code', function() {
+            let editor = new Editor({}, {})
+
+            let code = `
+                import Template from '../lib/template.js'
+
+
+                class MyComponent extends Template {}
+
+                MyComponent.prototype.wrongFunction = function() {
+                    this js is invalid
+                }
+
+                MyComponent.prototype.render = function() {
+                    return this.svg\`<svg>version1</svg>\`;
+                }
+
+            `
+            console.log(editor.updateSvgViaAst(code, "<svg>version2</svg>"))
+
+        }),
     })
 })
