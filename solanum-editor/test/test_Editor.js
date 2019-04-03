@@ -74,7 +74,7 @@ describe('Editor', function() {
 
             assert.equal(codes[1], newCode)
         })
-        it('Should do something on invalid code', function() {
+        it('Should error out on invalid code', function() {
             let editor = new Editor({}, {})
 
             let code = `
@@ -93,6 +93,11 @@ describe('Editor', function() {
 
             `
             assert.throws(() => editor.updateSvgViaAst(code, "<svg>version2</svg>"), Error)
+        })
+    })
+    describe('cleanSvg', function() {
+        it('Blub', function() {
+
         })
     })
 })

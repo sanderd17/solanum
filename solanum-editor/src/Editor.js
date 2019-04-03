@@ -115,31 +115,13 @@ Editor.prototype.updateSvgViaAst = function(code, newSvg) {
 }
 
 /**
- * @typedef {object} TemplateDefinition
- * @property {string} module Name of the module the component is from
- * @property {string} component Name of the component, including the path. E.g. "objects/Motor"
- * @property {string} svg Inner SVG code
- * @property {string} class
- * @property {number} width
- * @property {number} height
+ * Clean up unneeded attributes and elements added by the online editor
+ * Also replaces bindings with template literals
+ * @param {string} svg string to parse
+ * @returns {string} cleaned up SVG xml
  */
-/**
- * 
- * @param {Request} req 
- * @param {Response} res 
- */
-Editor.prototype.setComponentSvg = function(req, res) {
-    /** @type {TemplateDefinition} */
-    const body = req.body
-    if (typeof body.module != "string")
-        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
-    if (typeof body.component != "string")
-        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
-    if (typeof body.svg != "string") 
-        return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
-    let svgData = xml2js.xml2js(body.svg)
-
-    console.log(body.svg)
+Editor.prototype.cleanSvg = function(svg) {
+    let svgData = xml2js.xml2js(svg)
     let rootElement = svgData.elements[0]
     rootElement.name = 'svg'
     rootElement.attributes = {
@@ -175,7 +157,35 @@ Editor.prototype.setComponentSvg = function(req, res) {
         })
     svgData.elements[0] = rootElement
 
-    const reparsedSvg = xml2js.js2xml(svgData, {spaces: 4})
+    return xml2js.js2xml(svgData, {spaces: 4})
+}
+
+/**
+ * @typedef {object} TemplateDefinition
+ * @property {string} module Name of the module the component is from
+ * @property {string} component Name of the component, including the path. E.g. "objects/Motor"
+ * @property {string} svg Inner SVG code
+ * @property {string} class
+ * @property {number} width
+ * @property {number} height
+ */
+/**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+Editor.prototype.setComponentSvg = function(req, res) {
+    /** @type {TemplateDefinition} */
+    const body = req.body
+    if (typeof body.module != "string")
+        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
+    if (typeof body.component != "string")
+        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
+    if (typeof body.svg != "string") 
+        return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
+
+    console.log(body.svg)
+    const cleanSvg = this.cleanSvg(body.svg)
 
     const sourceDir = this.config.editableDirs[body.module]
     const fileName = path.join(sourceDir, body.component + '.js')
@@ -188,7 +198,7 @@ Editor.prototype.setComponentSvg = function(req, res) {
                 res.status(500).send(`Error while reading file ${fileName}: ${err}`)
                 return
             }
-            const newCode = this.updateSvgViaAst(code, reparsedSvg)
+            const newCode = this.updateSvgViaAst(code, cleanSvg)
             if (newCode == false) {
                 res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
                 return
