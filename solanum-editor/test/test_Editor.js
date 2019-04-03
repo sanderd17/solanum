@@ -48,7 +48,7 @@ describe('Editor', function() {
         it('Should return false when no SVG is found', function() {
             let editor = new Editor({}, {})
             assert.equal(editor.updateSvgViaAst('', ''), false)
-        }),
+        })
         it('Should replace found SVG content', function() {
             let editor = new Editor({}, {})
 
@@ -73,7 +73,7 @@ describe('Editor', function() {
             let newCode = editor.updateSvgViaAst(codes[0], "<svg>version2</svg>");
 
             assert.equal(codes[1], newCode)
-        }),
+        })
         it('Should do something on invalid code', function() {
             let editor = new Editor({}, {})
 
@@ -92,8 +92,7 @@ describe('Editor', function() {
                 }
 
             `
-            console.log(editor.updateSvgViaAst(code, "<svg>version2</svg>"))
-
-        }),
+            assert.throws(() => editor.updateSvgViaAst(code, "<svg>version2</svg>"), Error)
+        })
     })
 })

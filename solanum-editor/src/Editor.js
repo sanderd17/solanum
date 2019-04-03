@@ -79,6 +79,7 @@ Editor.prototype.openComponent = function(req, res) {
  * @param {string} newSvg the svg xml to replace the old SVG with. This can include raw ${...} replacements
  * @returns {string|false} The transformed code,
  * or false if the transformed code wasn't succesful (the tagged svg string wasn't found)
+ * @throws {Error} when the code can't be parsed
  */
 Editor.prototype.updateSvgViaAst = function(code, newSvg) {
     const ast = recast.parse(code, {sourceType: 'module'})
