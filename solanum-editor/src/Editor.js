@@ -69,7 +69,7 @@ Editor.prototype.getComponentPaths = async function(req, res) {
 Editor.prototype.openComponent = function(req, res) {
     const body = req.body
     const directory = this.config.editableDirs[body.module]
-    res.sendFile(path.join(directory, body.file))
+    res.sendFile(path.join(directory, body.component))
 }
 
 

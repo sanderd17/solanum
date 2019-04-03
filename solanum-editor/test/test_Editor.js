@@ -40,7 +40,7 @@ describe('Editor', function() {
             const response = {sendFile: function(fileName) {
                 assert(fileName.endsWith('/module2/file1.js'))
             }}
-            editor.openComponent({body:{module: 'module2', file: 'file1.js'}}, response)
+            editor.openComponent({body:{module: 'module2', component: 'file1.js'}}, response)
             done()
         })
     }),
@@ -49,7 +49,30 @@ describe('Editor', function() {
             let editor = new Editor({}, {})
             assert.equal(editor.updateSvgViaAst('', ''), false)
         }),
-        it.skip('Should replace found SVG content', function() {
+        it('Should replace found SVG content', function() {
+            let editor = new Editor({}, {})
+
+            let codes = []
+            for (let i of [1, 2]) {
+                codes.push(`
+                    import Template from '../lib/template.js'
+
+                    class MyComponent extends Template {}
+
+                    EditorMode.prototype.class = 'mycomponent'
+                    EditorMode.prototype.size = [10,10]
+
+
+                    EditorMode.prototype.render = function() {
+                        return this.svg\`<svg>version${i}</svg>\`;
+                    }
+
+                    export default EditorMode
+                `)
+            }
+            let newCode = editor.updateSvgViaAst(codes[0], "<svg>version2</svg>");
+
+            assert.equal(codes[1], newCode)
         })
     })
 })
