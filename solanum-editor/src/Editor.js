@@ -116,45 +116,52 @@ Editor.prototype.updateSvgViaAst = function(code, newSvg) {
 
 /**
  * Clean up unneeded attributes and elements added by the online editor
+ * This expects an SVG with a single group, and no other nested elements
+ * 
  * Also replaces bindings with template literals
  * @param {string} svg string to parse
+ * @param {any} attributes object to apply to root element
  * @returns {string} cleaned up SVG xml
  */
-Editor.prototype.cleanSvg = function(svg) {
+Editor.prototype.cleanSvg = function(svg, attributes) {
     let svgData = xml2js.xml2js(svg)
     let rootElement = svgData.elements[0]
     rootElement.name = 'svg'
-    rootElement.attributes = {
-        class: body.class || '',
-        viewBox: `0 0 ${body.width || 100} ${body.height || 100}`,
-        version: "1.1",
-        xmlns: 'http://www.w3.org/2000/svg',
-        'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-    }
+    rootElement.attributes = attributes
+
+    if (!rootElement.elements)
+        return xml2js.js2xml(svgData)
 
     // Filter out all symbol elements, those visualise child components
     rootElement.elements = rootElement.elements.filter(el => el.name != 'symbol')
-    let gElement = rootElement.elements[0]
-    if (gElement.attributes.style)
-        delete gElement.attributes.style
-    gElement.elements.forEach((el) => {
-            // editor sets pointer styles, remove those
-            if (el.attributes && el.attributes.style)
-                delete el.attributes.style
-            // remove null attributes automatically added by editor
-            for (let at in el.attributes) {
-                if (el.attributes[at] == 'null')
-                    delete el.attributes[at]
-            }
-            // alter the ids
-            if (el.attributes && el.attributes.id)
-                el.attributes.id = el.attributes.id.replace(/^id-/, '')
-            // replace use elements by references to their child components
-            if (el.name == 'use') {
-                if (el.attributes && el.attributes['xlink:href'])
-                    delete el.attributes['xlink:href']
-            }
-        })
+
+    for (let group of rootElement.elements) {
+        if (group.attributes && group.attributes.style) 
+            delete group.attributes.style
+        if (group.name == "g" && group.elements) {
+            group.elements.forEach((el) => {
+                if (el.name == 'use') {
+                    if (el.attributes && el.attributes['xlink:href'])
+                        delete el.attributes['xlink:href']
+                }
+                if (!el.attributes)
+                    return
+                // editor sets pointer styles, remove those
+                if (el.attributes.style)
+                    delete el.attributes.style
+                // remove null attributes automatically added by editor
+                for (let at in el.attributes) {
+                    if (el.attributes[at] == 'null')
+                        delete el.attributes[at]
+                }
+                // alter the ids
+                if (el.attributes && el.attributes.id)
+                    el.attributes.id = el.attributes.id.replace(/^id-/, '')
+                // replace use elements by references to their child components
+            })
+        }
+    }
+
     svgData.elements[0] = rootElement
 
     return xml2js.js2xml(svgData, {spaces: 4})
@@ -185,7 +192,14 @@ Editor.prototype.setComponentSvg = function(req, res) {
         return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
 
     console.log(body.svg)
-    const cleanSvg = this.cleanSvg(body.svg)
+    let attributes = {
+        class: body.class || '',
+        viewBox: `0 0 ${body.width || 100} ${body.height || 100}`,
+        version: "1.1",
+        xmlns: 'http://www.w3.org/2000/svg',
+        'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+    }
+    const cleanSvg = this.cleanSvg(body.svg, attributes)
 
     const sourceDir = this.config.editableDirs[body.module]
     const fileName = path.join(sourceDir, body.component + '.js')

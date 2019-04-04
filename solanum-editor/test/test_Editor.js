@@ -1,8 +1,13 @@
 const assert = require('assert')
+const xml2js = require('xml-js')
 
 import path from 'path'
 import Editor from '../src/Editor.js'
 
+
+assert.equalXml = function(xml1, xml2) {
+    return assert.deepEqual(xml2js.xml2js(xml1), xml2js.xml2js(xml2))
+}
 
 describe('Editor', function() {
     describe('constructor', function() {
@@ -96,7 +101,23 @@ describe('Editor', function() {
         })
     })
     describe('cleanSvg', function() {
-        it('Blub', function() {
+        it('Should not change most minimal SVG', function() {
+            let editor = new Editor({}, {})
+            assert.equalXml(editor.cleanSvg("<svg></svg>", {}), "<svg></svg>")
+        })
+        it('Should add custom attributes', function() {
+            let editor = new Editor({}, {})
+            assert.equalXml(editor.cleanSvg("<svg/>", {myAttr: 'solanum'}), '<svg myAttr="solanum"/>')
+        })
+        it('Keeps comments', function() {
+            let editor = new Editor({}, {})
+            assert((editor.cleanSvg("<svg><!--comment--></svg>", {})).includes('comment'))
+        })
+        it("Doesn't change empty groups", function() {
+            let editor = new Editor({}, {})
+            assert.equalXml(editor.cleanSvg("<svg><g></g></svg>", {}), "<svg><g></g></svg>")
+        })
+        it.skip('Should do more things', function() {
 
         })
     })
