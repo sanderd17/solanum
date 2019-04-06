@@ -76,8 +76,9 @@ Editor.prototype.openComponent = function(req, res) {
  * Update a component with new code.
  * This reads the code of a certain component, and allows a transformFn
  * to define the new code
+ * TODO: transform into async function instead of callback, so Errors can be used
  */
-Editor.prototype.UpdateCode = function(module, component, transformFn) {
+Editor.prototype.UpdateCode = function(module, component, transformFn, cb) {
     const sourceDir = this.config.editableDirs[module]
     const fileName = path.join(sourceDir, component + '.js')
     fs.readFile(fileName,
@@ -85,20 +86,20 @@ Editor.prototype.UpdateCode = function(module, component, transformFn) {
         (err, code) => {
             if (err) {
                 console.log(err)
-                res.status(500).send(`Error while reading file ${fileName}: ${err}`)
+                cb(500, `Error while reading file ${fileName}: ${err}`)
                 return
             }
             const newCode = transformFn(code)
             if (!newCode) {
-                res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
+                cb(500, `Error while setting SVG of ${fileName}; could not find SVG string to replace`)
                 return
             }
             steno.writeFile(fileName, newCode,
                 err => {
                     if (err) 
-                        res.status(500).send(`Error while writing file ${fileName}: ${err}`)
+                        cb(500, `Error while writing file ${fileName}: ${err}`)
                     else 
-                        res.status(200).send('OK')
+                        cb(200, 'OK')
                 }
             )
         }
@@ -235,7 +236,9 @@ Editor.prototype.setComponentSvg = function(req, res) {
     }
     const cleanSvg = this.cleanSvg(body.svg, attributes)
 
-    this.UpdateCode(body.module, body.component, (code) => this.updateSvgViaAst(code, cleanSvg))
+    this.UpdateCode(body.module, body.component, 
+        (code) => this.updateSvgViaAst(code, cleanSvg),
+        (status, msg) => res.status(status).send(msg))
 }
 
 Editor.prototype.setComponentDomBinding = function(req, res) {
