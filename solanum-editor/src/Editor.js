@@ -72,6 +72,39 @@ Editor.prototype.openComponent = function(req, res) {
     res.sendFile(path.join(directory, body.component))
 }
 
+/**
+ * Update a component with new code.
+ * This reads the code of a certain component, and allows a transformFn
+ * to define the new code
+ */
+Editor.prototype.UpdateCode = function(module, component, transformFn) {
+    const sourceDir = this.config.editableDirs[module]
+    const fileName = path.join(sourceDir, component + '.js')
+    fs.readFile(fileName,
+        {encoding: 'utf-8'},
+        (err, code) => {
+            if (err) {
+                console.log(err)
+                res.status(500).send(`Error while reading file ${fileName}: ${err}`)
+                return
+            }
+            const newCode = transformFn(code)
+            if (!newCode) {
+                res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
+                return
+            }
+            steno.writeFile(fileName, newCode,
+                err => {
+                    if (err) 
+                        res.status(500).send(`Error while writing file ${fileName}: ${err}`)
+                    else 
+                        res.status(200).send('OK')
+                }
+            )
+        }
+    )
+}
+
 
 /**
  * Transform code of a component module by replacing the svg tagged string in the render function
@@ -122,6 +155,7 @@ Editor.prototype.updateSvgViaAst = function(code, newSvg) {
  * @param {string} svg string to parse
  * @param {any} attributes object to apply to root element
  * @returns {string} cleaned up SVG xml
+ * @throws {Error} when invalid XML is passed
  */
 Editor.prototype.cleanSvg = function(svg, attributes) {
     let svgData = xml2js.xml2js(svg)
@@ -201,32 +235,7 @@ Editor.prototype.setComponentSvg = function(req, res) {
     }
     const cleanSvg = this.cleanSvg(body.svg, attributes)
 
-    const sourceDir = this.config.editableDirs[body.module]
-    const fileName = path.join(sourceDir, body.component + '.js')
-    // FIXME Hard-coded path should refer to correct js file
-    fs.readFile(fileName,
-        {encoding: 'utf-8'},
-        (err, code) => {
-            if (err) {
-                console.log(err)
-                res.status(500).send(`Error while reading file ${fileName}: ${err}`)
-                return
-            }
-            const newCode = this.updateSvgViaAst(code, cleanSvg)
-            if (newCode == false) {
-                res.status(500).send(`Error while setting SVG of ${fileName}; could not find SVG string to replace`)
-                return
-            }
-            steno.writeFile(fileName, newCode,
-                err => {
-                    if (err) 
-                        res.status(500).send(`Error while writing file ${fileName}: ${err}`)
-                    else 
-                        res.status(200).send('OK')
-                }
-            )
-        }
-    )
+    this.UpdateCode(body.module, body.component, (code) => this.updateSvgViaAst(code, cleanSvg))
 }
 
 Editor.prototype.setComponentDomBinding = function(req, res) {
@@ -241,6 +250,11 @@ Editor.prototype.setComponentEventHandler = function(req, res) {
     // Take through AST
     // Set dom binding from type
     // Store to file
+    const body = req.body
+    if (typeof body.module != "string")
+        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
+    if (typeof body.component != "string")
+        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
 }
 
 

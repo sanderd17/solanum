@@ -49,6 +49,11 @@ describe('Editor', function() {
             done()
         })
     }),
+    describe('UpdateCode', function() {
+        it.skip('Should update code', function() {
+
+        })
+    })
     describe('updateSvgViaAst', function() {
         it('Should return false when no SVG is found', function() {
             let editor = new Editor({}, {})
@@ -101,6 +106,10 @@ describe('Editor', function() {
         })
     })
     describe('cleanSvg', function() {
+        it('Errors on invalid XML', function() {
+            let editor = new Editor({}, {})
+            assert.throws(() => editor.cleanSvg("ThisIsNotValid", {}), Error)
+        })
         it('Should not change most minimal SVG', function() {
             let editor = new Editor({}, {})
             assert.equalXml(editor.cleanSvg("<svg></svg>", {}), "<svg></svg>")
@@ -117,7 +126,18 @@ describe('Editor', function() {
             let editor = new Editor({}, {})
             assert.equalXml(editor.cleanSvg("<svg><g></g></svg>", {}), "<svg><g></g></svg>")
         })
-        it.skip('Should do more things', function() {
+        it("Keeps elements in the first group", function() {
+            let editor = new Editor({}, {})
+            assert.equalXml(editor.cleanSvg("<svg><g><rect x='10' y='10'/></g></svg>", {}), "<svg><g><rect x='10' y='10'/></g></svg>")
+        })
+        it('Removes style attributes', function() {
+            let editor = new Editor({}, {})
+            assert.equalXml(editor.cleanSvg("<svg><g><rect x='10' y='10' style='test'/></g></svg>", {}), "<svg><g><rect x='10' y='10'/></g></svg>")
+        })
+        it.skip('Should remove null attributes', function() {
+
+        })
+        it.skip('Should fix the ids', function() {
 
         })
     })
