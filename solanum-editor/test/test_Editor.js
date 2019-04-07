@@ -54,6 +54,22 @@ describe('Editor', function() {
 
         })
     })
+    describe('CheckBody', function() {
+        it('Should check an object for type', function() {
+            let body = {
+                key1: 'test',
+                key2: 123
+            }
+            let sentStatus, sentMessage
+            let response = {
+                status: (status) => sentStatus = status,
+                send: (msg) => sentMessage = msg,
+                headersSent: false
+            }
+
+
+        })
+    })
     describe('updateSvgViaAst', function() {
         it('Should return false when no SVG is found', function() {
             let editor = new Editor({}, {})
@@ -139,6 +155,51 @@ describe('Editor', function() {
         })
         it.skip('Should fix the ids', function() {
 
+        })
+    })
+    describe('', function() {
+        it.skip('Should replace an existing function', function() {
+            let editor = new Editor({}, {})
+
+            let codes = []
+            for (let i of [1, 2]) {
+                codes.push(`
+                    import Template from '../lib/template.js'
+
+                    class MyComponent extends Template {}
+
+                    MyComponent.prototype.domBindings = {
+                        'el': {
+                            'click': (cmp, event) => {let val${i} = event}
+                        }
+                    }
+
+                    export default MyComponent
+                `)
+            }
+            let newCode = editor.updateEventHandlerViaAst(codes[0], 'el', 'click', "(cmp, evnet) => {let val2 = event}");
+
+            assert.equal(codes[1], newCode)
+        })
+        it.skip('Should error out on invalid code', function() {
+            let editor = new Editor({}, {})
+
+            let code = `
+                import Template from '../lib/template.js'
+
+
+                class MyComponent extends Template {}
+
+                MyComponent.prototype.wrongFunction = function() {
+                    this js is invalid
+                }
+
+                MyComponent.prototype.render = function() {
+                    return this.svg\`<svg>version1</svg>\`;
+                }
+
+            `
+            assert.throws(() => editor.updateSvgViaAst(code, "<svg>version2</svg>"), Error)
         })
     })
 })

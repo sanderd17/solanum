@@ -4,6 +4,8 @@ const xml2js =require('xml-js')
 import steno from 'steno'
 const recast = require('recast')
 import readdir from 'recursive-readdir'
+import { type } from 'os'
+import jsonschema from 'jsonschema'
 
 
 const braceFinder = /\{([\w\.]+)\}/g
@@ -54,7 +56,7 @@ Editor.prototype.getComponentPaths = async function(req, res) {
 
     for (let key in filesPerModule) {
         let prefixLength = this.config.editableDirs[key].length
-        filesPerModule[key] = filesPerModule[key].map(f => f.substring(prefixLength))
+        filesPerModule[key] = filesPerModule[key].map(f => f.substring(prefixLength)).sort()
     }
 
     res.send(filesPerModule)
@@ -211,6 +213,18 @@ Editor.prototype.cleanSvg = function(svg, attributes) {
  * @property {number} width
  * @property {number} height
  */
+const componentSvgSchema = {
+    type: 'object',
+    properties: {
+        module: {type: 'string', required: true},
+        name: {type: 'string', required: true},
+        svg: {type: 'string', required: true},
+        class: {type: 'string', required: true},
+        width: {anyOf:[{type: 'string'}, {type: 'number'}], required: true},
+        height: {anyOf:[{type: 'string'}, {type: 'number'}], required: true},
+    }
+}
+
 /**
  * 
  * @param {Request} req 
@@ -219,14 +233,10 @@ Editor.prototype.cleanSvg = function(svg, attributes) {
 Editor.prototype.setComponentSvg = function(req, res) {
     /** @type {TemplateDefinition} */
     const body = req.body
-    if (typeof body.module != "string")
-        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
-    if (typeof body.component != "string")
-        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
-    if (typeof body.svg != "string") 
-        return res.status(400).send(`Error: No valid svg received: ${body.svg}`)
+    let result = jsonschema.validate(body, componentSvgSchema, {throwError: false})
+    if (!result.valid)
+        return res.status(400).send(`Error validating request: ${result.errors}`)
 
-    console.log(body.svg)
     let attributes = {
         class: body.class || '',
         viewBox: `0 0 ${body.width || 100} ${body.height || 100}`,
@@ -248,16 +258,75 @@ Editor.prototype.setComponentDomBinding = function(req, res) {
     // Store to file
 }
 
+Editor.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, eventName, newFunctionAst) {
+    const ast = recast.parse(moduleCode, {sourceType: 'module'})
+
+    const astBody = ast.program.body
+    for (let statement of astBody) {
+        if (statement.type != 'ExpressionStatement')
+            continue
+        let expr = statement.expression
+        if (expr.type != 'AssignmentExpression' ||
+            expr.left.type != 'MemberExpression' ||
+            expr.right.type != 'ObjectExpression' ||
+            expr.left.property.type != 'Identifier' ||
+            expr.left.property.name != 'domBindings')
+            continue
+        // expr.right is the domBindings object
+        
+        let domBindings = expr.right
+        // loop over the elements
+        for (let el of domBindings.properties) {
+            console.log(el.type, el.key.value, el.value.type)
+            if (el.type != 'Property' ||
+                el.key.value != objectId ||
+                el.value.type != 'ObjectExpression')
+                continue
+            for (let event of el.value.properties) {
+                console.log(eventType)
+                if (event.type != 'Property' ||
+                    event.key.value != eventName)
+                    continue
+                el.value = newFunctionAst
+            }
+        }
+
+/*            // renderStatement.argument.quasi is the contents of the tagged svg string
+            const newSvgAst = recast.parse('`' + newSvg  + '`')
+            renderStatement.argument.quasi = newSvgAst.program.body[0].expression
+            // return the printed version
+            return recast.print(ast).code*/
+    }
+    return false
+}
+
+const componentEventHandlerSchema = {
+    type: 'object',
+    properties: {
+        module: {type: 'string', required: true},
+        name: {type: 'string', required: true},
+        objectId: {type: 'string', required: true},
+        eventType: {type: 'string', required: true},
+        newFunction: {type: 'string', required: true},
+    }
+}
+
 Editor.prototype.setComponentEventHandler = function(req, res) {
     // Open component from file
     // Take through AST
     // Set dom binding from type
     // Store to file
     const body = req.body
-    if (typeof body.module != "string")
-        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
-    if (typeof body.component != "string")
-        return res.status(400).send(`Error: No valid component name received: ${body.name}`)
+    let result = jsonschema.validate(body, componentEventHandlerSchema, {throwError: false})
+    if (!result.valid)
+        return res.status(400).send(`Error validating request: ${result.errors}`)
+
+    const newFunctionAst = recast.parse(body.newFunction)
+
+    console.log(recast.prettyPrint(newFunctionAst, { tabWidth: 2 }).code)
+    this.UpdateCode(body.module, body.component, 
+        (code) => this.updateEventHandlerViaAst(code, newFunctionAst),
+        (status, msg) => res.status(status).send(msg))
 }
 
 
