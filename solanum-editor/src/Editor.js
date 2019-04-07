@@ -258,6 +258,12 @@ Editor.prototype.setComponentDomBinding = function(req, res) {
     // Store to file
 }
 
+/**
+ * @param {string} moduleCode
+ * @param {string} objectId
+ * @param {string} eventName
+ * @param {recast.ast} newFunctionAst
+ */
 Editor.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, eventName, newFunctionAst) {
     const ast = recast.parse(moduleCode, {sourceType: 'module'})
 
