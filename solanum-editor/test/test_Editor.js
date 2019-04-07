@@ -1,6 +1,7 @@
 const assert = require('assert')
 const xml2js = require('xml-js')
 
+import recast from 'recast'
 import path from 'path'
 import Editor from '../src/Editor.js'
 
@@ -157,8 +158,8 @@ describe('Editor', function() {
 
         })
     })
-    describe('', function() {
-        it.skip('Should replace an existing function', function() {
+    describe('setComponentEventHandler', function() {
+        it('Should replace an existing arrowfunction', function() {
             let editor = new Editor({}, {})
 
             let codes = []
@@ -177,11 +178,45 @@ describe('Editor', function() {
                     export default MyComponent
                 `)
             }
-            let newCode = editor.updateEventHandlerViaAst(codes[0], 'el', 'click', "(cmp, evnet) => {let val2 = event}");
+            const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
+            let newCode = editor.updateEventHandlerViaAst(codes[0], 'el', 'click', newFunctionAst.program.body[0].expression);
 
             assert.equal(codes[1], newCode)
         })
-        it.skip('Should error out on invalid code', function() {
+        it('Should add a new event to an existing object', function() {
+            let editor = new Editor({}, {})
+
+            let code1 = `
+                import Template from '../lib/template.js'
+
+                class MyComponent extends Template {}
+
+                MyComponent.prototype.domBindings = {
+                    'el': {
+                    }
+                }
+
+                export default MyComponent
+            `
+            let code2 = `
+                import Template from '../lib/template.js'
+
+                class MyComponent extends Template {}
+
+                MyComponent.prototype.domBindings = {
+                    'el': {
+                        click: (cmp, event) => {let val2 = event}
+                    }
+                }
+
+                export default MyComponent
+            `
+            const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
+            let newCode = editor.updateEventHandlerViaAst(code1, 'el', 'click', newFunctionAst.program.body[0].expression);
+
+            assert.equal(code2, newCode)
+        })
+        it('Should error out on invalid code', function() {
             let editor = new Editor({}, {})
 
             let code = `

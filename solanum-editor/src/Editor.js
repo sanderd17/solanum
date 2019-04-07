@@ -277,25 +277,23 @@ Editor.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, event
         let domBindings = expr.right
         // loop over the elements
         for (let el of domBindings.properties) {
-            console.log(el.type, el.key.value, el.value.type)
             if (el.type != 'Property' ||
                 el.key.value != objectId ||
                 el.value.type != 'ObjectExpression')
                 continue
             for (let event of el.value.properties) {
-                console.log(eventType)
                 if (event.type != 'Property' ||
                     event.key.value != eventName)
                     continue
-                el.value = newFunctionAst
+                event.value = newFunctionAst
+                return recast.print(ast).code
             }
+            // event not found, add it
+            const b = recast.types.builders
+            let newProp = b.property('init', b.identifier(eventName), newFunctionAst)
+            el.value.properties.splice(el.value.properties.length, 0, newProp)
+            return recast.print(ast).code
         }
-
-/*            // renderStatement.argument.quasi is the contents of the tagged svg string
-            const newSvgAst = recast.parse('`' + newSvg  + '`')
-            renderStatement.argument.quasi = newSvgAst.program.body[0].expression
-            // return the printed version
-            return recast.print(ast).code*/
     }
     return false
 }
