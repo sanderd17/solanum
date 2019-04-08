@@ -192,7 +192,7 @@ describe('Editor', function() {
                 class MyComponent extends Template {}
 
                 MyComponent.prototype.domBindings = {
-                    'el': {
+                    el: {
                     }
                 }
 
@@ -204,13 +204,44 @@ describe('Editor', function() {
                 class MyComponent extends Template {}
 
                 MyComponent.prototype.domBindings = {
-                    'el': {
+                    el: {
                         click: (cmp, event) => {let val2 = event}
                     }
                 }
 
                 export default MyComponent
             `
+            const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
+            let newCode = editor.updateEventHandlerViaAst(code1, 'el', 'click', newFunctionAst.program.body[0].expression);
+
+            assert.equal(code2, newCode)
+        })
+        it('Should add a new event to a new object', function() {
+            let editor = new Editor({}, {})
+
+            let code1 = `
+    import Template from '../lib/template.js'
+
+    class MyComponent extends Template {}
+
+    MyComponent.prototype.domBindings = {
+    }
+
+    export default MyComponent
+`
+            let code2 = `
+    import Template from '../lib/template.js'
+
+    class MyComponent extends Template {}
+
+    MyComponent.prototype.domBindings = {
+        el: {
+            click: (cmp, event) => {let val2 = event}
+        }
+    }
+
+    export default MyComponent
+`
             const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
             let newCode = editor.updateEventHandlerViaAst(code1, 'el', 'click', newFunctionAst.program.body[0].expression);
 

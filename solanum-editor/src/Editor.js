@@ -259,6 +259,8 @@ Editor.prototype.setComponentDomBinding = function(req, res) {
 }
 
 /**
+ * Update or add an event handler to code 
+ * 
  * @param {string} moduleCode
  * @param {string} objectId
  * @param {string} eventName
@@ -284,12 +286,12 @@ Editor.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, event
         // loop over the elements
         for (let el of domBindings.properties) {
             if (el.type != 'Property' ||
-                el.key.value != objectId ||
+                (el.key.value != objectId && el.key.name != objectId) ||
                 el.value.type != 'ObjectExpression')
                 continue
             for (let event of el.value.properties) {
                 if (event.type != 'Property' ||
-                    event.key.value != eventName)
+                    (event.key.value != eventName && event.key.name != eventName))
                     continue
                 event.value = newFunctionAst
                 return recast.print(ast).code
@@ -300,6 +302,13 @@ Editor.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, event
             el.value.properties.splice(el.value.properties.length, 0, newProp)
             return recast.print(ast).code
         }
+        // object id not found, add it
+        const b = recast.types.builders
+        let innerProp = b.property('init', b.identifier(eventName), newFunctionAst)
+        let obj = b.objectExpression([innerProp])
+        let newProp = b.property('init', b.identifier(objectId), obj)
+        domBindings.properties.splice(domBindings.properties.length, 0, newProp)
+        return recast.print(ast).code
     }
     return false
 }
