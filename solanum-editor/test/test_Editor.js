@@ -220,32 +220,79 @@ describe('Editor', function() {
             let editor = new Editor({}, {})
 
             let code1 = `
-    import Template from '../lib/template.js'
+                import Template from '../lib/template.js'
 
-    class MyComponent extends Template {}
+                class MyComponent extends Template {}
 
-    MyComponent.prototype.domBindings = {
-    }
+                MyComponent.prototype.domBindings = {
+                    el1: {}
+                }
 
-    export default MyComponent
-`
+                export default MyComponent
+            `
             let code2 = `
-    import Template from '../lib/template.js'
+                import Template from '../lib/template.js'
 
-    class MyComponent extends Template {}
+                class MyComponent extends Template {}
 
-    MyComponent.prototype.domBindings = {
-        el: {
-            click: (cmp, event) => {let val2 = event}
-        }
-    }
+                MyComponent.prototype.domBindings = {
+                    el1: {},
 
-    export default MyComponent
-`
+                    el: {
+                        click: (cmp, event) => {let val2 = event}
+                    }
+                }
+
+                export default MyComponent
+            `
             const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
             let newCode = editor.updateEventHandlerViaAst(code1, 'el', 'click', newFunctionAst.program.body[0].expression);
 
             assert.equal(code2, newCode)
+        })
+        it('Should add the domBindings', function() {
+            let editor = new Editor({}, {})
+
+            let code1 = `
+                import Template from '../lib/template.js'
+
+                class MyComponent extends Template {}
+
+                MyComponent.prototype.render = function() {
+                    let a = 1
+                }
+
+                export default MyComponent
+            `
+            let code2 = `
+                import Template from '../lib/template.js'
+
+                class MyComponent extends Template {}
+
+                MyComponent.prototype.domBindings = {
+                    el: {
+                        click: (cmp, event) => {let val2 = event}
+                    }
+                };
+
+                MyComponent.prototype.render = function() {
+                    let a = 1
+                }
+
+                export default MyComponent
+            `
+            const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
+            let newCode = editor.updateEventHandlerViaAst(code1, 'el', 'click', newFunctionAst.program.body[0].expression);
+
+            assert.equal(code2, newCode)
+        })
+        it('Should return false when no class is found', function() {
+            let editor = new Editor({}, {})
+            const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
+            let newCode = editor.updateEventHandlerViaAst('', 'el', 'click', newFunctionAst.program.body[0].expression);
+
+            assert.equal(newCode, false)
+
         })
         it('Should error out on invalid code', function() {
             let editor = new Editor({}, {})

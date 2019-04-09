@@ -269,8 +269,32 @@ Editor.prototype.setComponentDomBinding = function(req, res) {
 Editor.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, eventName, newFunctionAst) {
     const ast = recast.parse(moduleCode, {sourceType: 'module'})
 
+    // ast builders that can be called when needed
+    const b = recast.types.builders
+    let getEventProp = () => b.property('init', b.identifier(eventName), newFunctionAst)
+    let getObjProp = () => b.property('init', b.identifier(objectId), b.objectExpression([getEventProp()]))
+    let getDomBindingsObj = (className) => b.expressionStatement(
+            b.assignmentExpression(
+                '=', 
+                b.memberExpression(
+                    b.memberExpression(
+                        b.identifier(className),   // className
+                        b.identifier('prototype')  // .property
+                    ),
+                    b.identifier('domBindings')    // .domBindings
+                ),                                 // =
+                b.objectExpression([getObjProp()]) // {Object}
+            )
+        )
+
+    let className, insertPos = 0
     const astBody = ast.program.body
     for (let statement of astBody) {
+        if (!className)
+            insertPos++
+        if (statement.type == 'ClassDeclaration') {
+            className = statement.id.name
+        }
         if (statement.type != 'ExpressionStatement')
             continue
         let expr = statement.expression
@@ -297,19 +321,18 @@ Editor.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, event
                 return recast.print(ast).code
             }
             // event not found, add it
-            const b = recast.types.builders
-            let newProp = b.property('init', b.identifier(eventName), newFunctionAst)
-            el.value.properties.splice(el.value.properties.length, 0, newProp)
+            el.value.properties.splice(el.value.properties.length, 0, getEventProp())
             return recast.print(ast).code
         }
         // object id not found, add it
-        const b = recast.types.builders
-        let innerProp = b.property('init', b.identifier(eventName), newFunctionAst)
-        let obj = b.objectExpression([innerProp])
-        let newProp = b.property('init', b.identifier(objectId), obj)
-        domBindings.properties.splice(domBindings.properties.length, 0, newProp)
+        domBindings.properties.splice(domBindings.properties.length, 0, getObjProp())
         return recast.print(ast).code
     }
+    if (className) {
+        astBody.splice(insertPos, 0, getDomBindingsObj(className))
+        return recast.print(ast).code
+    }
+
     return false
 }
 
