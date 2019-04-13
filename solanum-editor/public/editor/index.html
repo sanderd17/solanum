@@ -19,6 +19,9 @@
     <!-- Editor stil refers to invisible elements, this should be part of canvas-->
     <svg id="childSvgs" style="display:none"></svg>
 
+    <div id="container" style="position:absolute;left:0;top:500;width:800px;height:600px;border:1px solid grey"></div>
+
+
     <script>
       function saveSvg() {
         let name = 'Motor'
@@ -42,6 +45,9 @@
     </script>
 
     <div id="errorOverlay">
+    <script src="/editor/monaco/min/vs/loader.js"></script>
+    <script>
+</script>
     <script type="module" src="index.js"></script>
     <script type="module">
 window.currentModule = ''

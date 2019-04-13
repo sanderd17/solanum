@@ -13,12 +13,16 @@ Motor.prototype.css = [
     }`,
 ]
 
+/**
+ * @typedef {function(Motor, MouseEvent): null} Handler
+ */
 Motor.prototype.eventHandlers = {
     icon_1: {
-        click:  (cmp, event) => {ts.writeTag(cmp.props.st_motor, 'black')}
+        /** @type {Handler} */
+        click:  (cmp, ev) => {ts.writeTag(cmp.props.st_motor, 'black')}
     },
     icon_2: {
-        click:  (cmp, event) => {cmp.props.size = 20}
+        click:  (cmp, ev) => {cmp.props.size = 20}
     }
 }
 

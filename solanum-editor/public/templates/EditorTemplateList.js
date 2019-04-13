@@ -71,12 +71,10 @@ EditorTemplateList.prototype.SetComponentList = function(modules){
 
 EditorTemplateList.prototype.eventHandlers = {
     "": {
-        load: (cmp, ev) => {
-            fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
-            .then(async response => {
-                const modules = await response.json()
-                cmp.SetComponentList(modules)
-            })
+        load: async(cmp, ev) => {
+            const response = await fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
+            const modules = await response.json()
+            cmp.SetComponentList(modules)
         }
     },
 }

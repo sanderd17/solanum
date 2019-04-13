@@ -16,6 +16,7 @@ function init(app, config) {
     app.post('/API/Editor/setComponentSvg', (req, res) => editor.setComponentSvg(req, res))
     //app.use('/editor', express.static(path.join(__dirname, 'public')))
     app.use('/editor/svgedit', express.static(path.join(__dirname, 'node_modules/svgedit/editor')))
+    app.use('/editor/monaco', express.static(path.join(__dirname, 'node_modules/monaco-editor/')))
 }
 
 export default init
