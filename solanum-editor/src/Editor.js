@@ -1,8 +1,8 @@
 import path from 'path'
 import fs from 'graceful-fs'
-const xml2js =require('xml-js')
+import xml2js from 'xml-js'
 import steno from 'steno'
-const recast = require('recast')
+import recast from 'recast'
 import readdir from 'recursive-readdir'
 import { type } from 'os'
 import jsonschema from 'jsonschema'
@@ -81,6 +81,7 @@ Editor.prototype.openComponent = function(req, res) {
  * TODO: transform into async function instead of callback, so Errors can be used
  */
 Editor.prototype.UpdateCode = function(module, component, transformFn, cb) {
+   // TODO lock file while writing and wait with writing if lock is present
     const sourceDir = this.config.editableDirs[module]
     const fileName = path.join(sourceDir, component + '.js')
     fs.readFile(fileName,
@@ -217,7 +218,7 @@ const componentSvgSchema = {
     type: 'object',
     properties: {
         module: {type: 'string', required: true},
-        name: {type: 'string', required: true},
+        component: {type: 'string', required: true},
         svg: {type: 'string', required: true},
         class: {type: 'string', required: true},
         width: {anyOf:[{type: 'string'}, {type: 'number'}], required: true},
@@ -340,10 +341,10 @@ const componentEventHandlerSchema = {
     type: 'object',
     properties: {
         module: {type: 'string', required: true},
-        name: {type: 'string', required: true},
+        component: {type: 'string', required: true},
         objectId: {type: 'string', required: true},
         eventType: {type: 'string', required: true},
-        newFunction: {type: 'string', required: true},
+        function: {type: 'string', required: false},
     }
 }
 
@@ -357,7 +358,7 @@ Editor.prototype.setComponentEventHandler = function(req, res) {
     if (!result.valid)
         return res.status(400).send(`Error validating request: ${result.errors}`)
 
-    const newFunctionAst = recast.parse(body.newFunction)
+    const newFunctionAst = recast.parse(body.function)
 
     console.log(recast.prettyPrint(newFunctionAst, { tabWidth: 2 }).code)
     this.UpdateCode(body.module, body.component, 

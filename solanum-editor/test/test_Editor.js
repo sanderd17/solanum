@@ -6,6 +6,10 @@ import path from 'path'
 import Editor from '../src/Editor.js'
 
 
+/**
+ * @param {string} xml1 
+ * @param {string} xml2
+ */
 assert.equalXml = function(xml1, xml2) {
     return assert.deepEqual(xml2js.xml2js(xml1), xml2js.xml2js(xml2))
 }
