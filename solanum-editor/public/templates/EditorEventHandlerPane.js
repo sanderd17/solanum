@@ -42,15 +42,20 @@ EditorEventHandlerPane.prototype.eventHandlers = {
 EditorEventHandlerPane.prototype.domBindings = {}
 
 EditorEventHandlerPane.prototype.render = function() {
-    return this.svg`<svg viewBox="0 0 600 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    return this.svg`<svg viewBox="0 0 500 500" version="2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>EditorTemplateList</title>
-        <foreignObject x="0" y="0" width="600" height="500">
+        <foreignObject x="0" y="0" width="500" height="500" style="overflow:visible">
             <div
                 id="scriptPane"
                 xmlns="http://www.w3.org/1999/xhtml"
-                style="width:600px; height:500px; overflow:auto; white-space:nowrap;">
+                style="position:absolute;left:0px;top:0px;width:500px; height:500px;">
             </div>
+    <!--<video controls="" style="width:600px; height:500px; position:fixed;">>
+        <source src="https://interactive-examples.mdn.mozilla.net/media/examples/flower.webm"
+                type="video/webm"/>
+    </video>-->
+
             </foreignObject>
         </g>
     </svg>`;
