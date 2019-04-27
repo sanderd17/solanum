@@ -3,10 +3,28 @@ import ts from '../lib/TagSet.js'
 
 /** @typedef {import('../lib/template.js').eventHandler} eventHandler */
 
-class Motor extends Template {}
+class Motor extends Template {
+    constructor(...args) {
+        super(...args)
+    }
 
-Motor.prototype.class = 'motor'
-Motor.prototype.size = [500,500]
+    get dom() {
+        if (this.domNode != null)
+            return this.domNode
+        this.domNode = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+
+        this.domNode.setAttribute('viewBox', '0 0 500 500')
+        //this.domNode.setAttribute('xmlns', "http://www.w3.org/2000/svg")
+        //this.domNode.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink")
+        this.domNode.setAttribute('version', '1.1')
+        this.domNode.innerHTML = `
+                <circle id="icon_1" class="icon_1" cx="236.33116626739502" cy="221.66233825683594" r="200" fill="blue"></circle>
+                <rect id="icon_2" height="100" width="100" x="375" y="8" fill="#ff0000"></rect>
+                <rect id="icon_3" height="100" width="100" x="12" y="130" fill="red"></rect>`
+        return this.domNode
+    }
+}
+
 Motor.prototype.css = [
     `.motor > .icon_1:hover {
         cursor: pointer;
@@ -16,9 +34,9 @@ Motor.prototype.css = [
 /**
  * @typedef {function(Motor, MouseEvent): null} Handler
  */
+/*
 Motor.prototype.eventHandlers = {
     icon_1: {
-        /** @type {Handler} */
         click:  (cmp, ev) => {ts.writeTag(cmp.props.st_motor, 'black')}
     },
     icon_2: {
@@ -40,24 +58,5 @@ Motor.prototype.domBindings = {
         } 
     },
 }
-
-Motor.prototype.render = function() {
-    return this.svg`<svg class="motor" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <g class="layer">
-            <title>Motor st_motor</title>
-            <circle id="icon_1" class="icon_1" cx="236.33116626739502" cy="221.66233825683594" r="200" fill="blue"/>
-            <rect id="icon_2" height="100" width="100" x="375.29869985580444" y="8.207791328430176" fill="#ff0000"/>
-            <rect id="icon_3" height="100" width="100" x="12.561057269573212" y="130.69091337919235" fill="red"/>
-        </g>
-    </svg>`;
-}
-    /*
-    return this.svg`<svg class="" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <title>Motor {st_motor}</title>
-        <circle id="{id}.icon_1" class="icon_1" cx="267.49999713897705" cy="284" r="200" fill="blue"/>
-        <rect id="{id}.icon_2" height="100" width="100" x="46" y="21" fill="red"/>
-        <rect id="{id}.icon_3" height="100" width="100" x="0" y="400" fill="red"/>
-    </svg>`
-    */
-
+*/
 export default Motor

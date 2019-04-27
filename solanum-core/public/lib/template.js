@@ -1,17 +1,25 @@
 import ts from "./TagSet.js"
 
+const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
+/**
+ * @typedef {Object} TemplatePosition
+ * @property {number|string=} left 
+ * @property {number|string=} right 
+ * @property {number|string=} top 
+ * @property {number|string=} bottom 
+ * @property {number|string=} width 
+ * @property {number|string=} height 
+ */
+/**
+ * 
+ */
 class Template {
     /**
-     * 
-     * @param {?Template} parent 
-     * @param {string} id 
-     * @param {boolean} inEditor Whether this template is loaded to be edited
+     * @param {TemplatePosition} position description
      * @param {object} props 
      */
     constructor(position={}, props={}) {
-        this.init()
-        for (let id in this.children)
-            this.children[id].setParentInfo(this, id)
+        this.position = position
 
         /** @type Object<string,Template> */
         this.props = new Proxy(props, {
@@ -29,48 +37,47 @@ class Template {
                 /** @type {any} */
                 let oldVal = obj[prop]
                 obj[prop] = val
-                if (prop in this.dataBindings) {
+                /*if (prop in this.dataBindings) {
                     this.dataBindings[prop](this, val, oldVal)
-                }
+                }*/
                 return true
             },
         })
-        this.dom = new Proxy({}, {
-            /**
-             * get a proxy to the next DOM nodes by id
-             * @param {object} obj
-             * @param {string} prop 
-             */
-            get: (obj, prop) => {
-                let domObj = this.getElementById(prop)
-                if (!domObj)
-                    return undefined
-                // get a proxy to the DOM attributes
-                return new Proxy(domObj, {
-                    /**
-                     * @arg {Object} obj
-                     * @arg {string} prop
-                     */
-                    get: (obj, prop) => domObj.getAttribute(prop),
-                    /**
-                     * @arg {Object} obj
-                     * @arg {string} prop
-                     * @arg {Object} val
-                     */
-                    set: (obj, prop, val) => {
-                        domObj.setAttribute(prop, val)
-                        return true
-                    },
-                })
-            }
-        })
     }
+
+    setChildren = function(children) {
+        this.children = children
+        for (let id in this.children)
+            this.children[id].setParentInfo(this, id)
+    }
+
+    /**
+     * Add a reference to the parent, and store as what id it's referenced
+     * @param {Template} parent
+     * @param {string} id
+     */
+    setParentInfo = function(parent, id) {
+        this.parent = parent
+        this.id = id
+    }
+
+    get dom() {
+        if (this.domNode != null)
+            return this.domNode
+        this.domNode = document.createElement('div')
+
+        let id = this.id
+        if (this.parent != null)
+            id = this.setParentInfo.id + '.' + id
+        this.domNode.id = id
+        for (let key of positionKeys)
+            if (key in this.position) this.domNode.style[key] = this.position[key]
+        for (let child of Object.values(this.children))
+            this.domNode.appendChild(child.dom)
+        return this.domNode
+    } 
 }
 
-Template.prototype.setParentInfo = function(parent, id) {
-    this.parent = parent
-    this.id = id
-}
 
 /*
 Template.prototype.addEventHandlers = function() {
@@ -93,18 +100,6 @@ Template.prototype.addEventHandlers = function() {
         child.addEventHandlers()
     }
 }
-*/
-const braceFinder = /\{([\w\.]+)\}/g
-// TODO certainly test this part of code
-/**
- * Replace {-} parts with corresponding prop values
- * @param {string} tagPath 
- * @returns {string} the tagpath with {-} replacements evaluated
- */
-const EvalTagPath = function(ctx, tagPath) {
-    return tagPath.replace(braceFinder, (_, group) => ctx[group])
-}
-
 Template.prototype.addBindings = function() {
     for (let id in this.domBindings) {
         for (let attr in this.domBindings[id]) {
@@ -128,78 +123,7 @@ Template.prototype.addBindings = function() {
         child.addBindings()
     }
 }
-
-/**
- * 
- * @param {string} id 
- */
-Template.prototype.getElementById = function(id) {
-    if (id == '') return document.getElementById(this.id)
-    return document.getElementById(this.id + '-' + id)
-}
-
-/**
- * @returns {Object<string, string>}
- */
-Template.prototype.getCssMap = function() {
-    /** @type {Object<string, string>} */
-    let cssMap = {}
-    for (let child of Object.values(this.children)) {
-        if (cssMap[child.class])
-            continue
-        cssMap = {...child.getCssMap(), ...cssMap}
-    }
-    if (this.class && this.css)
-        cssMap[this.class] = this.css.join('\n')
-    return cssMap
-}
-
-/**
- * @param {TemplateStringsArray} rawStrings parts of the template strings
- * @param {string[]} values values to interpolate into the raw strings
- * @return {Document} DOM Document of an SVG element
- */
-Template.prototype.svg = function(rawStrings, ...values) {
-    // TODO cache parsed dom?
-    const parser = new DOMParser()
-    let content = String.raw(rawStrings, ...values)
-
-    content = content.replace(braceFinder, (_, key) => key in this.props ? this.props[key] : key)
-
-    const dom = parser.parseFromString(content, 'text/xml')
-    const childrenWithId = dom.documentElement.querySelectorAll('[id]')
-    for (let child of childrenWithId) {
-        child.id = this.id + '-' + child.id
-        if (child.nodeName == 'use') {
-            // href for recent browsers, xlink:href for editor
-            child.setAttribute('href', '#--' + child.id)
-            child.setAttribute('xlink:href', '#--' + child.id)
-        }
-    }
-    dom.documentElement.id = this.id
-    return dom
-}
-
-Template.prototype.render = function(x=100, y=100, width=100, height=100, transform=undefined) {
-    return this.html`<div background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`
-}
-/** @typedef {Object} TemplateDescription
- * @property {typeof Template} type
- * @property {any} props
- */
-/** @type  {() => Object<string,TemplateDescription>} */
-Template.prototype.getReplacements = () => ({})
-/** @typedef {(cmp:Template, event:Event) => void} eventHandler */
-/** @type {Object<string,Object<string,eventHandler>>} */
-Template.prototype.eventHandlers = {}
-/** @type Object<string, (cmp:Template, val:any, oldVal:any) => void> */
-Template.prototype.dataBindings = {}
-Template.prototype.domBindings = {}
-Template.prototype.size = [100, 100]
-Template.prototype.class = ''
-/** @type {Array.<string>} */
-Template.prototype.css = []
+*/
 
 export default Template
-export {EvalTagPath}
 
