@@ -11,15 +11,20 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * @property {number|string=} height 
  */
 /**
- * 
+ * Template
  */
 class Template {
+    children = {}
+
     /**
-     * @param {TemplatePosition} position description
+     * @param {TemplatePosition} position 
      * @param {object} props 
+     * @param {object} eventHandlers 
      */
-    constructor(position={}, props={}) {
+    constructor(position={}, props={}, eventHandlers={}) {
         this.position = position
+        this.eventHandlers = eventHandlers
+
 
         /** @type Object<string,Template> */
         this.props = new Proxy(props, {
@@ -48,17 +53,23 @@ class Template {
     setChildren = function(children) {
         this.children = children
         for (let id in this.children)
-            this.children[id].setParentInfo(this, id)
+            this.children[id].setParent(this)
     }
 
     /**
      * Add a reference to the parent, and store as what id it's referenced
      * @param {Template} parent
-     * @param {string} id
      */
-    setParentInfo = function(parent, id) {
+    setParent = function(parent) {
         this.parent = parent
+    }
+
+    setId = function(id) {
         this.id = id
+        this.dom.id = id
+        for (let childId in this.children) {
+            this.children[childId].setId(id + '.' + childId)
+        }
     }
 
     get dom() {
@@ -66,12 +77,16 @@ class Template {
             return this.domNode
         this.domNode = document.createElement('div')
 
-        let id = this.id
-        if (this.parent != null)
-            id = this.setParentInfo.id + '.' + id
-        this.domNode.id = id
         for (let key of positionKeys)
             if (key in this.position) this.domNode.style[key] = this.position[key]
+
+        for (let eventType in this.eventHandlers) {
+            let fn = this.eventHandlers[eventType]
+            if (eventType == "load")
+                fn(null)
+            else
+                this.domNode.addEventListener(eventType, (event) => fn(event))
+        }
         for (let child of Object.values(this.children))
             this.domNode.appendChild(child.dom)
         return this.domNode
@@ -80,26 +95,6 @@ class Template {
 
 
 /*
-Template.prototype.addEventHandlers = function() {
-    for (let id in this.eventHandlers) {
-        for (let eventType in this.eventHandlers[id]) {
-            let fn = this.eventHandlers[id][eventType]
-            let handlerNode = this.getElementById(id)
-            if (handlerNode) {
-                if (eventType == "load")
-                    fn(this, null)
-                else
-                    handlerNode.addEventListener(eventType, (event) => fn(this, event))
-            }
-            else {
-                console.error("Node with id " + id + " not found")
-            }
-        }
-    }
-    for (let child of Object.values(this.children)) {
-        child.addEventHandlers()
-    }
-}
 Template.prototype.addBindings = function() {
     for (let id in this.domBindings) {
         for (let attr in this.domBindings[id]) {
