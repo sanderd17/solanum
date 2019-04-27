@@ -1,6 +1,5 @@
 import ts from "./TagSet.js"
 
-
 class Template {
     /**
      * 
@@ -9,13 +8,12 @@ class Template {
      * @param {boolean} inEditor Whether this template is loaded to be edited
      * @param {object} props 
      */
-    constructor(parent, id, inEditor, props={}) {
-        this.parent = parent
-        this.isRoot = parent == null
-        this.id = id
-        this.inEditor = inEditor
+    constructor(position={}, props={}) {
+        this.init()
+        for (let id in this.children)
+            this.children[id].setParentInfo(this, id)
+
         /** @type Object<string,Template> */
-        this.children = {}
         this.props = new Proxy(props, {
             /**
              * @arg {object} obj
@@ -69,24 +67,12 @@ class Template {
     }
 }
 
-Template.prototype.createSubTemplates = function() {
-    let subTemplates = this.getReplacements()
-    for (let [subId, template] of Object.entries(subTemplates)) {
-        let child = new template.type(this, this.id + '-' + subId, this.inEditor, template.props)
-        child.createSubTemplates()
-        this.children[subId] = child
-    }
+Template.prototype.setParentInfo = function(parent, id) {
+    this.parent = parent
+    this.id = id
 }
 
-Template.prototype.forEachChild = function(func, recursive) {
-    for (let childId in this.children) {
-        let child = this.children[childId]
-        func(child)
-        if (recursive)
-            child.forEachChild(func, recursive)
-    }
-}
-
+/*
 Template.prototype.addEventHandlers = function() {
     for (let id in this.eventHandlers) {
         for (let eventType in this.eventHandlers[id]) {
@@ -107,7 +93,7 @@ Template.prototype.addEventHandlers = function() {
         child.addEventHandlers()
     }
 }
-
+*/
 const braceFinder = /\{([\w\.]+)\}/g
 // TODO certainly test this part of code
 /**
@@ -195,7 +181,7 @@ Template.prototype.svg = function(rawStrings, ...values) {
 }
 
 Template.prototype.render = function(x=100, y=100, width=100, height=100, transform=undefined) {
-    return this.svg`<rect x="${x}" y="${y}" width="${width}" height="${height}" background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`
+    return this.html`<div background="#FF0000"></rect><text>NOT IMPLEMENTED</text>`
 }
 /** @typedef {Object} TemplateDescription
  * @property {typeof Template} type

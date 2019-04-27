@@ -7,9 +7,19 @@ class MainWindow extends Template {}
 MainWindow.prototype.class = 'window MainWindow'
 MainWindow.prototype.size = [1000,500]
 
+MainWindow.prototype.init = function() {
+    this.children = {
+        motor_1: new Motor(
+            {left: '15px'},
+            {st_motor: 'Motors/M1'})
+    }
+}
+
 MainWindow.prototype.getReplacements = function() {
     /** @type {Object<string,TemplateDescription>} */
-    let repl = {}
+    return repl
+
+
     for (let i = 0; i < 3000; i++) {
         repl["motor_" + i] = {
             type: Motor,
@@ -23,11 +33,16 @@ MainWindow.prototype.getReplacements = function() {
 }
 
 MainWindow.prototype.render = function() {
+    return `
+        <div style=${}>
+            <p>My text</p>
+        </div>
+    `
     let svg = []
     for (let i = 0; i < 3000; i++) {
         svg.push(`<use id="motor_${i}" x="${10 * Math.floor(i/40)}" y="${(i%40) * 12}" width="10" height="10"/>`)
     }
-    
+    /*
     return this.svg`<svg class="window" viewBox="0 0 2000 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g class="layer">
             <title>no title</title>
@@ -3032,7 +3047,7 @@ MainWindow.prototype.render = function() {
             <use id="motor_2998" x="801" y="328" width="10" height="10"/>
             <use id="motor_2999" x="798" y="412" width="10" height="10"/>
         </g>
-    </svg>`;
+    </svg>`;*/
 }
 
 export default MainWindow
