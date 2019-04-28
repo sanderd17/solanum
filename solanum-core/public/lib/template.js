@@ -17,17 +17,17 @@ class Template {
     children = {}
 
     /**
-     * @param {TemplatePosition} position 
+     * @param {object} p
      * @param {object} props 
      * @param {object} eventHandlers 
      */
-    constructor(position={}, props={}, eventHandlers={}) {
-        this.position = position
-        this.eventHandlers = eventHandlers
+    constructor(p) {
+        this.position = p.position || {}
+        this.eventHandlers = p.eventHandlers || {}
 
 
         /** @type Object<string,Template> */
-        this.props = new Proxy(props, {
+        this.props = new Proxy(p.props || {}, {
             /**
              * @arg {object} obj
              * @arg {string} prop

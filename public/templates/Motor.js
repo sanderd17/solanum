@@ -5,15 +5,15 @@ import Circle from './draw/Circle.js'
 /** @typedef {import('../lib/template.js').eventHandler} eventHandler */
 
 class Motor extends Template {
-    constructor(...args) {
-        super(...args)
+    constructor(p) {
+        super(p)
 
         this.setChildren({
-            circle: new Circle(
-                {left: '10%', width: '80%', top: '10%', height: '80%'},
-                {},
-                {click: (ev) => {ts.writeTag('Motors/M1', 'black')}}
-            )
+            circle: new Circle({
+                position: {left: '10%', width: '80%', top: '10%', height: '80%'},
+                props: {},
+                eventHandlers: {click: (ev) => {ts.writeTag('Motors/M1', 'black')}}
+            })
         })
     }
 }

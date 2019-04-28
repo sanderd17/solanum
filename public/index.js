@@ -3,7 +3,7 @@ import ts from "./lib/TagSet.js"
 import messager from "./lib/Messager.js"
 ts.initMessageHandlers()
 
-const mainWindow = new MainWindow({}, {})
+const mainWindow = new MainWindow({})
 mainWindow.setId('mainWindow')
 let div = document.getElementById("root")
 div.appendChild(mainWindow.dom)
