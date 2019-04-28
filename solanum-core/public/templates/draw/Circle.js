@@ -21,7 +21,10 @@ class Circle extends Template {
         circleNode.setAttribute("cy", "50")
         circleNode.setAttribute("r", "50")
 
-        circleNode.setAttribute("fill", "blue")
+        //circleNode.setAttribute("fill", "blue")
+        for (let id in this.props) {
+            circleNode.setAttribute(id, this.props[id])
+        }
 
         this.svgNode.appendChild(circleNode)
 

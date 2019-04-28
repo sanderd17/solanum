@@ -15,6 +15,10 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  */
 class Template {
     children = {}
+    /** @type {Template?} */
+    parent = null
+    /** Props that are bound to children */
+    boundProps = {}
 
     /**
      * @param {object} p
@@ -24,28 +28,37 @@ class Template {
     constructor(p) {
         this.position = p.position || {}
         this.eventHandlers = p.eventHandlers || {}
-
+        this._props = p.props || {}
 
         /** @type Object<string,Template> */
         this.props = new Proxy(p.props || {}, {
             /**
              * @arg {object} obj
-             * @arg {string} prop
+             * @arg {string} id
              */
-            get: (obj, prop) => obj[prop],
+            get: (obj, id) => {
+                if (obj[id] instanceof RawProp) {
+                    return obj[id].value
+                }
+                if (obj[id] instanceof BoundProp) {
+                    let binding = obj[id]
+                    return binding.transform(this.parent.props[binding.boundName])
+                }
+                // TODO Warn?
+            },
             /**
              * @arg {object} obj
-             * @arg {string} prop
+             * @arg {string} id
              * @arg {object} val
              */
-            set: (obj, prop, val) => {
-                /** @type {any} */
-                let oldVal = obj[prop]
-                obj[prop] = val
-                /*if (prop in this.dataBindings) {
-                    this.dataBindings[prop](this, val, oldVal)
-                }*/
-                return true
+            set: (obj, id, val) => {
+                if (obj[id] instanceof RawProp) {
+                    let oldVal = obj[id].value
+                    obj[id].value = val
+                    this.handlePropChanged(id, val, oldVal)
+                } else {
+                    throw Error("Cannot assign value of prop " + prop)
+                }
             },
         })
     }
@@ -62,6 +75,13 @@ class Template {
      */
     setParent = function(parent) {
         this.parent = parent
+
+        // for all props that are bound, let out parent warn us
+        for (let id in this._props) {
+            if (this._props[id] instanceof BoundProp) {
+                parent.registerPropBinding(this, id, this._props[id])
+            }
+        }
     }
 
     setId = function(id) {
@@ -69,6 +89,19 @@ class Template {
         this.dom.id = id
         for (let childId in this.children) {
             this.children[childId].setId(id + '.' + childId)
+        }
+    }
+
+    registerPropBinding = function(childId, childPropId, binding) {
+        this.boundProps[binding.boundName] = [childId, childPropId, binding]
+    }
+
+    handlePropChanged(id, newValue, oldValue) {
+        console.log(`changed: ${id}, ${oldValue} -> ${newValue}`)
+        if (this.boundProps[id]) {
+            let [childId, childPropId, binding] = this.boundProps[id]
+            child = this.children[childId]
+            child.handlePropChanged(childPropId, binding.transform(newValue), binding.transform(oldValue))
         }
     }
 
@@ -120,5 +153,19 @@ Template.prototype.addBindings = function() {
 }
 */
 
+class RawProp {
+    constructor(value) {
+        this.value = value
+    }
+}
+
+class BoundProp {
+    constructor(boundName, transform) {
+        this.boundName = boundName
+        this.transform = transform || (x => x)
+    }
+}
+
 export default Template
+export {RawProp, BoundProp}
 
