@@ -14,11 +14,6 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
-    children = {}
-    /** @type {Template?} */
-    parent = null
-    /** Props that are bound to children */
-    boundProps = {}
 
     /**
      * @param {object} p
@@ -26,6 +21,11 @@ class Template {
      * @param {object} eventHandlers 
      */
     constructor(p) {
+        this.children = {}
+        /** @type {Template?} */
+        this.parent = null
+        /** Props that are bound to children */
+        this.boundProps = {}
         this.position = p.position || {}
         this.eventHandlers = p.eventHandlers || {}
         this._props = p.props || {}
@@ -63,7 +63,7 @@ class Template {
         })
     }
 
-    setChildren = function(children) {
+    setChildren(children) {
         this.children = children
         for (let id in this.children)
             this.children[id].setParent(this)
@@ -73,7 +73,7 @@ class Template {
      * Add a reference to the parent, and store as what id it's referenced
      * @param {Template} parent
      */
-    setParent = function(parent) {
+    setParent(parent) {
         this.parent = parent
 
         // for all props that are bound, let out parent warn us
@@ -84,7 +84,7 @@ class Template {
         }
     }
 
-    setId = function(id) {
+    setId(id) {
         this.id = id
         this.dom.id = id
         for (let childId in this.children) {
@@ -92,7 +92,7 @@ class Template {
         }
     }
 
-    registerPropBinding = function(child, childPropId, binding) {
+    registerPropBinding(child, childPropId, binding) {
         this.boundProps[binding.boundName] = [child, childPropId, binding]
     }
 
@@ -166,6 +166,8 @@ class BoundProp {
     }
 }
 
+let EvalTagPath = null
+
 export default Template
-export {RawProp, BoundProp}
+export {RawProp, BoundProp, EvalTagPath}
 
