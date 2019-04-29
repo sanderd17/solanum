@@ -6,16 +6,19 @@ class MainWindow extends Template {
     constructor(p) {
         super(p)
 
-        this.setChildren({
-            motor_1: new Motor({
-                position: {left: '15px', width: '200px', top: '150px', height: '100px'},
+        let children = {}
+
+        for (let i = 0; i < 3000; i++) {
+            children['motor_' + i] = new Motor({
+                position: {left: (15 * Math.floor(i/100)) + 'px', width: '15px', top: (15 * (i % 100)) + 'px', height: '15px'},
                 props: {
-                    st_motor: new RawProp('Motors/M1'),
                     color: new RawProp("red")
                 },
                 eventHandlers: {}
             })
-        })
+        }
+
+        this.setChildren(children)
     }
 }
 

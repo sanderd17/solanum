@@ -30,6 +30,10 @@ class Template {
         this.eventHandlers = p.eventHandlers || {}
         this._props = p.props || {}
 
+        for (let id in p.props) {
+            p.props[id].setContext(this, id)
+        }
+
         /** @type Object<string,Template> */
         this.props = new Proxy(p.props || {}, {
             /**
@@ -37,14 +41,7 @@ class Template {
              * @arg {string} id
              */
             get: (obj, id) => {
-                if (obj[id] instanceof RawProp) {
-                    return obj[id].value
-                }
-                if (obj[id] instanceof BoundProp) {
-                    let binding = obj[id]
-                    return binding.transform(this.parent.props[binding.boundName])
-                }
-                // TODO Warn?
+                return obj[id].getValue()
             },
             /**
              * @arg {object} obj
@@ -52,13 +49,7 @@ class Template {
              * @arg {object} val
              */
             set: (obj, id, val) => {
-                if (obj[id] instanceof RawProp) {
-                    let oldVal = obj[id].value
-                    obj[id].value = val
-                    this.handlePropChanged(id, val, oldVal)
-                } else {
-                    throw Error("Cannot assign value of prop " + prop)
-                }
+                obj[id].setValue(val)
             },
         })
     }
@@ -153,21 +144,70 @@ Template.prototype.addBindings = function() {
 }
 */
 
-class RawProp {
-    constructor(value) {
-        this.value = value
+class Prop {
+    constructor() {
+        /** @type {Template?} template to which this prop was assigned */
+        this.template = null
+        /** @type {string?} id as which this prop was assigned */
+        this.id = null
+    }
+
+    setContext(template, id) {
+        this.template = template
+        this.id = id
     }
 }
 
-class BoundProp {
+class RawProp extends Prop {
+    constructor(value) {
+        super()
+        this.value = value
+    }
+
+    getValue() {
+        return this.value
+    }
+
+    setValue(value) {
+        let oldValue = this.value
+        this.value = value
+        this.template.handlePropChanged(this.id, value, oldValue)
+    }
+}
+
+class BoundProp extends Prop {
     constructor(boundName, transform) {
+        super()
         this.boundName = boundName
         this.transform = transform || (x => x)
     }
+
+    getValue() {
+        return this.transform(this.template.parent.props[this.boundName])
+    }
+
+    // no setValue as it isn't possible to set this
+}
+
+class TagProp extends Prop {
+    constructor(tagName) {
+        super()
+        this.tagName = tagName
+    }
+
+    getValue(template) {
+        // TODO return tag value
+    }
+
+    setValue(value, template, id) {
+        //TODO write to  tag
+    }
+
+
 }
 
 let EvalTagPath = null
 
 export default Template
-export {RawProp, BoundProp, EvalTagPath}
+export {RawProp, BoundProp, TagProp, EvalTagPath}
 
