@@ -12,7 +12,8 @@ class MainWindow extends Template {
             children['motor_' + i] = new Motor({
                 position: {left: (15 * Math.floor(i/100)) + 'px', width: '15px', top: (15 * (i % 100)) + 'px', height: '15px'},
                 props: {
-                    color: new RawProp("red")
+                    color: new RawProp("red"),
+                    motor: new RawProp(`M${i}`),
                 },
                 eventHandlers: {}
             })

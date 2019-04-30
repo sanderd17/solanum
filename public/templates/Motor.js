@@ -1,4 +1,4 @@
-import Template, {BoundProp, RawProp} from '../lib/template.js'
+import Template, {BoundProp, RawProp,TagProp, BoundTagProp} from '../lib/template.js'
 import ts from '../lib/TagSet.js'
 import Circle from './draw/Circle.js'
 
@@ -11,7 +11,7 @@ class Motor extends Template {
         this.setChildren({
             circle: new Circle({
                 position: {left: '10%', width: '80%', top: '10%', height: '80%'},
-                props: {fill: new BoundProp("color")},
+                props: {fill: new BoundTagProp('motor', m => `Motors/${m}`)},
                 eventHandlers: {click: (ev) => {ts.writeTag('Motors/M1', 'black')}}
             })
         })

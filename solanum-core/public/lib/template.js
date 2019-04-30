@@ -156,6 +156,17 @@ class Prop {
         this.template = template
         this.id = id
     }
+
+    getValue() {
+        throw new Error('`getValue` should be implemented by inheriting class')
+    }
+
+    /**
+     * @param {any} value 
+     */
+    setValue(value) {
+        throw new Error('`setValue` should be implemented by inheriting class')
+    }
 }
 
 class RawProp extends Prop {
@@ -190,24 +201,59 @@ class BoundProp extends Prop {
 }
 
 class TagProp extends Prop {
-    constructor(tagName) {
+    constructor(tagPath) {
         super()
-        this.tagName = tagName
+        this.tagPath = tagPath
+        this.tagValue = null // tag value cache
+        ts.addTagHandler(tagPath, tag => {
+            let oldValue = this.tagValue
+            this.tagValue = tag.value
+            this.template.handlePropChanged(this.id, tag.value, oldValue)
+        })
     }
 
-    getValue(template) {
-        // TODO return tag value
+    getValue() {
+        return this.tagValue
     }
 
-    setValue(value, template, id) {
-        //TODO write to  tag
+    setValue(value) {
+        ts.writeTag(this.tagPath, value)
+    }
+}
+
+// TODO BoundTagProps should react on binding change: unsubscribe from current tag path, and subscibe to new
+class BoundTagProp extends Prop {
+    constructor(boundName, transform) {
+        super()
+        this.boundName = boundName
+        this.transform = transform
+        this.tagValue = null // tag value cache
     }
 
+    setContext(template, id) {
+        this.template = template
+        this.id = id
+        setTimeout(() => {
+            this.tagPath = this.transform(this.template.parent.props[this.boundName])
+            ts.addTagHandler(this.tagPath, tag => {
+                let oldValue = this.tagValue
+                this.tagValue = tag.value
+                this.template.handlePropChanged(this.id, tag.value, oldValue)
+            })
+        })
+    }
 
+    getValue() {
+        return this.tagValue
+    }
+
+    setValue(value) {
+        ts.writeTag(this.tagPath, value)
+    }
 }
 
 let EvalTagPath = null
 
 export default Template
-export {RawProp, BoundProp, TagProp, EvalTagPath}
+export {RawProp, BoundProp, TagProp, BoundTagProp, EvalTagPath}
 

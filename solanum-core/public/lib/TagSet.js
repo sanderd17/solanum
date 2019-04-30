@@ -8,6 +8,7 @@ import messager from './Messager.js'
 
 function TagSet() {
     this.handlers = new Map()
+    this.needsTagRefresh = true
 }
 
 /**
@@ -24,6 +25,7 @@ TagSet.prototype.initMessageHandlers = function() {
  */
 TagSet.prototype.refreshAllTags = function() {
     messager.sendMessage({'TagSet:setSubscriptions': [...this.handlers.keys()]})
+    this.needsTagRefresh = false
 }
 
 /**
@@ -58,6 +60,10 @@ TagSet.prototype.addTagHandler = function(path, handler) {
         this.handlers.get(path).push(handler)
     } else {
         this.handlers.set(path, [handler])
+    }
+    if (!this.needsTagRefresh) {
+        this.needsTagRefresh = true
+        setTimeout(() => this.refreshAllTags())
     }
 }
 
