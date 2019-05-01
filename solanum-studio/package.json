@@ -6,6 +6,7 @@
   "description": "Experimental Scada package that uses web standards to display data in the browser",
   "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "inspect": "node --inspect index.js",
     "test": "mocha -r esm",
