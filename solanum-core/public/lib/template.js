@@ -10,15 +10,21 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * @property {number|string=} width 
  * @property {number|string=} height 
  */
+
+ /**
+  * @typedef {Object} TemplateConstructParams
+  * @property {TemplatePosition} position
+  * @property {object} props
+  * @property {object} eventHandlers
+  */
+
 /**
  * Template
  */
 class Template {
 
     /**
-     * @param {object} p
-     * @param {object} props 
-     * @param {object} eventHandlers 
+     * @param {TemplateConstructParams} p
      */
     constructor(p) {
         this.children = {}
@@ -26,9 +32,9 @@ class Template {
         this.parent = null
         /** Props that are bound to children */
         this.boundProps = {}
-        this.position = p.position || {}
+        this.position = p.position
         this.eventHandlers = p.eventHandlers || {}
-        this._props = p.props || {}
+        this._props = p.props
 
         for (let id in p.props) {
             p.props[id].setContext(this, id)
