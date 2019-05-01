@@ -5,6 +5,36 @@ import recast from 'recast'
 import readdir from 'recursive-readdir'
 import jsonschema from 'jsonschema'
 
+
+/*
+Studio should provide methods to set different parts of the code:
+
+Every operation should be atomic, so simultaneous edits can be made without corrupting the code.
+Syntax validation should be done before saving the code, in case of a syntax error, the error should be returned to the interface
+
+* Add / Remove new child template (and fix imports)
+* Set position of child template
+* Set props object of child template
+* Set default props of own template
+* Add / remove / change event handlers
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * An editor instance will need to be created once for the app
  * This interface offers the interface metods to read and modify
@@ -49,7 +79,6 @@ Studio.prototype.getComponentPaths = async function(req, res) {
 
 /**
  * Get the component file to load into the editor
- * Places a lock on the file until it is released
  * @param {Request} req 
  * @param {Response} res 
  */
@@ -92,13 +121,6 @@ Studio.prototype.UpdateCode = function(module, component, transformFn, cb) {
             )
         }
     )
-}
-
-Studio.prototype.setComponentDomBinding = function(req, res) {
-    // Open component from file
-    // Take through AST
-    // Set dom binding from type
-    // Store to file
 }
 
 /**
