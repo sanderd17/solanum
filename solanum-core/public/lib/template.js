@@ -117,33 +117,6 @@ class Template {
     } 
 }
 
-
-/*
-Template.prototype.addBindings = function() {
-    for (let id in this.domBindings) {
-        for (let attr in this.domBindings[id]) {
-            let binding = this.domBindings[id][attr]
-            if (binding.type == 'tag') {
-                let path = EvalTagPath(this.props, binding.tagPath)
-                let node = this.dom[id]
-                if (node) // TODO warn about non-existing binding
-                    ts.addTagHandler(path, tag => {this.dom[id][attr] = tag.value})
-            } else if (binding.type == 'prop') {
-                let key = binding.propName
-                let node = this.dom[id]
-                if (node) { // TODO warn about missing binding
-                    node = this.props[key] // apply initial value now
-                    this.dataBindings[key] = (cmp, val) => cmp.dom[id][attr] = val
-                }
-            }
-        }
-    }
-    for (let child of Object.values(this.children)) {
-        child.addBindings()
-    }
-}
-*/
-
 class Prop {
     constructor() {
         /** @type {Template?} template to which this prop was assigned */
