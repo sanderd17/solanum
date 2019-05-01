@@ -205,11 +205,13 @@ class TagProp extends Prop {
         super()
         this.tagPath = tagPath
         this.tagValue = null // tag value cache
-        ts.addTagHandler(tagPath, tag => {
-            let oldValue = this.tagValue
-            this.tagValue = tag.value
-            this.template.handlePropChanged(this.id, tag.value, oldValue)
-        })
+        ts.addTagHandler(tagPath, this)
+    }
+
+    onTagChanged(tag) {
+        let oldValue = this.tagValue
+        this.tagValue = tag.value
+        this.template.handlePropChanged(this.id, tag.value, oldValue)
     }
 
     getValue() {
@@ -235,12 +237,14 @@ class BoundTagProp extends Prop {
         this.id = id
         setTimeout(() => {
             this.tagPath = this.transform(this.template.parent.props[this.boundName])
-            ts.addTagHandler(this.tagPath, tag => {
-                let oldValue = this.tagValue
-                this.tagValue = tag.value
-                this.template.handlePropChanged(this.id, tag.value, oldValue)
-            })
+            ts.addTagHandler(this.tagPath, this)
         })
+    }
+
+    onTagChanged(tag) {
+        let oldValue = this.tagValue
+        this.tagValue = tag.value
+        this.template.handlePropChanged(this.id, tag.value, oldValue)
     }
 
     getValue() {

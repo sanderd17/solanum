@@ -52,16 +52,18 @@ TagSet.prototype.writeTag = function(path, value) {
 /**
  * 
  * @param {string} path 
- * @param {Function} handler 
+ * @param {Prop} prop 
  */
-TagSet.prototype.addTagHandler = function(path, handler) {
+TagSet.prototype.addTagHandler = function(path, prop) {
     // Handler to fire functions when a tag change is received
     if (this.handlers.has(path)) {
-        this.handlers.get(path).push(handler)
+        this.handlers.get(path).push(prop)
     } else {
-        this.handlers.set(path, [handler])
+        this.handlers.set(path, [prop])
     }
     if (!this.needsTagRefresh) {
+        // Refresh tags after a timeout (to ensure help with batch adding)
+        // TODO only refresh new tags
         this.needsTagRefresh = true
         setTimeout(() => this.refreshAllTags())
     }
@@ -73,9 +75,9 @@ TagSet.prototype.addTagHandler = function(path, handler) {
  * @param {Tag} tag 
  */
 TagSet.prototype.triggerTagBinding = function(path, tag) {
-    let handlers = this.handlers.get(path)
-    for (let handler of handlers) {
-        handler(tag)
+    let props = this.handlers.get(path)
+    for (let prop of props) {
+        prop.onTagChanged(tag)
     }
 }
 
