@@ -79,6 +79,7 @@ Messager.prototype.checkWebSocketOpened = function() {
  * @param {Object} data 
  */
 Messager.prototype.handleMessage = function(msgName, data) {
+    console.log(msgName)
     this.messages[msgName](data)
 }
 

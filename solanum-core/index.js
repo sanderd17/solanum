@@ -7,6 +7,7 @@ import expressWs from 'express-ws'
 import Client from './src/Client.js'
 import clientList from './src/ClientList.js'
 import TagSet from './src/TagSet.js'
+import Reloader from './src/Reloader.js'
 
 class Solanum {
     constructor(app, config) {
@@ -45,6 +46,8 @@ function init(app, config) {
             console.log('Removed client: # ' + clientList.size)
         })
     })
+
+    let reloader = new Reloader(app, config)
 
     return new Solanum(app, config)
 }

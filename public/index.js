@@ -1,7 +1,10 @@
 import MainWindow from "./templates/MainWindow.js"
 import ts from "./lib/TagSet.js"
+import Reloader from './lib/Reloader.js'
 import messager from "./lib/Messager.js"
 ts.initMessageHandlers()
+let r = new Reloader()
+r.initMessageHandlers()
 
 const mainWindow = new MainWindow({})
 mainWindow.setId('mainWindow')

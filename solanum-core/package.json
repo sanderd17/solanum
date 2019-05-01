@@ -12,6 +12,7 @@
     "test": "mocha -r esm */test/**/*.js"
   },
   "dependencies": {
+    "chokidar": "^3.0.0",
     "esm": "^3.2.22",
     "express": "^4.16.4",
     "express-ws": "^4.0.0",
