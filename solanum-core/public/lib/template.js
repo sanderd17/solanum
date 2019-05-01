@@ -256,8 +256,6 @@ class BoundTagProp extends Prop {
     }
 }
 
-let EvalTagPath = null
-
 export default Template
-export {RawProp, BoundProp, TagProp, BoundTagProp, EvalTagPath}
+export {RawProp, BoundProp, TagProp, BoundTagProp}
 
