@@ -1,6 +1,5 @@
 import path from 'path'
 import fs from 'graceful-fs'
-import xml2js from 'xml-js'
 import steno from 'steno'
 import recast from 'recast'
 import readdir from 'recursive-readdir'

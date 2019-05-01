@@ -6,7 +6,6 @@
   "description": "Experimental Scada package",
   "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js",
     "inspect": "node --inspect index.js",
