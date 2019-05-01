@@ -5,6 +5,7 @@ import Circle from './draw/Circle.js'
 /** @typedef {import('../lib/template.js').eventHandler} eventHandler */
 
 class Motor extends Template {
+
     constructor(p) {
         super(p)
 
@@ -12,10 +13,16 @@ class Motor extends Template {
             circle: new Circle({
                 position: {left: '10%', width: '80%', top: '10%', height: '80%'},
                 props: {fill: new BoundTagProp('motor', m => `Motors/${m}`)},
-                eventHandlers: {click: (ev) => {ts.writeTag('Motors/M1', 'black')}}
+                eventHandlers: {click: (ev) => {
+                    let path = 'Motors/' + this.props.motor
+                    ts.writeTag(path, 'black')}}
             })
         })
     }
+}
+
+Motor.prototype.props = {
+    'motor': 'M1'
 }
 
 Motor.prototype.css = [
@@ -23,21 +30,4 @@ Motor.prototype.css = [
         cursor: pointer;
     }`,
 ]
-
-/*
-Motor.prototype.domBindings = {
-    icon_1: {
-        fill: {
-            type: 'tag',
-            tagPath: '{st_motor}',
-        }
-    },
-    icon_2: {
-        width: {
-            type: 'prop',
-            propName: 'icon_size'
-        } 
-    },
-}
-*/
 export default Motor

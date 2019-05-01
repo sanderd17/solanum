@@ -31,9 +31,9 @@ This allows for small, chainable libraries that don't need to be compiled before
 
 ### Client
 
-Client visualisation happens via plain SVG.
+Client visualisation happens via DOM elements like DIVs or SVGs.
 
-These SVG DOM elements can have tag bindings, which means a function can be bound to a tag change. This function can in turn change an SVG attribute (style, content or position).
+These DOM elements can have tag bindings, which means a function can be bound to a tag change. This function can in turn change an SVG attribute (style, content or position).
 The SVG elements can also have event handlers (click, right-click, drag, ...) by the means of custom functions.
 These functions can change the visualisation (for local effects) or message the server back f.e. to write tag values.
 
@@ -92,9 +92,3 @@ Security should be handled by other layers, from firewall blocking access to VPN
 
 ### Old software support:
 The client and/or integrator should be in full control of the environment, and be able to update all client and server software to the latest versions, allowing the usage of advance new features.
-
-## Dictionary
-
-* DOM: The Document Object Model defines interfaces to work with standard XML-based documents. In this case mainly SGV nodes and attributes.
-* SVG: Scalable Vector Graphics is a standard XML-based document format focused on 2D graphical representations. It's suitable for designing static images (often used for logo design), but SVG DOM makes it also very suited to use SVG for dynamic and interactive data visualisation.
-* Tag: A tag is a single datapoint that will be updated and send independently from other tags. A tag can be a primitive datatype (numer or string) or a complex datatype (array, js object, ...).
