@@ -2,8 +2,8 @@ import path from 'path'
 import fs from 'graceful-fs'
 import steno from 'steno'
 import recast from 'recast'
-import readdir from 'recursive-readdir'
 import jsonschema from 'jsonschema'
+import ComponentStore from './ComponentStore.js'
 
 
 /*
@@ -18,22 +18,6 @@ Syntax validation should be done before saving the code, in case of a syntax err
 * Set default props of own template
 * Add / remove / change event handlers
  */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * An editor instance will need to be created once for the app
@@ -51,76 +35,29 @@ class Studio {
         this.config = config
         /** Object representing locked files */
         this.locks = {}
-    }
-}
-
-/**
- * Finds all files from the config.editableDirs
- * and returns the paths.
- * @param {Express.Request} req
- * @param {Express.Response} res
- */
-Studio.prototype.getComponentPaths = async function(req, res) {
-    const modules = Object.keys(this.config.editableDirs)
-    const editableDirs = modules.map((k) => this.config.editableDirs[k])
-
-    const fileLists = await Promise.all(
-        editableDirs.map(dir => readdir(dir))
-    )
-    const filesPerModule = modules.reduce((obj, k, i) => ({...obj, [k]: fileLists[i] }), {})
-
-    for (let key in filesPerModule) {
-        let prefixLength = this.config.editableDirs[key].length
-        filesPerModule[key] = filesPerModule[key].map(f => f.substring(prefixLength)).sort()
+        this.componentStore = new ComponentStore(config)
     }
 
-    res.send(filesPerModule)
-}
+    /**
+     * Finds all files from the config.editableDirs
+     * and returns the paths.
+     * @param {Express.Request} req
+     * @param {Express.Response} res
+     */
+    async getComponentPaths(req, res) {
+        let filesPerModule = await this.componentStore.getComponentPaths()
+        res.send(filesPerModule)
+    }
 
-/**
- * Get the component file to load into the editor
- * @param {Request} req 
- * @param {Response} res 
- */
-Studio.prototype.openComponent = function(req, res) {
-    const body = req.body
-    const directory = this.config.editableDirs[body.module]
-    res.sendFile(path.join(directory, body.component))
-}
-
-/**
- * Update a component with new code.
- * This reads the code of a certain component, and allows a transformFn
- * to define the new code
- * TODO: transform into async function instead of callback, so Errors can be used
- */
-Studio.prototype.UpdateCode = function(module, component, transformFn, cb) {
-   // TODO lock file while writing and wait with writing if lock is present
-    const sourceDir = this.config.editableDirs[module]
-    const fileName = path.join(sourceDir, component + '.js')
-    fs.readFile(fileName,
-        {encoding: 'utf-8'},
-        (err, code) => {
-            if (err) {
-                console.log(err)
-                cb(500, `Error while reading file ${fileName}: ${err}`)
-                return
-            }
-            const newCode = transformFn(code)
-            if (!newCode) {
-                cb(500, `Error while setting SVG of ${fileName}; could not find SVG string to replace`)
-                return
-            }
-            steno.writeFile(fileName, newCode,
-                err => {
-                    if (err) 
-                        cb(500, `Error while writing file ${fileName}: ${err}`)
-                    else 
-                        cb(200, 'OK')
-                }
-            )
-        }
-    )
+    /**
+     * Get the component file to load into the editor
+     * @param {Request} req 
+     * @param {Response} res 
+     */
+    async openComponent(req, res) {
+        const body = req.body
+        res.sendFile(this.componentStore.getComponentPath(body.module, body.component))
+    }
 }
 
 /**
@@ -212,7 +149,7 @@ const componentEventHandlerSchema = {
     }
 }
 
-Studio.prototype.setComponentEventHandler = function(req, res) {
+Studio.prototype.setComponentEventHandler = async function(req, res) {
     // Open component from file
     // Take through AST
     // Set dom binding from type
@@ -225,9 +162,16 @@ Studio.prototype.setComponentEventHandler = function(req, res) {
     const newFunctionAst = recast.parse(body.function)
 
     console.log(recast.prettyPrint(newFunctionAst, { tabWidth: 2 }).code)
-    this.UpdateCode(body.module, body.component, 
-        (code) => this.updateEventHandlerViaAst(code, newFunctionAst),
-        (status, msg) => res.status(status).send(msg))
+
+
+    let file = this.componentStore.getFile(body.module, body.component)
+    let oldCode = await file.read()
+
+    let newCode = this.updateEventHandlerViaAst(oldCode, body.objectId, body.eventType, newFunctionAst)
+
+    await file.write(newCode)
+
+    res.send("OK")
 }
 
 

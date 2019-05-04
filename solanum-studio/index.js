@@ -9,11 +9,10 @@ import Studio from './src/Studio.js'
  * @param {any} config 
  */
 function init(app, config) {
-    const editor = new Studio(app, config)
+    const studio = new Studio(app, config)
 
-    app.get('/API/Studio/getComponentPaths', (req, res) => editor.getComponentPaths(req, res))
-    app.get('/API/Studio/openComponent', (req, res) => editor.openComponent(req, res))
-    app.post('/API/Studio/setComponentSvg', (req, res) => editor.setComponentSvg(req, res))
+    app.get('/API/Studio/getComponentPaths', (req, res) => studio.getComponentPaths(req, res))
+    app.get('/API/Studio/openComponent', (req, res) => studio.openComponent(req, res))
     //app.use('/editor', express.static(path.join(__dirname, 'public')))
     //app.use('/editor/monaco', express.static(path.join(__dirname, 'node_modules/monaco-editor/')))
 }

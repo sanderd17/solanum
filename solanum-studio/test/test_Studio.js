@@ -167,42 +167,6 @@ describe('Studio', function() {
 
             assert.equal(code2, newCode)
         })
-        it('Should add the domBindings', function() {
-            let editor = new Studio({}, {})
-
-            let code1 = `
-                import Template from '../lib/template.js'
-
-                class MyComponent extends Template {}
-
-                MyComponent.prototype.render = function() {
-                    let a = 1
-                }
-
-                export default MyComponent
-            `
-            let code2 = `
-                import Template from '../lib/template.js'
-
-                class MyComponent extends Template {}
-
-                MyComponent.prototype.domBindings = {
-                    el: {
-                        click: (cmp, event) => {let val2 = event}
-                    }
-                };
-
-                MyComponent.prototype.render = function() {
-                    let a = 1
-                }
-
-                export default MyComponent
-            `
-            const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
-            let newCode = editor.updateEventHandlerViaAst(code1, 'el', 'click', newFunctionAst.program.body[0].expression);
-
-            assert.equal(code2, newCode)
-        })
         it('Should return false when no class is found', function() {
             let editor = new Studio({}, {})
             const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
