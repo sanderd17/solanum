@@ -32,7 +32,7 @@ class Template {
         this.parent = null
         /** Props that are bound to children */
         this.boundProps = {}
-        this.position = p.position
+        this.position = p.position || {}
         this.eventHandlers = p.eventHandlers || {}
         this._props = p.props
 
