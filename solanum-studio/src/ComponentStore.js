@@ -52,6 +52,28 @@ class ComponentStore {
     getFile(module, component) {
         return new File()
     }
+
+    createComponent(module, component) {
+        let filePath = this.getComponentPath(module, component)
+        let contents = `
+import Template from '../lib/template.js'
+import ts from '../lib/TagSet.js'
+
+export default class ${component} extends Template {
+
+    constructor(p) {
+        super(p)
+
+        this.setChildren({
+        })
+    }
+}
+
+${component}.prototype.props = {
+}
+`
+        writeFile(filePath, contents)
+    }
 }
 
 
@@ -104,10 +126,9 @@ class File {
     }
 }
 
+// TODO move promisified functions to library
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(steno.writeFile)
-
-// TODO move to library
 function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

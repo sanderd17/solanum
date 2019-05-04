@@ -2,9 +2,7 @@ import Template, {BoundProp, RawProp,TagProp, BoundTagProp} from '../lib/templat
 import ts from '../lib/TagSet.js'
 import Circle from './draw/Circle.js'
 
-/** @typedef {import('../lib/template.js').eventHandler} eventHandler */
-
-class Motor extends Template {
+export default class Motor extends Template {
 
     constructor(p) {
         super(p)
@@ -30,4 +28,3 @@ Motor.prototype.css = [
         cursor: pointer;
     }`,
 ]
-export default Motor
