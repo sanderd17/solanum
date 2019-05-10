@@ -3,7 +3,7 @@ const xml2js = require('xml-js')
 
 import recast from 'recast'
 import path from 'path'
-import Studio from '../src/Studio.js'
+import StudioAPI from '../src/StudioAPI.js'
 
 
 /**
@@ -28,7 +28,7 @@ describe('Studio', function() {
                     "module2": path.join(__dirname, 'testModules/module2/'),
                 },
             }
-            let editor = new Studio({}, config)
+            let editor = new StudioAPI({}, config)
             const response = {send: function(filesPerModule) {
                 assert.deepEqual(filesPerModule, {
                     module1: [ 'file1.js', 'file2.js' ],
@@ -46,7 +46,7 @@ describe('Studio', function() {
                     "module2": path.join(__dirname, 'testModules/module2/'),
                 },
             }
-            let editor = new Studio({}, config)
+            let editor = new StudioAPI({}, config)
             const response = {sendFile: function(fileName) {
                 assert(fileName.endsWith('/module2/file1.js'))
             }}
@@ -77,7 +77,7 @@ describe('Studio', function() {
     })
     describe('setComponentEventHandler', function() {
         it('Should replace an existing arrowfunction', function() {
-            let editor = new Studio({}, {})
+            let editor = new StudioAPI({}, {})
 
             let codes = []
             for (let i of [1, 2]) {
@@ -101,7 +101,7 @@ describe('Studio', function() {
             assert.equal(codes[1], newCode)
         })
         it('Should add a new event to an existing object', function() {
-            let editor = new Studio({}, {})
+            let editor = new StudioAPI({}, {})
 
             let code1 = `
                 import Template from '../lib/template.js'
@@ -134,7 +134,7 @@ describe('Studio', function() {
             assert.equal(code2, newCode)
         })
         it('Should add a new event to a new object', function() {
-            let editor = new Studio({}, {})
+            let editor = new StudioAPI({}, {})
 
             let code1 = `
                 import Template from '../lib/template.js'
@@ -168,7 +168,7 @@ describe('Studio', function() {
             assert.equal(code2, newCode)
         })
         it('Should return false when no class is found', function() {
-            let editor = new Studio({}, {})
+            let editor = new StudioAPI({}, {})
             const newFunctionAst = recast.parse("(cmp, event) => {let val2 = event}")
             let newCode = editor.updateEventHandlerViaAst('', 'el', 'click', newFunctionAst.program.body[0].expression);
 
@@ -176,7 +176,7 @@ describe('Studio', function() {
 
         })
         it('Should error out on invalid code', function() {
-            let editor = new Studio({}, {})
+            let editor = new StudioAPI({}, {})
 
             let code = `
                 import Template from '../lib/template.js'

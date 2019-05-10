@@ -21,7 +21,7 @@ Syntax validation should be done before saving the code, in case of a syntax err
  * This interface offers the interface metods to read and modify
  * resources.
  */
-class Studio {
+class StudioAPI {
     /**
      * Construct the editor interface of the app
      * @param {Express.Application} app 
@@ -65,7 +65,7 @@ class Studio {
  * @param {string} eventName
  * @param {recast.ast} newFunctionAst
  */
-Studio.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, eventName, newFunctionAst) {
+StudioAPI.prototype.updateEventHandlerViaAst = function(moduleCode, objectId, eventName, newFunctionAst) {
     const ast = recast.parse(moduleCode, {sourceType: 'module'})
 
     // ast builders that can be called when needed
@@ -146,7 +146,7 @@ const componentEventHandlerSchema = {
     }
 }
 
-Studio.prototype.setComponentEventHandler = async function(req, res) {
+StudioAPI.prototype.setComponentEventHandler = async function(req, res) {
     // Open component from file
     // Take through AST
     // Set dom binding from type
@@ -172,4 +172,4 @@ Studio.prototype.setComponentEventHandler = async function(req, res) {
 }
 
 
-export default Studio
+export default StudioAPI

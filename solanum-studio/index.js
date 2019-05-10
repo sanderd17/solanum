@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'path'
 
-import Studio from './src/Studio.js'
+import StudioAPI from './src/StudioAPI.js'
 
 /**
  * Add the editor api to the server instance
@@ -9,7 +9,7 @@ import Studio from './src/Studio.js'
  * @param {any} config 
  */
 function init(app, config) {
-    const studio = new Studio(app, config)
+    const studio = new StudioAPI(app, config)
 
     app.get('/API/Studio/getComponentPaths', (req, res) => studio.getComponentPaths(req, res))
     app.get('/API/Studio/openComponent', (req, res) => studio.openComponent(req, res))
