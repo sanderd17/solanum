@@ -19,7 +19,7 @@ class ComponentModifier {
      * @returns {string} new module code
      */
     print() {
-        return recast.prettyPrint(this.ast, {useTabs: true, quote:'single', lineTerminator: '\n', trailingComma: true, arrowParensAlways: true}).code
+        return recast.print(this.ast).code
     }
 
     /**
@@ -45,12 +45,29 @@ class ComponentModifier {
         children.properties.splice(children.properties.length, 0, newArgProperty)
     }
 
-    removeChildComponent() {
+    /**
+     * Remove a child with a given id
+     * @param {string} childId 
+     */
+    removeChildComponent(childId) {
+        let children = this.getSetChildrenArgsAst()
 
+        for (let [i, prop] of children.properties.entries()) {
+            if (prop.key.name == childId)
+                children.properties.splice(i, 1)
+        }
     }
 
-    setChildPosition() {
+    setChildPosition(childId, position) {
+        let childArg = this.getChildConstructionArg(childId)
 
+        let newPositionExpression = recast.parse("let a = " + JSON.stringify(position)).program.body[0].declarations[0].init
+
+        for (let prop of childArg.properties) {
+            if (prop.key.name != 'position')
+                continue
+            prop.value = newPositionExpression
+        }
     }
 
     setChildProp() {
@@ -148,6 +165,20 @@ class ComponentModifier {
             if (args.length == 0 || args[0].type != 'ObjectExpression')
                 throw Error("Unexpected arguments on setChildren call")
             return args[0]
+        }
+    }
+
+    /**
+     * 
+     * @param {string} childId Id of the child to get the arguments from
+     * @returns {ObjectExpression} containing the different arguments (position, props and eventhandlers)
+     */
+    getChildConstructionArg(childId) {
+        let children = this.getSetChildrenArgsAst()
+
+        for (let prop of children.properties) {
+            if (prop.key.name == childId)
+                return prop.value.arguments[0]
         }
     }
 }

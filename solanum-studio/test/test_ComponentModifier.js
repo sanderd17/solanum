@@ -59,12 +59,30 @@ describe('ComponentModifier', function() {
         let cmpMod = new ComponentModifier(startCode)
         cmpMod.addChildComponent('child2', 'Child2', 'modules/Child2.js', {left: '0', width: '100%', top: '0', height: '100%'})
         let newCode = cmpMod.print()
-        console.log(newCode)
         it('Shoull add a new import', function() {
             assert(newCode.includes("import Child2 from 'modules/Child2.js'"))
         })
         it('Should add the child id', function() {
-            assert(newCode.includes('child2:'))
+            assert(newCode.includes('child2: new Child2'))
+        })
+    })
+
+    describe('removeChildComponent', function() {
+        it('Should remove the child', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.removeChildComponent('child1')
+            let newCode = cmpMod.print()
+
+            assert(!newCode.includes('child1'))
+        })
+    })
+    describe('setChildPosition', function() {
+        it('Should set the position of the child', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.setChildPosition('child1', {left: '10%', width: '80%', top:'10%', height:'80%'})
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('"left": "10%"'))
         })
     })
 })
