@@ -61,7 +61,7 @@ describe('ComponentModifier', function() {
             assert(newCode.includes("import Child2 from 'modules/Child2.js'"))
         })
         it.skip('Should add the child id', function() {
-            assert(newCode.includes('child2:')
+            assert(newCode.includes('child2:'))
         })
     })
 })
