@@ -25,7 +25,7 @@ class TestComponent extends Template {
         this.setChildren({
             child1: new Child({
                 position: {left: '0', width: '100%', top: '0', height: '100%'},
-                props: {prop1: RawProp('val1')},
+                props: {},
                 eventHandlers: {ev1: (ev) => {}}
             })
         })

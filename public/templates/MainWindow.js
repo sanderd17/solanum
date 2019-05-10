@@ -1,5 +1,6 @@
 // import whatever gui template/screens needed
-import Template, {RawProp} from "../lib/template.js"
+import Template from "../lib/template.js"
+import P from '../lib/Prop.js'
 import Motor from "./Motor.js"
 import ts from '../lib/TagSet.js'
 class MainWindow extends Template {
@@ -13,8 +14,8 @@ class MainWindow extends Template {
             children['motor_' + i] = new Motor({
                 position: {left: (size * Math.floor(i/50)) + 'px', width: size + 'px', top: (size * (i % 50)) + 'px', height: size + 'px'},
                 props: {
-                    color: new RawProp("red"),
-                    motor: new RawProp(`M${i}`),
+                    color: P.Raw("red"),
+                    motor: P.Raw(`M${i}`),
                 },
                 eventHandlers: {}
             })

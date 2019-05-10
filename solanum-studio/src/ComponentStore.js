@@ -59,7 +59,7 @@ class ComponentStore {
 import Template from '../lib/template.js'
 import ts from '../lib/TagSet.js'
 
-export default class ${component} extends Template {
+class ${component} extends Template {
 
     constructor(p) {
         super(p)
@@ -71,6 +71,8 @@ export default class ${component} extends Template {
 
 ${component}.prototype.props = {
 }
+
+export default ${component}
 `
         writeFile(filePath, contents)
     }
