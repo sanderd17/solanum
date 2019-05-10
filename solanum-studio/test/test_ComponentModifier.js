@@ -17,7 +17,7 @@ assert.equalJS = function(js1, js2) {
 const startCode = `
 import Template from '../lib/template.js'
 
-export default class TestComponent extends Template {
+class TestComponent extends Template {
 
     constructor(p) {
         super(p)
@@ -35,6 +35,8 @@ export default class TestComponent extends Template {
 TestComponent.prototype.defaultProps = {
     'defaultProp1': 'val1'
 }
+
+export default TestComponent
 `
 
 describe('ComponentModifier', function() {
@@ -57,10 +59,11 @@ describe('ComponentModifier', function() {
         let cmpMod = new ComponentModifier(startCode)
         cmpMod.addChildComponent('child2', 'Child2', 'modules/Child2.js', {left: '0', width: '100%', top: '0', height: '100%'})
         let newCode = cmpMod.print()
+        console.log(newCode)
         it('Shoull add a new import', function() {
             assert(newCode.includes("import Child2 from 'modules/Child2.js'"))
         })
-        it.skip('Should add the child id', function() {
+        it('Should add the child id', function() {
             assert(newCode.includes('child2:'))
         })
     })
