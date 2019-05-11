@@ -56,3 +56,24 @@ export const setChildPosition = {
         position:       childPosition,
     }
 }
+
+export const setChildEventHandler = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        childId:        {type: 'string', required: true},
+        eventId:        {type: 'string', required: true},
+        eventHandler:   {type: 'string', required: true},
+    }
+}
+
+export const removeChildEventHandler = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        childId:        {type: 'string', required: true},
+        eventId:        {type: 'string', required: true},
+    }
+}

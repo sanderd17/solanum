@@ -12,9 +12,11 @@ class Motor extends Template {
             circle: new Circle({
                 position: {left: "10%", width: "80%", top: "10%", height: "80%"},
                 props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
-                eventHandlers: {click: (ev) => {
-                    let path = 'Motors/' + this.props.motor
-                    ts.writeTag(path, 'black')}}
+                eventHandlers: {
+                    click: (ev) => {
+                        let path = 'Motors/' + this.props.motor
+                        ts.writeTag(path, 'black')}
+                }
             })
         })
     }
