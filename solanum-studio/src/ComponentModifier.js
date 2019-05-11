@@ -139,8 +139,39 @@ class ComponentModifier {
         }
     }
 
-    setOwnDefaultProps() {
-        // This will change a lot when class fields are available in esprima
+    setDefaultProp(propName, value) {
+        const b = recast.types.builders
+        let newValue = b.literal(value) // TODO this only supports numbers and strings as values. All JSON values should be supported
+
+        let defaultProps = this.getClassField('defaultProps').right // TODO change to `.value` when it's really a class field
+        if (defaultProps.type != 'ObjectExpression')
+            throw new Error('defaultProps is not detected as an object')
+        for (let prop of defaultProps.properties) {
+            if (prop.key.type != 'Identifier')
+                continue
+            if (prop.key.name != propName)
+                continue
+            prop.value = newValue            
+            return
+        }
+
+        // no existing prop found, add a new one
+        let newDefaultProperty = b.property('init', b.identifier(propName), newValue)
+        defaultProps.properties.splice(defaultProps.properties.length, 0, newDefaultProperty)
+    }
+
+    removeDefaultProp(propName) {
+        let defaultProps = this.getClassField('defaultProps').right // TODO change to `.value` when it's really a class field
+        if (defaultProps.type != 'ObjectExpression')
+            throw new Error('defaultProps is not detected as an object')
+        for (let [i, prop] of defaultProps.properties.entries()) {
+            if (prop.key.type != 'Identifier')
+                continue
+            if (prop.key.name != propName)
+                continue
+            defaultProps.properties.splice(i, 1)
+            return
+        }
     }
 
     //////////////////////////
@@ -234,6 +265,43 @@ class ComponentModifier {
         for (let prop of children.properties) {
             if (prop.key.name == childId)
                 return prop.value.arguments[0]
+        }
+    }
+
+    /**
+     * Get a class field
+     * TODO: this currently uses prototype variables
+     * When esprima can handle class fields, those will need to be transformed to class fields
+     * @param {string} fieldName 
+     * @returns {AssignmentExpression} 
+     */
+    getClassField(fieldName) {
+        const astBody = this.ast.program.body
+        for (let statement of astBody) {
+            if (statement.type != 'ExpressionStatement')
+                continue
+            let expression = statement.expression
+            if (expression.type != 'AssignmentExpression')
+                continue
+            // check that the left side of the assignment is assigning to the object prototype
+            if (expression.left.type != 'MemberExpression')
+                continue
+            if (expression.left.object.type != 'MemberExpression')
+                continue
+            if (expression.left.object.object.type != 'Identifier')
+                continue
+            if (expression.left.object.property.type != 'Identifier')
+                continue
+            if (expression.left.object.property.name != 'prototype')
+                continue
+            // expression is an assignment to an object prototype
+
+            if (expression.left.property.type != 'Identifier')
+                continue
+            if (expression.left.property.name != fieldName)
+                continue
+            // expression is an assignment to the field of the object prototype
+            return expression
         }
     }
 }

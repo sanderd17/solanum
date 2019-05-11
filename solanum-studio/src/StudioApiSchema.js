@@ -77,3 +77,22 @@ export const removeChildEventHandler = {
         eventId:        {type: 'string', required: true},
     }
 }
+
+export const setDefaultProp = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        propName:       {type: 'string', required: true},
+        //value:        // TODO value can be of any type > how to encode this?
+    }
+}
+
+export const removeDefaultProp = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        propName:       {type: 'string', required: true},
+    }
+}

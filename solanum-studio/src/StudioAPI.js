@@ -151,6 +151,43 @@ class StudioAPI {
         await cmpFile.write(newCmpCode)
         res.send('ok')
     }
+
+    /**
+     * @param {Request} req 
+     * @param {Express.Response} res 
+     */
+    async setDefaultProp(req, res) {
+        const body = req.body
+
+        let cmpFile = this.componentStore.getFile(body.module, body.component)
+        let cmpCode = await cmpFile.read()
+
+        let cmpMod = new ComponentModifier(cmpCode)
+
+        cmpMod.setDefaultProp(body.propName, body.value)
+        let newCmpCode = cmpMod.print()
+
+        await cmpFile.write(newCmpCode)
+        res.send('ok')
+    }
+    /**
+     * @param {Request} req 
+     * @param {Express.Response} res 
+     */
+    async removeDefaultProp(req, res) {
+        const body = req.body
+
+        let cmpFile = this.componentStore.getFile(body.module, body.component)
+        let cmpCode = await cmpFile.read()
+
+        let cmpMod = new ComponentModifier(cmpCode)
+
+        cmpMod.removeDefaultProp(body.propName)
+        let newCmpCode = cmpMod.print()
+
+        await cmpFile.write(newCmpCode)
+        res.send('ok')
+    }
 }
 
 export default StudioAPI

@@ -33,7 +33,7 @@ class TestComponent extends Template {
 }
 
 TestComponent.prototype.defaultProps = {
-    'defaultProp1': 'val1'
+    prop1: 'val1'
 }
 
 export default TestComponent
@@ -110,6 +110,31 @@ describe('ComponentModifier', function() {
             let newCode = cmpMod.print()
 
             assert(!newCode.includes('ev1:'))
+        })
+    })
+    describe('setDefaultProp', function() {
+        it('Should add a new default prop', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.setDefaultProp('prop2', 2)
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('prop2: 2'))
+        })
+        it('Should alter an existing default prop', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.setDefaultProp('prop1', 1)
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('prop1: 1'))
+        })
+    })
+    describe('removeDefaultProp', function() {
+        it('Should remove a default prop', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.removeDefaultProp('prop1')
+            let newCode = cmpMod.print()
+
+            assert(!newCode.includes('prop1'))
         })
     })
 })
