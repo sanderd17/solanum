@@ -50,7 +50,8 @@ class ComponentStore {
     }
 
     getFile(module, component) {
-        return new File()
+        let filePath = this.getComponentPath(module, component)
+        return new File(filePath)
     }
 
     createComponent(module, component) {
@@ -105,7 +106,7 @@ class File {
 
     /**
      * Lock and open a file
-     * @returns {string} File contents
+     * @returns {Promise<string>} File contents
      * @throws {Error} When lock took too long to release, or content could not be read
      */
     async read() {
@@ -115,7 +116,8 @@ class File {
 
         await this.waitUntilUnlocked()
         fileLocks.add(this.filePath)
-        return await readFile({encoding: 'utf-8'})
+        console.log(this.filePath)
+        return await readFile(this.filePath, {encoding: 'utf-8'})
     }
 
     async write(newCode) {

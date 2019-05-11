@@ -1,14 +1,17 @@
 import recast from 'recast'
-/*    
-* Add / Remove new child template (and fix imports)
-* Set position of child template
-* Set props object of child template
-* Set default props of own template
-* Add / remove / change event handlers
-*/
 
+/**
+ * Class to allow modifications to component code.
+ * This is based on a fixed structure of the components
+ * and uses AST parsing to maintain formatting and functionality of
+ * the existing code.
+ */
 class ComponentModifier {
 
+    /**
+     * Parse the complete module code to AST, ready for modifications
+     * @param {string} code 
+     */
     constructor(code) {
         this.code = code
         this.ast = recast.parse(code)
@@ -137,7 +140,7 @@ class ComponentModifier {
     }
 
     setOwnDefaultProps() {
-
+        // This will change a lot when class fields are available in esprima
     }
 
     //////////////////////////
