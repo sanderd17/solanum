@@ -1,5 +1,4 @@
 import recast from 'recast'
-import { isImportDeclaration } from '../node_modules/typescript/lib/typescript';
 /*    
 * Add / Remove new child template (and fix imports)
 * Set position of child template
@@ -141,7 +140,9 @@ class ComponentModifier {
 
     }
 
-    // methods for internal use
+    //////////////////////////
+    // INTERNAL USE METHODS //
+    //////////////////////////
 
     /**
      * Add the import of a new class to a component
