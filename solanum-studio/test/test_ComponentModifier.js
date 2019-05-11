@@ -26,7 +26,7 @@ class TestComponent extends Template {
             child1: new Child({
                 position: {left: '0', width: '100%', top: '0', height: '100%'},
                 props: {},
-                eventHandlers: {ev1: (ev) => {}}
+                eventHandlers: {ev1: () => {}}
             })
         })
     }
@@ -82,7 +82,34 @@ describe('ComponentModifier', function() {
             cmpMod.setChildPosition('child1', {left: '10%', width: '80%', top:'10%', height:'80%'})
             let newCode = cmpMod.print()
 
-            assert(newCode.includes('"left": "10%"'))
+            assert(newCode.includes('left: "10%"'))
+        })
+    })
+    describe('setChildEventHandler', function() {
+        it('Should add an event handler of a child', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.setChildEventHandler('child1', 'ev2', `(ev) => {console.log(ev)}`)
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('ev2:'))
+            assert(newCode.includes('console.log(ev)'))
+        })
+        it('Should replace an event handler of a child', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.setChildEventHandler('child1', 'ev1', `(ev) => {console.log(ev)}`)
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('ev1:'))
+            assert(newCode.includes('console.log(ev)'))
+        })
+    })
+    describe('removeChildEventHanlder', function() {
+        it('Should remove an existing handler', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.removeChildEventHandler('child1', 'ev1')
+            let newCode = cmpMod.print()
+
+            assert(!newCode.includes('ev1:'))
         })
     })
 })

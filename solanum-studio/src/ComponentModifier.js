@@ -35,7 +35,7 @@ class ComponentModifier {
 
         let newChildAst = recast.parse(`
             new ${childClassName}({
-                position: ${JSON.stringify(position)},
+                position: {},
                 props: {},
                 eventHandlers: {},
             })`)
@@ -43,6 +43,8 @@ class ComponentModifier {
         const b = recast.types.builders
         let newArgProperty = b.property('init', b.identifier(childId), newChildAst.program.body[0].expression)
         children.properties.splice(children.properties.length, 0, newArgProperty)
+
+        this.setChildPosition(childId, position)
     }
 
     /**
@@ -58,15 +60,26 @@ class ComponentModifier {
         }
     }
 
+    /**
+     * @param {string} childId 
+     * @param {string} position 
+     */
     setChildPosition(childId, position) {
         let childArg = this.getChildConstructionArg(childId)
 
-        let newPositionExpression = recast.parse("let a = " + JSON.stringify(position)).program.body[0].declarations[0].init
+        // construct the position object ast
+        const b = recast.types.builders
+        let objProps = []
+        for (let key in position) {
+            objProps.push(b.property('init', b.identifier(key), b.literal(position[key])))
+        }
+        let objAst  = b.objectExpression(objProps)
 
+        // replace the existing object with the new ast
         for (let prop of childArg.properties) {
             if (prop.key.name != 'position')
                 continue
-            prop.value = newPositionExpression
+            prop.value = objAst
         }
     }
 
@@ -78,12 +91,50 @@ class ComponentModifier {
 
     }
 
-    setChildEventHandler() {
+    /**
+     * @param {string} childId 
+     * @param {string} eventId 
+     * @param {string} eventHandler representing the function as a string
+     */
+    setChildEventHandler(childId, eventId, eventHandler) {
+        let childArg = this.getChildConstructionArg(childId)
 
+        let newEventhandlerAst = recast.parse(eventHandler).program.body[0].expression
+
+        for (let prop of childArg.properties) {
+            if (prop.key.name != 'eventHandlers')
+                continue
+            if (prop.value.type != 'ObjectExpression')
+                throw new Error('eventHandlers parameter should be of type `ObjectExpression`')
+            for(let handler of prop.value.properties) {
+                if (handler.key.name == eventId) {
+                    handler.value = newEventhandlerAst
+                    return
+                }
+            }
+            // handler with id was not found, add a new handler
+
+            const b = recast.types.builders
+            let newHandlerProperty = b.property('init', b.identifier(eventId), newEventhandlerAst)
+            prop.value.properties.splice(prop.value.properties.length, 0, newHandlerProperty)
+        }
     }
 
-    removeChildEventHandler() {
+    removeChildEventHandler(childId, eventId) {
+        let childArg = this.getChildConstructionArg(childId)
 
+        for (let prop of childArg.properties) {
+            if (prop.key.name != 'eventHandlers')
+                continue
+            if (prop.value.type != 'ObjectExpression')
+                throw new Error('eventHandlers parameter should be of type `ObjectExpression`')
+            for(let [i, handler] of prop.value.properties.entries()) {
+                if (handler.key.name == eventId) {
+                    prop.value.properties.splice(i, 1) // remove the handler
+                    return
+                }
+            }
+        }
     }
 
     setOwnDefaultProps() {
