@@ -1,25 +1,10 @@
 const assert = require('assert')
-const xml2js = require('xml-js')
 
-import recast from 'recast'
 import path from 'path'
 import StudioAPI from '../src/StudioAPI.js'
 
 
-/**
- * @param {string} xml1 
- * @param {string} xml2
- */
-assert.equalXml = function(xml1, xml2) {
-    return assert.deepEqual(xml2js.xml2js(xml1), xml2js.xml2js(xml2))
-}
-
 describe('Studio', function() {
-    describe('constructor', function() {
-        it('constructs', function() {
-
-        })
-    })
     describe('getComponentPaths', function() {
         it('Should return all valid components', function(done) {
             let config = {
@@ -54,25 +39,4 @@ describe('Studio', function() {
             done()
         })
     }),
-    describe('UpdateCode', function() {
-        it.skip('Should update code', function() {
-
-        })
-    })
-    describe('CheckBody', function() {
-        it('Should check an object for type', function() {
-            let body = {
-                key1: 'test',
-                key2: 123
-            }
-            let sentStatus, sentMessage
-            let response = {
-                status: (status) => sentStatus = status,
-                send: (msg) => sentMessage = msg,
-                headersSent: false
-            }
-
-
-        })
-    })
 })
