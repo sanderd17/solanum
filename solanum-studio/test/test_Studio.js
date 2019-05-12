@@ -22,7 +22,7 @@ describe('Studio', function() {
             }}
             editor.getComponentPaths(null, response).then(() => done()).catch((err) => assert.fail(err))
         })
-    }),
+    })
     describe('openComponent', function() {
         it(('Should return the contents of the correct component'), function(done) {
             let config = {
@@ -38,5 +38,5 @@ describe('Studio', function() {
             editor.openComponent({body:{module: 'module2', component: 'file1.js'}}, response)
             done()
         })
-    }),
+    })
 })
