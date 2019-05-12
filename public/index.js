@@ -3,10 +3,10 @@ import ts from "./lib/TagSet.js"
 import Reloader from './lib/Reloader.js'
 import messager from "./lib/Messager.js"
 ts.initMessageHandlers()
-let r = new Reloader()
-r.initMessageHandlers()
 
 const mainWindow = new MainWindow({})
+let r = new Reloader(mainWindow)
+r.initMessageHandlers()
 mainWindow.setId('mainWindow')
 let div = document.getElementById("root")
 div.appendChild(mainWindow.dom)

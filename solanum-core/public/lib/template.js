@@ -28,6 +28,8 @@ class Template {
      * @param {TemplateConstructParams} p
      */
     constructor(p) {
+        // store constructor args
+        this.cArgs = p
         this.children = {}
         /** @type {Template?} */
         this.parent = null

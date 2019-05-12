@@ -1,13 +1,14 @@
 import path from 'path'
 import chokidar from 'chokidar'
 import clientList from './ClientList.js'
+import { TIMEOUT } from 'dns';
 
 class Reloader {
 
     constructor(app, config) {
         for (let dir of config.publicDirs) {
             let glob = path.join(dir, '**/*.js')
-            chokidar.watch(glob).on('all', (event, path) => this.onFileChange(dir, event, path))
+            chokidar.watch(glob, {awaitWriteFinish: {stabilityThreshold: 500}}).on('all', (event, path) => this.onFileChange(dir, event, path))
         }
     }
 
