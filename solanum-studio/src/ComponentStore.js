@@ -57,8 +57,8 @@ class ComponentStore {
     createComponent(module, component) {
         let filePath = this.getComponentPath(module, component)
         let contents = `
-import Template from '../lib/template.js'
-import ts from '../lib/TagSet.js'
+import Template from '/lib/template.js'
+import ts from '/lib/TagSet.js'
 
 class ${component} extends Template {
 

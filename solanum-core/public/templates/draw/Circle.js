@@ -1,4 +1,4 @@
-import Template from '../../lib/template.js'
+import Template from '/lib/template.js'
 
 const ns = "http://www.w3.org/2000/svg"
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']

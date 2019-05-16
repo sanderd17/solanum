@@ -7,10 +7,7 @@ export const getComponentPaths = {
 export const openComponent = {
     type: 'object',
     required: true,
-    properties: {
-        module:         {type: 'string', required: true},
-        component:      {type: 'string', required: true},
-    }
+    properties: {}
 }
 
 export const childPosition = {

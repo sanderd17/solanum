@@ -1,4 +1,4 @@
-import Template from "../../lib/template.js"
+import Template from "/lib/template.js"
 
 class Button extends Template {}
 

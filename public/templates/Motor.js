@@ -1,7 +1,7 @@
-import Template from '../lib/template.js'
-import P from '../lib/Prop.js'
-import ts from '../lib/TagSet.js'
-import Circle from './draw/Circle.js'
+import Template from '/lib/template.js'
+import P from '/lib/Prop.js'
+import ts from '/lib/TagSet.js'
+import Circle from '/templates/draw/Circle.js'
 
 class Motor extends Template {
 

@@ -52,8 +52,10 @@ class StudioAPI {
      * @param {Response} res 
      */
     async openComponent(req, res) {
-        const body = req.body
-        res.sendFile(this.componentStore.getComponentPath(body.module, body.component))
+        console.log(req.query)
+        let cmpPath = this.componentStore.getComponentPath(req.query.module, req.query.component)
+        console.log(cmpPath)
+        res.sendFile(cmpPath)
     }
 
 
