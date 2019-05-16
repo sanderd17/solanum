@@ -34,9 +34,9 @@ describe('Studio', function() {
             let editor = new StudioAPI({}, config)
             const response = {sendFile: function(fileName) {
                 assert(fileName.endsWith('/module2/file1.js'))
+                done()
             }}
-            editor.openComponent({body:{module: 'module2', component: 'file1.js'}}, response)
-            done()
+            editor.openComponent({query:{module: 'module2', component: 'file1.js'}}, response)
         })
     })
 })
