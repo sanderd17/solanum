@@ -66,12 +66,14 @@ class Template {
              * @arg {object} val
              */
             set: (obj, id, val) => {
+                console.log('set')
                 if (id in obj) {
                     obj[id].setValue(val)
-                } else {
-                    // key was not present on props, set as a raw prop
-                    obj[id] = P.Raw(val)
+                    return true
                 }
+                // key was not present on props, set as a raw prop
+                obj[id] = P.Raw(val)
+                return true
             },
         })
 

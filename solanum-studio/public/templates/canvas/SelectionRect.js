@@ -1,23 +1,56 @@
-import Template from "/lib/template.js"
-import P from '/lib/Prop.js'
+import Template from '/lib/template.js'
+
+const ns = "http://www.w3.org/2000/svg"
+const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class SelectionRect extends Template {
-
-    init() {
+    handlePropChanged(id, newValue, oldValue) {
+        if (id == 'selected') {
+            console.log(newValue)
+            // TODO set class which in turn changes style. Need style handling for this
+        }
     }
 
     get dom() {
-        if (this.domNode != null)
-            return this.domNode
-        this.domNode = document.createElement("div")
+        if (this.svgNode != null)
+            return this.svgNode
+        this.svgNode = document.createElementNS(ns, "svg")
+        this.svgNode.setAttribute("viewBox", "0 0 100 100")
+        this.svgNode.setAttribute("preserveAspectRatio", "none")
 
-        for (let key in this.position)
-            this.domNode.style[key] = this.position[key]
+        this.elNode = document.createElementNS(ns, "rect")
+        this.elNode.setAttribute("x", "0")
+        this.elNode.setAttribute("y", "0")
+        this.elNode.setAttribute("width", "100")
+        this.elNode.setAttribute("height", "100")
+        this.elNode.setAttribute("fill", "none")
+        this.elNode.setAttribute("pointer-events", "visible")
+        this.elNode.setAttribute("stroke", "#000080")
+        this.elNode.setAttribute("stroke-width", "2")
+        this.elNode.setAttribute("stroke-dasharray", "5 5")
 
-        this.domNode.innerHTML = "Selection Rect"
-        return this.domNode
+        for (let id in this.props) {
+            this.elNode.setAttribute(id, this.props[id])
+        }
+
+        this.svgNode.appendChild(this.elNode)
+
+        for (let key of positionKeys)
+            if (key in this.position) this.svgNode.style[key] = this.position[key]
+
+        if (this.eventHandlersEnabled) {
+            for (let eventType in this.eventHandlers) {
+                let fn = this.eventHandlers[eventType]
+                if (eventType == "load")
+                    fn(null)
+                else
+                    this.elNode.addEventListener(eventType, (event) => fn(event))
+            }
+        }
+
+        return this.svgNode
     }
-
 }
 
 export default SelectionRect
+

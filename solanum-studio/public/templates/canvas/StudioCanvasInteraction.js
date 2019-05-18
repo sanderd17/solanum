@@ -21,8 +21,13 @@ class StudioCanvasInteraction extends Template {
             console.log(cmp.position)
             children[id] = new SelectionRect({
                 position: cmp.position,
-                props: {},
-                eventHandlers: {},
+                props: {selected: P.Raw(false)},
+                eventHandlers: {
+                    click: (ev) => {
+                        console.log("clicked")
+                        this.children[id].props.selected = true
+                    }
+                },
             })
         }
         this.setChildren(children)

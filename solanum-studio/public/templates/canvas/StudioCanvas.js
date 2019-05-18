@@ -18,7 +18,7 @@ class StudioCanvas extends Template {
         // TODO get default size from class
         let position = {left: '0px', width: '100px', top:'0px', height:'100px'}
         let preview= new cls({
-            position: position,
+            position,
             props: {},
             eventHandlers: {}
         })
@@ -26,7 +26,7 @@ class StudioCanvas extends Template {
         preview.disableEventHandlers()
 
         let interaction= new StudioCanvasInteraction({
-            position: position,
+            position,
             props: {},
             eventHandlers: {}
         })
