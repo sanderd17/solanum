@@ -30,6 +30,10 @@ class Reloader {
             import('/' + cmp).then((mdl) => {
                 // cls is the class of the replaced template
                 let cls = mdl.default
+                if (cls.name == this.cmpRoot.constructor.name) {
+                    location.reload()
+                    return
+                }
                 recursiveCheckClass(this.cmpRoot, cls)
             });
         })
