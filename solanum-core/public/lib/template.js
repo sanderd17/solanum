@@ -84,9 +84,21 @@ class Template {
     init() {}
 
     setChildren(children) {
+        let parentNode = null
+        if (this.domNode != null) {
+            // resetting children after render
+            parentNode = this.domNode.parentNode
+            parentNode.removeChild(this.domNode)
+            this.domNode = null
+        }
         this.children = children
         for (let id in this.children)
             this.children[id].setParent(this)
+        
+        // Re-add dom
+        if (parentNode != null) {
+            parentNode.appendChild(this.dom)
+        }
     }
 
     /**
