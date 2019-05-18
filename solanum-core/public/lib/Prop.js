@@ -1,3 +1,4 @@
+import ts from "./TagSet.js"
 let exp = {}
 
 export class Prop {

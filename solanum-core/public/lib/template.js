@@ -1,5 +1,5 @@
-import ts from "./TagSet.js"
 import * as Prop from './Prop.js'
+import P from '/lib/Prop.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
@@ -50,7 +50,11 @@ class Template {
              * @arg {string} id
              */
             get: (obj, id) => {
-                return obj[id].getValue()
+                if (id in obj)
+                    return obj[id].getValue()
+                if (id in this.defaultProps)
+                    return this.defaultProps[id]
+                return undefined
             },
             /**
              * @arg {object} obj
@@ -58,10 +62,22 @@ class Template {
              * @arg {object} val
              */
             set: (obj, id, val) => {
-                obj[id].setValue(val)
+                if (id in obj) {
+                    obj[id].setValue(val)
+                } else {
+                    // key was not present on props, set as a raw prop
+                    obj[id] = P.Raw(val)
+                }
             },
         })
+
+        this.init()
     }
+
+    /**
+     * Init function to be implemented by the separate components
+     */
+    init() {}
 
     setChildren(children) {
         this.children = children
@@ -125,5 +141,7 @@ class Template {
         return this.domNode
     } 
 }
+
+Template.prototype.defaultProps = {}
 
 export default Template

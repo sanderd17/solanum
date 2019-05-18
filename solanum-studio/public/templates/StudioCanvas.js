@@ -3,10 +3,7 @@ import P from '../lib/Prop.js'
 import StudioCanvasPreview from './StudioCanvasPreview.js'
 
 class StudioCanvas extends Template {
-
-    constructor(p) {
-        super(p)
-
+    init() {
         this.setChildren({
             preview: new StudioCanvasPreview({
                 position: {left:0, right:0, top:0, bottom:0},
