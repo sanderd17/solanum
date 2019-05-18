@@ -30,12 +30,14 @@ class Circle extends Template {
         for (let key of positionKeys)
             if (key in this.position) this.svgNode.style[key] = this.position[key]
 
-        for (let eventType in this.eventHandlers) {
-            let fn = this.eventHandlers[eventType]
-            if (eventType == "load")
-                fn(null)
-            else
-                this.elNode.addEventListener(eventType, (event) => fn(event))
+        if (this.eventHandlersEnabled) {
+            for (let eventType in this.eventHandlers) {
+                let fn = this.eventHandlers[eventType]
+                if (eventType == "load")
+                    fn(null)
+                else
+                    this.elNode.addEventListener(eventType, (event) => fn(event))
+            }
         }
 
         return this.svgNode

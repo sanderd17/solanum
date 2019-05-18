@@ -37,6 +37,7 @@ class Template {
         this.boundProps = {}
         this.position = p.position || {}
         this.eventHandlers = p.eventHandlers || {}
+        this.eventHandlersEnabled = true
         this._props = p.props
 
         for (let id in this.defaultProps) {
@@ -111,6 +112,17 @@ class Template {
         }
     }
 
+    /**
+     * Disable adding event handlers to the dom (recursively)
+     * This needs to be called before the dom is created
+     */
+    disableEventHandlers() {
+        this.eventHandlersEnabled = false
+        for (let childId in this.children) {
+            this.children[childId].disableEventHandlers()
+        }
+    }
+
     registerPropBinding(child, childPropId, binding) {
         this.boundProps[binding.boundName] = [child, childPropId, binding]
     }
@@ -132,12 +144,14 @@ class Template {
         for (let key of positionKeys)
             if (key in this.position) this.domNode.style[key] = this.position[key]
 
-        for (let eventType in this.eventHandlers) {
-            let fn = this.eventHandlers[eventType]
-            if (eventType == "load")
-                fn(null)
-            else
-                this.domNode.addEventListener(eventType, (event) => fn(event))
+        if (this.eventHandlersEnabled) {
+            for (let eventType in this.eventHandlers) {
+                let fn = this.eventHandlers[eventType]
+                if (eventType == "load")
+                    fn(null)
+                else
+                    this.domNode.addEventListener(eventType, (event) => fn(event))
+            }
         }
         for (let child of Object.values(this.children))
             this.domNode.appendChild(child.dom)

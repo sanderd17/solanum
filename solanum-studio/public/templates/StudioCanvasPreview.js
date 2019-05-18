@@ -1,7 +1,7 @@
-import Template from "../lib/template.js"
-import P from '../lib/Prop.js'
+import Template from "/lib/template.js"
+import P from '/lib/Prop.js'
 
-class StudioCanvas extends Template {
+class StudioCanvasPreview extends Template {
 
     init() {
         this.instance = null
@@ -21,7 +21,9 @@ class StudioCanvas extends Template {
                 eventHandlers: {}
             })
 
+            this.instance.disableEventHandlers()
             this.instance.setId('previewRoot')
+
             for (let child of this.domNode.childNodes)
                 this.domNode.removeChild(child)
 
@@ -43,4 +45,4 @@ class StudioCanvas extends Template {
 
 }
 
-export default StudioCanvas
+export default StudioCanvasPreview

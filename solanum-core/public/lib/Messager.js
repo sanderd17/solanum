@@ -79,8 +79,10 @@ Messager.prototype.checkWebSocketOpened = function() {
  * @param {Object} data 
  */
 Messager.prototype.handleMessage = function(msgName, data) {
-    console.log(msgName)
-    this.messages[msgName](data)
+    if (msgName in this.messages)
+        this.messages[msgName](data)
+    else
+        console.log(`Message '${msgName}' not found in message handlers'`)
 }
 
 /**

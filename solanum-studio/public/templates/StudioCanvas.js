@@ -1,5 +1,5 @@
-import Template from "../lib/template.js"
-import P from '../lib/Prop.js'
+import Template from "/lib/template.js"
+import P from '/lib/Prop.js'
 import StudioCanvasPreview from './StudioCanvasPreview.js'
 
 class StudioCanvas extends Template {
