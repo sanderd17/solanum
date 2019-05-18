@@ -4,11 +4,6 @@ const ns = "http://www.w3.org/2000/svg"
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Circle extends Template {
-    constructor(p) {
-        super(p)
-        this.position = p.position || {}
-    }
-
     handlePropChanged(id, newValue, oldValue) {
         this.elNode.setAttribute(id, newValue)
     }

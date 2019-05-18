@@ -20,7 +20,7 @@ class Motor extends Template {
 }
 
 Motor.prototype.defaultProps = {
-    'motor': 'M1'
+    'motor': 'M0'
 }
 
 Motor.prototype.css = [
