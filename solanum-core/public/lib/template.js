@@ -39,6 +39,11 @@ class Template {
         this.eventHandlers = p.eventHandlers || {}
         this._props = p.props
 
+        for (let id in this.defaultProps) {
+            if (!(id in p.props))
+                p.props[id] = P.Raw(this.defaultProps[id])
+        }
+
         for (let id in p.props) {
             p.props[id].setContext(this, id)
         }
@@ -52,8 +57,6 @@ class Template {
             get: (obj, id) => {
                 if (id in obj)
                     return obj[id].getValue()
-                if (id in this.defaultProps)
-                    return this.defaultProps[id]
                 return undefined
             },
             /**
@@ -92,7 +95,7 @@ class Template {
     setParent(parent) {
         this.parent = parent
 
-        // for all props that are bound, let out parent warn us
+        // for all props that are bound, let our parent warn us
         for (let id in this._props) {
             if (this._props[id] instanceof Prop.Bound) {
                 parent.registerPropBinding(this, id, this._props[id])

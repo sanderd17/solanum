@@ -21,6 +21,7 @@ class StudioCanvas extends Template {
                 eventHandlers: {}
             })
 
+            this.instance.setId('previewRoot')
             for (let child of this.domNode.childNodes)
                 this.domNode.removeChild(child)
 

@@ -1,4 +1,6 @@
-import StudioWindow from '../templates/StudioWindow.js'
+import ts from "/lib/TagSet.js"
+import StudioWindow from '/templates/StudioWindow.js'
+ts.initMessageHandlers()
 
 let sc = new StudioWindow({
     position: {left:0, right:0, top:0, bottom:0},
