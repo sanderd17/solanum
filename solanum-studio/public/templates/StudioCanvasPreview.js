@@ -3,9 +3,7 @@ import P from '../lib/Prop.js'
 
 class StudioCanvas extends Template {
 
-    constructor(p) {
-        super(p)
-
+    init() {
         this.instance = null
     }
 

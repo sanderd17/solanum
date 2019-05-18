@@ -213,13 +213,13 @@ class ComponentModifier {
         }
     }
 
-    getConstructorBodyAst() {
+    getInitBodyAst() {
         let classBody = this.getClassBodyAst()
 
         for (let statement of classBody) {
             if (statement.type != 'MethodDefinition')
                 continue
-            if (statement.key.type != 'Identifier' || statement.key.name != 'constructor')
+            if (statement.key.type != 'Identifier' || statement.key.name != 'init')
                 continue
             // bodyStatement is the constructor function
 
@@ -231,7 +231,7 @@ class ComponentModifier {
      * @returns {ObjectExpression} containing the children passed to the setChildren function
      */
     getSetChildrenArgsAst() {
-        let constructorBody = this.getConstructorBodyAst()
+        let constructorBody = this.getInitBodyAst()
 
         for (let statement of constructorBody) {
             if (statement.type != 'ExpressionStatement')

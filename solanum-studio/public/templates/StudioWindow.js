@@ -3,9 +3,7 @@ import P from '../lib/Prop.js'
 import StudioCanvas from './StudioCanvas.js'
 
 class StudioWindow extends Template {
-    constructor(p) {
-        super(p)
-
+    init() {
         this.setChildren({
             canvas: new StudioCanvas({
                 position: {left: "0", right: "0", top: "0", bottom: "0"},

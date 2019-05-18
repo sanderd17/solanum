@@ -1,5 +1,5 @@
 import * as Prop from './Prop.js'
-import P from '/lib/Prop.js'
+import P from './Prop.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**

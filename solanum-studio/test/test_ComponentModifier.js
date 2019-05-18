@@ -19,9 +19,7 @@ import Template from '../lib/template.js'
 
 class TestComponent extends Template {
 
-    constructor(p) {
-        super(p)
-
+    init() {
         this.setChildren({
             child1: new Child({
                 position: {left: '0', width: '100%', top: '0', height: '100%'},

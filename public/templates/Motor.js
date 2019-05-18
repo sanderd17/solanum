@@ -4,10 +4,7 @@ import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 
 class Motor extends Template {
-
-    constructor(p) {
-        super(p)
-
+    init() {
         this.setChildren({
             circle: new Circle({
                 position: {left: "10%", width: "80%", top: "10%", height: "80%"},
