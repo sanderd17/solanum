@@ -3,14 +3,14 @@ import messager from './Messager.js'
 function recursiveCheckClass(root, cls) {
     for (let id in root.children) {
         let child = root.children[id]
-        if (child.constructor.name == cls.name) {
+        if (child.constructor == cls) {
             // remove own dom node
             root.dom.removeChild(child.dom)
             // get defined props, eventhandlers, ... and apply to new child
             let newChild = new cls(child.cArgs)
             newChild.setParent(root)
             root.dom.appendChild(newChild.dom)
-            newChild.addCssClass(id)
+            newChild.classList.add(id)
             root.children[id] = newChild
         } else {
             recursiveCheckClass(child, cls)
@@ -32,7 +32,7 @@ class Reloader {
             import('/' + cmp).then((mdl) => {
                 // cls is the class of the replaced template
                 let cls = mdl.default
-                if (cls.name == this.cmpRoot.constructor.name) {
+                if (cls == this.cmpRoot.constructor) {
                     location.reload()
                     return
                 }

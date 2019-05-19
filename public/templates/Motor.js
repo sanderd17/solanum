@@ -26,7 +26,7 @@ Motor.prototype.defaultProps = {
 Motor.prototype.css = {
     'icon': {
         'stroke': 'black',
-        'stroke-width': '10px'
+        'stroke-width': '20px'
     },
     'icon:hover': {
         'cursor': 'pointer'

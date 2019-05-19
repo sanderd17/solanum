@@ -3,14 +3,40 @@
  */
 class Styling {
     constructor() {
+        /** @type {Map<*,string>} Map from class objects to unique class names as strings */
+        this.classNameMappings = new Map()
+        /** @type {*} Map from class names to style rules */
         this.styleMapping = {}
+        /** @type {HTMLStyleElement?} reference to the stylesheet */
         this.styleNode = null
     }
 
-    registerCss(className, css) {
-        if (className in this.styleMapping)
-            return // classes can only be added once; they are unique per component
-        this.styleMapping[className] = css
+    /**
+     * Register the class style of the object, and get a unique className back
+     * @param {*} obj a Template instance
+     * @returns {string} a unique class name
+     */
+    registerClassStyle(obj) {
+        // store the style per constructor (per component type)
+        let cls = obj.constructor
+        if (this.classNameMappings.has(cls))
+            return this.classNameMappings.get(cls)// only add a component once
+        
+        let className = cls.name + '_' + Math.random().toString(36).substr(2, 7)
+        this.classNameMappings.set(cls, className)
+        if (obj.css)
+            this.styleMapping[className] = obj.css
+        return className
+    }
+
+    resetStyleOfClass(obj) {
+        let cls = obj.constructor
+        if (!this.classNameMappings.has(cls))
+            this.registerClassStyle(obj)
+        let className = this.classNameMappings.get(cls)
+        if (obj.css)
+            this.styleMapping[className] = obj.css
+        this.addToDom()
     }
 
     getCss() {
@@ -24,9 +50,14 @@ class Styling {
     }   
 
     addToDom() {
-        this.styleNode = document.createElement('style')
+        if (!this.styleNode) {
+            this.styleNode = document.createElement('style')
+            document.head.appendChild(this.styleNode)
+        } else {
+            for (let child of this.styleNode.childNodes)
+                this.styleNode.removeChild(child)
+        }
         this.styleNode.appendChild(document.createTextNode(this.getCss()))
-        document.head.appendChild(this.styleNode)
     }
 }
 

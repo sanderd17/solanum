@@ -76,9 +76,7 @@ class Template {
             },
         })
 
-        if ('css' in this) {
-            style.registerCss(this.className, this.css)
-        }
+        this.className = style.registerClassStyle(this)
 
         this.init()
     }
@@ -88,13 +86,8 @@ class Template {
      */
     init() {}
 
-    get className() {
-        // TODO this should be unique in the app, but preferably recognisable
-        return this.constructor.name
-    }
-
-    addCssClass(className) {
-        this.dom.classList.add(className)
+    get classList() {
+        return this.dom.classList
     }
 
     setChildren(children) {
@@ -167,7 +160,7 @@ class Template {
             return this.domNode
         this.domNode = document.createElement('div')
 
-        this.addCssClass(this.className)
+        this.classList.add(this.className)
 
         for (let key of positionKeys)
             if (key in this.position) this.domNode.style[key] = this.position[key]
@@ -183,7 +176,7 @@ class Template {
         }
         for (let [id, child] of Object.entries(this.children)) {
             this.domNode.appendChild(child.dom)
-            child.addCssClass(id)
+            child.classList.add(id)
         }   
         return this.domNode
     } 
