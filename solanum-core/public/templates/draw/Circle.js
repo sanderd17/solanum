@@ -25,7 +25,6 @@ class Circle extends Template {
         this.elNode.setAttribute("r", "50")
 
         this.addCssClass(this.className)
-
         //circleNode.setAttribute("fill", "blue")
         for (let id in this.props) {
             this.elNode.setAttribute(id, this.props[id])
