@@ -76,7 +76,7 @@ class Template {
             },
         })
 
-        this.className = style.registerClassStyle(this)
+        this.className = style.registerClassStyle(this.constructor)
 
         this.init()
     }

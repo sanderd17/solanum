@@ -13,29 +13,27 @@ class Styling {
 
     /**
      * Register the class style of the object, and get a unique className back
-     * @param {*} obj a Template instance
+     * @param {*} cls a Template ineriting class
      * @returns {string} a unique class name
      */
-    registerClassStyle(obj) {
+    registerClassStyle(cls) {
         // store the style per constructor (per component type)
-        let cls = obj.constructor
         if (this.classNameMappings.has(cls))
             return this.classNameMappings.get(cls)// only add a component once
         
         let className = cls.name + '_' + Math.random().toString(36).substr(2, 7)
         this.classNameMappings.set(cls, className)
-        if (obj.css)
-            this.styleMapping[className] = obj.css
+        if (cls.prototype.css)
+            this.styleMapping[className] = cls.prototype.css
         return className
     }
 
-    resetStyleOfClass(obj) {
-        let cls = obj.constructor
+    reloadClassStyle(cls) {
         if (!this.classNameMappings.has(cls))
-            this.registerClassStyle(obj)
+            this.registerClassStyle(cls)
         let className = this.classNameMappings.get(cls)
-        if (obj.css)
-            this.styleMapping[className] = obj.css
+        if (cls.prototype.css)
+            this.styleMapping[className] = cls.prototype.css
         this.addToDom()
     }
 
@@ -58,6 +56,7 @@ class Styling {
                 this.styleNode.removeChild(child)
         }
         this.styleNode.appendChild(document.createTextNode(this.getCss()))
+        console.log(this.getCss())
     }
 }
 

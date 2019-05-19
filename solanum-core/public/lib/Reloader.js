@@ -1,4 +1,5 @@
 import messager from './Messager.js'
+import style from '/lib/Styling.js'
 
 function recursiveCheckClass(root, cls) {
     for (let id in root.children) {
@@ -37,6 +38,8 @@ class Reloader {
                     return
                 }
                 recursiveCheckClass(this.cmpRoot, cls)
+                style.reloadClassStyle(cls)
+                console.log(cls.prototype.css)
             });
         })
     }
