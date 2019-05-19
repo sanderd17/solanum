@@ -23,10 +23,14 @@ Motor.prototype.defaultProps = {
     'motor': 'M0'
 }
 
-Motor.prototype.css = [
-    `.motor > .icon_1:hover {
-        cursor: pointer;
-    }`,
-]
+Motor.prototype.css = {
+    'icon': {
+        'stroke': 'black',
+        'stroke-width': '10px'
+    },
+    'icon:hover': {
+        'cursor': 'pointer'
+    },
+}
 
 export default Motor

@@ -8,6 +8,10 @@ class Circle extends Template {
         this.elNode.setAttribute(id, newValue)
     }
 
+    addCssClass(className) {
+        this.elNode.classList.add(className)
+    }
+
     get dom() {
         if (this.svgNode != null)
             return this.svgNode
@@ -19,6 +23,8 @@ class Circle extends Template {
         this.elNode.setAttribute("cx", "50")
         this.elNode.setAttribute("cy", "50")
         this.elNode.setAttribute("r", "50")
+
+        this.addCssClass(this.className)
 
         //circleNode.setAttribute("fill", "blue")
         for (let id in this.props) {

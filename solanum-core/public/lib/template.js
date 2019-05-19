@@ -1,5 +1,6 @@
 import * as Prop from './Prop.js'
 import P from './Prop.js'
+import style from '/lib/Styling.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
@@ -71,11 +72,13 @@ class Template {
                     obj[id].setValue(val)
                     return true
                 }
-                // key was not present on props, set as a raw prop
-                obj[id] = P.Raw(val)
-                return true
+                return false
             },
         })
+
+        if ('css' in this) {
+            style.registerCss(this.className, this.css)
+        }
 
         this.init()
     }
@@ -84,6 +87,15 @@ class Template {
      * Init function to be implemented by the separate components
      */
     init() {}
+
+    get className() {
+        // TODO this should be unique in the app, but preferably recognisable
+        return this.constructor.name
+    }
+
+    addCssClass(className) {
+        this.dom.classList.add(className)
+    }
 
     setChildren(children) {
         let parentNode = null
@@ -155,6 +167,8 @@ class Template {
             return this.domNode
         this.domNode = document.createElement('div')
 
+        this.addCssClass(this.className)
+
         for (let key of positionKeys)
             if (key in this.position) this.domNode.style[key] = this.position[key]
 
@@ -167,8 +181,10 @@ class Template {
                     this.domNode.addEventListener(eventType, (event) => fn(event))
             }
         }
-        for (let child of Object.values(this.children))
+        for (let [id, child] of Object.entries(this.children)) {
             this.domNode.appendChild(child.dom)
+            child.addCssClass(id)
+        }   
         return this.domNode
     } 
 }
