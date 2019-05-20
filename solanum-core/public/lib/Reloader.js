@@ -4,7 +4,7 @@ import style from '/lib/Styling.js'
 function recursiveCheckClass(root, cls) {
     for (let id in root.children) {
         let child = root.children[id]
-        if (child.constructor == cls) {
+        if (child.constructor.name == cls.name) {
             // remove own dom node
             root.dom.removeChild(child.dom)
             // get defined props, eventhandlers, ... and apply to new child
@@ -22,6 +22,7 @@ function recursiveCheckClass(root, cls) {
 class Reloader {
     constructor(cmpRoot) {
         this.cmpRoot = cmpRoot
+        this.cnt = 1
     }
     initMessageHandlers() {
         messager.registerMessageHandler('Reloader:fileReloaded', (cmp) => {
@@ -30,10 +31,11 @@ class Reloader {
                 location.reload()
                 return
             }
-            import('/' + cmp).then((mdl) => {
+            import('/' + cmp + '?v=' + this.cnt).then((mdl) => {
+                this.cnt++
                 // cls is the class of the replaced template
                 let cls = mdl.default
-                if (cls == this.cmpRoot.constructor) {
+                if (cls.name == this.cmpRoot.constructor.name) {
                     location.reload()
                     return
                 }

@@ -5,12 +5,14 @@ import StudioCanvasInteraction from '/templates/canvas/StudioCanvasInteraction.j
 class StudioCanvas extends Template {
     init() {
         this.setChildren({ })
+        this.cnt = 1
     }
 
     async setComponent(mod, cmp) {
         console.log(`Set component to ${mod}:${cmp}`)
         // load the module from the Studio API
-        let mdl = await import(`/API/Studio/openComponent?module=${mod}&component=${cmp}`)
+        let mdl = await import(`/API/Studio/openComponent?module=${mod}&component=${cmp}&v=${this.cnt}`)
+        this.cnt++
 
         // cls is the class of the replaced template
         let cls = mdl.default
