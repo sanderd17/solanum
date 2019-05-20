@@ -1,6 +1,6 @@
 import * as Prop from './Prop.js'
 import P from './Prop.js'
-import style from '/lib/Styling.js'
+import style from './Styling.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
