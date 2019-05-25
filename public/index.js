@@ -2,7 +2,6 @@ import MainWindow from "./templates/MainWindow.js"
 import ts from "./lib/TagSet.js"
 import Reloader from './lib/Reloader.js'
 import messager from "./lib/Messager.js"
-import style from '/lib/Styling.js'
 ts.initMessageHandlers()
 
 const mainWindow = new MainWindow({})
@@ -12,7 +11,6 @@ mainWindow.setId('mainWindow')
 let div = document.getElementById("root")
 div.appendChild(mainWindow.dom)
 
-style.addToDom()
 /*
 const svgDom = mainWindow.render().documentElement
 svgDom.setAttribute("width", window.innerWidth)
@@ -35,8 +33,6 @@ messager.connectToServer(location.host)
 // expose singletons for debugging purposes (via browser console)
 // @ts-ignore
 window['ts'] = ts
-// @ts-ignore
-window['style'] = style
 // @ts-ignore
 window['messager'] = messager
 // @ts-ignore

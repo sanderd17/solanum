@@ -7,8 +7,8 @@ class Styling {
         this.classNameMappings = new Map()
         /** @type {*} Map from class names to style rules */
         this.styleMapping = {}
-        /** @type {HTMLStyleElement?} reference to the stylesheet */
-        this.styleNode = null
+        /** @type {Object.<string, HTMLStyleElement>} reference to the stylesheet */
+        this.styleNodes = {}
     }
 
     /**
@@ -23,8 +23,10 @@ class Styling {
         
         let className = cls.name + '_' + Math.random().toString(36).substr(2, 7)
         this.classNameMappings.set(cls, className)
-        if (cls.prototype.css)
+        if (cls.prototype.css) {
             this.styleMapping[className] = cls.prototype.css
+            this.addClassToDom(className)
+        }
         return className
     }
 
@@ -34,29 +36,29 @@ class Styling {
         let className = this.classNameMappings.get(cls)
         if (cls.prototype.css)
             this.styleMapping[className] = cls.prototype.css
-        this.addToDom()
+        this.addClassToDom(className)
     }
 
-    getCss() {
-        return Object.entries(this.styleMapping).map(([className, subSelectors]) => 
-            `.${className} ` + Object.entries(subSelectors).map(([subSelector, rules]) =>
-                `.${subSelector} {` + 
-                    Object.entries(rules).map(([p,v]) => p + ':' + v).join(';') +
-                '}\n'
-            )
+    getClassCss(className) {
+        return Object.entries(this.styleMapping[className]).map(([subSelector, rules]) => 
+            `.${className} .${subSelector} {` + 
+                Object.entries(rules).map(([p,v]) => p + ':' + v).join(';') +
+            '}\n'
         ).join('\n')
     }   
 
-    addToDom() {
-        if (!this.styleNode) {
-            this.styleNode = document.createElement('style')
-            document.head.appendChild(this.styleNode)
+    addClassToDom(className) {
+        let styleNode = this.styleNodes[className]
+        if (!styleNode) {
+            styleNode = document.createElement('style')
+            document.head.appendChild(styleNode)
+            this.styleNodes[className] = styleNode
+
         } else {
-            for (let child of this.styleNode.childNodes)
-                this.styleNode.removeChild(child)
+            for (let child of styleNode.childNodes)
+                styleNode.removeChild(child)
         }
-        this.styleNode.appendChild(document.createTextNode(this.getCss()))
-        console.log(this.getCss())
+        styleNode.appendChild(document.createTextNode(this.getClassCss(className)))
     }
 }
 

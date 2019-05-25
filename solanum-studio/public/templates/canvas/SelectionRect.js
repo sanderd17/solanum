@@ -14,7 +14,9 @@ class SelectionRect extends Template {
     get dom() {
         if (this.svgNode != null)
             return this.svgNode
+        
         this.svgNode = document.createElementNS(ns, "svg")
+        this.classList.add(this.className)
         this.svgNode.setAttribute("viewBox", "0 0 100 100")
         this.svgNode.setAttribute("preserveAspectRatio", "none")
 
@@ -23,6 +25,7 @@ class SelectionRect extends Template {
         this.elNode.setAttribute("y", "0")
         this.elNode.setAttribute("width", "100")
         this.elNode.setAttribute("height", "100")
+        this.elNode.classList.add('elRect')
         this.elNode.setAttribute("fill", "none")
         this.elNode.setAttribute("pointer-events", "visible")
         this.elNode.setAttribute("stroke", "#000080")
@@ -50,6 +53,16 @@ class SelectionRect extends Template {
 
         return this.svgNode
     }
+}
+
+SelectionRect.prototype.css = {
+    'elRect': {
+        'fill': 'black',
+        'stroke-width': '2px'
+    },
+    'icon:hover': {
+        'cursor': 'pointer'
+    },
 }
 
 export default SelectionRect

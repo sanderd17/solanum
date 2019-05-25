@@ -1,6 +1,7 @@
 import ts from "/lib/TagSet.js"
 import messager from "/lib/Messager.js"
 import StudioWindow from '/templates/StudioWindow.js'
+
 ts.initMessageHandlers()
 
 let sc = new StudioWindow({
