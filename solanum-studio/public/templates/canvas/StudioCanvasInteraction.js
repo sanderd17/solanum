@@ -25,7 +25,7 @@ class StudioCanvasInteraction extends Template {
                 eventHandlers: {
                     click: (ev) => {
                         console.log("clicked")
-                        this.children[id].props.selected = true
+                        this.children[id].props.selected = !this.children[id].props.selected
                     }
                 },
             })

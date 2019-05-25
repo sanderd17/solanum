@@ -8,6 +8,7 @@ class SelectionRect extends Template {
         if (id == 'selected') {
             console.log(newValue)
             // TODO set class which in turn changes style. Need style handling for this
+            this.elNode.classList.toggle('selected', newValue)
         }
     }
 
@@ -25,12 +26,8 @@ class SelectionRect extends Template {
         this.elNode.setAttribute("y", "0")
         this.elNode.setAttribute("width", "100")
         this.elNode.setAttribute("height", "100")
-        this.elNode.classList.add('elRect')
-        this.elNode.setAttribute("fill", "none")
         this.elNode.setAttribute("pointer-events", "visible")
-        this.elNode.setAttribute("stroke", "#000080")
-        this.elNode.setAttribute("stroke-width", "2")
-        this.elNode.setAttribute("stroke-dasharray", "5 5")
+        this.elNode.classList.add('elRect')
 
         for (let id in this.props) {
             this.elNode.setAttribute(id, this.props[id])
@@ -57,11 +54,19 @@ class SelectionRect extends Template {
 
 SelectionRect.prototype.css = {
     'elRect': {
-        'fill': 'black',
-        'stroke-width': '2px'
+        'fill': 'none',
+        'stroke': '#000080',
+        'stroke-width': '1px',
+        'stroke-dasharray': '5 5',
     },
-    'icon:hover': {
-        'cursor': 'pointer'
+    'elRect:hover': {
+        'cursor': 'pointer',
+        'stroke-width': '3px',
+    },
+    'elRect.selected': {
+        'stroke': '#000080',
+        'stroke-width': '3px',
+        'stroke-dasharray': 'none',
     },
 }
 
