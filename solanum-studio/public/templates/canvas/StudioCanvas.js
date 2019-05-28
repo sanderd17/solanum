@@ -18,9 +18,10 @@ class StudioCanvas extends Template {
         let cls = mdl.default
 
         // TODO get default size from class
-        let position = {left: '0px', width: '100px', top:'0px', height:'100px'}
+        let width = 100
+        let height = 100
         let preview= new cls({
-            position,
+            position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {},
             eventHandlers: {}
         })
@@ -28,8 +29,8 @@ class StudioCanvas extends Template {
         preview.disableEventHandlers()
 
         let interaction= new StudioCanvasInteraction({
-            position,
-            props: {},
+            position: {left: '0px', width: '100%', top: '0px', height: '100%'},
+            props: {elWidth: P.Raw(width), elHeight: P.Raw(height)},
             eventHandlers: {}
         })
 

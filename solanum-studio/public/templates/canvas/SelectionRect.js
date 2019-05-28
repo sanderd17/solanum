@@ -18,25 +18,66 @@ class SelectionRect extends Template {
         
         this.svgNode = document.createElementNS(ns, "svg")
         this.classList.add(this.className)
-        this.svgNode.setAttribute("viewBox", "0 0 100 100")
+
         this.svgNode.setAttribute("preserveAspectRatio", "none")
 
-        this.elNode = document.createElementNS(ns, "rect")
-        this.elNode.setAttribute("x", "0")
-        this.elNode.setAttribute("y", "0")
-        this.elNode.setAttribute("width", "100")
-        this.elNode.setAttribute("height", "100")
-        this.elNode.setAttribute("pointer-events", "visible")
-        this.elNode.classList.add('elRect')
+        let elWidth = parseInt(this.props.elWidth)
+        let elHeight = parseInt(this.props.elHeight)
+        let offset = 10 // TODO should match ofset on the studioCanvas
 
-        for (let id in this.props) {
-            this.elNode.setAttribute(id, this.props[id])
+        this.elRect = document.createElementNS(ns, "rect")
+        
+        for (let key of Object.keys(this.position)) {
+            let numVal = parseInt(this.position[key])
+            if (this.position[key].substr(-1) == '%') {
+                if (key == 'top' || key == 'bottom' || key == 'height')
+                    this.position[key] = numVal * elHeight / 100
+                else   
+                    this.position[key] = numVal * elWidth / 100
+            } else {
+                this.position[key] = numVal
+            }
         }
 
-        this.svgNode.appendChild(this.elNode)
+        let x, y, width, height
+        if ('left' in this.position) {
+            x = this.position.left + offset
+            if ('width' in this.position) {
+                width = this.position.width
+            } else {
+                width = elWidth - this.position.right - this.position.left
+            }
+        } else {
+            // right and width should be defined
+            width = this.position.width
+            x = elWidth - this.position.right - this.position.width + offset
+        }
 
-        for (let key of positionKeys)
-            if (key in this.position) this.svgNode.style[key] = this.position[key]
+        if ('top' in this.position) {
+            y = this.position.top + offset
+            if ('height' in this.position) {
+                height = this.position.height
+            } else {
+                height = elHeight - this.position.bottom - this.position.top
+            }
+        } else {
+            // right and width should be defined
+            height = this.position.height
+            y = elHeight - this.position.bottom - this.position.height + offset
+        }
+
+        this.elRect.setAttribute("x", x)
+        this.elRect.setAttribute("y", y)
+        this.elRect.setAttribute("width", width)
+        this.elRect.setAttribute("height", height)
+        this.elRect.setAttribute("pointer-events", "visible")
+        this.elRect.classList.add('elRect')
+
+        for (let id in this.props) {
+            this.elRect.setAttribute(id, this.props[id])
+        }
+
+        this.svgNode.appendChild(this.elRect)
 
         if (this.eventHandlersEnabled) {
             for (let eventType in this.eventHandlers) {
@@ -44,7 +85,7 @@ class SelectionRect extends Template {
                 if (eventType == "load")
                     fn(null)
                 else
-                    this.elNode.addEventListener(eventType, (event) => fn(event))
+                    this.elRect.addEventListener(eventType, (event) => fn(event))
             }
         }
 
