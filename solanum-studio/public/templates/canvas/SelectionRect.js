@@ -8,7 +8,7 @@ class SelectionRect extends Template {
         if (id == 'selected') {
             console.log(newValue)
             // TODO set class which in turn changes style. Need style handling for this
-            this.elNode.classList.toggle('selected', newValue)
+            this.elRect.classList.toggle('selected', newValue)
         }
     }
 
