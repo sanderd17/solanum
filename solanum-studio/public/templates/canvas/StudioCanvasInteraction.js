@@ -21,10 +21,8 @@ class StudioCanvasInteraction extends Template {
                 position: cmp.position,
                 props: {selected: P.Raw(false), elWidth: P.Raw(this.props.elWidth), elHeight: P.Raw(this.props.elHeight)},
                 eventHandlers: {
-                    click: (ev) => {
-                        console.log("clicked")
-                        this.children[id].props.selected = !this.children[id].props.selected
-                    }
+                    dragstart: (ev) => {console.log(ev)},
+                    dragend: (ev) => {console.log(ev)},
                 },
             })
         }
