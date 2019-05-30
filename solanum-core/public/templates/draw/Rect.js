@@ -20,7 +20,9 @@ class Rect extends Template {
         this.elNode.setAttribute("y", "0")
         this.elNode.setAttribute("width", "100")
         this.elNode.setAttribute("height", "100")
+        this.elNode.setAttribute("pointer-events", "visible")
 
+        this.classList.add(this.className)
         //circleNode.setAttribute("fill", "blue")
         for (let id in this.props) {
             this.elNode.setAttribute(id, this.props[id])

@@ -41,7 +41,7 @@ class Styling {
 
     getClassCss(className) {
         return Object.entries(this.styleMapping[className]).map(([subSelector, rules]) => 
-            `.${className} .${subSelector} {` + 
+            `.${className} ${subSelector} {` + 
                 Object.entries(rules).map(([p,v]) => p + ':' + v).join(';') +
             '}\n'
         ).join('\n')

@@ -150,7 +150,6 @@ class Template {
         console.log(`changed: ${id}, ${oldValue} -> ${newValue}`)
         if (this.boundProps[id]) {
             let [child, childPropId, binding] = this.boundProps[id]
-            console.log(child)
             child.handlePropChanged(childPropId, binding.transform(newValue), binding.transform(oldValue))
         }
     }

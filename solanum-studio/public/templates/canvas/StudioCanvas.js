@@ -30,7 +30,8 @@ class StudioCanvas extends Template {
         preview.disableEventHandlers()
 
         let interaction= new StudioCanvasInteraction({
-            position: {left: '0px', width: '100%', top: '0px', height: '100%'},
+            //position: {left: '0px', width: '100%', top: '0px', height: '100%'},
+            position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {elWidth: P.Raw(width), elHeight: P.Raw(height)},
             eventHandlers: {}
         })
