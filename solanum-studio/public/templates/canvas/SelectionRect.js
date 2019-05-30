@@ -7,7 +7,6 @@ class SelectionRect extends Template {
     handlePropChanged(id, newValue, oldValue) {
         if (id == 'selected') {
             console.log(newValue)
-            // TODO set class which in turn changes style. Need style handling for this
             this.elRect.classList.toggle('selected', newValue)
         }
     }
@@ -96,17 +95,19 @@ class SelectionRect extends Template {
 SelectionRect.prototype.css = {
     'elRect': {
         'fill': 'none',
-        'stroke': '#000080',
+        'stroke': '#00008080',
         'stroke-width': '1px',
-        'stroke-dasharray': '5 5',
+        'stroke-dasharray': '1 4',
+        'stroke-linecap': 'round',
     },
     'elRect:hover': {
         'cursor': 'pointer',
-        'stroke-width': '3px',
+        'stroke-width': '1px',
+        'stroke-dasharray': '2 3',
     },
     'elRect.selected': {
         'stroke': '#000080',
-        'stroke-width': '3px',
+        'stroke-width': '1px',
         'stroke-dasharray': 'none',
     },
 }

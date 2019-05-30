@@ -17,8 +17,6 @@ class StudioCanvasInteraction extends Template {
 
         let children = {}
         for (let [id, cmp] of Object.entries(this.parent.children.preview.children)) {
-            console.log(id)
-            console.log(cmp.position)
             children[id] = new SelectionRect({
                 position: cmp.position,
                 props: {selected: P.Raw(false), elWidth: P.Raw(this.props.elWidth), elHeight: P.Raw(this.props.elHeight)},

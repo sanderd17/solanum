@@ -11,6 +11,7 @@ class StudioCanvas extends Template {
     async setComponent(mod, cmp) {
         console.log(`Set component to ${mod}:${cmp}`)
         // load the module from the Studio API
+        // cnt ensures a reload by using a different URL
         let mdl = await import(`/API/Studio/openComponent?module=${mod}&component=${cmp}&v=${this.cnt}`)
         this.cnt++
 
@@ -35,7 +36,6 @@ class StudioCanvas extends Template {
         })
 
         this.setChildren({preview, interaction})
-        console.log(this.id)
         this.setId(this.id)
 
         interaction.reloadSelectionRects()
