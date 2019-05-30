@@ -19,6 +19,7 @@ class Circle extends Template {
         this.elNode.setAttribute("cx", "50")
         this.elNode.setAttribute("cy", "50")
         this.elNode.setAttribute("r", "50")
+        this.elNode.setAttribute("pointer-events", "visible")
 
         this.classList.add(this.className)
         //circleNode.setAttribute("fill", "blue")

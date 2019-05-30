@@ -9,7 +9,9 @@ class SelectionRect extends Template {
         this.setChildren({
             rect: new Rect({
                 position: {left: "0%", width: "100%", top: "0%", height: "100%"},
-                props: {},
+                props: {
+                    'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
+                },
                 eventHandlers: {
                     click: (ev) => {}
                 }
@@ -27,18 +29,15 @@ SelectionRect.prototype.css = {
         'fill': 'none',
         'stroke': '#00008080',
         'stroke-width': '1px',
-        'stroke-dasharray': '1 4',
         'stroke-linecap': 'round',
     },
     'rect:hover': {
         'cursor': 'pointer',
-        'stroke-width': '1px',
-        'stroke-dasharray': '2 3',
+        'stroke-width': '2px',
     },
     'rect.selected': {
         'stroke': '#000080',
         'stroke-width': '1px',
-        'stroke-dasharray': 'none',
     },
 }
 
