@@ -9,11 +9,11 @@ class Rect extends Template {
     }
 
     get dom() {
-        if (this.svgNode != null)
-            return this.svgNode
-        this.svgNode = document.createElementNS(ns, "svg")
-        this.svgNode.setAttribute("viewBox", "0 0 100 100")
-        this.svgNode.setAttribute("preserveAspectRatio", "none")
+        if (this.domNode != null)
+            return this.domNode
+        this.domNode = document.createElementNS(ns, "svg")
+        this.domNode.setAttribute("viewBox", "0 0 100 100")
+        this.domNode.setAttribute("preserveAspectRatio", "none")
 
         this.elNode = document.createElementNS(ns, "rect")
         this.elNode.setAttribute("x", "0")
@@ -28,10 +28,10 @@ class Rect extends Template {
             this.elNode.setAttribute(id, this.props[id])
         }
 
-        this.svgNode.appendChild(this.elNode)
+        this.domNode.appendChild(this.elNode)
 
         for (let key of positionKeys)
-            if (key in this.position) this.svgNode.style[key] = this.position[key]
+            if (key in this.position) this.domNode.style[key] = this.position[key]
 
         if (this.eventHandlersEnabled) {
             for (let eventType in this.eventHandlers) {
@@ -43,7 +43,7 @@ class Rect extends Template {
             }
         }
 
-        return this.svgNode
+        return this.domNode
     }
 }
 

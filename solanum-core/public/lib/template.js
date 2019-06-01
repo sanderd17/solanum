@@ -123,6 +123,20 @@ class Template {
         }
     }
 
+    /**
+     * Set a new position
+     * Warning: this may cause heavy recalculations in the browser and should
+     * not be used for runtime animations
+     * @param {object} newPosition 
+     */
+    setPosition(newPosition) {
+        this.position = newPosition
+        if (this.domNode) {
+            for (let key of positionKeys)
+                if (key in newPosition) this.domNode.style[key] = newPosition[key]
+        }
+    }
+
     setId(id) {
         this.id = id
         this.dom.id = id
@@ -161,16 +175,14 @@ class Template {
 
         this.classList.add(this.className)
 
-        for (let key of positionKeys)
-            if (key in this.position) this.domNode.style[key] = this.position[key]
-
+        this.setPosition(this.position)
         if (this.eventHandlersEnabled) {
             for (let eventType in this.eventHandlers) {
                 let fn = this.eventHandlers[eventType]
                 if (eventType == "load")
                     fn(null)
                 else
-                    this.domNode.addEventListener(eventType, (event) => fn(event))
+                    this.domNode.addEventListener(eventType, (event) => fn(event, this))
             }
         }
         for (let [id, child] of Object.entries(this.children)) {

@@ -12,12 +12,7 @@ class SelectionRect extends Template {
                 props: {
                     'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
                 },
-                eventHandlers: {
-                    click: (ev) => {
-                        this.props.selected = !this.props.selected
-                        this.dom.setAttribute('draggable', this.props.selected)
-                    },
-                }
+                eventHandlers: {}
             })
         })
     }
@@ -36,7 +31,7 @@ SelectionRect.prototype.css = {
     },
     'rect:hover': {
         'cursor': 'pointer',
-        'stroke-width': '2px',
+        'stroke-width': '1px',
     },
 }
 
