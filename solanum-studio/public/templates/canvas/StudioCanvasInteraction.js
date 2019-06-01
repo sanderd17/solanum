@@ -26,6 +26,7 @@ class StudioCanvasInteraction extends Template {
                         child.props.selected = !child.props.selected
                         // TODO child should be able te react on prop change to maintain own dom
                         child.dom.setAttribute('draggable', child.props.selected)
+                        child.dom.style['z-index'] = child.props.selected ? 1 : 0
                     },
                     dragstart: (ev) => {this.startedDrag = ev},
                     dragend: (ev) => {this.endDrag(id, this.startedDrag, ev)},
