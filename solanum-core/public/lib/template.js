@@ -39,6 +39,7 @@ class Template {
         this.position = p.position || {}
         this.eventHandlers = p.eventHandlers || {}
         this.eventHandlersEnabled = true
+        this.propChangedHandlers = {}
         this._props = p.props
 
         for (let id in this.defaultProps) {
@@ -156,6 +157,11 @@ class Template {
         }
     }
 
+    setPropListener(propName, fn) {
+        this.propChangedHandlers[propName] = fn
+
+    }
+
     registerPropBinding(child, childPropId, binding) {
         this.boundProps[binding.boundName] = [child, childPropId, binding]
     }
@@ -165,6 +171,9 @@ class Template {
         if (this.boundProps[id]) {
             let [child, childPropId, binding] = this.boundProps[id]
             child.handlePropChanged(childPropId, binding.transform(newValue), binding.transform(oldValue))
+        }
+        if (this.propChangedHandlers[id]) {
+            this.propChangedHandlers[id](newValue, oldValue)
         }
     }
 

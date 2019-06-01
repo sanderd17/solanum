@@ -22,14 +22,9 @@ class StudioCanvasInteraction extends Template {
                 //props: {selected: P.Raw(false), elWidth: P.Raw(this.props.elWidth), elHeight: P.Raw(this.props.elHeight)},
                 props: {},
                 eventHandlers: {
-                    click: (ev, child) => {
-                        child.props.selected = !child.props.selected
-                        // TODO child should be able te react on prop change to maintain own dom
-                        child.dom.setAttribute('draggable', child.props.selected)
-                        child.dom.style['z-index'] = child.props.selected ? 1 : 0
-                    },
-                    dragstart: (ev) => {this.startedDrag = ev},
-                    dragend: (ev) => {this.endDrag(id, this.startedDrag, ev)},
+                    click: (ev, child) => child.props.selected = !child.props.selected,
+                    dragstart: (ev) => this.startedDrag = ev,
+                    dragend: (ev) => this.endComponentDrag(id, this.startedDrag, ev),
                 },
             })
         }
@@ -42,7 +37,7 @@ class StudioCanvasInteraction extends Template {
      * @param {DragEvent} startDrag 
      * @param {DragEvent} endDrag 
      */
-    endDrag(id, startDrag, endDrag) {
+    endComponentDrag(id, startDrag, endDrag) {
         let child = this.children[id]
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y

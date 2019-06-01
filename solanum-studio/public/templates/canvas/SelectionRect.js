@@ -15,6 +15,10 @@ class SelectionRect extends Template {
                 eventHandlers: {}
             })
         })
+        this.setPropListener('selected', s => {
+            this.dom.setAttribute('draggable', s)
+            this.dom.style['z-index'] = s ? 1 : 0 // raise selection rect when selected
+        })
     }
 }
 
