@@ -19,7 +19,6 @@ class StudioCanvasInteraction extends Template {
         for (let [id, cmp] of Object.entries(this.parent.children.preview.children)) {
             children[id] = new SelectionRect({
                 position: cmp.position,
-                //props: {selected: P.Raw(false), elWidth: P.Raw(this.props.elWidth), elHeight: P.Raw(this.props.elHeight)},
                 props: {},
                 eventHandlers: {
                     click: (ev, child) => child.props.selected = !child.props.selected,
@@ -42,17 +41,30 @@ class StudioCanvasInteraction extends Template {
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y
 
+        let canvasWidth = this.props.elWidth
+        let canvasHeight = this.props.elHeight
+
         let re = /(?<magnitude>[\-\d\.]*)(?<unit>[\w%]*)/u;
         console.log(child.position)
         let newPosition = {}
         for (let [k, v] of Object.entries(child.position)) {
             let {magnitude, unit} = re.exec(v).groups
             // TODO convert unit into pixels and back
+            let factorHor = 1
+            let factorVer = 1
+            if (unit == '%') {
+                factorHor = 100 / canvasWidth
+                factorVer = 100 / canvasHeight
+            } else if (unit == 'px' || unit == '') {
+                // default
+            } else {
+                console.error(`Unit '${unit} isn't implemented yet`)
+            }
             if (k == 'left' || k == 'right') {
-                magnitude = (parseInt(magnitude) + xDiff).toString()
+                magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
             }
             if (k == 'top' || k == 'bottom') {
-                magnitude = (parseInt(magnitude) + yDiff).toString()
+                magnitude = (parseInt(magnitude) + yDiff * factorVer).toString()
             }
 
             newPosition[k] = magnitude + unit
