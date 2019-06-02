@@ -74,8 +74,9 @@ class StudioAPI {
 
         cmpMod.addChildComponent(body.childId, body.childClassName, body.childPath, body.position)
 
-        await cmpFile.write(cmpMod.print())
-        res.send('ok')
+        let newCmpCode = cmpMod.print()
+        await cmpFile.write(newCmpCode)
+        res.send(newCmpCode)
     }
 
     /**
@@ -94,7 +95,7 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send('ok')
+        res.send(newCmpCode)
     }
 
     /**
@@ -113,7 +114,7 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send('ok')
+        res.send(newCmpCode)
     }
 
     /**
@@ -132,7 +133,7 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send('ok')
+        res.send(newCmpCode)
     }
 
     /**
@@ -151,7 +152,7 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send('ok')
+        res.send(newCmpCode)
     }
 
     /**
@@ -170,7 +171,7 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send('ok')
+        res.send(newCmpCode)
     }
     /**
      * @param {Request} req 
@@ -188,7 +189,7 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send('ok')
+        res.send(newCmpCode)
     }
 }
 
