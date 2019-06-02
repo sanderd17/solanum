@@ -163,14 +163,18 @@ class Template {
     }
 
     registerPropBinding(child, childPropId, binding) {
-        this.boundProps[binding.boundName] = [child, childPropId, binding]
+        if (!(binding.boundName in this.boundProps)) {
+            this.boundProps[binding.boundName] = []
+        }
+        this.boundProps[binding.boundName].push([child, childPropId, binding])
     }
 
     handlePropChanged(id, newValue, oldValue) {
         console.log(`changed: ${id}, ${oldValue} -> ${newValue}`)
         if (this.boundProps[id]) {
-            let [child, childPropId, binding] = this.boundProps[id]
-            child.handlePropChanged(childPropId, binding.transform(newValue), binding.transform(oldValue))
+            for (let  [child, childPropId, binding] of this.boundProps[id]) {
+                child.handlePropChanged(childPropId, binding.transform(newValue), binding.transform(oldValue))
+            }
         }
         if (this.propChangedHandlers[id]) {
             this.propChangedHandlers[id](newValue, oldValue)
