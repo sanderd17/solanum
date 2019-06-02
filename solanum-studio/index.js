@@ -24,7 +24,18 @@ function init(app, config) {
     }
 
     // Allow calling any function defined in the Studio API, but do check if the request is valid
+    // FIXME : now both get and post are exposed, because only post can accept a body. uniformise this
     app.get('/API/Studio/:call',
+        checkValidRequest, 
+        async (req, res) => {
+            try{
+                await studio[req.params.call](req, res)
+            } catch(e) {
+                res.status(500).send(`Error happened processing ${req.params.call}: ${e}` + '\n' + e.stack)
+            }
+        }
+    )
+    app.post('/API/Studio/:call',
         checkValidRequest, 
         async (req, res) => {
             try{

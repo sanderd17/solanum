@@ -69,6 +69,9 @@ class ComponentModifier {
     setChildPosition(childId, position) {
         let childArg = this.getChildConstructionArg(childId)
 
+        if (!childArg) {
+            throw new Error(`Could not find the constructor arguments of child ${childId}`)
+        }
         // construct the position object ast
         const b = recast.types.builders
         let objProps = []
@@ -79,7 +82,7 @@ class ComponentModifier {
 
         // replace the existing object with the new ast
         for (let prop of childArg.properties) {
-            if (prop.key.name != 'position')
+            if (!prop.key || prop.key.name != 'position')
                 continue
             prop.value = objAst
         }

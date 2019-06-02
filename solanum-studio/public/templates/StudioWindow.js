@@ -12,8 +12,8 @@ class StudioWindow extends Template {
             })
         })
 
-        //this.children.canvas.setComponent('main', 'Motor.js')
-        this.children.canvas.setComponent('main', 'MainWindow.js')
+        this.children.canvas.setComponent('main', 'Motor.js')
+        //this.children.canvas.setComponent('main', 'MainWindow.js')
     }
 
 }

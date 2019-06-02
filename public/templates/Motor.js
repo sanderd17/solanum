@@ -7,7 +7,7 @@ class Motor extends Template {
     init() {
         this.setChildren({
             icon: new Circle({
-                position: {left: "10%", width: "80%", top: "10%", height: "80%"},
+                position: {left: "21%", width: "80%", top: "7%", height: "80%"},
                 props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
                 eventHandlers: {
                     click: (ev) => {

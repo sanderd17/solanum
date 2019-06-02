@@ -36,7 +36,7 @@ class StudioCanvasInteraction extends Template {
      * @param {DragEvent} startDrag 
      * @param {DragEvent} endDrag 
      */
-    endComponentDrag(id, startDrag, endDrag) {
+    async endComponentDrag(id, startDrag, endDrag) {
         let child = this.children[id]
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y
@@ -69,9 +69,33 @@ class StudioCanvasInteraction extends Template {
 
             newPosition[k] = magnitude + unit
         }
-        child.setPosition(newPosition)
-        this.parent.children.preview.children[id].setPosition(newPosition)
-        console.log(this.parent.children.preview.children[id])
+        await this.setChildPosition(id, newPosition)
+    }
+
+    async setChildPosition(childId, newPosition) {
+        this.children[childId].setPosition(newPosition)
+        this.parent.children.preview.children[childId].setPosition(newPosition)
+        console.log(this.parent.children.preview.children[childId])
+
+
+        let newCode = await fetch('/API/studio/setChildPosition', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'same-origin', // no-cors, cors, *same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json',
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // no-referrer, *client
+            body: JSON.stringify({
+                module: 'main',
+                component: 'Motor.js',
+                childId: childId,
+                position: newPosition,
+            }), // body data type must match "Content-Type" header
+        })
     }
 }
 
