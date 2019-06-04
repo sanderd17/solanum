@@ -16,6 +16,8 @@ class ResizeHandle extends Template {
 
         this.setPropListener('visible', v => {
             this.children.icon.classList.toggle('visible', v)
+            this.dom.setAttribute('draggable', v)
+            //this.dom.style['z-index'] = s ? 1 : 0 // raise selection rect when selected
         })
     }
 }
@@ -30,7 +32,7 @@ ResizeHandle.prototype.css = {
         'fill': '#000000',
     },
     'icon:hover': {
-        'fill': '#000080',
+        'fill': '#0000A0',
     },
     'icon.visible': {
         'visibility': 'visible'

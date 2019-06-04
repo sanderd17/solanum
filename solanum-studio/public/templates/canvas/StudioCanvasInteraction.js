@@ -41,25 +41,10 @@ class StudioCanvasInteraction extends Template {
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y
 
-        let canvasWidth = this.props.elWidth
-        let canvasHeight = this.props.elHeight
-
-        let re = /(?<magnitude>[\-\d\.]*)(?<unit>[\w%]*)/u;
         console.log(child.position)
         let newPosition = {}
         for (let [k, v] of Object.entries(child.position)) {
-            let {magnitude, unit} = re.exec(v).groups
-            // TODO convert unit into pixels and back
-            let factorHor = 1
-            let factorVer = 1
-            if (unit == '%') {
-                factorHor = 100 / canvasWidth
-                factorVer = 100 / canvasHeight
-            } else if (unit == 'px' || unit == '') {
-                // default
-            } else {
-                console.error(`Unit '${unit} isn't implemented yet`)
-            }
+            let {unit, magnitude, factorVer, factorHor} = this.getCoordinateInfo(v)
             if (k == 'left' || k == 'right') {
                 magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
             }
@@ -70,6 +55,24 @@ class StudioCanvasInteraction extends Template {
             newPosition[k] = magnitude + unit
         }
         await this.setChildPosition(id, newPosition)
+    }
+
+    getCoordinateInfo(value) {
+        let canvasWidth = this.props.elWidth
+        let canvasHeight = this.props.elHeight
+        let re = /(?<magnitude>[\-\d\.]*)(?<unit>[\w%]*)/u;
+        let {magnitude, unit} = re.exec(value).groups
+        let factorHor = 1
+        let factorVer = 1
+        if (unit == '%') {
+            factorHor = 100 / canvasWidth
+            factorVer = 100 / canvasHeight
+        } else if (unit == 'px' || unit == '') {
+            // default
+        } else {
+            console.error(`Unit '${unit} isn't implemented yet`)
+        }
+        return {unit, magnitude, factorVer, factorHor}
     }
 
     async setChildPosition(childId, newPosition) {
@@ -96,6 +99,7 @@ class StudioCanvasInteraction extends Template {
                 position: newPosition,
             }), // body data type must match "Content-Type" header
         })
+        // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
     }
 }
 
