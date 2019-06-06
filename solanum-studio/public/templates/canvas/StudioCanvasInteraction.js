@@ -7,7 +7,10 @@ class StudioCanvasInteraction extends Template {
 
     init() {
         this.canvasPreview = null
+        this.currentSelection = []
         this.setChildren({})
+
+        this.eventHandlers.click = (ev) => this.setSelection([], ev)
     }
 
     reloadSelectionRects() {
@@ -21,7 +24,7 @@ class StudioCanvasInteraction extends Template {
                 position: cmp.position,
                 props: {},
                 eventHandlers: {
-                    click: (ev, child) => child.props.selected = !child.props.selected,
+                    click: (ev) => this.setSelection([id], ev),
                     dragstart: (ev) => this.startedDrag = ev,
                     dragend: (ev) => this.endComponentDrag(id, this.startedDrag, ev),
                 },
@@ -29,6 +32,24 @@ class StudioCanvasInteraction extends Template {
         }
         this.setChildren(children)
         this.setId(this.id)
+    }
+
+    /**
+     * @param {Array<string>} selection
+     * @param {Event} ev
+     */
+    setSelection(selection, ev) {
+        ev.stopPropagation()
+        this.currentSelection = selection
+        if (selection.length <= 1) {
+            // single or no child selected, use their own selection rects
+            for (let [id, child] of Object.entries(this.children)) {
+                child.props.selected = selection.includes(id)
+            }
+        } else {
+            // Set selection to multiple elements
+            // TODO create a new selection rect around the coordinate bounds
+        }
     }
 
     /**
