@@ -43,4 +43,10 @@ class StudioCanvas extends Template {
     }
 }
 
+StudioCanvas.prototype.css = {
+    'preview': {
+        'background-color': '#FFFFFF'
+    }
+}
+
 export default StudioCanvas

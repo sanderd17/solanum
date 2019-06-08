@@ -79,6 +79,8 @@ class Template {
 
         this.className = style.registerClassStyle(this.constructor)
 
+        this.createDomNode()
+        this.addEventHandlersToDom()
         this.init()
     }
 
@@ -92,21 +94,12 @@ class Template {
     }
 
     setChildren(children) {
-        let parentNode = null
-        if (this.domNode != null) {
-            // resetting children after render
-            parentNode = this.domNode.parentNode
-            parentNode.removeChild(this.domNode)
-            this.domNode = null
-        }
         this.children = children
-        for (let id in this.children)
-            this.children[id].setParent(this)
-        
-        // Re-add dom
-        if (parentNode != null) {
-            parentNode.appendChild(this.dom)
-        }
+        for (let [id, child] of Object.entries(this.children)) {
+            child.setParent(this)
+            this.dom.appendChild(child.dom)
+            child.classList.add(id)
+        }   
     }
 
     /**
@@ -132,9 +125,9 @@ class Template {
      */
     setPosition(newPosition) {
         this.position = newPosition
-        if (this.domNode) {
+        if (this.dom) {
             for (let key of positionKeys)
-                if (key in newPosition) this.domNode.style[key] = newPosition[key]
+                if (key in newPosition) this.dom.style[key] = newPosition[key]
         }
     }
 
@@ -146,12 +139,32 @@ class Template {
         }
     }
 
+    addEventHandlersToDom() {
+        if (this.handleEvent == null) {
+            this.handleEvent = (ev) => {
+                if (ev.type in this.eventHandlers) {
+                    this.eventHandlers[event.type](event, this)
+                }
+            }
+        }
+        // remove existing event handlers (if any)
+        for (let eventType in this.eventHandlers) {
+            this.dom.removeEventListener(eventType, this.handleEvent)
+        }
+        // add the new event handlers
+        for (let eventType in this.eventHandlers) {
+            this.dom.addEventListener(eventType, this.handleEvent)
+        }
+    }
+
     /**
      * Disable adding event handlers to the dom (recursively)
      * This needs to be called before the dom is created
      */
     disableEventHandlers() {
-        this.eventHandlersEnabled = false
+        for (let eventType in this.eventHandlers) {
+            this.dom.removeEventListener(eventType, this.handleEvent)
+        }
         for (let childId in this.children) {
             this.children[childId].disableEventHandlers()
         }
@@ -162,12 +175,21 @@ class Template {
 
     }
 
+    /**
+     * 
+     * @param {Template} child 
+     * @param {string} childPropId 
+     * @param {*} binding 
+     */
     registerPropBinding(child, childPropId, binding) {
         if (!(binding.boundName in this.boundProps)) {
             this.boundProps[binding.boundName] = []
         }
         this.boundProps[binding.boundName].push([child, childPropId, binding])
+        // send updates to the children
+        this.handlePropChanged(binding.boundName, this.props[binding.boundName], null)
     }
+
 
     handlePropChanged(id, newValue, oldValue) {
         console.log(`changed: ${id}, ${oldValue} -> ${newValue}`)
@@ -181,28 +203,12 @@ class Template {
         }
     }
 
-    get dom() {
-        if (this.domNode != null)
-            return this.domNode
-        this.domNode = document.createElement('div')
+    createDomNode() {
+        this.dom = document.createElement('div')
 
         this.classList.add(this.className)
 
         this.setPosition(this.position)
-        if (this.eventHandlersEnabled) {
-            for (let eventType in this.eventHandlers) {
-                let fn = this.eventHandlers[eventType]
-                if (eventType == "load")
-                    fn(null)
-                else
-                    this.domNode.addEventListener(eventType, (event) => fn(event, this))
-            }
-        }
-        for (let [id, child] of Object.entries(this.children)) {
-            this.domNode.appendChild(child.dom)
-            child.classList.add(id)
-        }   
-        return this.domNode
     } 
 }
 

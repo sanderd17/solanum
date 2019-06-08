@@ -8,12 +8,16 @@ class Circle extends Template {
         this.elNode.setAttribute(id, newValue)
     }
 
-    get dom() {
-        if (this.domNode != null)
-            return this.domNode
-        this.domNode = document.createElementNS(ns, "svg")
-        this.domNode.setAttribute("viewBox", "0 0 100 100")
-        this.domNode.setAttribute("preserveAspectRatio", "none")
+    init() {
+        for (let id in this.props) {
+            this.elNode.setAttribute(id, this.props[id])
+        }
+    }
+
+    createDomNode() {
+        this.dom = document.createElementNS(ns, "svg")
+        this.dom.setAttribute("viewBox", "0 0 100 100")
+        this.dom.setAttribute("preserveAspectRatio", "none")
 
         this.elNode = document.createElementNS(ns, "circle")
         this.elNode.setAttribute("cx", "50")
@@ -23,26 +27,11 @@ class Circle extends Template {
 
         this.classList.add(this.className)
         //circleNode.setAttribute("fill", "blue")
-        for (let id in this.props) {
-            this.elNode.setAttribute(id, this.props[id])
-        }
 
-        this.domNode.appendChild(this.elNode)
+        this.dom.appendChild(this.elNode)
 
         for (let key of positionKeys)
-            if (key in this.position) this.domNode.style[key] = this.position[key]
-
-        if (this.eventHandlersEnabled) {
-            for (let eventType in this.eventHandlers) {
-                let fn = this.eventHandlers[eventType]
-                if (eventType == "load")
-                    fn(null)
-                else
-                    this.elNode.addEventListener(eventType, (event) => fn(event))
-            }
-        }
-
-        return this.domNode
+            if (key in this.position) this.dom.style[key] = this.position[key]
     }
 }
 

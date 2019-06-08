@@ -18,4 +18,10 @@ class StudioWindow extends Template {
 
 }
 
+StudioWindow.prototype.css = {
+    'canvas': {
+        'background-color': '#909090'
+    }
+}
+
 export default StudioWindow

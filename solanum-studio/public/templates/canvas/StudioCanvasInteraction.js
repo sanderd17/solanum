@@ -11,6 +11,10 @@ class StudioCanvasInteraction extends Template {
         this.setChildren({})
 
         this.eventHandlers.click = (ev) => this.setSelection([], ev)
+        this.eventHandlers.dragstart = (ev) => {console.log('START DRAG SELECT');this.startedDrag = ev}
+        this.eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
+        this.addEventHandlersToDom()
+        this.dom.setAttribute('draggable', true)
     }
 
     reloadSelectionRects() {
@@ -78,16 +82,42 @@ class StudioCanvasInteraction extends Template {
         await this.setChildPosition(id, newPosition)
     }
 
+    /**
+     * @param {DragEvent} startDragEvent 
+     * @param {DragEvent} endDragEvent 
+     */
+    endSelectionDrag(startDragEvent, endDragEvent) {
+        let selectedElements = []
+        let selRect = {
+            left:   Math.min(startDragEvent.x, endDragEvent.x),
+            right:  Math.max(startDragEvent.x, endDragEvent.x),
+            top:    Math.min(startDragEvent.y, endDragEvent.y),
+            bottom: Math.max(startDragEvent.y, endDragEvent.y),
+        }
+        for (let [id, child] of Object.entries(this.children)) {
+            let childRect = child.dom.getBoundingClientRect()
+            if (
+                selRect.left   < childRect.right  &&
+                selRect.right  > childRect.left   &&
+                selRect.top    < childRect.bottom &&
+                selRect.bottom > childRect.top
+            ) {
+                // selection rect and child rect have overlap
+                selectedElements.push(id)
+            } 
+        }
+        console.log('SELECTED:' ,selectedElements)
+    }
+
     getCoordinateInfo(value) {
-        let canvasWidth = this.props.elWidth
-        let canvasHeight = this.props.elHeight
+        let {width, height} = this.dom.getBoundingClientRect()
         let re = /(?<magnitude>[\-\d\.]*)(?<unit>[\w%]*)/u;
         let {magnitude, unit} = re.exec(value).groups
         let factorHor = 1
         let factorVer = 1
         if (unit == '%') {
-            factorHor = 100 / canvasWidth
-            factorVer = 100 / canvasHeight
+            factorHor = 100 / width
+            factorVer = 100 / height
         } else if (unit == 'px' || unit == '') {
             // default
         } else {

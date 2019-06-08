@@ -19,3 +19,4 @@ div.appendChild(sc.dom)
 
 messager.connectToServer(location.host)
 window['ts'] = ts
+window['StudioWindow'] = sc

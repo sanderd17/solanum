@@ -52,7 +52,9 @@ export class Bound extends Prop {
     }
 
     getValue() {
-        return this.transform(this.template.parent.props[this.boundName])
+        if (this.template.parent)
+            return this.transform(this.template.parent.props[this.boundName])
+        return null
     }
 
     // no setValue as it isn't possible to set this
@@ -96,6 +98,7 @@ export class BoundTag extends Prop {
         this.template = template
         this.id = id
         setTimeout(() => {
+            // TODO get rid of timeout, but react on change from parent (like boundtag)
             this.tagPath = this.transform(this.template.parent.props[this.boundName])
             ts.addTagHandler(this.tagPath, this)
         })
