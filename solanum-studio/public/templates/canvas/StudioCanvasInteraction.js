@@ -29,7 +29,7 @@ class StudioCanvasInteraction extends Template {
                 eventHandlers: {
                     click: (ev) => {ev.stopPropagation()},
                     dragstart: (ev) => this.startedDrag = ev,
-                    dragend: (ev) => this.endComponentDrag(id, this.startedDrag, ev),
+                    dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 }
             })
         }
@@ -40,7 +40,7 @@ class StudioCanvasInteraction extends Template {
                 eventHandlers: {
                     click: (ev) => this.setSelection([id], ev),
                     dragstart: (ev) => this.startedDrag = ev,
-                    dragend: (ev) => this.endComponentDrag(id, this.startedDrag, ev),
+                    dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 },
             })
         }
@@ -100,25 +100,29 @@ class StudioCanvasInteraction extends Template {
      * @param {DragEvent} startDrag 
      * @param {DragEvent} endDrag 
      */
-    async endComponentDrag(id, startDrag, endDrag) {
-        let child = this.children[id]
+    async endComponentDrag(startDrag, endDrag) {
+        endDrag.stopPropagation()
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y
 
-        console.log(child.position)
-        let newPosition = {}
-        for (let [k, v] of Object.entries(child.position)) {
-            let {unit, magnitude, factorVer, factorHor} = this.getCoordinateInfo(v)
-            if (k == 'left' || k == 'right') {
-                magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
-            }
-            if (k == 'top' || k == 'bottom') {
-                magnitude = (parseInt(magnitude) + yDiff * factorVer).toString()
-            }
+        for (let id of this.currentSelection) {
+            console.log(id)
+            let child = this.children[id]
+            let newPosition = {}
+            for (let [k, v] of Object.entries(child.position)) {
+                let {unit, magnitude, factorVer, factorHor} = this.getCoordinateInfo(v)
+                if (k == 'left' || k == 'right') {
+                    magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
+                }
+                if (k == 'top' || k == 'bottom') {
+                    magnitude = (parseInt(magnitude) + yDiff * factorVer).toString()
+                }
 
-            newPosition[k] = magnitude + unit
+                newPosition[k] = magnitude + unit
+            }
+            await this.setChildPosition(id, newPosition)
         }
-        await this.setChildPosition(id, newPosition)
+        this.setSelection(this.currentSelection, endDrag)
     }
 
     /**

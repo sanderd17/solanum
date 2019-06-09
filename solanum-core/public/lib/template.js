@@ -123,7 +123,6 @@ class Template {
      * @param {object} newPosition 
      */
     setPosition(newPosition) {
-        console.log(newPosition)
         this.position = newPosition
         if (this.dom) {
             for (let key of positionKeys) {
