@@ -85,8 +85,13 @@ class StudioCanvasInteraction extends Template {
                 top: (minTop - cmpTop) + 'px',
                 height: (maxBottom - minTop) + 'px',
             })
-            this.children['#multiSelectRect'].props.selected = true
-            console.log(this.children['#multiSelectRect'])
+            for (let [id, child] of Object.entries(this.children)) {
+                if (id == '#multiSelectRect') {
+                    child.props.selected = true
+                } else {
+                    child.props.selected = false
+                }
+            }
         }
     }
 
