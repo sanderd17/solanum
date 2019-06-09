@@ -11,11 +11,16 @@ class StudioCanvasInteraction extends Template {
         this.setChildren({})
 
         this.eventHandlers.click = (ev) => this.setSelection([], ev)
+        this.eventHandlers.dragstart = (ev) => this.startedDrag = ev
         this.eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
         this.addEventHandlersToDom()
         this.dom.setAttribute('draggable', true)
     }
 
+    /**
+     * Reload this component when it has to represent the positions
+     * of a different component
+     */
     reloadSelectionRects() {
         // draw a rect for every child of the previewed component
         for (let child of this.dom.childNodes)
