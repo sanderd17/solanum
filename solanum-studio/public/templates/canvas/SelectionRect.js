@@ -100,6 +100,7 @@ class SelectionRect extends Template {
         this.setPropListener('selected', s => {
             this.dom.setAttribute('draggable', s)
             this.dom.style['z-index'] = s ? 1 : 0 // raise selection rect when selected
+            this.classList.toggle('selected', s)
         })
     }
 
@@ -156,12 +157,13 @@ SelectionRect.prototype.defaultProps = {
 SelectionRect.prototype.css = {
     'rect': {
         'fill': 'none',
-        'stroke': '#00008080',
-        'stroke-width': '1px',
+        //'stroke': '#00008080',
+        //'stroke-width': '1px',
         'stroke-linecap': 'round',
     },
     'rect:hover': {
         'cursor': 'pointer',
+        'stroke': '#00008080',
         'stroke-width': '1px',
     },
     'topHandle': {

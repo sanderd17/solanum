@@ -22,7 +22,17 @@ class StudioCanvasInteraction extends Template {
         for (let child of this.dom.childNodes)
             this.dom.removeChild(child)
 
-        let children = {}
+        let children = {
+            '#multiSelectRect': new SelectionRect({
+                position: {left:0, width: 0, top: 0, height: 0},
+                props: {},
+                eventHandlers: {
+                    click: (ev) => {ev.stopPropagation()},
+                    dragstart: (ev) => this.startedDrag = ev,
+                    dragend: (ev) => this.endComponentDrag(id, this.startedDrag, ev),
+                }
+            })
+        }
         for (let [id, cmp] of Object.entries(this.parent.children.preview.children)) {
             children[id] = new SelectionRect({
                 position: cmp.position,
@@ -44,6 +54,11 @@ class StudioCanvasInteraction extends Template {
      */
     setSelection(selection, ev) {
         ev.stopPropagation()
+        if (this.currentSelection.length > 1 && selection.length <= 1) {
+            // there were multiple objects selected, hide the multi select rect again
+            this.children['#multiSelectRect'].props.selected = false
+            this.children['#multiSelectRect'].setPosition({left:0, width: 0, top: 0, height: 0})
+        }
         this.currentSelection = selection
         if (selection.length <= 1) {
             // single or no child selected, use their own selection rects
@@ -52,7 +67,26 @@ class StudioCanvasInteraction extends Template {
             }
         } else {
             // Set selection to multiple elements
-            // TODO create a new selection rect around the coordinate bounds
+            let {left: cmpLeft, top: cmpTop} = this.dom.getBoundingClientRect()
+
+            // Warning: right and bottom have different meanings here; it's measured from the left top of the page
+            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[selection[0]].dom.getBoundingClientRect()
+            for (let id of selection) {
+                let {left, top, right, bottom} = this.children[id].dom.getBoundingClientRect()
+                console.log({left, top, right, bottom})
+                minLeft = Math.min(left, minLeft)
+                maxRight = Math.max(right, maxRight)
+                minTop = Math.min(top, minTop)
+                maxBottom = Math.max(bottom, maxBottom)
+            }
+            this.children['#multiSelectRect'].setPosition({
+                left: (minLeft - cmpLeft) + 'px',
+                width: (maxRight - minLeft) + 'px',
+                top: (minTop - cmpTop) + 'px',
+                height: (maxBottom - minTop) + 'px',
+            })
+            this.children['#multiSelectRect'].props.selected = true
+            console.log(this.children['#multiSelectRect'])
         }
     }
 
@@ -106,7 +140,7 @@ class StudioCanvasInteraction extends Template {
                 selectedElements.push(id)
             } 
         }
-        console.log('SELECTED:' ,selectedElements)
+        this.setSelection(selectedElements, endDragEvent)
     }
 
     getCoordinateInfo(value) {

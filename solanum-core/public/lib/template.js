@@ -68,7 +68,6 @@ class Template {
              * @arg {object} val
              */
             set: (obj, id, val) => {
-                console.log('set')
                 if (id in obj) {
                     obj[id].setValue(val)
                     return true
@@ -124,10 +123,16 @@ class Template {
      * @param {object} newPosition 
      */
     setPosition(newPosition) {
+        console.log(newPosition)
         this.position = newPosition
         if (this.dom) {
-            for (let key of positionKeys)
-                if (key in newPosition) this.dom.style[key] = newPosition[key]
+            for (let key of positionKeys) {
+                if (key in newPosition) {
+                    this.dom.style[key] = newPosition[key]
+                } else {
+                    this.dom.style[key] = ''
+                }
+            }
         }
     }
 
@@ -192,7 +197,6 @@ class Template {
 
 
     handlePropChanged(id, newValue, oldValue) {
-        console.log(`changed: ${id}, ${oldValue} -> ${newValue}`)
         if (this.boundProps[id]) {
             for (let  [child, childPropId, binding] of this.boundProps[id]) {
                 child.handlePropChanged(childPropId, binding.transform(newValue), binding.transform(oldValue))
