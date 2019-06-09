@@ -115,38 +115,7 @@ class SelectionRect extends Template {
      * @param {DragEvent} endDragEv 
      */
     async endHandleDrag(directions, startDragEv, endDragEv) {
-        endDragEv.stopPropagation()
-        let xDiff = endDragEv.x - startDragEv.x
-        let yDiff = endDragEv.y - startDragEv.y
-
-        let newPosition = {}
-        for (let [k, v] of Object.entries(this.position)) {
-            let {unit, magnitude, factorVer, factorHor} = this.parent.getCoordinateInfo(v)
-            if ((k == 'left' || k == 'right') && directions.includes(k)) {
-                // dragging left or right, when aligned as such, just repositions the handle
-                magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
-            } else if (k == 'width' && directions.includes('left')) {
-                // dragging left on left handle enlarges area, dragging right shrinks
-                magnitude = (parseInt(magnitude) - xDiff * factorHor).toString()
-            } else if (k == 'width' && directions.includes('right')) {
-                // dragging left on right handle shrinks area, dragging right enlarges
-                magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
-            }
-            if ((k == 'top' || k == 'bottom') && directions.includes(k)) {
-                // dragging top or bottom, when aligned as such, just repositions the handle
-                magnitude = (parseInt(magnitude) + yDiff * factorHor).toString()
-            } else if (k == 'height' && directions.includes('top')) {
-                // dragging up on top handle enlarges area, dragging down shrinks
-                magnitude = (parseInt(magnitude) - yDiff * factorHor).toString()
-            } else if (k == 'height' && directions.includes('bottom')) {
-                // dragging left on right handle shrinks area, dragging right enlarges
-                magnitude = (parseInt(magnitude) + yDiff * factorHor).toString()
-            }
-
-            newPosition[k] = magnitude + unit
-        }
-        console.log(newPosition)
-        await this.parent.setChildPosition(this.id.split('.').pop(), newPosition)
+        await this.parent.endHandleDrag(directions, startDragEv, endDragEv)
     }
 }
 

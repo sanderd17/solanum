@@ -11,7 +11,6 @@ class StudioCanvasInteraction extends Template {
         this.setChildren({})
 
         this.eventHandlers.click = (ev) => this.setSelection([], ev)
-        this.eventHandlers.dragstart = (ev) => {console.log('START DRAG SELECT');this.startedDrag = ev}
         this.eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
         this.addEventHandlersToDom()
         this.dom.setAttribute('draggable', true)
@@ -73,7 +72,6 @@ class StudioCanvasInteraction extends Template {
             let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[selection[0]].dom.getBoundingClientRect()
             for (let id of selection) {
                 let {left, top, right, bottom} = this.children[id].dom.getBoundingClientRect()
-                console.log({left, top, right, bottom})
                 minLeft = Math.min(left, minLeft)
                 maxRight = Math.max(right, maxRight)
                 minTop = Math.min(top, minTop)
@@ -149,7 +147,52 @@ class StudioCanvasInteraction extends Template {
                 selectedElements.push(id)
             } 
         }
+        // set selection again to update selection rect
         this.setSelection(selectedElements, endDragEvent)
+    }
+
+    /**
+     * 
+     * @param {Array<string>} directions
+     * @param {DragEvent} startDragEv 
+     * @param {DragEvent} endDragEv 
+     */
+    async endHandleDrag(directions, startDragEv, endDragEv) {
+        endDragEv.stopPropagation()
+        let xDiff = endDragEv.x - startDragEv.x
+        let yDiff = endDragEv.y - startDragEv.y
+
+        for (let childId of this.currentSelection) {
+            let child = this.children[childId]
+            let newPosition = {}
+            for (let [k, v] of Object.entries(child.position)) {
+                let {unit, magnitude, factorVer, factorHor} = this.getCoordinateInfo(v)
+                if ((k == 'left' || k == 'right') && directions.includes(k)) {
+                    // dragging left or right, when aligned as such, just repositions the handle
+                    magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
+                } else if (k == 'width' && directions.includes('left')) {
+                    // dragging left on left handle enlarges area, dragging right shrinks
+                    magnitude = (parseInt(magnitude) - xDiff * factorHor).toString()
+                } else if (k == 'width' && directions.includes('right')) {
+                    // dragging left on right handle shrinks area, dragging right enlarges
+                    magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
+                }
+                if ((k == 'top' || k == 'bottom') && directions.includes(k)) {
+                    // dragging top or bottom, when aligned as such, just repositions the handle
+                    magnitude = (parseInt(magnitude) + yDiff * factorVer).toString()
+                } else if (k == 'height' && directions.includes('top')) {
+                    // dragging up on top handle enlarges area, dragging down shrinks
+                    magnitude = (parseInt(magnitude) - yDiff * factorVer).toString()
+                } else if (k == 'height' && directions.includes('bottom')) {
+                    // dragging left on right handle shrinks area, dragging right enlarges
+                    magnitude = (parseInt(magnitude) + yDiff * factorVer).toString()
+                }
+
+                newPosition[k] = magnitude + unit
+            }
+            await this.setChildPosition(childId, newPosition)
+        }
+        this.setSelection(this.currentSelection, endDragEv)
     }
 
     getCoordinateInfo(value) {
@@ -172,8 +215,6 @@ class StudioCanvasInteraction extends Template {
     async setChildPosition(childId, newPosition) {
         this.children[childId].setPosition(newPosition)
         this.parent.children.preview.children[childId].setPosition(newPosition)
-        console.log(this.parent.children.preview.children[childId])
-
 
         let newCode = await fetch('/API/studio/setChildPosition', {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
