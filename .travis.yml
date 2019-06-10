@@ -4,7 +4,6 @@ node_js:
 install:
   - "npm ci"
   - cd solanum-core && npm ci && cd ..
-  - cd solanum-editor && npm ci && cd ..
   - cd solanum-studio && npm ci && cd ..
 script:
   - "npm test"
