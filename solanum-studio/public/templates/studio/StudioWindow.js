@@ -9,22 +9,22 @@ class StudioWindow extends Template {
     init() {
         this.setChildren({
             canvas: new StudioCanvas({
-                position: {left: "100px", right: "100px", top: "0px", bottom: "0px"},
+                position: {left: "300px", right: "300px", top: "0px", bottom: "0px"},
                 props: {},
                 eventHandlers: {},
             }),
             projectBrowser: new ProjectBrowser({
-                position: {left: "0px", width: "100px", top: "0px", height: "50%"},
+                position: {left: "0px", width: "300px", top: "0px", height: "50%"},
                 props: {},
                 eventHandlers: {},
             }),
             tagBrowser: new TagBrowser({
-                position: {left: "0px", width: "100px", bottom: "0px", height: "50%"},
+                position: {left: "0px", width: "300px", bottom: "0px", height: "50%"},
                 props: {},
                 eventHandlers: {},
             }),
             propEditor: new PropEditor({
-                position: {right: "0px", width: "100px", top: "0px", bottom: "0px"},
+                position: {right: "0px", width: "300px", top: "0px", bottom: "0px"},
                 props: {},
                 eventHandlers: {},
             }),
@@ -39,6 +39,9 @@ class StudioWindow extends Template {
 StudioWindow.prototype.css = {
     'canvas': {
         'background-color': '#909090'
+    },
+    'projectBrowser': { // TODO should be able to set own style too
+        'overflow': 'scroll'
     }
 }
 
