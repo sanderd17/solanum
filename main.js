@@ -4,7 +4,6 @@ import express from 'express'
 import config from './config.js'
 
 import {default as initCore} from './solanum-core'
-import {default as initEditor} from './solanum-editor'
 import {default as initStudio} from './solanum-studio'
 
 const app = express()
@@ -16,7 +15,6 @@ app.use(function (req, res, next) {
 */
 
 initCore(app, config)
-initEditor(app, config)
 initStudio(app, config)
 
 app.listen(config.app.port);
