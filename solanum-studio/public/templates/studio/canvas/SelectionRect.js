@@ -2,7 +2,7 @@ import Template from '/lib/template.js'
 import P from '/lib/Prop.js'
 import ts from '/lib/TagSet.js'
 import Rect from '/templates/draw/Rect.js'
-import ResizeHandle from '/templates/canvas/ResizeHandle.js'
+import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
 
 
 class SelectionRect extends Template {

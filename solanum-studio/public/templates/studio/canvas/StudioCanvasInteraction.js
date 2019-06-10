@@ -1,7 +1,7 @@
 
 import Template from "/lib/template.js"
 import P from '/lib/Prop.js'
-import SelectionRect from "/templates/canvas/SelectionRect.js"
+import SelectionRect from "/templates/studio/canvas/SelectionRect.js"
 
 class StudioCanvasInteraction extends Template {
 

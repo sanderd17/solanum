@@ -1,6 +1,6 @@
 import Template from "/lib/template.js"
 import P from '/lib/Prop.js'
-import StudioCanvas from '/templates/canvas/StudioCanvas.js'
+import StudioCanvas from '/templates/studio/canvas/StudioCanvas.js'
 
 class StudioWindow extends Template {
     init() {

@@ -1,6 +1,6 @@
 import Template from "/lib/template.js"
 import P from '/lib/Prop.js'
-import StudioCanvasInteraction from '/templates/canvas/StudioCanvasInteraction.js'
+import StudioCanvasInteraction from '/templates/studio/canvas/StudioCanvasInteraction.js'
 
 class StudioCanvas extends Template {
     init() {
@@ -18,9 +18,7 @@ class StudioCanvas extends Template {
         // cls is the class of the replaced template
         let cls = mdl.default
 
-        // TODO get default size from class
-        let width = 100
-        let height = 100
+        let [width, height] = cls.prototype.defaultSize
         let preview= new cls({
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {},
@@ -30,7 +28,6 @@ class StudioCanvas extends Template {
         preview.disableEventHandlers()
 
         let interaction= new StudioCanvasInteraction({
-            //position: {left: '0px', width: '100%', top: '0px', height: '100%'},
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {elWidth: P.Raw(width), elHeight: P.Raw(height)},
             eventHandlers: {}
