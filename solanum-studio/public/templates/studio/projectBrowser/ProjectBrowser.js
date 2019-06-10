@@ -27,28 +27,35 @@ class ProjectBrowser extends Template {
         console.log(modules)
 
         let ulMain = document.createElement('ul')
-        for (let key in modules) {
+        for (let mod in modules) {
             let liModule = document.createElement('li')
-            liModule.textContent = key
+            liModule.textContent = mod
             let ulModule = document.createElement('ul')
             liModule.appendChild(ulModule)
             ulMain.appendChild(liModule)
 
-            let components = modules[key]
+            let components = modules[mod]
             for (let cmp of components) {
                 let liCmp = document.createElement('li')
                 liCmp.textContent = cmp
+
+                //liCmp.addEventListener('click', (ev) => this.selectComponent(cmp))
+                liCmp.addEventListener('dblclick', (ev) => this.openComponent(mod, cmp))
+
                 ulModule.appendChild(liCmp)
             }
         }
+        // FIXME should not edit dom directly; will not work on reloads
+        // FIXME should use a "treeview" component instead of rendering itself
         this.dom.appendChild(ulMain)
+    }
+
+    openComponent(mod, cmp) {
+        this.parent.openComponent(mod, cmp)
     }
 }
 
 ProjectBrowser.prototype.css = {
-    '': {
-        'overflow': 'scroll'
-    }
 }
 
 export default ProjectBrowser
@@ -91,9 +98,6 @@ EditorTemplateList.prototype.SetComponentList = function(modules){
                     document.getElementById('childSvgs').appendChild(childDom.documentElement)
                 }, true)
                 const svgDom = inst.render()
-                //svgDom.setAttribute('version', '1.1')
-                //svgDom.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-                //svgDom.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
                 const viewBox = svgDom.documentElement.getAttribute('viewBox')
                 const [_1, _2, w, h] = viewBox.split(' ')
                 window.currentSize = [w, h]

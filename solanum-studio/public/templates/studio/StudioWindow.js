@@ -30,8 +30,11 @@ class StudioWindow extends Template {
             }),
         })
 
-        this.children.canvas.setComponent('main', 'Motor.js')
         //this.children.canvas.setComponent('main', 'MainWindow.js')
+    }
+
+    openComponent(mod, cmp) {
+        this.children.canvas.setComponent(mod, cmp)
     }
 
 }
@@ -40,7 +43,7 @@ StudioWindow.prototype.css = {
     'canvas': {
         'background-color': '#909090'
     },
-    'projectBrowser': { // TODO should be able to set own style too
+    'projectBrowser': { // TODO component should be able to set own CSS
         'overflow': 'scroll'
     }
 }
