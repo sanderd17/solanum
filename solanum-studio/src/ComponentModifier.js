@@ -1,4 +1,13 @@
 import recast from 'recast'
+import flow from 'flow-parser'
+
+const parseOptions = {
+    'parser': {
+        parse: c => flow.parse(c, {
+            esproposal_class_instance_fields: true,
+        }), // Flow parser supports class fields https://github.com/tc39/proposal-class-fields
+    }
+}
 
 /**
  * Class to allow modifications to component code.
@@ -14,7 +23,7 @@ class ComponentModifier {
      */
     constructor(code) {
         this.code = code
-        this.ast = recast.parse(code)
+        this.ast = recast.parse(code, parseOptions)
     }
 
     /**
@@ -40,7 +49,7 @@ class ComponentModifier {
                 position: {},
                 props: {},
                 eventHandlers: {},
-            })`)
+            })`, parseOptions)
 
         const b = recast.types.builders
         let newArgProperty = b.property('init', b.identifier(childId), newChildAst.program.body[0].expression)
@@ -104,7 +113,7 @@ class ComponentModifier {
     setChildEventHandler(childId, eventId, eventHandler) {
         let childArg = this.getChildConstructionArg(childId)
 
-        let newEventhandlerAst = recast.parse(eventHandler).program.body[0].expression
+        let newEventhandlerAst = recast.parse(eventHandler, parseOptions).program.body[0].expression
 
         for (let prop of childArg.properties) {
             if (prop.key.name != 'eventHandlers')
@@ -202,7 +211,7 @@ class ComponentModifier {
         // determine the position of the import (add to the end of imports)
         let importString = `import ${importName} from '${importPath}'`
 
-        let newImportAst = recast.parse(importString).program.body[0]
+        let newImportAst = recast.parse(importString, parseOptions).program.body[0]
         astBody.splice(lastImportLine + 1,0,newImportAst)
     }
 
@@ -225,7 +234,6 @@ class ComponentModifier {
             if (statement.key.type != 'Identifier' || statement.key.name != 'init')
                 continue
             // bodyStatement is the constructor function
-
             return statement.value.body.body
         }
     }
@@ -234,9 +242,9 @@ class ComponentModifier {
      * @returns {ObjectExpression} containing the children passed to the setChildren function
      */
     getSetChildrenArgsAst() {
-        let constructorBody = this.getInitBodyAst()
+        let initBody = this.getInitBodyAst()
 
-        for (let statement of constructorBody) {
+        for (let statement of initBody) {
             if (statement.type != 'ExpressionStatement')
                 continue
             let expression = statement.expression

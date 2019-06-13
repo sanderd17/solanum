@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "express": "^4.16.4",
+    "flow-parser": "^0.101.0",
     "monaco-editor": "^0.16.2",
     "recast": "^0.16.2",
     "recursive-readdir": "^2.2.2",

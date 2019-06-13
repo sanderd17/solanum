@@ -6,6 +6,39 @@ import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
 
 
 class SelectionRect extends Template {
+    /*children = {
+        rect: {
+            type: Rect,
+            position: {left: "0%", width: "100%", top: "0%", height: "100%"},
+            props: {
+                'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
+            },
+            eventHandlers: {}
+            styles: [
+                {
+                    declarations: {
+                        'fill': 'none',
+                        'stroke-linecap': 'round',
+                    }
+                },
+                {
+                    classes: ['selected'],
+                    declarations: {
+                        'stroke-dasharray': '1 4',
+                    }
+                },
+                {
+                    states: ['hover'],
+                    declarations: {
+                        'cursor': 'pointer',
+                        'stroke': '#00008080',
+                        'stroke-width': '1px',
+                    }
+                },
+            ]
+        },
+    }*/
+
     init() {
         this.setChildren({
             rect: new Rect({

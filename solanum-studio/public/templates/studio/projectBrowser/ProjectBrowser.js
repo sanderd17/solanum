@@ -39,8 +39,14 @@ class ProjectBrowser extends Template {
                 let liCmp = document.createElement('li')
                 liCmp.textContent = cmp
 
+                liCmp.setAttribute('draggable', 'true')
+
                 //liCmp.addEventListener('click', (ev) => this.selectComponent(cmp))
                 liCmp.addEventListener('dblclick', (ev) => this.openComponent(mod, cmp))
+                liCmp.addEventListener('dragstart', (ev) => {
+                    this.draggedComponent = cmp
+                })
+                liCmp.addEventListener('dragend', (ev) => this.addComponent(this.draggedComponent)),
 
                 ulModule.appendChild(liCmp)
             }
@@ -52,6 +58,11 @@ class ProjectBrowser extends Template {
 
     openComponent(mod, cmp) {
         this.parent.openComponent(mod, cmp)
+    }
+
+    addComponent(cmp) {
+        // TODO implement adding a new component
+        console.log(`add ${cmp}`)
     }
 }
 
@@ -76,38 +87,11 @@ EditorTemplateList.prototype.SetComponentList = function(modules){
             let li = document.createElement('li')
             li.textContent = cmp
 
-            li.setAttribute('draggable', true)
             li.ondragstart = (ev) => {
                 ev.dataTransfer.setData('module', mod)
                 ev.dataTransfer.setData('component', cmp)
             } 
 
-            li.onclick = async () => {
-                window.currentModule = mod
-                window.currentComponent = cmp
-                const module = await import('/templates/' + cmp + '.js')
-                const cmpClass = module.default
-                // TODO find a better string than id, but svgedit breaks on special characters in use referals
-                const inst = new cmpClass(null, 'id', true, {})
-                inst.createSubTemplates()
-                const parser = new DOMParser()
-
-                inst.forEachChild(child => {
-                    let childDom = child.render()
-                    childDom.documentElement.setAttribute('id', '--' + child.id)
-                    document.getElementById('childSvgs').appendChild(childDom.documentElement)
-                }, true)
-                const svgDom = inst.render()
-                const viewBox = svgDom.documentElement.getAttribute('viewBox')
-                const [_1, _2, w, h] = viewBox.split(' ')
-                window.currentSize = [w, h]
-                window.currentClass = svgDom.documentElement.getAttribute('class')
-                const XmlS = new XMLSerializer()
-                setTimeout(() => canvas.setSvgString(XmlS.serializeToString(svgDom), false), 0)
-                canvas.setResolution(w, h)
-                canvas.updateCanvas(w, h)
-            }
-            childUl.appendChild(li)
         }
         ul.appendChild(childUl)
     }

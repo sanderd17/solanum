@@ -1,16 +1,24 @@
 const assert = require('assert')
 
 import recast from 'recast'
+import flow from 'flow-parser'
 import ComponentModifier from '../src/ComponentModifier.js'
 
+const parseOptions = {
+    'parser': {
+        parse: c => flow.parse(c, {
+            esproposal_class_instance_fields: true,
+        }), // Flow parser supports class fields https://github.com/tc39/proposal-class-fields
+    }
+}
 
 /**
  * @param {string} js1 
  * @param {string} js2
  */
 assert.equalJS = function(js1, js2) {
-    let output1 = recast.prettyPrint(recast.parse(js1)).code;
-    let output2 = recast.prettyPrint(recast.parse(js2)).code;
+    let output1 = recast.prettyPrint(recast.parse(js1, parseOptions)).code;
+    let output2 = recast.prettyPrint(recast.parse(js2, parseOptions)).code;
     return assert.equal(output1, output2)
 }
 
@@ -18,7 +26,6 @@ const startCode = `
 import Template from '../lib/template.js'
 
 class TestComponent extends Template {
-
     init() {
         this.setChildren({
             child1: new Child({

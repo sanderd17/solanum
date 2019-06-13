@@ -4,10 +4,16 @@ import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 
 class Motor extends Template {
+    myField = 2;
     init() {
         this.setChildren({
             icon: new Circle({
-                position: {left: "7%", width: "66%", top: "10%", height: "64%"},
+                position: {
+                    left: "13%",
+                    width: "66%",
+                    top: "6%",
+                    height: "64%"
+                },
                 props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
                 eventHandlers: {
                     click: (ev) => {

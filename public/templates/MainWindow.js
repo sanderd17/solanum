@@ -23,4 +23,6 @@ class MainWindow extends Template {
     }
 }
 
+MainWindow.prototype.defaultSize = [500, 850]
+
 export default MainWindow
