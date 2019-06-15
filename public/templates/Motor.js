@@ -4,31 +4,33 @@ import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 
 class Motor extends Template {
-    myField = 2;
-    init() {
-        this.setChildren({
-            icon: {
-                type: Circle,
-                position: {
-                    left: "23%",
-                    width: "66%",
-                    top: "-1%",
-                    height: "64%"
-                },
-                props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
-                eventHandlers: {
-                    click: (ev) => {
-                        let path = 'Motors/' + this.props.motor
-                        ts.writeTag(path, 'black')}
-                }
+    childDefinitions = {
+        icon: {
+            type: Circle,
+            position: {
+                left: "23%",
+                width: "66%",
+                top: "-1%",
+                height: "64%"
             },
-            icon2: {
-                type: Circle,
-                position: {left: "62%", width: "27%", top: "18%", height: "51%"},
-                props: {fill: P.Raw('blue')},
-                eventHandlers: { }
-            },
-        })
+            props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
+            eventHandlers: {
+                click: (ev) => {
+                    let path = 'Motors/' + this.props.motor
+                    ts.writeTag(path, 'black')}
+            }
+        },
+        icon2: {
+            type: Circle,
+            position: {left: "62%", width: "27%", top: "18%", height: "51%"},
+            props: {fill: P.Raw('blue')},
+            eventHandlers: { }
+        },
+    }
+
+    constructor(...args) {
+        super(...args)
+        this.setChildren(this.childDefinitions)
     }
 }
 

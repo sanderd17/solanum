@@ -25,8 +25,6 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  */
 class Template {
 
-    childDefinitions = null
-
     /**
      * @param {TemplateConstructParams} p
      */
@@ -81,7 +79,6 @@ class Template {
         this.className = style.registerClassStyle(this.constructor)
 
         this.createDomNode()
-        this.setChildren(this.childDefinitions)
         this.addEventHandlersToDom()
         this.init()
     }
