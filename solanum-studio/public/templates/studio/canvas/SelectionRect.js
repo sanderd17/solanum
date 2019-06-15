@@ -41,14 +41,16 @@ class SelectionRect extends Template {
 
     init() {
         this.setChildren({
-            rect: new Rect({
+            rect: {
+                type: Rect,
                 position: {left: "0%", width: "100%", top: "0%", height: "100%"},
                 props: {
                     'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
                 },
                 eventHandlers: {}
-            }),
-            topLeftHandle: new ResizeHandle({
+            },
+            topLeftHandle: {
+                type: ResizeHandle,
                 position: {left: "0%", width: "4px", top: "0%", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -57,8 +59,9 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['left', 'top'], this.startedDrag, ev),
                 }
-            }),
-            topHandle: new ResizeHandle({
+            },
+            topHandle: {
+                type: ResizeHandle,
                 position: {left: "calc(50% - 2px)", width: "4px", top: "0%", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -67,8 +70,9 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['top'], this.startedDrag, ev),
                 }
-            }),
-            topRightHandle: new ResizeHandle({
+            },
+            topRightHandle:{
+                type: ResizeHandle,
                 position: {right: "0%", width: "4px", top: "0%", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -77,8 +81,9 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['right', 'top'], this.startedDrag, ev),
                 }
-            }),
-            rightHandle: new ResizeHandle({
+            },
+            rightHandle: {
+                type: ResizeHandle,
                 position: {right: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -87,8 +92,9 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['right'], this.startedDrag, ev),
                 }
-            }),
-            bottomRightHandle: new ResizeHandle({
+            },
+            bottomRightHandle: {
+                type: ResizeHandle,
                 position: {right: "0%", width: "4px", bottom: "0%", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -97,8 +103,9 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['right', 'bottom'], this.startedDrag, ev),
                 }
-            }),
-            bottomHandle: new ResizeHandle({
+            },
+            bottomHandle: {
+                type: ResizeHandle,
                 position: {left: "calc(50% - 2px)", width: "4px", bottom: "0%", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -107,8 +114,9 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['bottom'], this.startedDrag, ev),
                 }
-            }),
-            bottomLeftHandle: new ResizeHandle({
+            },
+            bottomLeftHandle: {
+                type: ResizeHandle,
                 position: {left: "0%", width: "4px", bottom: "0%", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -117,8 +125,9 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['left', 'bottom'], this.startedDrag, ev),
                 }
-            }),
-            leftHandle: new ResizeHandle({
+            },
+            leftHandle: {
+                type: ResizeHandle,
                 position: {left: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
                 props: {
                     'visible': P.Bound('selected'),
@@ -127,7 +136,7 @@ class SelectionRect extends Template {
                     dragstart: (ev) => this.startHandleDrag(ev),
                     dragend: (ev) => this.endHandleDrag(['left'], this.startedDrag, ev),
                 }
-            }),
+            },
         })
 
         this.setPropListener('selected', s => {

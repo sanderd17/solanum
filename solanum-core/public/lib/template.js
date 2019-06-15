@@ -93,8 +93,11 @@ class Template {
     }
 
     setChildren(children) {
-        this.children = children
-        for (let [id, child] of Object.entries(this.children)) {
+        this.children = {}
+        for (let id in children) {
+            let type = children[id].type
+            let child = new type(children[id])
+            this.children[id] = child
             child.setParent(this)
             this.dom.appendChild(child.dom)
             child.classList.add(id)

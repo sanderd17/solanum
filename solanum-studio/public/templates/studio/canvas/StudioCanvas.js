@@ -19,24 +19,26 @@ class StudioCanvas extends Template {
         let cls = mdl.default
 
         let [width, height] = cls.prototype.defaultSize
-        let preview= new cls({
+        let preview= {
+            type: cls,
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {},
             eventHandlers: {}
-        })
+        }
 
-        preview.disableEventHandlers()
 
-        let interaction= new StudioCanvasInteraction({
+        let interaction= {
+            type: StudioCanvasInteraction,
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {elWidth: P.Raw(width), elHeight: P.Raw(height)},
             eventHandlers: {}
-        })
+        }
 
         this.setChildren({preview, interaction})
         this.setId(this.id)
+        this.children.preview.disableEventHandlers()
 
-        interaction.reloadSelectionRects()
+        this.children.interaction.reloadSelectionRects()
     }
 }
 

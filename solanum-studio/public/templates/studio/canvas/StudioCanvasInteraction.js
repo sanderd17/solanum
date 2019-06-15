@@ -27,7 +27,8 @@ class StudioCanvasInteraction extends Template {
             this.dom.removeChild(child)
 
         let children = {
-            '#multiSelectRect': new SelectionRect({
+            '#multiSelectRect': {
+                type: SelectionRect,
                 position: {left:0, width: 0, top: 0, height: 0},
                 props: {},
                 eventHandlers: {
@@ -35,10 +36,11 @@ class StudioCanvasInteraction extends Template {
                     dragstart: (ev) => this.startedDrag = ev,
                     dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 }
-            })
+            }
         }
         for (let [id, cmp] of Object.entries(this.parent.children.preview.children)) {
-            children[id] = new SelectionRect({
+            children[id] = {
+                type: SelectionRect,
                 position: cmp.position,
                 props: {},
                 eventHandlers: {
@@ -46,7 +48,7 @@ class StudioCanvasInteraction extends Template {
                     dragstart: (ev) => this.startedDrag = ev,
                     dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 },
-            })
+            }
         }
         this.setChildren(children)
         this.setId(this.id)

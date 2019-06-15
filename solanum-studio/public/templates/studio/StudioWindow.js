@@ -8,26 +8,30 @@ import PropEditor from '/templates/studio/propEditor/PropEditor.js'
 class StudioWindow extends Template {
     init() {
         this.setChildren({
-            canvas: new StudioCanvas({
+            canvas: {
+                type: StudioCanvas,
                 position: {left: "300px", right: "300px", top: "0px", bottom: "0px"},
                 props: {},
                 eventHandlers: {},
-            }),
-            projectBrowser: new ProjectBrowser({
+            },
+            projectBrowser: {
+                type: ProjectBrowser,
                 position: {left: "0px", width: "300px", top: "0px", height: "50%"},
                 props: {},
                 eventHandlers: {},
-            }),
-            tagBrowser: new TagBrowser({
+            },
+            tagBrowser: {
+                type: TagBrowser,
                 position: {left: "0px", width: "300px", bottom: "0px", height: "50%"},
                 props: {},
                 eventHandlers: {},
-            }),
-            propEditor: new PropEditor({
+            },
+            propEditor: {
+                type: PropEditor,
                 position: {right: "0px", width: "300px", top: "0px", bottom: "0px"},
                 props: {},
                 eventHandlers: {},
-            }),
+            },
         })
 
         //this.children.canvas.setComponent('main', 'MainWindow.js')

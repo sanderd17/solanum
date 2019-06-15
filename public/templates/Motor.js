@@ -7,11 +7,12 @@ class Motor extends Template {
     myField = 2;
     init() {
         this.setChildren({
-            icon: new Circle({
+            icon: {
+                type: Circle,
                 position: {
-                    left: "13%",
+                    left: "11%",
                     width: "66%",
-                    top: "6%",
+                    top: "34%",
                     height: "64%"
                 },
                 props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
@@ -20,12 +21,13 @@ class Motor extends Template {
                         let path = 'Motors/' + this.props.motor
                         ts.writeTag(path, 'black')}
                 }
-            }),
-            icon2: new Circle({
+            },
+            icon2: {
+                type: Circle,
                 position: {left: "62%", width: "27%", top: "18%", height: "51%"},
                 props: {fill: P.Raw('blue')},
                 eventHandlers: { }
-            }),
+            },
         })
     }
 }

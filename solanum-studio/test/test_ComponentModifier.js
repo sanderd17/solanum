@@ -28,11 +28,12 @@ import Template from '../lib/template.js'
 class TestComponent extends Template {
     init() {
         this.setChildren({
-            child1: new Child({
+            child1: {
+                type: Child,
                 position: {left: '0', width: '100%', top: '0', height: '100%'},
                 props: {},
                 eventHandlers: {ev1: () => {}}
-            })
+            }
         })
     }
 }
@@ -68,7 +69,8 @@ describe('ComponentModifier', function() {
             assert(newCode.includes("import Child2 from 'modules/Child2.js'"))
         })
         it('Should add the child id', function() {
-            assert(newCode.includes('child2: new Child2'))
+            assert(newCode.includes('child2:'))
+            assert(newCode.includes('type: Child2,'))
         })
     })
 

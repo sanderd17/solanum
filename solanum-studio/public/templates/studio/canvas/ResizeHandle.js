@@ -7,11 +7,12 @@ import Rect from '/templates/draw/Rect.js'
 class ResizeHandle extends Template {
     init() {
         this.setChildren({
-            icon: new Rect({
+            icon: {
+                type: Rect,
                 position: {left: "0%", width: "100%", top: "0%", height: "100%"},
                 props: {},
                 eventHandlers: {}
-            })
+            }
         })
 
         this.setPropListener('visible', v => {

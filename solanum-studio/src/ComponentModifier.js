@@ -45,14 +45,15 @@ class ComponentModifier {
         let children = this.getSetChildrenArgsAst()
 
         let newChildAst = recast.parse(`
-            new ${childClassName}({
+            let a = {
+                type: ${childClassName},
                 position: {},
                 props: {},
                 eventHandlers: {},
-            })`, parseOptions)
+            }`, parseOptions)
 
         const b = recast.types.builders
-        let newArgProperty = b.property('init', b.identifier(childId), newChildAst.program.body[0].expression)
+        let newArgProperty = b.property('init', b.identifier(childId), newChildAst.program.body[0].declarations[0].init)
         children.properties.splice(children.properties.length, 0, newArgProperty)
 
         this.setChildPosition(childId, position)
@@ -76,7 +77,7 @@ class ComponentModifier {
      * @param {string} position 
      */
     setChildPosition(childId, position) {
-        let childArg = this.getChildConstructionArg(childId)
+        let childArg = this.getChildDefinition(childId)
 
         if (!childArg) {
             throw new Error(`Could not find the constructor arguments of child ${childId}`)
@@ -111,7 +112,7 @@ class ComponentModifier {
      * @param {string} eventHandler representing the function as a string
      */
     setChildEventHandler(childId, eventId, eventHandler) {
-        let childArg = this.getChildConstructionArg(childId)
+        let childArg = this.getChildDefinition(childId)
 
         let newEventhandlerAst = recast.parse(eventHandler, parseOptions).program.body[0].expression
 
@@ -135,7 +136,7 @@ class ComponentModifier {
     }
 
     removeChildEventHandler(childId, eventId) {
-        let childArg = this.getChildConstructionArg(childId)
+        let childArg = this.getChildDefinition(childId)
 
         for (let prop of childArg.properties) {
             if (prop.key.name != 'eventHandlers')
@@ -270,12 +271,13 @@ class ComponentModifier {
      * @param {string} childId Id of the child to get the arguments from
      * @returns {ObjectExpression} containing the different arguments (position, props and eventhandlers)
      */
-    getChildConstructionArg(childId) {
+    getChildDefinition(childId) {
         let children = this.getSetChildrenArgsAst()
 
         for (let prop of children.properties) {
-            if (prop.key.name == childId)
-                return prop.value.arguments[0]
+            if (prop.key.name == childId) {
+                return prop.value
+            }
         }
     }
 
