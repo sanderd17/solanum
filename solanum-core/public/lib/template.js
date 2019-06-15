@@ -80,7 +80,6 @@ class Template {
 
         this.createDomNode()
         this.addEventHandlersToDom()
-        this.init()
     }
 
     /**

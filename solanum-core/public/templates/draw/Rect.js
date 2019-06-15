@@ -8,7 +8,8 @@ class Rect extends Template {
         this.elNode.setAttribute(id, newValue)
     }
 
-    init() {
+    constructor(...args) {
+        super(...args)
         for (let id in this.props) {
             this.elNode.setAttribute(id, this.props[id])
         }
