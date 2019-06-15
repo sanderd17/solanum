@@ -5,10 +5,10 @@ import SelectionRect from "/templates/studio/canvas/SelectionRect.js"
 
 class StudioCanvasInteraction extends Template {
 
-    init() {
+    constructor(...args) {
+        super(...args)
         this.canvasPreview = null
         this.currentSelection = []
-        this.setChildren({})
 
         this.eventHandlers.click = (ev) => this.setSelection([], ev)
         this.eventHandlers.dragstart = (ev) => this.startedDrag = ev

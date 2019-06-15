@@ -6,7 +6,8 @@ import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
 
 
 class SelectionRect extends Template {
-    /*children = {
+    /* TODO style proposal
+    childDefinitions = {
         rect: {
             type: Rect,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
@@ -39,105 +40,109 @@ class SelectionRect extends Template {
         },
     }*/
 
-    init() {
-        this.setChildren({
-            rect: {
-                type: Rect,
-                position: {left: "0%", width: "100%", top: "0%", height: "100%"},
-                props: {
-                    'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
-                },
-                eventHandlers: {}
+    childDefinitions = {
+        rect: {
+            type: Rect,
+            position: {left: "0%", width: "100%", top: "0%", height: "100%"},
+            props: {
+                'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
             },
-            topLeftHandle: {
-                type: ResizeHandle,
-                position: {left: "0%", width: "4px", top: "0%", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['left', 'top'], this.startedDrag, ev),
-                }
+            eventHandlers: {}
+        },
+        topLeftHandle: {
+            type: ResizeHandle,
+            position: {left: "0%", width: "4px", top: "0%", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-            topHandle: {
-                type: ResizeHandle,
-                position: {left: "calc(50% - 2px)", width: "4px", top: "0%", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['top'], this.startedDrag, ev),
-                }
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['left', 'top'], this.startedDrag, ev),
+            }
+        },
+        topHandle: {
+            type: ResizeHandle,
+            position: {left: "calc(50% - 2px)", width: "4px", top: "0%", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-            topRightHandle:{
-                type: ResizeHandle,
-                position: {right: "0%", width: "4px", top: "0%", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['right', 'top'], this.startedDrag, ev),
-                }
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['top'], this.startedDrag, ev),
+            }
+        },
+        topRightHandle:{
+            type: ResizeHandle,
+            position: {right: "0%", width: "4px", top: "0%", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-            rightHandle: {
-                type: ResizeHandle,
-                position: {right: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['right'], this.startedDrag, ev),
-                }
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['right', 'top'], this.startedDrag, ev),
+            }
+        },
+        rightHandle: {
+            type: ResizeHandle,
+            position: {right: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-            bottomRightHandle: {
-                type: ResizeHandle,
-                position: {right: "0%", width: "4px", bottom: "0%", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['right', 'bottom'], this.startedDrag, ev),
-                }
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['right'], this.startedDrag, ev),
+            }
+        },
+        bottomRightHandle: {
+            type: ResizeHandle,
+            position: {right: "0%", width: "4px", bottom: "0%", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-            bottomHandle: {
-                type: ResizeHandle,
-                position: {left: "calc(50% - 2px)", width: "4px", bottom: "0%", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['bottom'], this.startedDrag, ev),
-                }
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['right', 'bottom'], this.startedDrag, ev),
+            }
+        },
+        bottomHandle: {
+            type: ResizeHandle,
+            position: {left: "calc(50% - 2px)", width: "4px", bottom: "0%", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-            bottomLeftHandle: {
-                type: ResizeHandle,
-                position: {left: "0%", width: "4px", bottom: "0%", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['left', 'bottom'], this.startedDrag, ev),
-                }
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['bottom'], this.startedDrag, ev),
+            }
+        },
+        bottomLeftHandle: {
+            type: ResizeHandle,
+            position: {left: "0%", width: "4px", bottom: "0%", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-            leftHandle: {
-                type: ResizeHandle,
-                position: {left: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
-                props: {
-                    'visible': P.Bound('selected'),
-                },
-                eventHandlers: {
-                    dragstart: (ev) => this.startHandleDrag(ev),
-                    dragend: (ev) => this.endHandleDrag(['left'], this.startedDrag, ev),
-                }
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['left', 'bottom'], this.startedDrag, ev),
+            }
+        },
+        leftHandle: {
+            type: ResizeHandle,
+            position: {left: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
+            props: {
+                'visible': P.Bound('selected'),
             },
-        })
+            eventHandlers: {
+                dragstart: (ev) => this.startHandleDrag(ev),
+                dragend: (ev) => this.endHandleDrag(['left'], this.startedDrag, ev),
+            }
+        },
+    }
+
+    constructor(...args) {
+        super(...args)
+
+        this.setChildren(this.childDefinitions)
 
         this.setPropListener('selected', s => {
             this.dom.setAttribute('draggable', s)

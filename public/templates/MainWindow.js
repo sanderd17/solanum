@@ -4,7 +4,8 @@ import P from '/lib/Prop.js'
 import Motor from "/templates/Motor.js"
 import ts from '/lib/TagSet.js'
 class MainWindow extends Template {
-    init() {
+    constructor(...args) {
+        super(...args)
         let children = {}
 
         let size = 15

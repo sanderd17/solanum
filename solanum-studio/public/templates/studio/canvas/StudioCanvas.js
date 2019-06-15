@@ -3,8 +3,8 @@ import P from '/lib/Prop.js'
 import StudioCanvasInteraction from '/templates/studio/canvas/StudioCanvasInteraction.js'
 
 class StudioCanvas extends Template {
-    init() {
-        this.setChildren({ })
+    constructor(...args) {
+        super(...args)
         this.cnt = 1
     }
 
