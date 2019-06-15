@@ -42,7 +42,7 @@ class ComponentModifier {
     addChildComponent(childId, childClassName, childPath, position) {
         this.addImportStatement(childClassName, childPath)
 
-        let children = this.getSetChildrenArgsAst()
+        let children = this.getClassField('childDefinitions')
 
         let newChildAst = recast.parse(`
             let a = {
@@ -64,7 +64,7 @@ class ComponentModifier {
      * @param {string} childId 
      */
     removeChildComponent(childId) {
-        let children = this.getSetChildrenArgsAst()
+        let children = this.getClassField('childDefinitions')
 
         for (let [i, prop] of children.properties.entries()) {
             if (prop.key.name == childId)
@@ -156,7 +156,7 @@ class ComponentModifier {
         const b = recast.types.builders
         let newValue = b.literal(value) // TODO this only supports numbers and strings as values. All JSON values should be supported
 
-        let defaultProps = this.getClassField('defaultProps').right // TODO change to `.value` when it's really a class field
+        let defaultProps = this.getClassField('defaultProps')
         if (defaultProps.type != 'ObjectExpression')
             throw new Error('defaultProps is not detected as an object')
         for (let prop of defaultProps.properties) {
@@ -174,7 +174,7 @@ class ComponentModifier {
     }
 
     removeDefaultProp(propName) {
-        let defaultProps = this.getClassField('defaultProps').right // TODO change to `.value` when it's really a class field
+        let defaultProps = this.getClassField('defaultProps')
         if (defaultProps.type != 'ObjectExpression')
             throw new Error('defaultProps is not detected as an object')
         for (let [i, prop] of defaultProps.properties.entries()) {
@@ -226,53 +226,13 @@ class ComponentModifier {
         }
     }
 
-    getInitBodyAst() {
-        let classBody = this.getClassBodyAst()
-
-        for (let statement of classBody) {
-            if (statement.type != 'MethodDefinition')
-                continue
-            if (statement.key.type != 'Identifier' || statement.key.name != 'init')
-                continue
-            // bodyStatement is the constructor function
-            return statement.value.body.body
-        }
-    }
-
-    /**
-     * @returns {ObjectExpression} containing the children passed to the setChildren function
-     */
-    getSetChildrenArgsAst() {
-        let initBody = this.getInitBodyAst()
-
-        for (let statement of initBody) {
-            if (statement.type != 'ExpressionStatement')
-                continue
-            let expression = statement.expression
-            if (expression.type != 'CallExpression')
-                continue
-            if (expression.callee.type != 'MemberExpression')
-                continue
-            if (expression.callee.property.type != 'Identifier')
-                continue
-            if (expression.callee.property.name != 'setChildren')
-                continue
-
-            // expression is the setChildren call
-            let args = expression.arguments
-            if (args.length == 0 || args[0].type != 'ObjectExpression')
-                throw Error("Unexpected arguments on setChildren call")
-            return args[0]
-        }
-    }
-
     /**
      * 
      * @param {string} childId Id of the child to get the arguments from
      * @returns {ObjectExpression} containing the different arguments (position, props and eventhandlers)
      */
     getChildDefinition(childId) {
-        let children = this.getSetChildrenArgsAst()
+        let children = this.getClassField('childDefinitions')
 
         for (let prop of children.properties) {
             if (prop.key.name == childId) {
@@ -289,32 +249,16 @@ class ComponentModifier {
      * @returns {AssignmentExpression} 
      */
     getClassField(fieldName) {
-        const astBody = this.ast.program.body
-        for (let statement of astBody) {
-            if (statement.type != 'ExpressionStatement')
-                continue
-            let expression = statement.expression
-            if (expression.type != 'AssignmentExpression')
-                continue
-            // check that the left side of the assignment is assigning to the object prototype
-            if (expression.left.type != 'MemberExpression')
-                continue
-            if (expression.left.object.type != 'MemberExpression')
-                continue
-            if (expression.left.object.object.type != 'Identifier')
-                continue
-            if (expression.left.object.property.type != 'Identifier')
-                continue
-            if (expression.left.object.property.name != 'prototype')
-                continue
-            // expression is an assignment to an object prototype
+        let classBodyAst = this.getClassBodyAst();
 
-            if (expression.left.property.type != 'Identifier')
+        for (let statement of classBodyAst) {
+            if (statement.type != 'ClassProperty')
                 continue
-            if (expression.left.property.name != fieldName)
+            if (!statement.key || statement.key.type != 'Identifier')
                 continue
-            // expression is an assignment to the field of the object prototype
-            return expression
+            if (statement.key.name != fieldName)
+                continue
+            return statement.value
         }
     }
 }

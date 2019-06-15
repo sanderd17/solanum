@@ -26,20 +26,23 @@ const startCode = `
 import Template from '../lib/template.js'
 
 class TestComponent extends Template {
-    init() {
-        this.setChildren({
-            child1: {
-                type: Child,
-                position: {left: '0', width: '100%', top: '0', height: '100%'},
-                props: {},
-                eventHandlers: {ev1: () => {}}
-            }
-        })
+    childDefinitions = {
+        child1: {
+            type: Child,
+            position: {left: '0', width: '100%', top: '0', height: '100%'},
+            props: {},
+            eventHandlers: {ev1: () => {}}
+        }
     }
-}
 
-TestComponent.prototype.defaultProps = {
-    prop1: 'val1'
+    defaultProps = {
+        prop1: 'val1'
+    }
+
+    constructor(...args) {
+        super(...args)
+        this.setChildren(this.childDefinitions)
+    }
 }
 
 export default TestComponent
