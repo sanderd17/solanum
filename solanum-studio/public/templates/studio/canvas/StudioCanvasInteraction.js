@@ -23,9 +23,6 @@ class StudioCanvasInteraction extends Template {
      */
     reloadSelectionRects() {
         // draw a rect for every child of the previewed component
-        for (let child of this.dom.childNodes)
-            this.dom.removeChild(child)
-
         let children = {
             '#multiSelectRect': {
                 type: SelectionRect,

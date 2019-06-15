@@ -31,7 +31,7 @@ class Template {
     constructor(p) {
         // store constructor args
         this.cArgs = p
-        this.children = {}
+        this.children = null
         /** @type {Template?} */
         this.parent = null
         /** Props that are bound to children */
@@ -92,16 +92,35 @@ class Template {
         return this.dom.classList
     }
 
-    setChildren(children) {
-        this.children = {}
-        for (let id in children) {
-            let type = children[id].type
-            let child = new type(children[id])
-            this.children[id] = child
-            child.setParent(this)
-            this.dom.appendChild(child.dom)
-            child.classList.add(id)
-        }   
+    removeChild(id) {
+        let child = this.children[id]
+        this.dom.removeChild(child)
+        delete this.children[id]
+    }
+
+    addChild(id, childDefinition) {
+        let type = childDefinition.type
+        let child = new type(childDefinition)
+        this.children[id] = child
+        child.setParent(this)
+        this.dom.appendChild(child.dom)
+        child.classList.add(id)
+    }
+
+    setChildren(childDefinitions) {
+        if (this.children) {
+            // children have been previously defined, remove them
+            for (let id in this.children) {
+                this.removeChild(id)
+            }
+        }
+        if (childDefinitions) {
+            // childDefinitions are available, add the children
+            this.children = {}
+            for (let id in childDefinitions) {
+                this.addChild(id, childDefinitions[id])
+            }   
+        }
     }
 
     /**
