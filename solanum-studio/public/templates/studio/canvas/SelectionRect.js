@@ -6,39 +6,6 @@ import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
 
 
 class SelectionRect extends Template {
-    /* TODO style proposal
-    childDefinitions = {
-        rect: {
-            type: Rect,
-            position: {left: "0%", width: "100%", top: "0%", height: "100%"},
-            props: {
-                'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
-            },
-            eventHandlers: {}
-            styles: [
-                {
-                    declarations: {
-                        'fill': 'none',
-                        'stroke-linecap': 'round',
-                    }
-                },
-                {
-                    classes: ['selected'],
-                    declarations: {
-                        'stroke-dasharray': '1 4',
-                    }
-                },
-                {
-                    states: ['hover'],
-                    declarations: {
-                        'cursor': 'pointer',
-                        'stroke': '#00008080',
-                        'stroke-width': '1px',
-                    }
-                },
-            ]
-        },
-    }*/
 
     static childDefinitions = {
         rect: {
@@ -59,6 +26,8 @@ class SelectionRect extends Template {
                     classes: ['selected'],
                     declarations: {
                         'stroke-dasharray': '1 4',
+                        'stroke': '#00008080',
+                        'stroke-width': '1px',
                     }
                 },
                 {
@@ -80,7 +49,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'nwse-resize'
+            }}]
         },
         topHandle: {
             type: ResizeHandle,
@@ -91,7 +63,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'ns-resize'
+            }}]
         },
         topRightHandle:{
             type: ResizeHandle,
@@ -102,7 +77,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'nesw-resize'
+            }}]
         },
         rightHandle: {
             type: ResizeHandle,
@@ -113,7 +91,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'ew-resize'
+            }}]
         },
         bottomRightHandle: {
             type: ResizeHandle,
@@ -124,7 +105,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'nwse-resize'
+            }}]
         },
         bottomHandle: {
             type: ResizeHandle,
@@ -135,7 +119,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'ns-resize'
+            }}]
         },
         bottomLeftHandle: {
             type: ResizeHandle,
@@ -146,7 +133,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'nesw-resize'
+            }}]
         },
         leftHandle: {
             type: ResizeHandle,
@@ -157,7 +147,10 @@ class SelectionRect extends Template {
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev),
-            }
+            },
+            styles: [{declarations: {
+                'cursor': 'ew-resize'
+            }}]
         },
     }
     
@@ -188,44 +181,6 @@ class SelectionRect extends Template {
     async endHandleDrag(directions, startDragEv, endDragEv) {
         await this.parent.endHandleDrag(directions, startDragEv, endDragEv)
     }
-}
-
-SelectionRect.prototype.css = {
-    'rect': {
-        'fill': 'none',
-        //'stroke': '#00008080',
-        //'stroke-width': '1px',
-        'stroke-linecap': 'round',
-    },
-    'rect:hover': {
-        'cursor': 'pointer',
-        'stroke': '#00008080',
-        'stroke-width': '1px',
-    },
-    'topHandle': {
-        'cursor': 'ns-resize'
-    },
-    'bottomHandle': {
-        'cursor': 'ns-resize'
-    },
-    'leftHandle': {
-        'cursor': 'ew-resize'
-    },
-    'rightHandle': {
-        'cursor': 'ew-resize'
-    },
-    'topLeftHandle': {
-        'cursor': 'nwse-resize'
-    },
-    'bottomRightHandle': {
-        'cursor': 'nwse-resize'
-    },
-    'topRightHandle': {
-        'cursor': 'nesw-resize'
-    },
-    'bottomLeftHandle': {
-        'cursor': 'nesw-resize'
-    },
 }
 
 export default SelectionRect

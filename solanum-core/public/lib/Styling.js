@@ -55,7 +55,13 @@ class Styling {
                     console.log(id, definition.styles)
                     for (let entry of definition.styles) {
 
-                        let selector = `.${className}>.${id}`
+                        let selector = `.${className}`
+                        if (entry.classes) {
+                            for (let className of entry.classes) {
+                                selector += `.${className}`
+                            }
+                        }
+                        selector += `>.${id}`
                         if (entry.states) {
                             for (let state of entry.states) {
                                 selector += `:${state}`

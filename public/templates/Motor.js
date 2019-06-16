@@ -8,9 +8,9 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "33%",
-                width: "66%",
-                top: "35%",
+                left: "28%",
+                width: "46%",
+                top: "19%",
                 height: "64%"
             },
             props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
