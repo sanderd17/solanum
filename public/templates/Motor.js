@@ -8,9 +8,9 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "36%",
+                left: "12%",
                 width: "66%",
-                top: "37%",
+                top: "19%",
                 height: "64%"
             },
             props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
@@ -28,16 +28,16 @@ class Motor extends Template {
         },
     }
 
+    static defaultProps = {
+        'motor': 'M0'
+    }
+
+    static defaultSize = [100, 100]
+
     constructor(...args) {
         super(...args)
         this.setChildren(this.childDefinitions)
     }
-}
-
-Motor.prototype.defaultSize = [100, 100]
-
-Motor.prototype.defaultProps = {
-    'motor': 'M0'
 }
 
 Motor.prototype.css = {

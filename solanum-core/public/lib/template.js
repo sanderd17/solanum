@@ -24,6 +24,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
+    static defaultProps = {}
 
     /**
      * @param {TemplateConstructParams} p
@@ -42,9 +43,9 @@ class Template {
         this.propChangedHandlers = {}
         this._props = p.props
 
-        for (let id in this.defaultProps) {
+        for (let id in this.constructor.defaultProps) {
             if (!(id in p.props))
-                p.props[id] = P.Raw(this.defaultProps[id])
+                p.props[id] = P.Raw(this.constructor.defaultProps[id])
         }
 
         for (let id in p.props) {
@@ -236,6 +237,5 @@ class Template {
     } 
 }
 
-Template.prototype.defaultProps = {}
 
 export default Template

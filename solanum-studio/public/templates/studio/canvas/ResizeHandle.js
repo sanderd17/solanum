@@ -13,6 +13,11 @@ class ResizeHandle extends Template {
             eventHandlers: {}
         }
     }
+
+    static defaultProps = {
+        'visible': false
+    }
+
     constructor(...args) {
         super(...args)
         this.setChildren(this.childDefinitions)
@@ -23,10 +28,6 @@ class ResizeHandle extends Template {
             //this.dom.style['z-index'] = s ? 1 : 0 // raise selection rect when selected
         })
     }
-}
-
-ResizeHandle.prototype.defaultProps = {
-    'visible': false
 }
 
 ResizeHandle.prototype.css = {

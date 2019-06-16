@@ -138,6 +138,10 @@ class SelectionRect extends Template {
             }
         },
     }
+    
+    static defaultProps = {
+        'selected': false
+    }
 
     constructor(...args) {
         super(...args)
@@ -164,10 +168,6 @@ class SelectionRect extends Template {
     async endHandleDrag(directions, startDragEv, endDragEv) {
         await this.parent.endHandleDrag(directions, startDragEv, endDragEv)
     }
-}
-
-SelectionRect.prototype.defaultProps = {
-    'selected': false
 }
 
 SelectionRect.prototype.css = {

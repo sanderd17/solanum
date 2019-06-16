@@ -18,7 +18,7 @@ class StudioCanvas extends Template {
         // cls is the class of the replaced template
         let cls = mdl.default
 
-        let [width, height] = cls.prototype.defaultSize
+        let [width, height] = cls.defaultSize
         let preview= {
             type: cls,
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
