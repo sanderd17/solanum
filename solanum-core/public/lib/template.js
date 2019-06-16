@@ -57,7 +57,7 @@ class Template {
         }
 
         /** @type Object<string,Template> */
-        this.props = new Proxy(this._props || {}, {
+        this.props = new Proxy(this._props, {
             /**
              * @arg {object} obj
              * @arg {string} id
@@ -87,11 +87,6 @@ class Template {
         this.addEventHandlersToDom()
         this.setChildren(this.constructor.childDefinitions)
     }
-
-    /**
-     * Init function to be implemented by the separate components
-     */
-    init() {}
 
     get classList() {
         return this.dom.classList

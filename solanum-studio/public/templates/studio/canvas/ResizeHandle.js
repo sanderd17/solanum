@@ -5,7 +5,7 @@ import Rect from '/templates/draw/Rect.js'
 
 
 class ResizeHandle extends Template {
-    childDefinitions = {
+    static childDefinitions = {
         icon: {
             type: Rect,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
@@ -20,7 +20,6 @@ class ResizeHandle extends Template {
 
     constructor(...args) {
         super(...args)
-        this.setChildren(this.childDefinitions)
 
         this.setPropListener('visible', v => {
             this.children.icon.classList.toggle('visible', v)

@@ -6,7 +6,7 @@ import TagBrowser from '/templates/studio/tagBrowser/TagBrowser.js'
 import PropEditor from '/templates/studio/propEditor/PropEditor.js'
 
 class StudioWindow extends Template {
-    childDefinitions = {
+    static childDefinitions = {
         canvas: {
             type: StudioCanvas,
             position: {left: "300px", right: "300px", top: "0px", bottom: "0px"},
@@ -31,10 +31,6 @@ class StudioWindow extends Template {
             props: {},
             eventHandlers: {},
         },
-    }
-    constructor(...args) {
-        super(...args)
-        this.setChildren(this.childDefinitions)
     }
 
     openComponent(mod, cmp) {
