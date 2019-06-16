@@ -8,6 +8,7 @@ const parseOptions = {
     'parser': {
         parse: c => flow.parse(c, {
             esproposal_class_instance_fields: true,
+            esproposal_class_static_fields: true,
         }), // Flow parser supports class fields https://github.com/tc39/proposal-class-fields
     }
 }
@@ -26,7 +27,7 @@ const startCode = `
 import Template from '../lib/template.js'
 
 class TestComponent extends Template {
-    childDefinitions = {
+    static childDefinitions = {
         child1: {
             type: Child,
             position: {left: '0', width: '100%', top: '0', height: '100%'},
@@ -35,13 +36,8 @@ class TestComponent extends Template {
         }
     }
 
-    defaultProps = {
+    static defaultProps = {
         prop1: 'val1'
-    }
-
-    constructor(...args) {
-        super(...args)
-        this.setChildren(this.childDefinitions)
     }
 }
 

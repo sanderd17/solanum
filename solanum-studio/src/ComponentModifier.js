@@ -5,6 +5,7 @@ const parseOptions = {
     'parser': {
         parse: c => flow.parse(c, {
             esproposal_class_instance_fields: true,
+            esproposal_class_static_fields: true,
         }), // Flow parser supports class fields https://github.com/tc39/proposal-class-fields
     }
 }
@@ -45,7 +46,7 @@ class ComponentModifier {
         let children = this.getClassField('childDefinitions')
 
         let newChildAst = recast.parse(`
-            let a = {
+            let _ = {
                 type: ${childClassName},
                 position: {},
                 props: {},
@@ -246,7 +247,7 @@ class ComponentModifier {
      * TODO: this currently uses prototype variables
      * When esprima can handle class fields, those will need to be transformed to class fields
      * @param {string} fieldName 
-     * @returns {AssignmentExpression} 
+     * @returns {Expression} value of the class field with give name
      */
     getClassField(fieldName) {
         let classBodyAst = this.getClassBodyAst();

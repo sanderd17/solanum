@@ -45,8 +45,10 @@ class Template {
 
         this._props = {}
         for (let id in this.constructor.defaultProps) {
-            if (!(id in p.props))
-                p.props[id] = new Prop.Raw(this.constructor.defaultProps[id])
+            if (!(id in p.props)) {
+                this._props[id] = new Prop.Raw(this.constructor.defaultProps[id])
+                this._props[id].setContext(this, id)
+            }
         }
 
         for (let id in p.props) {

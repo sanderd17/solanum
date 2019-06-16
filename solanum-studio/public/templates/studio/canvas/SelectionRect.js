@@ -40,7 +40,7 @@ class SelectionRect extends Template {
         },
     }*/
 
-    childDefinitions = {
+    static childDefinitions = {
         rect: {
             type: Rect,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
@@ -167,8 +167,6 @@ class SelectionRect extends Template {
 
     constructor(...args) {
         super(...args)
-
-        this.setChildren(this.childDefinitions)
 
         this.setPropListener('selected', s => {
             this.dom.setAttribute('draggable', s)

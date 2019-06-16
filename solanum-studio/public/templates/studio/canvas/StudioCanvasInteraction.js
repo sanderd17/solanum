@@ -41,9 +41,9 @@ class StudioCanvasInteraction extends Template {
                 position: cmp.position,
                 props: {},
                 eventHandlers: {
-                    click: (ev) => this.setSelection([id], ev),
-                    dragstart: (ev) => this.startedDrag = ev,
-                    dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
+                    click: (ev, root) => root.setSelection([id], ev),
+                    dragstart: (ev, root) => root.startedDrag = ev,
+                    dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
                 },
             }
         }
