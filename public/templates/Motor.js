@@ -4,7 +4,7 @@ import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 
 class Motor extends Template {
-    childDefinitions = {
+    static childDefinitions = {
         icon: {
             type: Circle,
             position: {
@@ -15,8 +15,8 @@ class Motor extends Template {
             },
             props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
             eventHandlers: {
-                click: (ev) => {
-                    let path = 'Motors/' + this.props.motor
+                click: (ev, root) => {
+                    let path = 'Motors/' + root.props.motor
                     ts.writeTag(path, 'black')}
             }
         },
@@ -33,11 +33,6 @@ class Motor extends Template {
     }
 
     static defaultSize = [100, 100]
-
-    constructor(...args) {
-        super(...args)
-        this.setChildren(this.childDefinitions)
-    }
 }
 
 Motor.prototype.css = {

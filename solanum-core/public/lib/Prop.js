@@ -42,7 +42,7 @@ export class Raw extends Prop {
         this.template.handlePropChanged(this.id, value, oldValue)
     }
 }
-exp.Raw = (...args) => new Raw(...args)
+exp.Raw = (...args) => {return {type: Raw, args: args}}
 
 export class Bound extends Prop {
     constructor(boundName, transform) {
@@ -59,7 +59,7 @@ export class Bound extends Prop {
 
     // no setValue as it isn't possible to set this
 }
-exp.Bound = (...args) => new Bound(...args)
+exp.Bound = (...args) => {return {type: Bound, args: args}}
 
 export class Tag extends Prop {
     constructor(tagPath) {
@@ -83,7 +83,7 @@ export class Tag extends Prop {
         ts.writeTag(this.tagPath, value)
     }
 }
-exp.Tag = (...args) => new Tag(...args)
+exp.Tag = (...args) => {return {type: Tag, args: args}}
 
 // TODO BoundTagProps should react on binding change: unsubscribe from current tag path, and subscibe to new
 export class BoundTag extends Prop {
@@ -118,6 +118,6 @@ export class BoundTag extends Prop {
         ts.writeTag(this.tagPath, value)
     }
 }
-exp.BoundTag = (...args) => new BoundTag(...args)
+exp.BoundTag = (...args) => {return {type: BoundTag, args: args}}
 
 export default exp

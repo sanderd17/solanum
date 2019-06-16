@@ -47,7 +47,29 @@ class SelectionRect extends Template {
             props: {
                 'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
             },
-            eventHandlers: {}
+            eventHandlers: {},
+            styles: [
+                {
+                    declarations: {
+                        'fill': 'none',
+                        'stroke-linecap': 'round',
+                    }
+                },
+                {
+                    classes: ['selected'],
+                    declarations: {
+                        'stroke-dasharray': '1 4',
+                    }
+                },
+                {
+                    states: ['hover'],
+                    declarations: {
+                        'cursor': 'pointer',
+                        'stroke': '#00008080',
+                        'stroke-width': '1px',
+                    }
+                },
+            ],
         },
         topLeftHandle: {
             type: ResizeHandle,
@@ -56,8 +78,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['left', 'top'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev),
             }
         },
         topHandle: {
@@ -67,8 +89,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['top'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev),
             }
         },
         topRightHandle:{
@@ -78,8 +100,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['right', 'top'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev),
             }
         },
         rightHandle: {
@@ -89,8 +111,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['right'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev),
             }
         },
         bottomRightHandle: {
@@ -100,8 +122,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['right', 'bottom'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev),
             }
         },
         bottomHandle: {
@@ -111,8 +133,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['bottom'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev),
             }
         },
         bottomLeftHandle: {
@@ -122,8 +144,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['left', 'bottom'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev),
             }
         },
         leftHandle: {
@@ -133,8 +155,8 @@ class SelectionRect extends Template {
                 'visible': P.Bound('selected'),
             },
             eventHandlers: {
-                dragstart: (ev) => this.startHandleDrag(ev),
-                dragend: (ev) => this.endHandleDrag(['left'], this.startedDrag, ev),
+                dragstart: (ev, root) => root.startHandleDrag(ev),
+                dragend: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev),
             }
         },
     }

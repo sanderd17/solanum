@@ -25,6 +25,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  */
 class Template {
     static defaultProps = {}
+    static childDefinitions = null
 
     /**
      * @param {TemplateConstructParams} p
@@ -41,19 +42,20 @@ class Template {
         this.eventHandlers = p.eventHandlers || {}
         this.eventHandlersEnabled = true
         this.propChangedHandlers = {}
-        this._props = p.props
 
+        this._props = {}
         for (let id in this.constructor.defaultProps) {
             if (!(id in p.props))
-                p.props[id] = P.Raw(this.constructor.defaultProps[id])
+                p.props[id] = new Prop.Raw(this.constructor.defaultProps[id])
         }
 
         for (let id in p.props) {
-            p.props[id].setContext(this, id)
+            this._props[id] = new p.props[id].type(...p.props[id].args)
+            this._props[id].setContext(this, id)
         }
 
         /** @type Object<string,Template> */
-        this.props = new Proxy(p.props || {}, {
+        this.props = new Proxy(this._props || {}, {
             /**
              * @arg {object} obj
              * @arg {string} id
@@ -81,6 +83,7 @@ class Template {
 
         this.createDomNode()
         this.addEventHandlersToDom()
+        this.setChildren(this.constructor.childDefinitions)
     }
 
     /**
@@ -94,7 +97,7 @@ class Template {
 
     removeChild(id) {
         let child = this.children[id]
-        this.dom.removeChild(child)
+        this.dom.removeChild(child.dom)
         delete this.children[id]
     }
 
@@ -169,7 +172,7 @@ class Template {
         if (this.handleEvent == null) {
             this.handleEvent = (ev) => {
                 if (ev.type in this.eventHandlers) {
-                    this.eventHandlers[event.type](event, this)
+                    this.eventHandlers[event.type](event, this.parent, this)
                 }
             }
         }
