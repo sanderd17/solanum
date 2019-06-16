@@ -8,9 +8,9 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "23%",
+                left: "33%",
                 width: "66%",
-                top: "34%",
+                top: "35%",
                 height: "64%"
             },
             props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
@@ -18,7 +18,21 @@ class Motor extends Template {
                 click: (ev, root) => {
                     let path = 'Motors/' + root.props.motor
                     ts.writeTag(path, 'black')}
-            }
+            },
+            styles: [
+                {
+                    declarations: {
+                        'stroke': 'black',
+                        'stroke-width': '2px',
+                    }
+                },
+                {
+                    states: ['hover'],
+                    declarations: {
+                        'cursor': 'pointer',
+                    }
+                }
+            ]
         },
         icon2: {
             type: Circle,
@@ -38,16 +52,6 @@ class Motor extends Template {
     }
 
     static defaultSize = [100, 100]
-}
-
-Motor.prototype.css = {
-    'icon': {
-        'stroke': 'black',
-        'stroke-width': '2px'
-    },
-    'icon:hover': {
-        'cursor': 'pointer'
-    },
 }
 
 export default Motor

@@ -23,10 +23,8 @@ class Styling {
         
         let className = cls.name + '_' + Math.random().toString(36).substr(2, 7)
         this.classNameMappings.set(cls, className)
-        if (cls.prototype.css) {
-            this.styleMapping[className] = cls.prototype.css
-            this.addClassToDom(className)
-        }
+        this.styleMapping[className] = cls
+        this.addClassToDom(className)
         return className
     }
 
@@ -35,19 +33,50 @@ class Styling {
             this.registerClassStyle(cls)
         let className = this.classNameMappings.get(cls)
         if (cls.prototype.css)
-            this.styleMapping[className] = cls.prototype.css
+            this.styleMapping[className] = cls
         this.addClassToDom(className)
     }
 
     getClassCss(className) {
-        return Object.entries(this.styleMapping[className]).map(([subSelector, rules]) => 
-            `.${className}>.${subSelector} {` + 
-                Object.entries(rules).map(([p,v]) => p + ':' + v).join(';') +
-            '}\n'
-        ).join('\n')
+        let cls = this.styleMapping[className]
+        let ownCss = ''
+        if (cls.prototype.css) {
+            ownCss = Object.entries(cls.prototype.css).map(([subSelector, rules]) => 
+                `.${className}>.${subSelector} {` + 
+                    Object.entries(rules).map(([p,v]) => p + ':' + v).join(';') +
+                '}\n'
+            ).join('\n')
+        }
+
+        let childCss = ''
+        if (cls.childDefinitions) {
+            for (let [id, definition] of Object.entries(cls.childDefinitions)) {
+                if (definition.styles) {
+                    console.log(id, definition.styles)
+                    for (let entry of definition.styles) {
+
+                        let selector = `.${className}>.${id}`
+                        if (entry.states) {
+                            for (let state of entry.states) {
+                                selector += `:${state}`
+                            }
+                        }
+                        let declarationString = Object.entries(entry.declarations).map(([p,v]) => `${p}: ${v}`).join(';\n\t')
+                        childCss += selector + '{\n\t' + declarationString + '\n}\n'
+                    }
+                }
+            }
+        }
+
+        if (ownCss == '' && childCss == '')
+            return null
+        return ownCss + '\n' + childCss
     }   
 
     addClassToDom(className) {
+        let css = this.getClassCss(className)
+        if (!css)
+            return
         let styleNode = this.styleNodes[className]
         if (!styleNode) {
             styleNode = document.createElement('style')
@@ -58,7 +87,7 @@ class Styling {
             for (let child of styleNode.childNodes)
                 styleNode.removeChild(child)
         }
-        styleNode.appendChild(document.createTextNode(this.getClassCss(className)))
+        styleNode.appendChild(document.createTextNode(css))
     }
 }
 
