@@ -50,9 +50,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'nwse-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'nwse-resize'
+                }
+            }]
         },
         topHandle: {
             type: ResizeHandle,
@@ -64,9 +67,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'ns-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'ns-resize'
+                }
+            }]
         },
         topRightHandle:{
             type: ResizeHandle,
@@ -78,9 +84,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'nesw-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'nesw-resize'
+                }
+            }]
         },
         rightHandle: {
             type: ResizeHandle,
@@ -92,9 +101,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'ew-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'ew-resize'
+                }
+            }]
         },
         bottomRightHandle: {
             type: ResizeHandle,
@@ -106,9 +118,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'nwse-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'nwse-resize'
+                }
+            }]
         },
         bottomHandle: {
             type: ResizeHandle,
@@ -120,9 +135,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'ns-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'ns-resize'
+                }
+            }]
         },
         bottomLeftHandle: {
             type: ResizeHandle,
@@ -134,9 +152,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'nesw-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'nesw-resize'
+                }
+            }]
         },
         leftHandle: {
             type: ResizeHandle,
@@ -148,9 +169,12 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev),
             },
-            styles: [{declarations: {
-                'cursor': 'ew-resize'
-            }}]
+            styles: [{
+                classes: ['selected'],
+                declarations: {
+                    'cursor': 'ew-resize'
+                }
+            }]
         },
     }
     

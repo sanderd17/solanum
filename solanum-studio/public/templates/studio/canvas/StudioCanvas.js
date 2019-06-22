@@ -3,6 +3,14 @@ import P from '/lib/Prop.js'
 import StudioCanvasInteraction from '/templates/studio/canvas/StudioCanvasInteraction.js'
 
 class StudioCanvas extends Template {
+    static styles = [
+        {
+            declarations: {
+                'background-color': '#909090'
+            }
+        }
+    ]
+
     constructor(...args) {
         super(...args)
         this.cnt = 1

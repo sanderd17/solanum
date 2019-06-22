@@ -38,6 +38,24 @@ class Styling {
     }
 
     getClassCss(className) {
+        const entryToCss = (entry, id) => {
+            let selector = `.${className}`
+            if (entry.classes) {
+                for (let className of entry.classes) {
+                    selector += `.${className}`
+                }
+            }
+            if (id != null) {
+                selector += `>.${id}`
+            }
+            if (entry.states) {
+                for (let state of entry.states) {
+                    selector += `:${state}`
+                }
+            }
+            let declarationString = Object.entries(entry.declarations).map(([p,v]) => `${p}: ${v}`).join(';\n\t')
+            return selector + '{\n\t' + declarationString + '\n}\n'
+        }
         let cls = this.styleMapping[className]
         let ownCss = ''
         if (cls.prototype.css) {
@@ -47,6 +65,11 @@ class Styling {
                 '}\n'
             ).join('\n')
         }
+        if (cls.styles) {
+            for (let entry of cls.styles) {
+                ownCss += entryToCss(entry, null)
+            }
+        }
 
         let childCss = ''
         if (cls.childDefinitions) {
@@ -54,21 +77,7 @@ class Styling {
                 if (definition.styles) {
                     console.log(id, definition.styles)
                     for (let entry of definition.styles) {
-
-                        let selector = `.${className}`
-                        if (entry.classes) {
-                            for (let className of entry.classes) {
-                                selector += `.${className}`
-                            }
-                        }
-                        selector += `>.${id}`
-                        if (entry.states) {
-                            for (let state of entry.states) {
-                                selector += `:${state}`
-                            }
-                        }
-                        let declarationString = Object.entries(entry.declarations).map(([p,v]) => `${p}: ${v}`).join(';\n\t')
-                        childCss += selector + '{\n\t' + declarationString + '\n}\n'
+                        childCss += entryToCss(entry, id)
                     }
                 }
             }

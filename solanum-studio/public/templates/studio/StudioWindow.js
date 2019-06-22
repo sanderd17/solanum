@@ -39,13 +39,4 @@ class StudioWindow extends Template {
 
 }
 
-StudioWindow.prototype.css = {
-    'canvas': {
-        'background-color': '#909090'
-    },
-    'projectBrowser': { // TODO component should be able to set own CSS
-        'overflow': 'scroll'
-    }
-}
-
 export default StudioWindow

@@ -2,6 +2,13 @@ import Template from "/lib/template.js"
 import P from '/lib/Prop.js'
 
 class ProjectBrowser extends Template {
+    static styles = [
+        {
+            declarations: {
+                'overflow': 'scroll'
+            }
+        }
+    ]
     constructor(...args) {
         super(...args)
         this.loadComponents()
@@ -63,9 +70,6 @@ class ProjectBrowser extends Template {
         // TODO implement adding a new component
         console.log(`add ${cmp}`)
     }
-}
-
-ProjectBrowser.prototype.css = {
 }
 
 export default ProjectBrowser
