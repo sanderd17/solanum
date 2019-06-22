@@ -48,6 +48,12 @@ class StudioCanvas extends Template {
 
         this.children.interaction.reloadSelectionRects()
     }
+
+    addNewChild(id, childDefinition) {
+        this.children.preview.addChild(id, childDefinition)
+
+        this.children.interaction.reloadSelectionRects()
+    }
 }
 
 StudioCanvas.prototype.css = {

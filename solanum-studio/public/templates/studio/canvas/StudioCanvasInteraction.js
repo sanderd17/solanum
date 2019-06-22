@@ -13,6 +13,10 @@ class StudioCanvasInteraction extends Template {
         this.eventHandlers.click = (ev) => this.setSelection([], ev)
         this.eventHandlers.dragstart = (ev) => this.startedDrag = ev
         this.eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
+        this.eventHandlers.drop = (ev) => this.newComponentDrop(ev)
+        // prevent default drag action to allow drop
+        this.eventHandlers.dragover = (ev) => ev.preventDefault() 
+        this.eventHandlers.dragenter = (ev) => ev.preventDefault()
         this.addEventHandlersToDom()
         this.dom.setAttribute('draggable', true)
     }
@@ -47,8 +51,74 @@ class StudioCanvasInteraction extends Template {
                 },
             }
         }
+        console.log(children)
         this.setChildren(children)
         this.setId(this.id)
+    }
+
+    /**
+     * 
+     * @param {DragEvent} ev 
+     */
+    async newComponentDrop(ev) {
+        let newComponent = ev.dataTransfer.getData('newComponent')
+        let newModule = ev.dataTransfer.getData('module')
+        if (!newComponent || !newModule)
+            return
+
+        let childId = window.prompt("Element Id","")
+        if (!childId)
+            return
+
+        if (childId in this.children) {
+            alert("Id already exists!")
+            return
+        }
+        
+        console.log(ev)
+
+        // Load new component
+        const childPath = `/templates/${newComponent}`
+        const moduleNewCmp = await import(childPath)
+        const clsNewCmp = moduleNewCmp.default
+
+        // TODO support default alignment, currently always top-left aligned
+        let position = {
+            left: ev.offsetX + 'px',
+            top: ev.offsetY + 'px',
+            width: clsNewCmp.defaultSize[0] + 'px',
+            height: clsNewCmp.defaultSize[1] + 'px',
+        }
+
+        let childDefinition = {
+            type: clsNewCmp,
+            position,
+            props: {},
+            eventHandlers: {},
+            styles: [],
+        }
+        this.parent.addNewChild(childId,childDefinition)
+
+        let newCode = await fetch('/API/studio/addChildComponent', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'same-origin', // no-cors, cors, *same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json',
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // no-referrer, *client
+            body: JSON.stringify({
+                module: 'main',
+                component: 'Motor.js',
+                childId,
+                childClassName: clsNewCmp.name, 
+                childPath,
+                position,
+            }), // body data type must match "Content-Type" header
+        })
     }
 
     /**

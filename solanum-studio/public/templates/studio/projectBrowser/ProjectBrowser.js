@@ -50,9 +50,10 @@ class ProjectBrowser extends Template {
                 //liCmp.addEventListener('click', (ev) => this.selectComponent(cmp))
                 liCmp.addEventListener('dblclick', (ev) => this.openComponent(mod, cmp))
                 liCmp.addEventListener('dragstart', (ev) => {
+                    ev.dataTransfer.setData('newComponent', cmp)
+                    ev.dataTransfer.setData('module', mod)
                     this.draggedComponent = cmp
                 })
-                liCmp.addEventListener('dragend', (ev) => this.addComponent(this.draggedComponent)),
 
                 ulModule.appendChild(liCmp)
             }
@@ -65,48 +66,6 @@ class ProjectBrowser extends Template {
     openComponent(mod, cmp) {
         this.parent.openComponent(mod, cmp)
     }
-
-    addComponent(cmp) {
-        // TODO implement adding a new component
-        console.log(`add ${cmp}`)
-    }
 }
 
 export default ProjectBrowser
-
-
-// Old template list for reference
-/*
-EditorTemplateList.prototype.SetComponentList = function(modules){
-    const ul = this.getElementById('componentList')
-    for (let mod in modules) {
-        let li = document.createElement('li')
-        li.textContent = mod
-        ul.appendChild(li)
-        let components = modules[mod]
-        let childUl = document.createElement('ul')
-        for (let cmp of components) {
-            cmp = cmp.split('.')[0]
-            let li = document.createElement('li')
-            li.textContent = cmp
-
-            li.ondragstart = (ev) => {
-                ev.dataTransfer.setData('module', mod)
-                ev.dataTransfer.setData('component', cmp)
-            } 
-
-        }
-        ul.appendChild(childUl)
-    }
-}
-
-EditorTemplateList.prototype.eventHandlers = {
-    "": {
-        load: async(cmp, ev) => {
-            const response = await fetch('../API/Editor/getComponentPaths', {cache: 'reload'})
-            const modules = await response.json()
-            cmp.SetComponentList(modules)
-        }
-    },
-}
-*/

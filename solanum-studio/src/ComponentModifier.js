@@ -55,6 +55,7 @@ class ComponentModifier {
 
         const b = recast.types.builders
         let newArgProperty = b.property('init', b.identifier(childId), newChildAst.program.body[0].declarations[0].init)
+        // TODO order keys alphabeticlly by default?
         children.properties.splice(children.properties.length, 0, newArgProperty)
 
         this.setChildPosition(childId, position)

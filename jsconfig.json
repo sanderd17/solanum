@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "checkJs": true,
-        "target": "es2017",
+        "target": "esNext",
         "noImplicitAny": true
     },
     "exclude": [

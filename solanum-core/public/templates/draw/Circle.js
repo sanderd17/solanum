@@ -4,15 +4,17 @@ const ns = "http://www.w3.org/2000/svg"
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Circle extends Template {
-    handlePropChanged(id, newValue, oldValue) {
-        this.elNode.setAttribute(id, newValue)
-    }
+    static defaultSize = [20, 20]
 
     constructor(...args) {
         super(...args)
         for (let id in this.props) {
             this.elNode.setAttribute(id, this.props[id])
         }
+    }
+
+    handlePropChanged(id, newValue, oldValue) {
+        this.elNode.setAttribute(id, newValue)
     }
 
     createDomNode() {
