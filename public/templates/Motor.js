@@ -9,9 +9,9 @@ class Motor extends Template {
             type: Circle,
             position: {
                 left: "5%",
-                width: "46%",
+                width: "92%",
                 top: "11%",
-                height: "64%"
+                height: "82%"
             },
             props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
             eventHandlers: {
@@ -38,9 +38,9 @@ class Motor extends Template {
         icon2: {
             type: Circle,
             position: {
-                left: "73%",
-                width: "21%",
-                top: "9%",
+                left: "69%",
+                width: "34%",
+                top: "4%",
                 height: "38%"
             },
             props: {fill: P.Raw('blue')},

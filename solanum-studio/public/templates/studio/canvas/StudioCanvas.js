@@ -23,7 +23,7 @@ class StudioCanvas extends Template {
         let mdl = await import(`/API/Studio/openComponent?module=${mod}&component=${cmp}&v=${this.cnt}`)
         this.cnt++
 
-        // cls is the class of the replaced template
+        // cls is the class of the template that we'er going to edit
         let cls = mdl.default
 
         let [width, height] = cls.defaultSize

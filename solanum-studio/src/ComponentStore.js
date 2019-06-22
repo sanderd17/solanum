@@ -112,7 +112,6 @@ class File {
     async read() {
         if (this.isRead)
             throw new Error(`Error, file with path ${this.filePath} is being read twice`)
-        console.log('LOCKS: ', fileLocks)
         this.isRead = true
 
         await this.waitUntilUnlocked()

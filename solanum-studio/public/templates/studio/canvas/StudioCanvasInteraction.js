@@ -57,7 +57,7 @@ class StudioCanvasInteraction extends Template {
     }
 
     /**
-     * 
+     * Add a new child component to this one
      * @param {DragEvent} ev 
      */
     async newComponentDrop(ev) {
@@ -82,12 +82,22 @@ class StudioCanvasInteraction extends Template {
         const moduleNewCmp = await import(childPath)
         const clsNewCmp = moduleNewCmp.default
 
+
+
+        let unit = this.parent.parent.props.positionUnit
+        let [width, height] = clsNewCmp.defaultSize
+        if (unit == '%') {
+            let {width: parentWidth, height: parentHeight} = this.dom.getBoundingClientRect()
+            width *= 100 / parentWidth
+            height *= 100 / parentHeight
+        }
+
         // TODO support default alignment, currently always top-left aligned
         let position = {
-            left: ev.offsetX + 'px',
-            top: ev.offsetY + 'px',
-            width: clsNewCmp.defaultSize[0] + 'px',
-            height: clsNewCmp.defaultSize[1] + 'px',
+            left: ev.offsetX + unit,
+            top: ev.offsetY + unit,
+            width: clsNewCmp.defaultSize[0] + unit,
+            height: clsNewCmp.defaultSize[1] + unit,
         }
 
         let childDefinition = {
