@@ -38,9 +38,9 @@ class Motor extends Template {
         icon2: {
             type: Circle,
             position: {
-                left: "69%",
+                left: "53%",
                 width: "34%",
-                top: "4%",
+                top: "55%",
                 height: "38%"
             },
             props: {fill: P.Raw('blue')},

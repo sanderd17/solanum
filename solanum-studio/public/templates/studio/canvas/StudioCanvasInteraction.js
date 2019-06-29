@@ -115,47 +115,17 @@ class StudioCanvasInteraction extends Template {
         }
         this.parent.addNewChild(childId,childDefinition)
 
-        let newCode = await fetch('/API/studio/addChildComponent', {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'same-origin', // no-cors, cors, *same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // no-referrer, *client
-            body: JSON.stringify({
-                module: 'main',
-                component: 'Motor.js',
-                childId,
-                childClassName: clsNewCmp.name, 
-                childPath,
-                position,
-            }), // body data type must match "Content-Type" header
+        let newCode = this.callApi('addChildComponent', {
+            childId,
+            childClassName: clsNewCmp.name, 
+            childPath,
+            position,
         })
     }
 
     async removeSelectedChildren(ev) {
         console.log(ev)
-        let newCode = await fetch('/API/studio/removeChildComponents', {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'same-origin', // no-cors, cors, *same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // no-referrer, *client
-            body: JSON.stringify({
-                module: 'main',
-                component: 'Motor.js',
-                childIds: this.currentSelection,
-            }), // body data type must match "Content-Type" header
-        })
+        let newCode = await this.callApi('removeChildComponents', {childIds: this.currentSelection})
         this.parent.removeChildren(this.currentSelection)
         this.reloadSelectionRects()
     }
@@ -330,7 +300,28 @@ class StudioCanvasInteraction extends Template {
         this.children[childId].setPosition(newPosition)
         this.parent.children.preview.children[childId].setPosition(newPosition)
 
-        let newCode = await fetch('/API/studio/setChildPosition', {
+        let newCode = await this.callApi('setChildPosition', {
+            childId: childId,
+            position: newPosition,
+        })
+        // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+    }
+
+    /**
+     * Call an api function on the studio API
+     * @param {string} apiFunction  function name of the Studio API
+     * @param  {object} args any additional arguments to send to the body
+     */
+    async callApi(apiFunction, args) {
+        // TODO don't hard-code current module
+        let body = {
+            module: 'main',
+            component: 'Motor.js',
+        }
+        for (let [key, value] of Object.entries(args)) {
+            body[key] = value
+        }
+        return await fetch(`/API/studio/${apiFunction}`, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'same-origin', // no-cors, cors, *same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -341,14 +332,8 @@ class StudioCanvasInteraction extends Template {
             },
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // no-referrer, *client
-            body: JSON.stringify({
-                module: 'main',
-                component: 'Motor.js',
-                childId: childId,
-                position: newPosition,
-            }), // body data type must match "Content-Type" header
+            body: JSON.stringify(body), // body data type must match "Content-Type" header
         })
-        // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
     }
 
 }
