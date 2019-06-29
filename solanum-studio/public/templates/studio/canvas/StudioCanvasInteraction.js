@@ -8,6 +8,7 @@ class StudioCanvasInteraction extends Template {
     constructor(...args) {
         super(...args)
         this.canvasPreview = null
+        /** @type Array<string> */
         this.currentSelection = []
 
         this.eventHandlers.click = (ev) => this.setSelection([], ev)
@@ -17,8 +18,13 @@ class StudioCanvasInteraction extends Template {
         // prevent default drag action to allow drop
         this.eventHandlers.dragover = (ev) => ev.preventDefault() 
         this.eventHandlers.dragenter = (ev) => ev.preventDefault()
+        this.eventHandlers.keydown = (ev) => {
+            if (ev.code == 'Delete')
+                this.removeSelectedChildren(ev)
+        }
         this.addEventHandlersToDom()
-        this.dom.setAttribute('draggable', true)
+        this.dom.setAttribute('draggable', true) // draggable is required to allow selection drag
+        this.dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
     }
 
     /**
@@ -131,6 +137,12 @@ class StudioCanvasInteraction extends Template {
         })
     }
 
+    async removeSelectedChildren(ev) {
+        console.log(ev)
+        this.parent.removeChildren(this.currentSelection)
+        this.reloadSelectionRects()
+    }
+
     /**
      * @param {Array<string>} selection
      * @param {Event} ev
@@ -175,6 +187,7 @@ class StudioCanvasInteraction extends Template {
                 }
             }
         }
+        this.parent.setSelection(selection)
     }
 
     /**
@@ -320,6 +333,7 @@ class StudioCanvasInteraction extends Template {
         })
         // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
     }
+
 }
 
 export default StudioCanvasInteraction

@@ -14,6 +14,7 @@ class StudioCanvas extends Template {
     constructor(...args) {
         super(...args)
         this.cnt = 1
+        this.selection = []
     }
 
     async setComponent(mod, cmp) {
@@ -53,6 +54,19 @@ class StudioCanvas extends Template {
         this.children.preview.addChild(id, childDefinition)
 
         this.children.interaction.reloadSelectionRects()
+    }
+
+    /**
+     * @param { string[] } childIds
+     */
+    removeChildren(childIds) {
+        for (let id of childIds) {
+            this.children.preview.removeChild(id)
+        }
+    }
+
+    setSelection(selection) {
+        this.selection = selection
     }
 }
 
