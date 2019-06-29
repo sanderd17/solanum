@@ -102,6 +102,27 @@ class StudioAPI {
      * @param {Request} req 
      * @param {Express.Response} res 
      */
+    async removeChildComponents(req, res) {
+        const body = req.body
+
+        let cmpFile = this.componentStore.getFile(body.module, body.component)
+        let cmpCode = await cmpFile.read()
+
+        let cmpMod = new ComponentModifier(cmpCode)
+
+        for (let id of body.childIds) {
+            cmpMod.removeChildComponent(id)
+        }
+        let newCmpCode = cmpMod.print()
+
+        await cmpFile.write(newCmpCode)
+        res.send(newCmpCode)
+    }
+
+    /**
+     * @param {Request} req 
+     * @param {Express.Response} res 
+     */
     async setChildPosition(req, res) {
         const body = req.body
 

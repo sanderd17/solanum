@@ -44,6 +44,15 @@ export const removeChildComponent = {
     }
 }
 
+export const removeChildComponents = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        childIds:       {type: 'array', required: true},
+    }
+}
+
 export const setChildPosition = {
     type: 'object',
     properties: {

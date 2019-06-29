@@ -45,18 +45,6 @@ class Motor extends Template {
             },
             props: {fill: P.Raw('blue')},
             eventHandlers: { }
-        },
-
-        id: {
-            type: Circle,
-            position: {
-                left: "19px",
-                top: "9px",
-                width: "20px",
-                height: "20px"
-            },
-            props: {},
-            eventHandlers: {},
         }
     }
 
