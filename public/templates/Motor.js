@@ -13,7 +13,7 @@ class Motor extends Template {
                 top: "11%",
                 height: "82%"
             },
-            props: {fill: P.BoundTag('motor', m => `Motors/${m}`)},
+            props: {},
             eventHandlers: {
                 click: (ev, root) => {
                     let path = 'Motors/' + root.props.motor
@@ -43,13 +43,22 @@ class Motor extends Template {
                 top: "55%",
                 height: "38%"
             },
-            props: {fill: P.Raw('blue')},
+            props: {fill: 'blue'},
             eventHandlers: { }
         }
     }
 
     static defaultProps = {
-        'motor': 'M0'
+        'motor': 'red'
+    }
+
+    set color (color) {
+        this.dynamicFields.color = color
+        this.children.icon.fill = color
+    }
+
+    get color () {
+        return this.dynamicFields.color
     }
 
     static defaultSize = [100, 100]

@@ -26,6 +26,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Template {
     static defaultProps = {}
     static childDefinitions = null
+    dynamicFields = {}
 
     /**
      * @param {TemplateConstructParams} p
@@ -36,56 +37,26 @@ class Template {
         this.children = null
         /** @type {Template?} */
         this.parent = null
-        /** Props that are bound to children */
-        this.boundProps = {}
         this.position = p.position || {}
         this.eventHandlers = p.eventHandlers || {}
         this.eventHandlersEnabled = true
         this.propChangedHandlers = {}
-
-        this._props = {}
-        for (let id in this.constructor.defaultProps) {
-            if (!(id in p.props)) {
-                this._props[id] = new Prop.Raw(this.constructor.defaultProps[id])
-                this._props[id].setContext(this, id)
-            }
-        }
-
-        for (let id in p.props) {
-            this._props[id] = new p.props[id].type(...p.props[id].args)
-            this._props[id].setContext(this, id)
-        }
-
-        /** @type Object<string,Template> */
-        this.props = new Proxy(this._props, {
-            /**
-             * @arg {object} obj
-             * @arg {string} id
-             */
-            get: (obj, id) => {
-                if (id in obj)
-                    return obj[id].getValue()
-                return undefined
-            },
-            /**
-             * @arg {object} obj
-             * @arg {string} id
-             * @arg {object} val
-             */
-            set: (obj, id, val) => {
-                if (id in obj) {
-                    obj[id].setValue(val)
-                    return true
-                }
-                return false
-            },
-        })
 
         this.className = style.registerClassStyle(this.constructor)
 
         this.createDomNode()
         this.addEventHandlersToDom()
         this.setChildren(this.constructor.childDefinitions)
+
+        for (let key in this.constructor.defaultProps) {
+            if (!(key in p.props)) 
+                this[key] = this.constructor.defaultProps[key]
+        }
+
+        // Copy the prop values to own values
+        for (let key in p.props) {
+            this[key] = p.props[key]
+        }
     }
 
     get classList() {
