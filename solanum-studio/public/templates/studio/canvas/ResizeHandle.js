@@ -18,14 +18,13 @@ class ResizeHandle extends Template {
         'visible': false
     }
 
-    constructor(...args) {
-        super(...args)
-
-        this.setPropListener('visible', v => {
-            this.children.icon.classList.toggle('visible', v)
-            this.dom.setAttribute('draggable', v)
-            //this.dom.style['z-index'] = s ? 1 : 0 // raise selection rect when selected
-        })
+    set visible(visible) {
+        this.dynamicFields.visible = visible
+        this.children.icon.classList.toggle('visible', visible)
+        this.dom.setAttribute('draggable', visible)
+    }
+    get visible() {
+        return this.dynamicFields.visible
     }
 }
 

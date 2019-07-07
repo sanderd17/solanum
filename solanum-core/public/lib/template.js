@@ -1,6 +1,7 @@
 import * as Prop from './Prop.js'
 import P from './Prop.js'
 import style from './Styling.js'
+import ts from './TagSet.js';
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
@@ -167,36 +168,9 @@ class Template {
         }
     }
 
-    setPropListener(propName, fn) {
-        this.propChangedHandlers[propName] = fn
-
-    }
-
-    /**
-     * 
-     * @param {Template} child 
-     * @param {string} childPropId 
-     * @param {*} binding 
-     */
-    registerPropBinding(child, childPropId, binding) {
-        if (!(binding.boundName in this.boundProps)) {
-            this.boundProps[binding.boundName] = []
-        }
-        this.boundProps[binding.boundName].push([child, childPropId, binding])
-        // send updates to the children
-        this.handlePropChanged(binding.boundName, this.props[binding.boundName], null)
-    }
-
-
-    handlePropChanged(id, newValue, oldValue) {
-        if (this.boundProps[id]) {
-            for (let  [child, childPropId, binding] of this.boundProps[id]) {
-                child.handlePropChanged(childPropId, binding.transform(newValue), binding.transform(oldValue))
-            }
-        }
-        if (this.propChangedHandlers[id]) {
-            this.propChangedHandlers[id](newValue, oldValue)
-        }
+    setTagSubscription(instance, propName, tagPath) {
+        // TODO remove listener to avoid memory leak after destroying
+        ts.addSubscription(instance, propName, tagPath)
     }
 
     createDomNode() {

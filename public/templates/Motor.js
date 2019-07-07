@@ -8,15 +8,15 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "5%",
-                width: "92%",
-                top: "11%",
+                left: "2%",
+                width: "62%",
+                top: "8%",
                 height: "82%"
             },
             props: {},
             eventHandlers: {
                 click: (ev, root) => {
-                    let path = 'Motors/' + root.props.motor
+                    let path = 'Motors/' + root.motor
                     ts.writeTag(path, 'black')}
             },
             styles: [
@@ -38,9 +38,9 @@ class Motor extends Template {
         icon2: {
             type: Circle,
             position: {
-                left: "53%",
+                left: "67%",
                 width: "34%",
-                top: "55%",
+                top: "63%",
                 height: "38%"
             },
             props: {fill: 'blue'},
@@ -52,13 +52,23 @@ class Motor extends Template {
         'motor': 'red'
     }
 
-    set color (color) {
+    set color(color) {
         this.dynamicFields.color = color
         this.children.icon.fill = color
     }
 
-    get color () {
+    get color() {
         return this.dynamicFields.color
+    }
+
+    set motor(motor) {
+        this.dynamicFields.motor = motor
+
+        ts.setSubscription(this, 'color', `Motors/${motor}`)
+    }
+
+    get motor() {
+        return this.dynamicFields.motor
     }
 
     static defaultSize = [100, 100]

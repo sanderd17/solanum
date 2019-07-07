@@ -11,16 +11,15 @@ class ToggleButton extends Template {
 
     constructor(...args) {
         super(...args)
-        this.dom.innerText = this.props.text
-        this.dom.addEventListener('click', () => this.props.selected = !this.props.selected)
+        this.dom.addEventListener('click', () => this.selected = !this.selected)
     }
 
-    handlePropChanged(id, newValue, oldValue) {
-        if (id == 'text') {
-            this.dom.innerText = newValue
-        } else {
-            // TODO
-        }
+    set text(text) {
+        this.dom.innerText = text
+    }
+
+    get text() {
+        return this.dom.innerText
     }
 
     createDomNode() {

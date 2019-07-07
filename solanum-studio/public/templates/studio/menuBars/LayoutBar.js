@@ -15,20 +15,28 @@ class LayoutBar extends Template {
                 height: "20px"
             },
             props: {
-                selected: P.Raw(false),
-                text: P.Bound('positionUnit'),
+                selected: false,
             },
             eventHandlers: {
                 click: (ev, root, child) => {
-                    if (child.props.selected) {
-                        root.parent.props.positionUnit = 'px'
+                    if (child.selected) {
+                        root.parent.positionUnit = 'px'
                     } else {
-                        root.parent.props.positionUnit = '%'
+                        root.parent.positionUnit = '%'
                     }
                 }
             },
             styles: []
         },
+    }
+
+    set positionUnit(positionUnit) {
+        this.dynamicFields.positionUnit = positionUnit
+        this.children.icon.text = positionUnit
+    }
+
+    get positionUnit() {
+        return this.dynamicFields.positionUnit
     }
 
     static defaultProps = {

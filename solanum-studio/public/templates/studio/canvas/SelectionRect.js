@@ -12,7 +12,7 @@ class SelectionRect extends Template {
             type: Rect,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
             props: {
-                'stroke-dasharray': P.Bound('selected', (s) => s ? 'none' : '1 4')
+                'stroke-dasharray': '1 4'
             },
             eventHandlers: {},
             styles: [
@@ -44,7 +44,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {left: "0%", width: "4px", top: "0%", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -61,7 +61,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {left: "calc(50% - 2px)", width: "4px", top: "0%", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -78,7 +78,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {right: "0%", width: "4px", top: "0%", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -95,7 +95,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {right: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -112,7 +112,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {right: "0%", width: "4px", bottom: "0%", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -129,7 +129,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {left: "calc(50% - 2px)", width: "4px", bottom: "0%", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -146,7 +146,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {left: "0%", width: "4px", bottom: "0%", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -163,7 +163,7 @@ class SelectionRect extends Template {
             type: ResizeHandle,
             position: {left: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
             props: {
-                'visible': P.Bound('selected'),
+                'visible': false,
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
@@ -182,14 +182,23 @@ class SelectionRect extends Template {
         'selected': false
     }
 
-    constructor(...args) {
-        super(...args)
+    set selected(selected) {
+        this.dynamicFields.selected = selected
+        this.dom.setAttribute('draggable', selected)
+        this.dom.style['z-index'] = selected ? 1 : 0 // raise selection rect when selected
+        this.classList.toggle('selected', selected)
 
-        this.setPropListener('selected', s => {
-            this.dom.setAttribute('draggable', s)
-            this.dom.style['z-index'] = s ? 1 : 0 // raise selection rect when selected
-            this.classList.toggle('selected', s)
-        })
+        // Set all handles visible
+        for (let childId in this.children) {
+            if (childId.endsWith('Handle')) {
+                this.children[childId].visible = selected
+            }
+        }
+        this.children.rect.strokeDasharray = selected ? 'none' : '1 4'
+    }
+
+    get selected() {
+        return this.dynamicFields.selected
     }
 
     startHandleDrag(ev) {

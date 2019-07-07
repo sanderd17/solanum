@@ -90,7 +90,7 @@ class StudioCanvasInteraction extends Template {
 
 
 
-        let unit = this.parent.parent.props.positionUnit
+        let unit = this.parent.parent.positionUnit
         let [width, height] = clsNewCmp.defaultSize
         if (unit == '%') {
             let {width: parentWidth, height: parentHeight} = this.dom.getBoundingClientRect()
@@ -138,14 +138,14 @@ class StudioCanvasInteraction extends Template {
         ev.stopPropagation()
         if (this.currentSelection.length > 1 && selection.length <= 1) {
             // there were multiple objects selected, hide the multi select rect again
-            this.children['#multiSelectRect'].props.selected = false
+            this.children['#multiSelectRect'].selected = false
             this.children['#multiSelectRect'].setPosition({left:0, width: 0, top: 0, height: 0})
         }
         this.currentSelection = selection
         if (selection.length <= 1) {
             // single or no child selected, use their own selection rects
             for (let [id, child] of Object.entries(this.children)) {
-                child.props.selected = selection.includes(id)
+                child.selected = selection.includes(id)
             }
         } else {
             // Set selection to multiple elements
@@ -168,9 +168,9 @@ class StudioCanvasInteraction extends Template {
             })
             for (let [id, child] of Object.entries(this.children)) {
                 if (id == '#multiSelectRect') {
-                    child.props.selected = true
+                    child.selected = true
                 } else {
-                    child.props.selected = false
+                    child.selected = false
                 }
             }
         }
