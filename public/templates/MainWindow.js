@@ -14,7 +14,6 @@ class MainWindow extends Template {
                 type: Motor,
                 position: {left: (size * Math.floor(i/50)) + 'px', width: size + 'px', top: (size * (i % 50)) + 'px', height: size + 'px'},
                 props: {
-                    color: "green",
                     motor: `M${i}`,
                 },
                 eventHandlers: {}

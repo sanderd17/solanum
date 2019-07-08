@@ -46,7 +46,7 @@ class Styling {
                 }
             }
             if (id != null) {
-                selector += `>.${id}`
+                selector += ` .${id}`
             }
             if (entry.states) {
                 for (let state of entry.states) {

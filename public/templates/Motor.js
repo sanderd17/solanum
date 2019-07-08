@@ -9,7 +9,7 @@ class Motor extends Template {
             type: Circle,
             position: {
                 left: "2%",
-                width: "62%",
+                width: "97%",
                 top: "8%",
                 height: "82%"
             },
@@ -49,7 +49,7 @@ class Motor extends Template {
     }
 
     static defaultProps = {
-        'motor': 'red'
+        'color': 'red'
     }
 
     set color(color) {

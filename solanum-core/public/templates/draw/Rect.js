@@ -4,15 +4,12 @@ const ns = "http://www.w3.org/2000/svg"
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Rect extends Template {
-    handlePropChanged(id, newValue, oldValue) {
-        this.elNode.setAttribute(id, newValue)
-    }
 
-    constructor(...args) {
-        super(...args)
-        for (let id in this.props) {
-            this.elNode.setAttribute(id, this.props[id])
-        }
+    get fill() {
+        return this.elNode.getAttribute('fill')
+    }
+    set fill(fill) {
+        this.elNode.setAttribute('fill', fill)
     }
 
     createDomNode() {

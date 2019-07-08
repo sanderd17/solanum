@@ -13,6 +13,38 @@ class Circle extends Template {
         this.elNode.setAttribute('fill', fill)
     }
 
+    get classList() {
+        return this.elNode.classList
+    }
+
+    addEventHandlersToDom() {
+        if (this.handleEvent == null) {
+            this.handleEvent = (ev) => {
+                if (ev.type in this.eventHandlers) {
+                    this.eventHandlers[event.type](event, this.parent, this)
+                }
+            }
+        }
+        // remove existing event handlers (if any)
+        for (let eventType in this.eventHandlers) {
+            this.elNode.removeEventListener(eventType, this.handleEvent)
+        }
+        // add the new event handlers
+        for (let eventType in this.eventHandlers) {
+            this.elNode.addEventListener(eventType, this.handleEvent)
+        }
+    }
+
+    /**
+     * Disable adding event handlers to the dom (recursively)
+     * This needs to be called before the dom is created
+     */
+    disableEventHandlers() {
+        for (let eventType in this.eventHandlers) {
+            this.elNode.removeEventListener(eventType, this.handleEvent)
+        }
+    }
+
     createDomNode() {
         this.dom = document.createElementNS(ns, "svg")
         this.dom.setAttribute("viewBox", "0 0 100 100")
