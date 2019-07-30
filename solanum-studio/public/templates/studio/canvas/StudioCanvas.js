@@ -14,7 +14,6 @@ class StudioCanvas extends Template {
     constructor(...args) {
         super(...args)
         this.cnt = 1
-        this.selection = []
     }
 
     async setComponent(mod, cmp) {
@@ -65,8 +64,16 @@ class StudioCanvas extends Template {
         }
     }
 
-    setSelection(selection) {
-        this.selection = selection
+    /**
+     * @type {Array<string>}
+     */
+    _selection = []
+    set selection(selection) {
+        this._selection = selection
+    }
+
+    get selection() {
+        return this._selection
     }
 }
 

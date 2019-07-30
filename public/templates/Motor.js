@@ -8,10 +8,10 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "2%",
-                width: "97%",
-                top: "8%",
-                height: "82%"
+                left: "7%",
+                width: "67%",
+                top: "11%",
+                height: "64%"
             },
             props: {},
             eventHandlers: {
@@ -38,10 +38,10 @@ class Motor extends Template {
         icon2: {
             type: Circle,
             position: {
-                left: "67%",
-                width: "34%",
-                top: "63%",
-                height: "38%"
+                left: "71%",
+                width: "23%",
+                top: "59%",
+                height: "26%"
             },
             props: {fill: 'blue'},
             eventHandlers: { }
@@ -53,22 +53,22 @@ class Motor extends Template {
     }
 
     set color(color) {
-        this.dynamicFields.color = color
+        this._color = color
         this.children.icon.fill = color
     }
 
     get color() {
-        return this.dynamicFields.color
+        return this._color
     }
 
     set motor(motor) {
-        this.dynamicFields.motor = motor
+        this._motor = motor
 
         ts.setSubscription(this, 'color', `Motors/${motor}`)
     }
 
     get motor() {
-        return this.dynamicFields.motor
+        return this._motor
     }
 
     static defaultSize = [100, 100]

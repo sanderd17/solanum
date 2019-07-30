@@ -2,7 +2,7 @@ import Template from '/lib/template.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
-class ToggleButton extends Template {
+class Checkbox extends Template {
     static defaultSize = [100, 20]
     static defaultProps = {
         'checked': false,
@@ -40,6 +40,7 @@ class ToggleButton extends Template {
         this.innerNode.setAttribute("type", "checkbox")
 
         this.dom.appendChild(this.innerNode)
+        this.dom.style.setProperty('position', 'absolute')
 
         this.classList.add(this.className)
 
@@ -48,4 +49,4 @@ class ToggleButton extends Template {
     }
 }
 
-export default ToggleButton
+export default Checkbox
