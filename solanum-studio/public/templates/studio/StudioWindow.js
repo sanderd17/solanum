@@ -45,16 +45,16 @@ class StudioWindow extends Template {
     positionUnit = 'px'
 
     /**
-     * @type {Array<string>}
+     * @type {Array<Template>}
      */
-    _componentSelection = []
-    set componentSelection(componentSelection) {
-        this._componentSelection = componentSelection
-        this.children.propEditor.componentSelection = componentSelection
+    _cmpSelection = []
+    set cmpSelection(cmpSelection) {
+        this._cmpSelection = cmpSelection
+        this.children.propEditor.cmpSelection = cmpSelection
     }
 
-    get selection() {
-        return this._componentSelection
+    get cmpSelection() {
+        return this._cmpSelection
     }
 
     openComponent(mod, cmp) {

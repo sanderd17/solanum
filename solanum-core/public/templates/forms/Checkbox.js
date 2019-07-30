@@ -29,6 +29,14 @@ class Checkbox extends Template {
         return this.innerNode.checked
     }
 
+    set disabled(disabled) {
+        this.innerNode.disabled = disabled
+    }
+
+    get disabled() {
+        return this.innerNode.disabled
+    }
+
     createDomNode() {
         this.dom = document.createElement("label")
 
