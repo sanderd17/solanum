@@ -14,17 +14,14 @@ class ResizeHandle extends Template {
         }
     }
 
-    static defaultProps = {
-        'visible': false
-    }
-
+    _visible  = false
     set visible(visible) {
-        this.dynamicFields.visible = visible
+        this._visible = visible
         this.children.icon.classList.toggle('visible', visible)
         this.dom.setAttribute('draggable', visible)
     }
     get visible() {
-        return this.dynamicFields.visible
+        return this._visible
     }
 }
 

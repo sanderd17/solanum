@@ -178,12 +178,9 @@ class SelectionRect extends Template {
         },
     }
     
-    static defaultProps = {
-        'selected': false
-    }
-
+    _selected = false
     set selected(selected) {
-        this.dynamicFields.selected = selected
+        this._selected = selected
         this.dom.setAttribute('draggable', selected)
         this.dom.style['z-index'] = selected ? 1 : 0 // raise selection rect when selected
         this.classList.toggle('selected', selected)
@@ -198,7 +195,7 @@ class SelectionRect extends Template {
     }
 
     get selected() {
-        return this.dynamicFields.selected
+        return this._selected
     }
 
     startHandleDrag(ev) {

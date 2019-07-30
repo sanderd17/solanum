@@ -4,15 +4,13 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class ToggleButton extends Template {
     static defaultSize = [100, 20]
-    static defaultProps = {
-        'selected': false,
-        'text': 'Button',
-    }
 
     constructor(...args) {
         super(...args)
         this.dom.addEventListener('click', () => this.selected = !this.selected)
     }
+
+    selected = false
 
     set text(text) {
         this.dom.innerText = text

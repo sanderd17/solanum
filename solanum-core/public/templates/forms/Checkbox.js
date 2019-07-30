@@ -4,10 +4,6 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Checkbox extends Template {
     static defaultSize = [100, 20]
-    static defaultProps = {
-        'checked': false,
-        'text': 'Checkbox',
-    }
 
     set text(text) {
         let found = false

@@ -25,7 +25,6 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
-    static defaultProps = {}
     static childDefinitions = null
     dynamicFields = {}
 
@@ -48,11 +47,6 @@ class Template {
         this.createDomNode()
         this.addEventHandlersToDom()
         this.setChildren(this.constructor.childDefinitions)
-
-        for (let key in this.constructor.defaultProps) {
-            if (!(key in p.props)) 
-                this[key] = this.constructor.defaultProps[key]
-        }
 
         // Copy the prop values to own values
         for (let key in p.props) {

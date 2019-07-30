@@ -8,12 +8,12 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "7%",
+                left: "16%",
                 width: "67%",
-                top: "11%",
+                top: "19%",
                 height: "64%"
             },
-            props: {},
+            props: {fill: 'red'},
             eventHandlers: {
                 click: (ev, root) => {
                     let path = 'Motors/' + root.motor
@@ -48,23 +48,10 @@ class Motor extends Template {
         }
     }
 
-    static defaultProps = {
-        'color': 'red'
-    }
-
-    set color(color) {
-        this._color = color
-        this.children.icon.fill = color
-    }
-
-    get color() {
-        return this._color
-    }
-
     set motor(motor) {
         this._motor = motor
 
-        ts.setSubscription(this, 'color', `Motors/${motor}`)
+        ts.setSubscription(this.children.icon, 'fill', `Motors/${motor}`)
     }
 
     get motor() {

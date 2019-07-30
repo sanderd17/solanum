@@ -70,6 +70,7 @@ class StudioCanvas extends Template {
     _selection = []
     set selection(selection) {
         this._selection = selection
+        this.parent.componentSelection = selection
     }
 
     get selection() {

@@ -16,6 +16,7 @@ class LayoutBar extends Template {
             },
             props: {
                 selected: false,
+                text: '%'
             },
             eventHandlers: {
                 click: (ev, root, child) => {
@@ -30,17 +31,14 @@ class LayoutBar extends Template {
         },
     }
 
+    _positionUnit = '%'
     set positionUnit(positionUnit) {
-        this.dynamicFields.positionUnit = positionUnit
+        this._positionUnit = positionUnit
         this.children.icon.text = positionUnit
     }
 
     get positionUnit() {
-        return this.dynamicFields.positionUnit
-    }
-
-    static defaultProps = {
-        positionUnit: 'Px'
+        return this._positionUnit
     }
 
     static defaultSize = [20, 20]

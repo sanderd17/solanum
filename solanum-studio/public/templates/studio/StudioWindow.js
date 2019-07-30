@@ -42,8 +42,19 @@ class StudioWindow extends Template {
         },
     }
 
-    static defaultProps = {
-        positionUnit: 'px'
+    positionUnit = 'px'
+
+    /**
+     * @type {Array<string>}
+     */
+    _componentSelection = []
+    set componentSelection(componentSelection) {
+        this._componentSelection = componentSelection
+        this.children.propEditor.componentSelection = componentSelection
+    }
+
+    get selection() {
+        return this._componentSelection
     }
 
     openComponent(mod, cmp) {
