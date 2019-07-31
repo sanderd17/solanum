@@ -14,7 +14,7 @@ for (let i = 0; i < 3000; i++) {
     tags[`Motors/M${i}`] = {
         type: MemoryTag,
         //defaultValue: `hsl(0, 100%, 50%)`
-        defaultValue: `hsl(${(36*i) % 360}, 100%, 50%)`
+        defaultValue: `hsl(${(i) % 360}, 100%, 50%)`
     }
 }
     /*testTag: {

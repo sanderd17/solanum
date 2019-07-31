@@ -11,7 +11,7 @@ div#errorOverlay {
   user-select: none;
 }
 
-div {
+div.solanum {
   position: absolute;
   margin: 0;
   padding: 0;

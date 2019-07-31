@@ -171,6 +171,7 @@ class Template {
         this.dom = document.createElement('div')
 
         this.classList.add(this.className)
+        this.classList.add('solanum')
 
         this.setPosition(this.position)
     } 
