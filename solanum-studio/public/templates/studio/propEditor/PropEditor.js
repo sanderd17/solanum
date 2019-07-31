@@ -1,7 +1,6 @@
 import Template from "/lib/template.js"
 import Checkbox from '/templates/forms/Checkbox.js'
 import Textbox from '/templates/forms/Textbox.js'
-import callStudioApi from '/lib/studioApi.js'
 
 class PropEditor extends Template {
 
@@ -120,7 +119,7 @@ class PropEditor extends Template {
         console.log(child.value, type)
         for (let [childId, child] of Object.entries(this.cmpSelection)) {
             let position = {}
-            await callStudioApi('main', 'Motor.js', 'setChildPosition', {childId, position})
+            //await callStudioApi('main', 'Motor.js', 'setChildPosition', {childId, position})
         }
     }
 

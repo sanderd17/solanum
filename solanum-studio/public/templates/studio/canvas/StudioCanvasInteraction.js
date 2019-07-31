@@ -1,13 +1,11 @@
 
 import Template from "/lib/template.js"
-import callStudioApi from "/lib/studioApi.js"
 import SelectionRect from "/templates/studio/canvas/SelectionRect.js"
 
 class StudioCanvasInteraction extends Template {
 
     constructor(...args) {
         super(...args)
-        this.canvasPreview = null
         /** @type Array<string> */
 
         this.eventHandlers.click = (ev) => {ev.stopPropagation(); this.selection = []}
@@ -105,53 +103,39 @@ class StudioCanvasInteraction extends Template {
             height: clsNewCmp.defaultSize[1] + unit,
         }
 
-        let childDefinition = {
-            type: clsNewCmp,
-            position,
-            props: {},
-            eventHandlers: {},
-            styles: [],
-        }
-        this.parent.addNewChild(childId,childDefinition)
-
-        let newCode = this.callApi('addChildComponent', {
-            childId,
-            childClassName: clsNewCmp.name, 
-            childPath,
-            position,
-        })
+        this.dom.dispatchEvent(new CustomEvent('droppedchild', {
+            bubbles: true,
+            detail: {
+                childId,
+                type: clsNewCmp,
+                childClassName: clsNewCmp.name, 
+                childPath,
+                position,
+            }
+        }))
     }
 
     async removeSelectedChildren(ev) {
-        console.log(ev)
-        let newCode = await this.callApi('removeChildComponents', {childIds: this.selection})
-        this.parent.removeChildren(this.selection)
+        this.dom.dispatchEvent(new CustomEvent('deletedchildren', {
+            bubbles: true,
+            detail: {childIds: this.selection}
+        }))
         this.reloadSelectionRects()
     }
 
-    _selection = []
-    /**
-     * @param {Array<string>} selection
-     */
-    set selection(selection) {
-        if (this._selection.length > 1 && selection.length <= 1) {
-            // there were multiple objects selected, hide the multi select rect again
-            this.children['#multiSelectRect'].selected = false
-            this.children['#multiSelectRect'].setPosition({left:0, width: 0, top: 0, height: 0})
-        }
-        this._selection = selection
-        if (selection.length <= 1) {
+    updateSelectionDraw() {
+        if (this.selection.length <= 1) {
             // single or no child selected, use their own selection rects
             for (let [id, child] of Object.entries(this.children)) {
-                child.selected = selection.includes(id)
+                child.selected = this.selection.includes(id)
             }
         } else {
             // Set selection to multiple elements
             let {left: cmpLeft, top: cmpTop} = this.dom.getBoundingClientRect()
 
             // Warning: right and bottom have different meanings here; it's measured from the left top of the page
-            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[selection[0]].dom.getBoundingClientRect()
-            for (let id of selection) {
+            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[this.selection[0]].dom.getBoundingClientRect()
+            for (let id of this.selection) {
                 let {left, top, right, bottom} = this.children[id].dom.getBoundingClientRect()
                 minLeft = Math.min(left, minLeft)
                 maxRight = Math.max(right, maxRight)
@@ -172,6 +156,20 @@ class StudioCanvasInteraction extends Template {
                 }
             }
         }
+    }
+
+    _selection = []
+    /**
+     * @param {Array<string>} selection
+     */
+    set selection(selection) {
+        if (this._selection.length > 1 && selection.length <= 1) {
+            // there were multiple objects selected, hide the multi select rect again
+            this.children['#multiSelectRect'].selected = false
+            this.children['#multiSelectRect'].setPosition({left:0, width: 0, top: 0, height: 0})
+        }
+        this._selection = selection
+        this.updateSelectionDraw()
         this.dom.dispatchEvent(new CustomEvent('selectionchanged', {
             bubbles: true,
             detail: {selection}
@@ -207,9 +205,10 @@ class StudioCanvasInteraction extends Template {
 
                 newPosition[k] = magnitude + unit
             }
-            await this.setChildPosition(id, newPosition)
+            this.setChildPosition(id, newPosition)
         }
-        this.selection = this.selection
+        // move the selected rects
+        this.updateSelectionDraw()
     }
 
     /**
@@ -280,9 +279,10 @@ class StudioCanvasInteraction extends Template {
 
                 newPosition[k] = magnitude + unit
             }
-            await this.setChildPosition(childId, newPosition)
+            this.setChildPosition(childId, newPosition)
         }
-        this.selection = this._selection
+        // move the selected rects
+        this.updateSelectionDraw()
     }
 
     getCoordinateInfo(value) {
@@ -302,27 +302,12 @@ class StudioCanvasInteraction extends Template {
         return {unit, magnitude, factorVer, factorHor}
     }
 
-    async setChildPosition(childId, newPosition) {
-        this.children[childId].setPosition(newPosition)
-        this.parent.children.preview.children[childId].setPosition(newPosition)
-
-        let newCode = await this.callApi('setChildPosition', {
-            childId: childId,
-            position: newPosition,
-        })
-        // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+    setChildPosition(childId, newPosition) {
+        this.dom.dispatchEvent(new CustomEvent('childpositionchanged', {
+            bubbles: true,
+            detail: {childId, newPosition}
+        }))
     }
-
-    /**
-     * Call an api function on the studio API
-     * @param {string} apiFunction  function name of the Studio API
-     * @param  {object} args any additional arguments to send to the body
-     */
-    async callApi(apiFunction, args) {
-        // TODO don't hard-code current module
-        return await callStudioApi('main', 'Motor.js', apiFunction, args)
-    }
-
 }
 
 export default StudioCanvasInteraction

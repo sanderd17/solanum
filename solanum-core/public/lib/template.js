@@ -25,8 +25,8 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
+    /** @type {Object<string,TemplateConstructParams>} */
     static childDefinitions = null
-    dynamicFields = {}
 
     /**
      * @param {TemplateConstructParams} p
@@ -38,6 +38,7 @@ class Template {
         /** @type {Template?} */
         this.parent = null
         this.position = p.position || {}
+        /** @type {Object<string,function>} */
         this.eventHandlers = p.eventHandlers || {}
         this.eventHandlersEnabled = true
         this.propChangedHandlers = {}

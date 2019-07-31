@@ -1,5 +1,4 @@
 import Template from '/lib/template.js'
-import P from '/lib/Prop.js'
 import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 
@@ -8,10 +7,10 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "8%",
-                width: "86%",
-                top: "10%",
-                height: "60%"
+                left: "4%",
+                width: "69%",
+                top: "6%",
+                height: "69%"
             },
             props: {fill: 'red'},
             eventHandlers: {
@@ -38,10 +37,10 @@ class Motor extends Template {
         icon2: {
             type: Circle,
             position: {
-                left: "71%",
-                width: "23%",
-                top: "59%",
-                height: "26%"
+                left: "63%",
+                width: "28%",
+                top: "64%",
+                height: "25%"
             },
             props: {fill: 'blue'},
             eventHandlers: { }

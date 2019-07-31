@@ -26,7 +26,7 @@ class StudioCanvas extends Template {
         let cls = mdl.default
 
         let [width, height] = cls.defaultSize
-        let preview= {
+        let preview = {
             type: cls,
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {},
@@ -34,11 +34,21 @@ class StudioCanvas extends Template {
         }
 
 
-        let interaction= {
+        let interaction = {
             type: StudioCanvasInteraction,
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             props: {elWidth: width, elHeight: height},
-            eventHandlers: {},
+            eventHandlers: {
+                childpositionchanged: (ev, root) => root.setChildPosition(ev.detail.childId, ev.detail.newPosition),
+                droppedchild: (ev, root) => root.addNewChild(ev.detail.childId, {
+                    type: ev.detail.type,
+                    position: ev.detail.position,
+                    props: {},
+                    eventHandlers: {},
+                    styles: [],
+                }),
+                deletedchildren: (ev, root) => root.removeChildren(ev.detail.childIds)
+            },
         }
 
         this.setChildren({preview, interaction})
@@ -52,6 +62,11 @@ class StudioCanvas extends Template {
         this.children.preview.addChild(id, childDefinition)
 
         this.children.interaction.reloadSelectionRects()
+    }
+
+    setChildPosition(id, newPosition) {
+        this.children.preview.children[id].setPosition(newPosition)
+        this.children.interaction.children[id].setPosition(newPosition)
     }
 
     /**
