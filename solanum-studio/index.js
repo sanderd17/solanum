@@ -1,3 +1,5 @@
+import express from 'express'
+import path from 'path'
 import jsonschema from 'jsonschema'
 import StudioAPI from './src/StudioAPI.js'
 import * as schema from './src/StudioApiSchema.js'
@@ -45,8 +47,7 @@ function init(app, config) {
             }
         }
     )
-    //app.use('/editor', express.static(path.join(__dirname, 'public')))
-    //app.use('/editor/monaco', express.static(path.join(__dirname, 'node_modules/monaco-editor/')))
+    app.use('/monaco', express.static(path.join(__dirname, 'node_modules/monaco-editor/')))
 }
 
 export default init

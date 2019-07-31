@@ -4,7 +4,7 @@ import ProjectBrowser from '/templates/studio/projectBrowser/ProjectBrowser.js'
 import TagBrowser from '/templates/studio/tagBrowser/TagBrowser.js'
 import PropEditor from '/templates/studio/propEditor/PropEditor.js'
 import LayoutBar from "/templates/studio/menuBars/LayoutBar.js"
-
+import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 
 
 class StudioWindow extends Template {
@@ -30,6 +30,7 @@ class StudioWindow extends Template {
                     root.children.propEditor.cmpSelection = cmpSelection
                 },
                 childpositionchanged: async (ev, root) => {
+                    root.children.propEditor.recalcPositionParameters()
                     let newCode = await root.callStudioApi('setChildPosition', {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
@@ -66,8 +67,23 @@ class StudioWindow extends Template {
             type: PropEditor,
             position: {right: "0px", width: "300px", top: "20px", bottom: "0px"},
             props: {},
-            eventHandlers: {},
+            eventHandlers: {
+                positionpropchanged: async (ev, root) => {
+                    root.children.canvas.setChildPosition(ev.detail.childId, ev.detail.newPosition)
+                    let newCode = await root.callStudioApi('setChildPosition', {
+                        childId: ev.detail.childId,
+                        position: ev.detail.newPosition,
+                    })
+                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+                }
+            },
         },
+        codeEditor: {
+            type: CodeEditor,
+            position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
+            props: {},
+            eventHandlers: {},
+        }
     }
 
     positionUnit = 'px'

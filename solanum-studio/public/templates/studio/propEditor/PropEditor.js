@@ -115,11 +115,14 @@ class PropEditor extends Template {
      * @param {Textbox} child 
      * @param {stirng} type 
      */
-    async setPositionValue(child, type) {
-        console.log(child.value, type)
+    async setPositionValue(textBox, type) {
         for (let [childId, child] of Object.entries(this.cmpSelection)) {
-            let position = {}
-            //await callStudioApi('main', 'Motor.js', 'setChildPosition', {childId, position})
+            let newPosition = {...child.position}
+            newPosition[type] = textBox.value
+            this.dom.dispatchEvent(new CustomEvent('positionpropchanged', {
+                bubbles: true,
+                detail: {childId, newPosition}
+            }))
         }
     }
 

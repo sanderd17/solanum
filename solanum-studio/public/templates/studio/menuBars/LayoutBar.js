@@ -1,6 +1,4 @@
-
 import Template from "/lib/template.js"
-import P from '/lib/Prop.js'
 import ToggleButton from '/templates/forms/ToggleButton.js'
 
 class LayoutBar extends Template {
