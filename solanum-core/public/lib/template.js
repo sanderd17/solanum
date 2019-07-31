@@ -45,7 +45,7 @@ class Template {
         this.className = style.registerClassStyle(this.constructor)
 
         this.createDomNode()
-        this.addEventHandlersToDom()
+        this.addEventHandlers()
         this.setChildren(this.constructor.childDefinitions)
 
         // Copy the prop values to own values
@@ -131,7 +131,7 @@ class Template {
         }
     }
 
-    addEventHandlersToDom() {
+    addEventHandlers() {
         if (this.handleEvent == null) {
             this.handleEvent = (ev) => {
                 if (ev.type in this.eventHandlers) {
@@ -151,7 +151,6 @@ class Template {
 
     /**
      * Disable adding event handlers to the dom (recursively)
-     * This needs to be called before the dom is created
      */
     disableEventHandlers() {
         for (let eventType in this.eventHandlers) {

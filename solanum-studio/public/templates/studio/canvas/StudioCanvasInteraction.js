@@ -1,6 +1,6 @@
 
 import Template from "/lib/template.js"
-import P from '/lib/Prop.js'
+import callStudioApi from "/lib/studioApi.js"
 import SelectionRect from "/templates/studio/canvas/SelectionRect.js"
 
 class StudioCanvasInteraction extends Template {
@@ -21,7 +21,7 @@ class StudioCanvasInteraction extends Template {
             if (ev.code == 'Delete')
                 this.removeSelectedChildren(ev)
         }
-        this.addEventHandlersToDom()
+        this.addEventHandlers()
         this.dom.setAttribute('draggable', true) // draggable is required to allow selection drag
         this.dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
     }
@@ -172,7 +172,10 @@ class StudioCanvasInteraction extends Template {
                 }
             }
         }
-        this.parent.selection = selection
+        this.dom.dispatchEvent(new CustomEvent('selectionchanged', {
+            bubbles: true,
+            detail: {selection}
+        }))
     }
 
     get selection() {
@@ -317,26 +320,7 @@ class StudioCanvasInteraction extends Template {
      */
     async callApi(apiFunction, args) {
         // TODO don't hard-code current module
-        let body = {
-            module: 'main',
-            component: 'Motor.js',
-        }
-        for (let [key, value] of Object.entries(args)) {
-            body[key] = value
-        }
-        return await fetch(`/API/studio/${apiFunction}`, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'same-origin', // no-cors, cors, *same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // no-referrer, *client
-            body: JSON.stringify(body), // body data type must match "Content-Type" header
-        })
+        return await callStudioApi('main', 'Motor.js', apiFunction, args)
     }
 
 }

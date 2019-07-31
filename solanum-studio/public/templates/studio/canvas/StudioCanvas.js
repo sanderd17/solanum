@@ -1,5 +1,4 @@
 import Template from "/lib/template.js"
-import P from '/lib/Prop.js'
 import StudioCanvasInteraction from '/templates/studio/canvas/StudioCanvasInteraction.js'
 
 class StudioCanvas extends Template {
@@ -38,8 +37,8 @@ class StudioCanvas extends Template {
         let interaction= {
             type: StudioCanvasInteraction,
             position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
-            props: {elWidth: P.Raw(width), elHeight: P.Raw(height)},
-            eventHandlers: {}
+            props: {elWidth: width, elHeight: height},
+            eventHandlers: {},
         }
 
         this.setChildren({preview, interaction})
@@ -62,20 +61,6 @@ class StudioCanvas extends Template {
         for (let id of childIds) {
             this.children.preview.removeChild(id)
         }
-    }
-
-    /**
-     * @type {Array<string>}
-     */
-    _selection = []
-    set selection(selection) {
-        this._selection = selection
-        let cmpSelection = selection.map(id => this.children.preview.children[id])
-        this.parent.cmpSelection = cmpSelection
-    }
-
-    get selection() {
-        return this._selection
     }
 }
 

@@ -8,10 +8,10 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "5%",
+                left: "8%",
                 width: "86%",
-                top: "7%",
-                height: "88%"
+                top: "10%",
+                height: "60%"
             },
             props: {fill: 'red'},
             eventHandlers: {

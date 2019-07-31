@@ -20,7 +20,15 @@ class StudioWindow extends Template {
             type: StudioCanvas,
             position: {left: "300px", right: "300px", top: "20px", bottom: "0px"},
             props: {},
-            eventHandlers: {},
+            eventHandlers: {
+                selectionchanged: (ev, root) => {
+                    let cmpSelection = {}
+                    for (let id of ev.detail.selection) {
+                        cmpSelection[id] = root.children.canvas.children.preview.children[id]
+                    }
+                    root.children.propEditor.cmpSelection = cmpSelection
+                },
+            },
         },
         projectBrowser: {
             type: ProjectBrowser,
@@ -43,19 +51,6 @@ class StudioWindow extends Template {
     }
 
     positionUnit = 'px'
-
-    /**
-     * @type {Array<Template>}
-     */
-    _cmpSelection = []
-    set cmpSelection(cmpSelection) {
-        this._cmpSelection = cmpSelection
-        this.children.propEditor.cmpSelection = cmpSelection
-    }
-
-    get cmpSelection() {
-        return this._cmpSelection
-    }
 
     openComponent(mod, cmp) {
         this.children.canvas.setComponent(mod, cmp)
