@@ -92,6 +92,7 @@ class StudioWindow extends Template {
         this.mod = mod
         this.cmp = cmp
         this.children.canvas.setComponent(mod, cmp)
+        this.children.codeEditor.loadCode(mod, cmp)
     }
 
     mod = ''

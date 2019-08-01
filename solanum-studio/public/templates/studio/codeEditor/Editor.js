@@ -1,69 +1,21 @@
-//import * as monaco from '/monaco/esm/vs/editor/editor.main.js'
 import Template from "/lib/template.js"
 
-/*
-self.MonacoEnvironment = {
-	getWorkerUrl: function (moduleId, label) {
-		if (label === 'json') {
-			return './json.worker.js';
-		}
-		if (label === 'css') {
-			return './css.worker.js';
-		}
-		if (label === 'html') {
-			return './html.worker.js';
-		}
-		if (label === 'typescript' || label === 'javascript') {
-			return './ts.worker.js';
-		}
-		return './editor.worker.js';
-	},
-};
-*/
 
-function createMonacoEditor(dom) {
-	// Add additonal d.ts files to the JavaScript language service and change.
-	// Also change the default compilation options.
-	// The sample below shows how a class Facts is declared and introduced
-	// to the system and how the compiler is told to use ES6 (target=2).
+// TODO TODO TODO: see https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html for merging / getting edits
 
-	// validation settings
-	monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-		noSemanticValidation: true,
-		noSyntaxValidation: false
-	});
+/**
+ * Add an extra lib to the monaco editor
+ * @param {string} fileName
+ */
+function addLib(fileName) {
 
-	// compiler options
-	monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-		target: monaco.languages.typescript.ScriptTarget.ES6,
-		allowNonTsExtensions: true
-	});
-
-	// extra libraries
-	monaco.languages.typescript.javascriptDefaults.addExtraLib([
-		'declare class Facts {',
-		'    /**',
-		'     * Returns the next fact',
-		'     */',
-		'    static next():string',
-		'}',
-	].join('\n'), 'filename/facts.d.ts');
-
-	var jsCode = [
-		'"use strict";',
-		'',
-		"class Chuck {",
-		"    greet() {",
-		"        return Facts.next();",
-		"    }",
-		"}"
-	].join('\n');
-
-	monaco.editor.create(dom, {
-		value: jsCode,
-		language: "javascript"
-	});
+	fetch(fileName).then((res) => {
+		return res.text()
+	}).then((text) => {
+		monaco.languages.typescript.javascriptDefaults.addExtraLib(text, fileName)
+	}).catch((err) => console.error(err))
 }
+
 
 class CodeEditor extends Template {
 
@@ -74,8 +26,49 @@ class CodeEditor extends Template {
 
     constructor(...args) {
 		super(...args)
-		setTimeout(() => createMonacoEditor(this.dom))
-    }
+		setTimeout(() => this.createMonacoEditor())
+		this.cnt = 1
+	}
+	
+	/**
+	 * Create teh monaco editor in the component's dom
+	 */
+	createMonacoEditor() {
+		// Add additonal d.ts files to the JavaScript language service and change.
+		// Also change the default compilation options.
+		// The sample below shows how a class Facts is declared and introduced
+		// to the system and how the compiler is told to use ES6 (target=2).
+
+		// validation settings
+		monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+			noSemanticValidation: true,
+			noSyntaxValidation: false
+		});
+
+		// compiler options
+		monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+			target: monaco.languages.typescript.ScriptTarget.ES6,
+			//module: monaco.languages.typescript.ModuleKind.None,
+			allowNonTsExtensions: true
+		});
+
+		// extra libraries
+		addLib('/lib/template.js')
+		addLib('/lib/TagSet.js')
+		addLib('/templates/draw/Circle.js')
+
+		this.monacoEditor = monaco.editor.create(this.dom, {
+			value: '',
+			language: "javascript"
+		})
+	}
+
+	async loadCode(mod, cmp) {
+		let response = await fetch(`/API/Studio/openComponent?module=${mod}&component=${cmp}`, { cache: "no-cache" })
+		let text = await response.text()
+        this.cnt++
+		this.monacoEditor.setValue(text)
+	}
 }
 
 export default CodeEditor

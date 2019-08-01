@@ -4,6 +4,7 @@ import Textbox from '/templates/forms/Textbox.js'
 
 class PropEditor extends Template {
 
+    static defaultSize = [300, 1000]
     static childDefinitions  = {
         leftActive: {
             type: Checkbox,
@@ -102,7 +103,12 @@ class PropEditor extends Template {
         },
         heightValue: {
             type: Textbox,
-            position: { left: '120px', top: '125px', height: '20px', right: '0px' },
+            position: {
+                left: "120px",
+                top: "125px",
+                height: "20px",
+                right: "0px"
+            },
             props: { disabled: true },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'height') },
             styles: []

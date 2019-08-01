@@ -14,9 +14,14 @@ class Motor extends Template {
             },
             props: {fill: 'red'},
             eventHandlers: {
+                /**
+                 * @param {Event} ev
+                 * @param {Motor} root
+                 */ 
                 click: (ev, root) => {
                     let path = 'Motors/' + root.motor
-                    ts.writeTag(path, 'black')}
+                    ts.writeTag(path, 'black')
+                }
             },
             styles: [
                 {
