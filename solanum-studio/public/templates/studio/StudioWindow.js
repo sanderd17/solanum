@@ -86,7 +86,15 @@ class StudioWindow extends Template {
             position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
             props: {},
             eventHandlers: {
-                codeContentChanged: (ev) => console.log(ev.detail)
+                codeContentChanged: async (ev, root) => {
+                    let newCode = await root.callStudioApi('setComponentCode', {
+                        oldCode: ev.detail.oldCode,
+                        newCode: ev.detail.newCode,
+                    })
+                    root.children.canvas.setComponent(root.mod, root.cmp)
+                    root.children.propEditor.cmpSelection = []
+                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+                }
             },
         }
     }
@@ -116,9 +124,7 @@ class StudioWindow extends Template {
         let body = {
             module: this.mod,
             component: this.cmp,
-        }
-        for (let [key, value] of Object.entries(args)) {
-            body[key] = value
+            ...args
         }
         let result = await fetch(`/API/studio/${apiFunction}`, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.

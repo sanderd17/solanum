@@ -23,6 +23,16 @@ export const childPosition = {
     }
 }
 
+export const setComponentCode = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        newCode:        {type: 'string', required: true},
+        oldCode:        {type: 'string', required: true},
+    }
+}
+
 export const addChildComponent = {
     type: 'object',
     properties: {

@@ -32,18 +32,37 @@ class CodeEditor extends Template {
 	
 	_code = ''
 
+	/**
+	 * Code prop set externally
+	 */
 	set code(code) {
 		this._code = code
-		//this.monacoEditor.setValue(code)
+		if (this.codeChangedEvent)
+			this.codeChangedEvent.dispose()
+
 		monaco.editor.getModels()[0].setValue(code)
+
+		this.codeChangedEvent = monaco.editor.getModels()[0].onDidChangeContent(ev => {
+			// update private _code value to circumvent setter
+			let oldCode = this._code
+			this._code = this.monacoEditor.getValue()
+            this.dom.dispatchEvent(new CustomEvent('codeContentChanged', {
+                bubbles: true,
+                detail: {
+					newCode: this.code,
+					oldCode: oldCode,
+					diff: ev
+				}
+			}))
+		})
 	}
 
 	get code() {
-		return this.monacoEditor.getValue()
+		return this._code
 	}
 
 	/**
-	 * Create teh monaco editor in the component's dom
+	 * Create the monaco editor in the component's dom
 	 */
 	createMonacoEditor() {
 		// Add additonal d.ts files to the JavaScript language service and change.
@@ -74,14 +93,13 @@ class CodeEditor extends Template {
 			language: "javascript"
 		})
 
-		monaco.editor.getModels()[0].onDidChangeContent(ev =>
-            this.dom.dispatchEvent(new CustomEvent('codeContentChanged', {
-                bubbles: true,
-                detail: ev
-			}))
-		)
 	}
 
+	/**
+	 * load the code of the specified component from the server
+	 * @param {string} mod 
+	 * @param {string} cmp 
+	 */
 	async loadCode(mod, cmp) {
 		let response = await fetch(`/API/Studio/openComponent?module=${mod}&component=${cmp}`, { cache: "no-cache" })
 		this.code =  await response.text()

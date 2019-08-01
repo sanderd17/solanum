@@ -62,6 +62,21 @@ class StudioAPI {
     // Component modifications
 
     /**
+     * 
+     * @param {Request} req 
+     * @param {Express.Response} res 
+     */
+    async setComponentCode(req, res) {
+        const body = req.body
+        let cmpFile = this.componentStore.getFile(body.module, body.component)
+        let cmpCode = await cmpFile.read()
+        // TODO perform some diffing?
+        let newCmpCode = body.newCode
+        await cmpFile.write(newCmpCode)
+        res.send(newCmpCode)
+    }
+
+    /**
      * @param {Request} req 
      * @param {Express.Response} res 
      */

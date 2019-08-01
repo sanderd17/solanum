@@ -7,9 +7,9 @@ class Motor extends Template {
         icon: {
             type: Circle,
             position: {
-                left: "15%",
+                left: "5%",
                 width: "72%",
-                top: "11%",
+                top: "21%",
                 height: "69%"
             },
             props: {fill: 'red'},
