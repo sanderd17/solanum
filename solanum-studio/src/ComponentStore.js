@@ -61,16 +61,8 @@ import Template from '/lib/template.js'
 import ts from '/lib/TagSet.js'
 
 class ${component} extends Template {
-
-    constructor(p) {
-        super(p)
-
-        this.setChildren({
-        })
-    }
-}
-
-${component}.prototype.props = {
+    static defaultSize = [100, 100]
+    static children = {}
 }
 
 export default ${component}

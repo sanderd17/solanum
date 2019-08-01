@@ -2,7 +2,7 @@
     "compilerOptions": {
         "checkJs": true,
         "target": "esNext",
-        "noImplicitAny": true
+        "noImplicitAny": false
     },
     "exclude": [
         "node_modules",
