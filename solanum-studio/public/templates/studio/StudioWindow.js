@@ -35,6 +35,7 @@ class StudioWindow extends Template {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
+                    root.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
                 droppedchild: async (ev, root) => {
@@ -44,6 +45,7 @@ class StudioWindow extends Template {
                         childPath: ev.detail.childPath,
                         position: ev.detail.position,
                     })
+                    root.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
                 deletedchildren: async (ev, root) => {
@@ -74,6 +76,7 @@ class StudioWindow extends Template {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
+                    root.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 }
             },
@@ -82,7 +85,9 @@ class StudioWindow extends Template {
             type: CodeEditor,
             position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
             props: {},
-            eventHandlers: {},
+            eventHandlers: {
+                codeContentChanged: (ev) => console.log(ev.detail)
+            },
         }
     }
 
@@ -98,6 +103,10 @@ class StudioWindow extends Template {
     mod = ''
     cmp = ''
 
+    setCode(newCode) {
+        this.children.codeEditor.code = newCode
+    }
+
     /**
      * Call an api function on the studio API
      * @param {string} apiFunction  function name of the Studio API
@@ -111,7 +120,7 @@ class StudioWindow extends Template {
         for (let [key, value] of Object.entries(args)) {
             body[key] = value
         }
-        return await fetch(`/API/studio/${apiFunction}`, {
+        let result = await fetch(`/API/studio/${apiFunction}`, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'same-origin', // no-cors, cors, *same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -124,6 +133,7 @@ class StudioWindow extends Template {
             referrer: 'no-referrer', // no-referrer, *client
             body: JSON.stringify(body), // body data type must match "Content-Type" header
         })
+        return await result.text()
     }
 }
 

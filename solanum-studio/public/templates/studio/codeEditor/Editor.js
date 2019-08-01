@@ -26,10 +26,22 @@ class CodeEditor extends Template {
 
     constructor(...args) {
 		super(...args)
+		// create editor after loading dom
 		setTimeout(() => this.createMonacoEditor())
-		this.cnt = 1
 	}
 	
+	_code = ''
+
+	set code(code) {
+		this._code = code
+		//this.monacoEditor.setValue(code)
+		monaco.editor.getModels()[0].setValue(code)
+	}
+
+	get code() {
+		return this.monacoEditor.getValue()
+	}
+
 	/**
 	 * Create teh monaco editor in the component's dom
 	 */
@@ -61,13 +73,18 @@ class CodeEditor extends Template {
 			value: '',
 			language: "javascript"
 		})
+
+		monaco.editor.getModels()[0].onDidChangeContent(ev =>
+            this.dom.dispatchEvent(new CustomEvent('codeContentChanged', {
+                bubbles: true,
+                detail: ev
+			}))
+		)
 	}
 
 	async loadCode(mod, cmp) {
 		let response = await fetch(`/API/Studio/openComponent?module=${mod}&component=${cmp}`, { cache: "no-cache" })
-		let text = await response.text()
-        this.cnt++
-		this.monacoEditor.setValue(text)
+		this.code =  await response.text()
 	}
 }
 
