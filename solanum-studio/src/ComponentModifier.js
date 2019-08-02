@@ -1,4 +1,4 @@
-import recast from 'recast'
+import * as recast from 'recast'
 import flow from 'flow-parser'
 
 const parseOptions = {

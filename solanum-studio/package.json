@@ -13,9 +13,9 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "flow-parser": "^0.101.1",
+    "flow-parser": "^0.104.0",
     "monaco-editor": "^0.17.1",
-    "recast": "^0.16.2",
+    "recast": "^0.18.1",
     "recursive-readdir": "^2.2.2",
     "steno": "^0.4.4",
     "xml-js": "^1.6.11"
@@ -23,8 +23,8 @@
   "devDependencies": {
     "@types/express": "^4.17.0",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^10.14.13",
-    "mocha": "^5.2.0",
+    "@types/node": "^12.6.9",
+    "mocha": "^6.2.0",
     "typescript": "^3.5.3"
   }
 }
