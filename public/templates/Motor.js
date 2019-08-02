@@ -24,9 +24,9 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "1%",
+                left: "16%",
                 width: "72%",
-                top: "19%",
+                top: "12%",
                 height: "69%"
             },
             props: {fill: 'red'},
@@ -45,9 +45,9 @@ class Motor extends Template {
         icon2: new Circle({
             parent: this,
             position: {
-                left: "67%",
+                left: "68%",
                 width: "28%",
-                top: "66%",
+                top: "53%",
                 height: "25%"
             },
             props: {fill: 'blue'},
