@@ -3,11 +3,28 @@ import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 
 class Motor extends Template {
+    static childStyles = {
+        icon: [
+            {
+                declarations: {
+                    'stroke': 'black',
+                    'stroke-width': '2px',
+                }
+            },
+            {
+                states: ['hover'],
+                declarations: {
+                    'cursor': 'pointer',
+                }
+            }
+        ]
+    }
+
      children = {
         icon: new Circle({
             parent: this,
             position: {
-                left: "18%",
+                left: "1%",
                 width: "72%",
                 top: "19%",
                 height: "69%"
@@ -23,28 +40,14 @@ class Motor extends Template {
                     ts.writeTag(path, 'black')
                 }
             },
-            styles: [
-                {
-                    declarations: {
-                        'stroke': 'black',
-                        'stroke-width': '2px',
-                    }
-                },
-                {
-                    states: ['hover'],
-                    declarations: {
-                        'cursor': 'pointer',
-                    }
-                }
-            ]
         }),
 
         icon2: new Circle({
             parent: this,
             position: {
-                left: "65%",
+                left: "67%",
                 width: "28%",
-                top: "68%",
+                top: "66%",
                 height: "25%"
             },
             props: {fill: 'blue'},
