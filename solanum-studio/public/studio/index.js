@@ -10,8 +10,6 @@ let sc = new StudioWindow({
     eventHandlers: {}
 })
 
-sc.setId('studioWindow')
-
 let div = document.getElementById("root")
 div.style.width = window.innerWidth + 'px'
 div.style.height = window.innerHeight + 'px'

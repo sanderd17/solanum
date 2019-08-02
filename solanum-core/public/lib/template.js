@@ -1,5 +1,3 @@
-import * as Prop from './Prop.js'
-import P from './Prop.js'
 import style from './Styling.js'
 import ts from './TagSet.js';
 
@@ -16,6 +14,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
  /**
   * @typedef {Object} TemplateConstructParams
+  * @property {Template} parent
   * @property {TemplatePosition} position
   * @property {object} props
   * @property {object} eventHandlers
@@ -27,6 +26,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Template {
     /** @type {Object<string,TemplateConstructParams>} */
     static childDefinitions = null
+    children = {}
 
     /**
      * @param {TemplateConstructParams} p
@@ -34,9 +34,8 @@ class Template {
     constructor(p) {
         // store constructor args
         this.cArgs = p
-        this.children = null
         /** @type {Template?} */
-        this.parent = null
+        this.parent = p.parent
         this.position = p.position || {}
         /** @type {Object<string,function>} */
         this.eventHandlers = p.eventHandlers || {}
@@ -47,12 +46,20 @@ class Template {
 
         this.createDomNode()
         this.addEventHandlers()
-        this.setChildren(this.constructor.childDefinitions)
 
         // Copy the prop values to own values
-        for (let key in p.props) {
-            this[key] = p.props[key]
-        }
+        // Set the props async, to allow the children to be initialised before prop setters are called
+        Promise.resolve().then(() => {
+            if (this.parent) {
+                // add own id to class list
+                this.classList.add(this.parent.getChildId(this))
+            }
+            for (let key in p.props) {
+                this[key] = p.props[key]
+            }
+        })
+
+
     }
 
     get classList() {
@@ -61,17 +68,17 @@ class Template {
 
     removeChild(id) {
         let child = this.children[id]
-        this.dom.removeChild(child.dom)
-        delete this.children[id]
+        if (child) {
+            this.dom.removeChild(child.dom)
+            delete this.children[id]
+        }
     }
 
     addChild(id, childDefinition) {
         let type = childDefinition.type
         let child = new type(childDefinition)
         this.children[id] = child
-        child.setParent(this)
         this.dom.appendChild(child.dom)
-        child.classList.add(id)
     }
 
     setChildren(childDefinitions) {
@@ -90,17 +97,10 @@ class Template {
         }
     }
 
-    /**
-     * Add a reference to the parent, and store as what id it's referenced
-     * @param {Template} parent
-     */
-    setParent(parent) {
-        this.parent = parent
-
-        // for all props that are bound, let our parent warn us
-        for (let id in this._props) {
-            if (this._props[id] instanceof Prop.Bound) {
-                parent.registerPropBinding(this, id, this._props[id])
+    getChildId(child) {
+        for (let [id, c] of Object.entries(this.children)) {
+            if (child == c) {
+                return id
             }
         }
     }
@@ -121,14 +121,6 @@ class Template {
                     this.dom.style[key] = ''
                 }
             }
-        }
-    }
-
-    setId(id) {
-        this.id = id
-        this.dom.id = id
-        for (let childId in this.children) {
-            this.children[childId].setId(id + '.' + childId)
         }
     }
 
@@ -168,12 +160,21 @@ class Template {
     }
 
     createDomNode() {
+        if (this.dom) {
+            return
+        }
         this.dom = document.createElement('div')
 
         this.classList.add(this.className)
         this.classList.add('solanum')
 
         this.setPosition(this.position)
+
+        if (this.parent) {
+            this.parent.createDomNode()
+            this.parent.dom.appendChild(this.dom)
+        }
+
     } 
 }
 

@@ -43,15 +43,15 @@ class ComponentModifier {
     addChildComponent(childId, childClassName, childPath, position) {
         this.addImportStatement(childClassName, childPath)
 
-        let children = this.getClassField('childDefinitions')
+        let children = this.getClassField('children')
 
         let newChildAst = recast.parse(`
-            let _ = {
-                type: ${childClassName},
+            let _ = new ${childClassName}({
+                parent: this,
                 position: {},
                 props: {},
                 eventHandlers: {},
-            }`, parseOptions)
+            })`, parseOptions)
 
         const b = recast.types.builders
         let newArgProperty = b.property('init', b.identifier(childId), newChildAst.program.body[0].declarations[0].init)
@@ -66,7 +66,7 @@ class ComponentModifier {
      * @param {string} childId 
      */
     removeChildComponent(childId) {
-        let children = this.getClassField('childDefinitions')
+        let children = this.getClassField('children')
 
         for (let [i, prop] of children.properties.entries()) {
             if (prop.key.name == childId)
@@ -234,12 +234,17 @@ class ComponentModifier {
      * @returns {ObjectExpression} containing the different arguments (position, props and eventhandlers)
      */
     getChildDefinition(childId) {
-        let children = this.getClassField('childDefinitions')
+        let children = this.getClassField('children')
 
         for (let prop of children.properties) {
-            if (prop.key.name == childId) {
-                return prop.value
-            }
+            if (prop.key.name != childId)
+                continue
+            let childCreation = prop.value
+            if (childCreation.type != 'NewExpression')
+                continue
+            if (childCreation.arguments.length != 1)
+                continue
+            return childCreation.arguments[0]
         }
     }
 

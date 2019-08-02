@@ -4,11 +4,11 @@ import PositionPropEditor from '/templates/studio/propEditor/PositionPropEditor.
 class PropEditor extends Template {
 
     static defaultSize = [300, 1000]
-    static childDefinitions  = {
-        positionPropEditor: {
-            type: PositionPropEditor,
+    children  = {
+        positionPropEditor: new PositionPropEditor({
+            parent: this,
             position: {left: '0px', right: '0px', top: '0px', height: '150px'}
-        },
+        }),
     }
 
     recalcPositionParameters() {

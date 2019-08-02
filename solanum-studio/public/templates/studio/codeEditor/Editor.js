@@ -19,9 +19,6 @@ function addLib(fileName) {
 
 class CodeEditor extends Template {
 
-    static childDefinitions = {
-    }
-
     static defaultSize = [200, 50]
 
     constructor(...args) {

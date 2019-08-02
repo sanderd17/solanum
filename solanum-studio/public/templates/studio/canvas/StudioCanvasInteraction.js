@@ -30,9 +30,9 @@ class StudioCanvasInteraction extends Template {
      */
     reloadSelectionRects() {
         // draw a rect for every child of the previewed component
-        let children = {
-            '#multiSelectRect': {
-                type: SelectionRect,
+        this.children = {
+            '#multiSelectRect': new SelectionRect({
+                parent: this,
                 position: {left:0, width: 0, top: 0, height: 0},
                 props: {},
                 eventHandlers: {
@@ -40,11 +40,11 @@ class StudioCanvasInteraction extends Template {
                     dragstart: (ev) => this.startedDrag = ev,
                     dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 }
-            }
+            })
         }
         for (let [id, cmp] of Object.entries(this.parent.children.preview.children)) {
-            children[id] = {
-                type: SelectionRect,
+            this.children[id] = new SelectionRect({
+                parent: this,
                 position: cmp.position,
                 props: {},
                 eventHandlers: {
@@ -52,11 +52,8 @@ class StudioCanvasInteraction extends Template {
                     dragstart: (ev, root) => root.startedDrag = ev,
                     dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
                 },
-            }
+            })
         }
-        console.log(children)
-        this.setChildren(children)
-        this.setId(this.id)
     }
 
     /**
@@ -191,7 +188,6 @@ class StudioCanvasInteraction extends Template {
         let yDiff = endDrag.y - startDrag.y
 
         for (let id of this.selection) {
-            console.log(id)
             let child = this.children[id]
             let newPosition = {}
             for (let [k, v] of Object.entries(child.position)) {

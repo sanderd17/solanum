@@ -8,17 +8,17 @@ import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 
 
 class StudioWindow extends Template {
-    static childDefinitions = {
-        layoutBar: {
-            type: LayoutBar,
+    children = {
+        layoutBar: new LayoutBar({
+            parent: this,
             position: {left: '0px', top:'0px', width: '100%', height: '20px'},
             props: {
                 positionUnit: 'px'
             },
             eventHandlers: {}
-        },
-        canvas: {
-            type: StudioCanvas,
+        }),
+        canvas: new StudioCanvas({
+            parent: this,
             position: {left: "300px", right: "300px", top: "20px", bottom: "0px"},
             props: {},
             eventHandlers: {
@@ -52,21 +52,21 @@ class StudioWindow extends Template {
                     let newCode = await root.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
                 },
             },
-        },
-        projectBrowser: {
-            type: ProjectBrowser,
+        }),
+        projectBrowser: new ProjectBrowser({
+            parent: this,
             position: {left: "0px", width: "300px", top: "20px", height: "50%"},
             props: {},
             eventHandlers: {},
-        },
-        tagBrowser: {
-            type: TagBrowser,
+        }),
+        tagBrowser: new TagBrowser({
+            parent: this,
             position: {left: "0px", width: "300px", bottom: "20px", height: "50%"},
             props: {},
             eventHandlers: {},
-        },
-        propEditor: {
-            type: PropEditor,
+        }),
+        propEditor: new PropEditor({
+            parent: this,
             position: {right: "0px", width: "300px", top: "20px", bottom: "0px"},
             props: {},
             eventHandlers: {
@@ -80,9 +80,9 @@ class StudioWindow extends Template {
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 }
             },
-        },
-        codeEditor: {
-            type: CodeEditor,
+        }),
+        codeEditor: new CodeEditor({
+            parent: this,
             position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
             props: {},
             eventHandlers: {
@@ -96,7 +96,7 @@ class StudioWindow extends Template {
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 }
             },
-        }
+        }),
     }
 
     positionUnit = 'px'

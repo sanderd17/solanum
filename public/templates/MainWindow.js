@@ -1,6 +1,5 @@
 // import whatever gui template/screens needed
 import Template from "/lib/template.js"
-import P from '/lib/Prop.js'
 import Motor from "/templates/Motor.js"
 import ts from '/lib/TagSet.js'
 class MainWindow extends Template {

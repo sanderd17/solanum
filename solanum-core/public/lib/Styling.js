@@ -58,13 +58,6 @@ class Styling {
         }
         let cls = this.styleMapping[className]
         let ownCss = ''
-        if (cls.prototype.css) {
-            ownCss = Object.entries(cls.prototype.css).map(([subSelector, rules]) => 
-                `.${className}>.${subSelector} {` + 
-                    Object.entries(rules).map(([p,v]) => p + ':' + v).join(';') +
-                '}\n'
-            ).join('\n')
-        }
         if (cls.styles) {
             for (let entry of cls.styles) {
                 ownCss += entryToCss(entry, null)
@@ -72,13 +65,10 @@ class Styling {
         }
 
         let childCss = ''
-        if (cls.childDefinitions) {
-            for (let [id, definition] of Object.entries(cls.childDefinitions)) {
-                if (definition.styles) {
-                    console.log(id, definition.styles)
-                    for (let entry of definition.styles) {
-                        childCss += entryToCss(entry, id)
-                    }
+        if (cls.childStyles) {
+            for (let [id, definition] of Object.entries(cls.childStyles)) {
+                for (let entry of definition) {
+                    childCss += entryToCss(entry, id)
                 }
             }
         }

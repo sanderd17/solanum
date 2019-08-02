@@ -5,104 +5,93 @@ import Textbox from '/templates/forms/Textbox.js'
 class PositionPropEditor extends Template {
 
     static defaultSize = [300, 150]
-    static childDefinitions  = {
-        leftActive: {
-            type: Checkbox,
+    children  = {
+        leftActive: new Checkbox({
+            parent: this,
             position: { left: '0px', top: '0px', height: '20px', width: '100px' },
             props: {
                 text: 'Left',
                 disabled: true
             },
             eventHandlers: {},
-            styles: []
-        },
-        rightActive: {
-            type: Checkbox,
+        }),
+        rightActive: new Checkbox({
+            parent: this,
             position: { left: '0px', top: '25px', height: '20px', width: '100px' },
             props: {
                 text: 'Right',
                 disabled: true
             },
             eventHandlers: {},
-            styles: []
-        },
-        widthActive: {
-            type: Checkbox,
+        }),
+        widthActive: new Checkbox({
+            parent: this,
             position: { left: '0px', top: '50px', height: '20px', width: '100px' },
             props: {
                 text: 'Width',
                 disabled: true
             },
             eventHandlers: {},
-            styles: []
-        },
-        topActive: {
-            type: Checkbox,
+        }),
+        topActive: new Checkbox({
+            parent: this,
             position: { left: '0px', top: '75px', height: '20px', width: '100px' },
             props: {
                 text: 'Top',
                 disabled: true
             },
             eventHandlers: {},
-            styles: []
-        },
-        bottomActive: {
-            type: Checkbox,
+        }),
+        bottomActive: new Checkbox({
+            parent: this,
             position: { left: '0px', top: '100px', height: '20px', width: '100px' },
             props: {
                 text: 'Bottom',
                 disabled: true
             },
             eventHandlers: {},
-            styles: []
-        },
-        heightActive: {
-            type: Checkbox,
+        }),
+        heightActive: new Checkbox({
+            parent: this,
             position: { left: '0px', top: '125px', height: '20px', width: '100px' },
             props: {
                 text: 'Height',
                 disabled: true
             },
             eventHandlers: {},
-            styles: []
-        },
-        leftValue: {
-            type: Textbox,
+        }),
+        leftValue: new Textbox({
+            parent: this,
             position: { left: '120px', top: '0px', height: '20px', right: '0px' },
             props: { disabled: true },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'left') },
-            styles: []
-        },
-        rightValue: {
-            type: Textbox,
+        }),
+        rightValue: new Textbox({
+            parent: this,
             position: { left: '120px', top: '25px', height: '20px', right: '0px' },
             props: { disabled: true },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'right') },
-            styles: []
-        },
-        widthValue: {
-            type: Textbox,
+        }),
+        widthValue: new Textbox({
+            parent: this,
             position: { left: '120px', top: '50px', height: '20px', right: '0px' },
             props: { disabled: true },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'width') },
-            styles: []
-        },
-        topValue: {
-            type: Textbox,
+        }),
+        topValue: new Textbox({
+            parent: this,
             position: { left: '120px', top: '75px', height: '20px', right: '0px' },
             props: { disabled: true },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'top') },
-            styles: []
-        },
-        bottomValue: {
-            type: Textbox,
+        }),
+        bottomValue: new Textbox({
+            parent: this,
             position: { left: '120px', top: '100px', height: '20px', right: '0px' },
             props: { disabled: true },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'bottom') },
-            styles: []
-        },
-        heightValue: {
-            type: Textbox,
+        }),
+        heightValue: new Textbox({
+            parent: this,
             position: {
                 left: "120px",
                 top: "125px",
@@ -111,9 +100,7 @@ class PositionPropEditor extends Template {
             },
             props: { disabled: true },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'height') },
-            styles: []
-        }
-
+        }),
     }
 
     /**

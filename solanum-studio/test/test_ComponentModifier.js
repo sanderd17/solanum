@@ -27,13 +27,13 @@ const startCode = `
 import Template from '../lib/template.js'
 
 class TestComponent extends Template {
-    static childDefinitions = {
-        child1: {
-            type: Child,
+    children = {
+        child1: new Child({
+            parent: this,
             position: {left: '0', width: '100%', top: '0', height: '100%'},
             props: {},
             eventHandlers: {ev1: () => {}}
-        }
+        })
     }
 
     prop1 = 'val1'
@@ -67,7 +67,7 @@ describe('ComponentModifier', function() {
         })
         it('Should add the child id', function() {
             assert(newCode.includes('child2:'))
-            assert(newCode.includes('type: Child2,'))
+            assert(newCode.includes('new Child2('))
         })
     })
 

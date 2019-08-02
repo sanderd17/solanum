@@ -3,13 +3,13 @@ import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 
 class Motor extends Template {
-    static childDefinitions = {
-        icon: {
-            type: Circle,
+     children = {
+        icon: new Circle({
+            parent: this,
             position: {
-                left: "5%",
+                left: "13%",
                 width: "72%",
-                top: "21%",
+                top: "16%",
                 height: "69%"
             },
             props: {fill: 'red'},
@@ -37,21 +37,22 @@ class Motor extends Template {
                     }
                 }
             ]
-        },
+        }),
 
-        icon2: {
-            type: Circle,
+        icon2: new Circle({
+            parent: this,
             position: {
-                left: "63%",
+                left: "7%",
                 width: "28%",
-                top: "64%",
+                top: "63%",
                 height: "25%"
             },
             props: {fill: 'blue'},
             eventHandlers: { }
-        }
+        })
     }
 
+    _motor = ''
     set motor(motor) {
         this._motor = motor
 

@@ -63,6 +63,11 @@ class Circle extends Template {
 
         for (let key of positionKeys)
             if (key in this.position) this.dom.style[key] = this.position[key]
+
+        if (this.parent) {
+            this.parent.createDomNode()
+            this.parent.dom.appendChild(this.dom)
+        }
     }
 }
 

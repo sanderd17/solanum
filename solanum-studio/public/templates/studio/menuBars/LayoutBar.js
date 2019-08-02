@@ -3,9 +3,9 @@ import ToggleButton from '/templates/forms/ToggleButton.js'
 
 class LayoutBar extends Template {
 
-    static childDefinitions = {
-        icon: {
-            type: ToggleButton,
+    children = {
+        icon: new ToggleButton({
+            parent: this,
             position: {
                 left: "0px",
                 width: "20px",
@@ -25,8 +25,7 @@ class LayoutBar extends Template {
                     }
                 }
             },
-            styles: []
-        },
+        }),
     }
 
     _positionUnit = '%'

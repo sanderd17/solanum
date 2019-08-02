@@ -1,5 +1,4 @@
 import Template from '/lib/template.js'
-import P from '/lib/Prop.js'
 import ts from '/lib/TagSet.js'
 import Rect from '/templates/draw/Rect.js'
 import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
@@ -7,41 +6,17 @@ import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
 
 class SelectionRect extends Template {
 
-    static childDefinitions = {
-        rect: {
-            type: Rect,
+    children = {
+        rect: new Rect({
+            parent: this,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
             props: {
-                'stroke-dasharray': '1 4'
+                'stroke-dasharray': '1 4',
             },
             eventHandlers: {},
-            styles: [
-                {
-                    declarations: {
-                        'fill': 'none',
-                        'stroke-linecap': 'round',
-                    }
-                },
-                {
-                    classes: ['selected'],
-                    declarations: {
-                        'stroke-dasharray': '1 4',
-                        'stroke': '#00008080',
-                        'stroke-width': '1px',
-                    }
-                },
-                {
-                    states: ['hover'],
-                    declarations: {
-                        'cursor': 'pointer',
-                        'stroke': '#00008080',
-                        'stroke-width': '1px',
-                    }
-                },
-            ],
-        },
-        topLeftHandle: {
-            type: ResizeHandle,
+        }),
+        topLeftHandle: new ResizeHandle({
+            parent: this,
             position: {left: "0%", width: "4px", top: "0%", height: "4px"},
             props: {
                 'visible': false,
@@ -50,15 +25,9 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev),
             },
-            styles: [{
-                classes: ['selected'],
-                declarations: {
-                    'cursor': 'nwse-resize'
-                }
-            }]
-        },
-        topHandle: {
-            type: ResizeHandle,
+        }),
+        topHandle: new ResizeHandle({
+            parent: this,
             position: {left: "calc(50% - 2px)", width: "4px", top: "0%", height: "4px"},
             props: {
                 'visible': false,
@@ -67,15 +36,9 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev),
             },
-            styles: [{
-                classes: ['selected'],
-                declarations: {
-                    'cursor': 'ns-resize'
-                }
-            }]
-        },
-        topRightHandle:{
-            type: ResizeHandle,
+        }),
+        topRightHandle:new ResizeHandle({
+            parent: this,
             position: {right: "0%", width: "4px", top: "0%", height: "4px"},
             props: {
                 'visible': false,
@@ -84,15 +47,9 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev),
             },
-            styles: [{
-                classes: ['selected'],
-                declarations: {
-                    'cursor': 'nesw-resize'
-                }
-            }]
-        },
-        rightHandle: {
-            type: ResizeHandle,
+        }),
+        rightHandle: new ResizeHandle({
+            parent: this,
             position: {right: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
             props: {
                 'visible': false,
@@ -101,15 +58,9 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev),
             },
-            styles: [{
-                classes: ['selected'],
-                declarations: {
-                    'cursor': 'ew-resize'
-                }
-            }]
-        },
-        bottomRightHandle: {
-            type: ResizeHandle,
+        }),
+        bottomRightHandle: new ResizeHandle({
+            parent: this,
             position: {right: "0%", width: "4px", bottom: "0%", height: "4px"},
             props: {
                 'visible': false,
@@ -118,15 +69,9 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev),
             },
-            styles: [{
-                classes: ['selected'],
-                declarations: {
-                    'cursor': 'nwse-resize'
-                }
-            }]
-        },
-        bottomHandle: {
-            type: ResizeHandle,
+        }),
+        bottomHandle: new ResizeHandle({
+            parent: this,
             position: {left: "calc(50% - 2px)", width: "4px", bottom: "0%", height: "4px"},
             props: {
                 'visible': false,
@@ -135,15 +80,9 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev),
             },
-            styles: [{
-                classes: ['selected'],
-                declarations: {
-                    'cursor': 'ns-resize'
-                }
-            }]
-        },
-        bottomLeftHandle: {
-            type: ResizeHandle,
+        }),
+        bottomLeftHandle: new ResizeHandle({
+            parent: this,
             position: {left: "0%", width: "4px", bottom: "0%", height: "4px"},
             props: {
                 'visible': false,
@@ -152,15 +91,9 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev),
             },
-            styles: [{
-                classes: ['selected'],
-                declarations: {
-                    'cursor': 'nesw-resize'
-                }
-            }]
-        },
-        leftHandle: {
-            type: ResizeHandle,
+        }),
+        leftHandle: new ResizeHandle({
+            parent: this,
             position: {left: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
             props: {
                 'visible': false,
@@ -169,13 +102,82 @@ class SelectionRect extends Template {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
                 dragend: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev),
             },
-            styles: [{
+        }),
+    }
+
+    static childStyles = {
+        rect: [
+            {
+                declarations: {
+                    'fill': 'none',
+                    'stroke-linecap': 'round',
+                }
+            },
+            {
                 classes: ['selected'],
                 declarations: {
-                    'cursor': 'ew-resize'
+                    'stroke-dasharray': '1 4',
+                    'stroke': '#00008080',
+                    'stroke-width': '1px',
                 }
-            }]
-        },
+            },
+            {
+                states: ['hover'],
+                declarations: {
+                    'cursor': 'pointer',
+                    'stroke': '#00008080',
+                    'stroke-width': '1px',
+                }
+            },
+        ],
+        topLeftHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'nwse-resize'
+            }
+        }],
+        topHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'ns-resize'
+            }
+        }],
+        topRightHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'nesw-resize'
+            }
+        }],
+        rightHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'ew-resize'
+            }
+        }],
+        bottomRightHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'nwse-resize'
+            }
+        }],
+        bottomHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'ns-resize'
+            }
+        }],
+        bottomLeftHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'nesw-resize'
+            }
+        }],
+        leftHandle: [{
+            classes: ['selected'],
+            declarations: {
+                'cursor': 'ew-resize'
+            }
+        }],
     }
     
     _selected = false
