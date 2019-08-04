@@ -14,6 +14,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "flow-parser": "^0.104.0",
+    "known-css-properties": "^0.15.0",
     "monaco-editor": "^0.17.1",
     "recast": "^0.18.1",
     "recursive-readdir": "^2.2.2",

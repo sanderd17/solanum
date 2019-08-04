@@ -20,7 +20,7 @@ class Motor extends Template {
         ]
     }
 
-     children = {
+    children = {
         icon: new Circle({
             parent: this,
             position: {

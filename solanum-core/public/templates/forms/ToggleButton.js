@@ -26,8 +26,14 @@ class ToggleButton extends Template {
 
         this.classList.add(this.className)
 
-        for (let key of positionKeys)
+        for (let key of positionKeys) {
             if (key in this.position) this.dom.style[key] = this.position[key]
+        }
+        
+        if (this.parent) {
+            this.parent.createDomNode()
+            this.parent.dom.appendChild(this.dom)
+        }
     }
 }
 

@@ -52,6 +52,7 @@ class CodeEditor extends Template {
 				}
 			}))
 		})
+		this.monacoEditor.getAction('editor.foldLevel3').run()
 	}
 
 	get code() {
@@ -77,7 +78,8 @@ class CodeEditor extends Template {
 		monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
 			target: monaco.languages.typescript.ScriptTarget.ES6,
 			//module: monaco.languages.typescript.ModuleKind.None,
-			allowNonTsExtensions: true
+			allowNonTsExtensions: true,
+			allowJs: true,
 		});
 
 		// extra libraries
@@ -89,6 +91,7 @@ class CodeEditor extends Template {
 			value: '',
 			language: "javascript"
 		})
+
 
 	}
 
