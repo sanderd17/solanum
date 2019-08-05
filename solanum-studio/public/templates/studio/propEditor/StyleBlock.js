@@ -54,9 +54,9 @@ class StyleBlock extends Template {
     set styleBlock(styleBlock) {
         this._styleBlock = styleBlock
 
-        // Create new block per set of declarations
-
-
+        this.children.tglHov.selected = styleBlock.includes('hover')
+        this.children.tglFoc.selected = styleBlock.includes('focus')
+        this.children.tglAct.selected = styleBlock.includes('active')
     }
 
     get styleBlock() {

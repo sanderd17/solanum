@@ -27,8 +27,32 @@ class CodeEditor extends Template {
 		setTimeout(() => this.createMonacoEditor())
 	}
 	
-	_code = ''
+	eventTimerId = null
+	eventOldCode = ''
+	/**
+	 * Send the contentChanged event after some time of inactivity
+	 * @param {string} oldCode 
+	 * @param {string} newCode 
+	 * @param {Event} event 
+	 */
+	sendContentChangedEvent(oldCode, newCode, event) {
+		if (this.eventTimerId) {
+			clearTimeout(this.eventTimerId)
+		} else {
+			this.eventOldCode = oldCode
+		}
+		this.eventTimerId = setTimeout(() => {
+			this.dom.dispatchEvent(new CustomEvent('codeContentChanged', {
+				bubbles: true,
+				detail: {
+					newCode: newCode,
+					oldCode: this.eventOldCode,
+				}
+			}))
+		}, 2000)
+	}
 
+	_code = ''
 	/**
 	 * Code prop set externally
 	 */
@@ -43,14 +67,8 @@ class CodeEditor extends Template {
 			// update private _code value to circumvent setter
 			let oldCode = this._code
 			this._code = this.monacoEditor.getValue()
-            this.dom.dispatchEvent(new CustomEvent('codeContentChanged', {
-                bubbles: true,
-                detail: {
-					newCode: this.code,
-					oldCode: oldCode,
-					diff: ev
-				}
-			}))
+			this.sendContentChangedEvent(oldCode, this.code, ev)
+
 		})
 		this.monacoEditor.getAction('editor.foldLevel3').run()
 	}

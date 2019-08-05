@@ -1,5 +1,6 @@
 import Template from "/lib/template.js"
 import PositionPropEditor from '/templates/studio/propEditor/PositionPropEditor.js'
+import StylePropEditor from '/templates/studio/propEditor/StylePropEditor.js'
 
 class PropEditor extends Template {
 
@@ -8,6 +9,10 @@ class PropEditor extends Template {
         positionPropEditor: new PositionPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '0px', height: '150px'}
+        }),
+        stylePropEditor: new StylePropEditor({
+            parent: this,
+            position: {left: '0px', right: '0px', top: '150px', height: '150px'}
         }),
     }
 

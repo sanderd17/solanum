@@ -58,7 +58,6 @@ class Motor extends Template {
     _motor = ''
     set motor(motor) {
         this._motor = motor
-
         ts.setSubscription(this.children.icon, 'fill', `Motors/${motor}`)
     }
 

@@ -41,10 +41,10 @@ class StylePropEditor extends Template {
 
     set effectsList(effectsList) {
         this._effectsList = effectsList
-
+        if (effectsList.length > 0) {
+            this.children.block_1.styleBlock = effectsList[0]
+        }
         // Create new block per set of declarations
-
-
     }
 
     get effectsList() {
