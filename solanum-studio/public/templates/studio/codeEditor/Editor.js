@@ -49,6 +49,7 @@ class CodeEditor extends Template {
 					oldCode: this.eventOldCode,
 				}
 			}))
+			this.eventTimerId = null
 		}, 2000)
 	}
 

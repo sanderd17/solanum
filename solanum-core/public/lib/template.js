@@ -26,6 +26,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Template {
     /** @type {Object<string,TemplateConstructParams>} */
     static childDefinitions = null
+    /** @type {Object<string,Template>} */
     children = {}
 
     /**
@@ -176,6 +177,19 @@ class Template {
         }
 
     } 
+
+    /**
+     * Clean up itself
+     */
+    destroy() {
+        for (let child of Object.values(this.children)) {
+            child.destroy()
+        }
+        if (this.dom.parentNode) {
+            this.dom.parentNode.removeChild(this.dom)
+        }
+        ts.removeSubscription(this)
+    }
 }
 
 

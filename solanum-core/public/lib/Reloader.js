@@ -5,8 +5,8 @@ function recursiveCheckClass(root, cls) {
     for (let id in root.children) {
         let child = root.children[id]
         if (child.constructor.name == cls.name) {
-            // remove own dom node
-            root.dom.removeChild(child.dom)
+            // remove own references
+            child.destroy()
             // get defined props, eventhandlers, ... and apply to new child
             let newChild = new cls(child.cArgs)
             root.dom.appendChild(newChild.dom)
