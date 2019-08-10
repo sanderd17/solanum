@@ -1,5 +1,6 @@
 import style from './Styling.js'
 import ts from './TagSet.js';
+import { threadId } from 'worker_threads';
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
@@ -151,7 +152,7 @@ class Template {
     } 
 
     /**
-     * Clean up itself
+     * Clean up itself and break references to all its children
      */
     destroy() {
         for (let child of Object.values(this.children)) {
@@ -161,6 +162,7 @@ class Template {
             this.dom.parentNode.removeChild(this.dom)
         }
         ts.removeSubscription(this)
+        this.children = null
     }
 }
 
