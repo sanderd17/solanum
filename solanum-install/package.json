@@ -1,6 +1,6 @@
 {
   "name": "solanum-install",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "Install Solanum Scada",
   "main": "index.js",
   "scripts": {
