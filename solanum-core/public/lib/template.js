@@ -1,6 +1,5 @@
 import style from './Styling.js'
 import ts from './TagSet.js';
-import { threadId } from 'worker_threads';
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**

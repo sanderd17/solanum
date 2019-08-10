@@ -1,4 +1,4 @@
-import tags from '../../tags/default.js'
+import tags from '../../solanum-demo/tags/default.js' // FIXME: don't hard-code path
 import clientList from './ClientList.js'
 import Client from './Client.js'
 import Tag from './Tag.js'

@@ -1,0 +1,17 @@
+{
+  "name": "solanum-demo",
+  "version": "0.0.1-alpha.3",
+  "author": "Sander Deryckere",
+  "license": "AGPL-3.0",
+  "description": "Demo app",
+  "repository": "https://github.com/sanderd17/solanum",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+  },
+  "dependencies": {
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "jsonschema": "^1.2.4"
+  },
+}

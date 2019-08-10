@@ -8,13 +8,13 @@ const config = {
     },
     publicDirs: [
         path.join(__dirname, 'public/'),
-        path.join(__dirname, 'solanum-core/public/'),
-        path.join(__dirname, 'solanum-studio/public/'),
+        path.join(__dirname, '../solanum-core/public/'),
+        path.join(__dirname, '../solanum-studio/public/'),
     ],
     editableDirs: {
         "main": path.join(__dirname, 'public/templates/'),
-        "core": path.join(__dirname, 'solanum-core/public/templates/'),
-        "studio": path.join(__dirname, 'solanum-studio/public/templates/'),
+        "core": path.join(__dirname, '../solanum-core/public/templates/'),
+        "studio": path.join(__dirname, '../solanum-studio/public/templates/'),
     },
     tags: {
         files: [
