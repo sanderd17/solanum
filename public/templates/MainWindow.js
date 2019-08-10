@@ -5,21 +5,19 @@ import ts from '/lib/TagSet.js'
 class MainWindow extends Template {
     constructor(...args) {
         super(...args)
-        let children = {}
 
         let size = 15
         for (let i = 0; i < 3000; i++) {
-            children['motor_' + i] = {
-                type: Motor,
+            let child = new Motor({
+                parent: this,
                 position: {left: (size * Math.floor(i/50)) + 'px', width: size + 'px', top: (size * (i % 50)) + 'px', height: size + 'px'},
                 props: {
                     motor: `M${i}`,
                 },
                 eventHandlers: {}
-            }
+            })
+            this.addChild('motor_' + i, child)
         }
-
-        this.setChildren(children)
     }
 }
 

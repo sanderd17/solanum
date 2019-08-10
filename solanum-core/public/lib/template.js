@@ -51,9 +51,8 @@ class Template {
         // Copy the prop values to own values
         // Set the props async, to allow the children to be initialised before prop setters are called
         Promise.resolve().then(() => {
-            if (this.parent) {
-                // add own id to class list
-                this.classList.add(this.parent.getChildId(this))
+            for (let [id, child] of Object.entries(this.children)) {
+                child.classList.add(id)
             }
             for (let key in p.props) {
                 this[key] = p.props[key]
@@ -67,42 +66,15 @@ class Template {
         return this.dom.classList
     }
 
-    removeChild(id) {
-        let child = this.children[id]
-        if (child) {
-            this.dom.removeChild(child.dom)
-            delete this.children[id]
-        }
-    }
-
-    addChild(id, childDefinition) {
-        let type = childDefinition.type
-        let child = new type(childDefinition)
+    addChild(id, child) {
         this.children[id] = child
-        this.dom.appendChild(child.dom)
+        child.classList.add(id)
     }
 
-    setChildren(childDefinitions) {
-        if (this.children) {
-            // children have been previously defined, remove them
-            for (let id in this.children) {
-                this.removeChild(id)
-            }
-        }
-        if (childDefinitions) {
-            // childDefinitions are available, add the children
-            this.children = {}
-            for (let id in childDefinitions) {
-                this.addChild(id, childDefinitions[id])
-            }   
-        }
-    }
-
-    getChildId(child) {
-        for (let [id, c] of Object.entries(this.children)) {
-            if (child == c) {
-                return id
-            }
+    removeChild(id) {
+        if (id in this.children) {
+            this.children[id].destroy()
+            delete this.children[id]
         }
     }
 
