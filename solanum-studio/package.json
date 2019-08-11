@@ -12,6 +12,7 @@
     "build": "tsc --build jsconfig.json"
   },
   "dependencies": {
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "flow-parser": "^0.104.0",
     "known-css-properties": "^0.15.0",
