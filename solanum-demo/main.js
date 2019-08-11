@@ -3,6 +3,7 @@ import express from 'express'
 
 import config from './config.js'
 
+import tags from './tags/default.js'
 import {default as initCore} from '../solanum-core'
 import {default as initStudio} from '../solanum-studio'
 
@@ -14,7 +15,9 @@ app.use(function (req, res, next) {
 });
 */
 
-initCore(app, config)
+let solanumCore = initCore(app, config)
+solanumCore.ts.setTags(tags)
+
 initStudio(app, config)
 
 app.listen(config.app.port);

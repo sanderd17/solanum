@@ -1,4 +1,3 @@
-import tags from '../../solanum-demo/tags/default.js' // FIXME: don't hard-code path
 import clientList from './ClientList.js'
 import Client from './Client.js'
 import Tag from './Tag.js'
@@ -51,7 +50,7 @@ TagSet.prototype.initMessageHandlers = function() {
 /**
  * @param {object} tagList 
  */
-TagSet.prototype.setTags = function(tagList=tags) {
+TagSet.prototype.setTags = function(tagList) {
     for (let tagpath in tagList) {
         this.addTag(tagpath, tagList[tagpath])
     }

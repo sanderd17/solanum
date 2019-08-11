@@ -15,7 +15,6 @@ class Solanum {
         this.config = config
         this.ts = new TagSet(config)
         this.ts.initMessageHandlers()
-        this.ts.setTags()
     }
 }
 
