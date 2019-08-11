@@ -2,8 +2,8 @@ import express from 'express'
 
 
 import config from './config.js'
-
 import tags from './tags/default.js'
+
 import {default as initCore} from '../solanum-core'
 import {default as initStudio} from '../solanum-studio'
 

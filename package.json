@@ -1,6 +1,6 @@
 {
   "name": "solanum",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.7",
   "author": "Sander Deryckere",
   "license": "AGPL-3.0",
   "description": "Experimental Scada package",
@@ -16,9 +16,14 @@
     "low_bandwidth_netw": "sudo tc qdisc add dev lo root netem rate 300kbit # limil localhost speed to 300kbit",
     "reset_netw": "sudo tc qdisc del dev lo root netem # RESET localhost to full speed"
   },
+  "bin": {
+    "solanum": "bin/solanum.js"
+  },
   "dependencies": {
+    "commander": "^3.0.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "inquirer": "^6.5.0",
     "jsonschema": "^1.2.4"
   },
   "devDependencies": {

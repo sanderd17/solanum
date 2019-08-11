@@ -1,4 +1,5 @@
 solanum-core/*
 solanum-studio/*
 solanum-install/*
+solanum-demo/node_modules/*
 src/OpcTag.js
