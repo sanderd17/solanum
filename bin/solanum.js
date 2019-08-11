@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const inquirer = require('inquirer')
+const prompts = require('prompts')
 const fs = require('fs')
 const { spawn } = require('child_process')
 const program = require('commander')
@@ -28,36 +28,36 @@ async function install() {
 
     let questions = [
         {
-            type : "input",
+            type : "text",
             name : "name",
             message : "Project name: ",
-            default: 'My-Project',
+            initial: 'My-Project',
         },
         {
-            type : "input",
+            type : "text",
             name : "version",
             message : "Version: ",
-            default: '1.0.0',
+            initial: '1.0.0',
         },
         {
-            type : "input",
+            type : "text",
             name : "description",
             message : "Description: ",
         },
         {
-            type : "input",
+            type : "text",
             name : "author",
             message : "Author: ",
         },
         {
-            type : "checkbox",
+            type : "multiselect",
             name : "dependencies",
             message : "Select additional modules: ",
             choices: [
-                new inquirer.Separator(' --- Editor --- '),
                 {
-                    name: 'solanum-studio',
-                    checked: true
+                    title: 'Solanum Studio',
+                    value: 'solanum-studio',
+                    selected: true
                 },
             ]
         },
@@ -65,7 +65,7 @@ async function install() {
             type: 'confirm',
             name: 'confirm',
             message: 'Confirm installation?',
-            default: true
+            initial: true
         }
     ]
 
@@ -80,7 +80,7 @@ async function install() {
     Press ^C at any time to quit.
     `)
 
-    let {name, version, description, author, dependencies, confirm} = await inquirer.prompt(questions)
+    let {name, version, description, author, dependencies, confirm} = await prompts(questions)
 
     if (!confirm) {
         console.log('Aborting installation')

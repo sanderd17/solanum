@@ -1,6 +1,6 @@
 {
   "name": "solanum",
-  "version": "0.0.1-alpha.7",
+  "version": "0.0.1-alpha.8",
   "author": "Sander Deryckere",
   "license": "AGPL-3.0",
   "description": "Experimental Scada package",
@@ -21,8 +21,7 @@
   },
   "dependencies": {
     "commander": "^3.0.0",
-    "inquirer": "^6.5.0",
+    "prompts": "^2.2.1"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
