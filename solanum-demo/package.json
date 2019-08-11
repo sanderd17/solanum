@@ -7,11 +7,10 @@
   "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node index.js"
   },
   "dependencies": {
     "esm": "^3.2.25",
-    "express": "^4.17.1",
-    "jsonschema": "^1.2.4"
-  },
+    "express": "^4.17.1"
+  }
 }
