@@ -3,6 +3,7 @@ const prompts = require('prompts')
 const fs = require('fs')
 const { spawn } = require('child_process')
 const program = require('commander')
+const path = require('path')
 
 const packageVersion = require('../package.json').version
 
@@ -19,7 +20,7 @@ program.parse(process.argv);
 async function install() {
 
     const defaultPackages = {
-        'solanum-core': '^' + packageVersion
+        'solanum-core': '^' + packageVersion,
     }
 
     const optionalPackages = {
@@ -105,10 +106,44 @@ async function install() {
     console.log(packageJson)
 
     fs.writeFileSync('./package.json', JSON.stringify(packageJson))
-
     const child = spawn('npm', ['install', process.cwd()], {stdio: [process.stdin, process.stdout, process.stderr]})
 
     child.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
+        if (code == 0) 
+            console.log('INSTALLATION SUCCESSFUL')
+        else
+            console.error(`ERROR: npm install process exited with code ${code}`);
     });
+
+    let config = {
+        app: {
+            port: 8840,
+        },
+        publicDirs: [
+            path.join(process.cwd(), 'public/'),
+        ],
+        editableDirs: {
+            "main": path.join(process.cwd(), 'public/templates/'),
+        },
+        tags: {
+            files: [
+                path.join(process.cwd(), 'tags/default.js'),
+            ]
+        }
+    }
+
+    for (let p of Object.keys(defaultPackages)) {
+        let dir = path.join(process.cwd(), 'node_modules', p, 'public')
+        config.publicDirs.push(dir)
+        config.publicDirs[p] = dir 
+    }
+
+    let configFile = `
+const config = ${JSON.stringify(config, null, '\t')}
+
+export default config
+`
+    fs.writeFileSync('./config.js', configFile)
+
+    //TODO write all files from data/ to the current dir
 }
