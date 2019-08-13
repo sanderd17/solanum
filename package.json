@@ -23,5 +23,8 @@
     "commander": "^3.0.0",
     "prompts": "^2.2.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "esm": "^3.2.25",
+    "mocha": "^6.2.0"
+  }
 }
