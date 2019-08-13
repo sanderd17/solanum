@@ -36,7 +36,15 @@ class TestComponent extends Template {
         })
     }
 
-    prop1 = 'val1'
+    _prop1 = 'val1'
+
+    get prop1 () {
+        return this._prop1
+    }
+
+    set prop1(prop1) {
+        this._prop1 = prop1
+    }
 }
 
 export default TestComponent
@@ -116,7 +124,7 @@ describe('ComponentModifier', function() {
             assert(!newCode.includes('ev1:'))
         })
     })
-    describe.skip('setDefaultProp', function() {
+    describe('addProp', function() {
         it('Should add a new default prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.setDefaultProp('prop2', 2)
@@ -124,6 +132,8 @@ describe('ComponentModifier', function() {
 
             assert(newCode.includes('prop2: 2'))
         })
+    })
+    describe.skip('setProp', function() {
         it('Should alter an existing default prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.setDefaultProp('prop1', 1)
