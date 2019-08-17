@@ -110,8 +110,27 @@ class ComponentModifier {
         }
     }
 
-    setChildProp() {
+    setChildProp(childId, propName, value) {
+        if (!this.testValidPropName(propName)) {
+            throw new Error(`Cannot add prop with name ${propName}. Only ASCII characters are allowed, starting with a letter and only containing letters, underscores and numbers`)
+        }
 
+        let childProps = this.getChildProps(childId)
+
+        let foundProp = false
+        for (let prop of childProps.properties) {
+            if (prop.key.name != propName && prop.key.value != propName)
+                continue
+            // prop is the wanted prop
+            foundProp = true
+            prop.value = valueToAst(value)
+        }
+
+        if (!foundProp) {
+            const b = recast.types.builders
+            let newProp = b.property('init', b.identifier(propName), valueToAst(value))
+            childProps.properties.splice(childProps.properties.length, 0, newProp)
+        }
     }
 
     removeChildProp() {
@@ -271,6 +290,16 @@ class ComponentModifier {
             if (childCreation.arguments.length != 1)
                 continue
             return childCreation.arguments[0]
+        }
+    }
+    
+    getChildProps(childId) {
+        let childArg = this.getChildDefinition(childId)
+
+        for (let prop of childArg.properties) {
+            if (!prop.key || prop.key.name != 'props')
+                continue
+            return prop.value
         }
     }
 

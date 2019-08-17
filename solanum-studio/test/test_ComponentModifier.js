@@ -31,7 +31,7 @@ class TestComponent extends Template {
         child1: new Child({
             parent: this,
             position: {left: '0', width: '100%', top: '0', height: '100%'},
-            props: {},
+            props: {childProp: 0},
             eventHandlers: {ev1: () => {}}
         })
     }
@@ -97,6 +97,16 @@ describe('ComponentModifier', function() {
             assert(newCode.includes('left: "10%"'))
         })
     })
+    describe('setChildProp', function() {
+        it('Should set a prop of a child', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.setChildProp('child1', 'myProp', 'myVal')
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('myProp:'))
+            assert(newCode.includes('myVal'))
+        })
+    })
     describe('setChildEventHandler', function() {
         it('Should add an event handler of a child', function() {
             let cmpMod = new ComponentModifier(startCode)
@@ -125,16 +135,22 @@ describe('ComponentModifier', function() {
         })
     })
     describe('addProp', function() {
-        it('Should add a new prop', function() {
+        it('Should add a new numeric prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.addProp('prop2', 2)
             let newCode = cmpMod.print()
 
             assert(newCode.includes('prop2 = 2'))
         })
-    })
-    describe.skip('addProp_object', function() {
-        it('Should add a new object prop', function() {
+        it('Should add a new string prop', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.addProp('prop2', 'myVal')
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('prop2 = '))
+            assert(newCode.includes('myVal'))
+        })
+        it.skip('Should add a new object prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.addProp('prop2', {myKey: 'myVal', numKey: 10})
             let newCode = cmpMod.print()
@@ -143,9 +159,7 @@ describe('ComponentModifier', function() {
             assert(newCode.includes('myKey:'))
             assert(newCode.includes('numKey:'))
         })
-    })
-    describe.skip('addProp_array', function() {
-        it('Should add a new array prop', function() {
+        it.skip('Should add a new array prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.addProp('prop2', [1,2,3,"string",{myKey: 'myVal'}])
             let newCode = cmpMod.print()
