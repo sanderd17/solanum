@@ -118,7 +118,7 @@ class ComponentModifier {
         let childProps = this.getChildProps(childId)
 
         let foundProp = false
-        for (let prop of childProps.properties) {
+        for (let prop of childProps) {
             if (prop.key.name != propName && prop.key.value != propName)
                 continue
             // prop is the wanted prop
@@ -129,12 +129,20 @@ class ComponentModifier {
         if (!foundProp) {
             const b = recast.types.builders
             let newProp = b.property('init', b.identifier(propName), valueToAst(value))
-            childProps.properties.splice(childProps.properties.length, 0, newProp)
+            childProps.splice(childProps.length, 0, newProp)
         }
     }
 
-    removeChildProp() {
+    removeChildProp(childId, propName) {
+        let childProps = this.getChildProps(childId)
 
+        for (let i = 0; i < childProps.length; i++) {
+            let prop = childProps[i]
+            if (prop.key.name != propName && prop.key.value != propName)
+                continue
+            // prop is the wanted prop
+            childProps.splice(i, 1)
+        }
     }
 
     /**
@@ -299,7 +307,9 @@ class ComponentModifier {
         for (let prop of childArg.properties) {
             if (!prop.key || prop.key.name != 'props')
                 continue
-            return prop.value
+            if (!prop.value.type == "ObjectExpression")
+                continue
+            return prop.value.properties
         }
     }
 

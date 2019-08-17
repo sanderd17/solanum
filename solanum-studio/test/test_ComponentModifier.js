@@ -107,6 +107,15 @@ describe('ComponentModifier', function() {
             assert(newCode.includes('myVal'))
         })
     })
+    describe('removeChildProp', function() {
+        it('Should remove a prop of a child', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.removeChildProp('child1', 'childProp')
+            let newCode = cmpMod.print()
+
+            assert(!newCode.includes('childProp'))
+        })
+    })
     describe('setChildEventHandler', function() {
         it('Should add an event handler of a child', function() {
             let cmpMod = new ComponentModifier(startCode)
@@ -149,6 +158,13 @@ describe('ComponentModifier', function() {
 
             assert(newCode.includes('prop2 = '))
             assert(newCode.includes('myVal'))
+        })
+        it.skip('Should add a new null prop', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.addProp('prop2', null)
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('prop2 = null'))
         })
         it.skip('Should add a new object prop', function() {
             let cmpMod = new ComponentModifier(startCode)
