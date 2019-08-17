@@ -73,6 +73,17 @@ export const setChildPosition = {
     }
 }
 
+export const setChildProp = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        childId:        {type: 'string', required: true},
+        propName:       {type: 'string', required: true},
+        value:          {type: 'any',    required: true},
+    }
+}
+
 export const setChildEventHandler = {
     type: 'object',
     properties: {

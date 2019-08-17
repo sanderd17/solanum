@@ -157,6 +157,25 @@ class StudioAPI {
      * @param {Request} req 
      * @param {Express.Response} res 
      */
+    async setChildProp(req, res) {
+        const body = req.body
+
+        let cmpFile = this.componentStore.getFile(body.module, body.component)
+        let cmpCode = await cmpFile.read()
+
+        let cmpMod = new ComponentModifier(cmpCode)
+
+        cmpMod.setChildProp(body.childId, body.propName, body.value)
+        let newCmpCode = cmpMod.print()
+
+        await cmpFile.write(newCmpCode)
+        res.send(newCmpCode)
+    }
+
+    /**
+     * @param {Request} req 
+     * @param {Express.Response} res 
+     */
     async setChildEventHandler(req, res) {
         const body = req.body
 

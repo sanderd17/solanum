@@ -78,7 +78,16 @@ class StudioWindow extends Template {
                     })
                     root.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
-                }
+                },
+                childPropChanged: async (ev, root) => {
+                    let newCode = await root.callStudioApi('setChildProp', {
+                        childId: ev.detail.childId,
+                        propName: ev.detail.propName,
+                        value: ev.detail.newValue,
+                    })
+                    root.setCode(newCode)
+                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+                },
             },
         }),
         codeEditor: new CodeEditor({

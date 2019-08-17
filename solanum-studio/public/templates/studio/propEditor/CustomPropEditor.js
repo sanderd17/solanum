@@ -38,14 +38,33 @@ class CustomPropEditor extends Template {
             this.addChild('propName_' + i, new Textbox({
                 parent: this,
                 position: {left: '0px', top: (i*25) + 'px', height: '20px', width: '100px'},
-                props: {value: propName}
+                props: {value: propName},
             }))
             this.addChild('propValue_' + i, new Textbox({
                 parent: this,
                 position: {left: '120px', right: '0px', top: (i*25) + 'px', height: '20px'},
-                props: {value: propState.values.join(',')} // TODO should be greyed out if not all children have this value
+                props: {value: propState.values.join(',')}, // TODO should be greyed out if not all children hav the same
+                eventHandlers: { change: (ev, root, textBox) => root.setPropValue(propName, textBox) },
             }))
             i++
+        }
+    }
+
+    /**
+     * @param {string} propName 
+     * @param {Textbox} textBox 
+     */
+    setPropValue(propName, textBox) {
+        console.log(`Change ${propName}`)
+        let childIds = this.selectedProps[propName].children
+
+        let newValue = textBox.value
+        for (let childId of childIds) {
+            this.cmpSelection[childId][propName] = newValue
+            this.dom.dispatchEvent(new CustomEvent('childPropChanged', {
+                bubbles: true,
+                detail: {childId, propName, newValue}
+            }))
         }
     }
 
