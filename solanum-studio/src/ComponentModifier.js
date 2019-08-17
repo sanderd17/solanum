@@ -202,38 +202,16 @@ class ComponentModifier {
         prop.value = valueToAst(value)
     }
 
-    setDefaultProp(propName, value) {
-        const b = recast.types.builders
-        let newValue = b.literal(value) // TODO this only supports numbers and strings as values. All JSON values should be supported
-
-        let defaultProps = this.getClassField('defaultProps')
-        if (defaultProps.type != 'ObjectExpression')
-            throw new Error('defaultProps is not detected as an object')
-        for (let prop of defaultProps.properties) {
-            if (prop.key.type != 'Identifier')
+    removeProp(propName) {
+        let classBody = this.getClassBodyAst()
+        for (let i = classBody.length - 1; i >= 0; i--) {
+            let field = classBody[i] 
+            if (field.type != 'ClassProperty' && field.type != 'MethodDefinition')
                 continue
-            if (prop.key.name != propName)
+            if (field.key.type !=  'Identifier')
                 continue
-            prop.value = newValue            
-            return
-        }
-
-        // no existing prop found, add a new one
-        let newDefaultProperty = b.property('init', b.identifier(propName), newValue)
-        defaultProps.properties.splice(defaultProps.properties.length, 0, newDefaultProperty)
-    }
-
-    removeDefaultProp(propName) {
-        let defaultProps = this.getClassField('defaultProps')
-        if (defaultProps.type != 'ObjectExpression')
-            throw new Error('defaultProps is not detected as an object')
-        for (let [i, prop] of defaultProps.properties.entries()) {
-            if (prop.key.type != 'Identifier')
-                continue
-            if (prop.key.name != propName)
-                continue
-            defaultProps.properties.splice(i, 1)
-            return
+            if (field.key.name == propName || field.key.name == '_' + propName)
+                classBody.splice(i, 1)
         }
     }
 

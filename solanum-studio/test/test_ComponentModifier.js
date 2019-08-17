@@ -125,7 +125,7 @@ describe('ComponentModifier', function() {
         })
     })
     describe('addProp', function() {
-        it('Should add a new default prop', function() {
+        it('Should add a new prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.addProp('prop2', 2)
             let newCode = cmpMod.print()
@@ -134,7 +134,7 @@ describe('ComponentModifier', function() {
         })
     })
     describe.skip('addProp_object', function() {
-        it('Should add a new default object prop', function() {
+        it('Should add a new object prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.addProp('prop2', {myKey: 'myVal', numKey: 10})
             let newCode = cmpMod.print()
@@ -145,7 +145,7 @@ describe('ComponentModifier', function() {
         })
     })
     describe.skip('addProp_array', function() {
-        it('Should add a new default prop', function() {
+        it('Should add a new array prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.addProp('prop2', [1,2,3,"string",{myKey: 'myVal'}])
             let newCode = cmpMod.print()
@@ -156,7 +156,7 @@ describe('ComponentModifier', function() {
         })
     })
     describe('setProp', function() {
-        it('Should alter an existing default prop', function() {
+        it('Should alter an existing prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.setProp('prop1', 1)
             let newCode = cmpMod.print()
@@ -164,10 +164,10 @@ describe('ComponentModifier', function() {
             assert(newCode.includes('_prop1 = 1'))
         })
     })
-    describe.skip('removeDefaultProp', function() {
-        it('Should remove a default prop', function() {
+    describe('removeProp', function() {
+        it('Should remove a prop', function() {
             let cmpMod = new ComponentModifier(startCode)
-            cmpMod.removeDefaultProp('prop1')
+            cmpMod.removeProp('prop1')
             let newCode = cmpMod.print()
 
             assert(!newCode.includes('prop1'))
