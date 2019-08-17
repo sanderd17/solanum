@@ -7,7 +7,7 @@
   "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node solanum-demo/index.js",
     "inspect": "node --inspect index.js",
     "sample-server": "node tools/sample-server.js",
     "test": "cd solanum-core && mocha -r esm test/**/*.js && cd ../solanum-studio && mocha -r esm test/**/*.js && cd ..",

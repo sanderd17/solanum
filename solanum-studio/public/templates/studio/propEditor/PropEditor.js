@@ -1,5 +1,6 @@
 import Template from "/lib/template.js"
 import PositionPropEditor from '/templates/studio/propEditor/PositionPropEditor.js'
+import CustomPropEditor from '/templates/studio/propEditor/CustomPropEditor.js'
 import StylePropEditor from '/templates/studio/propEditor/StylePropEditor.js'
 
 class PropEditor extends Template {
@@ -10,9 +11,13 @@ class PropEditor extends Template {
             parent: this,
             position: {left: '0px', right: '0px', top: '0px', height: '150px'}
         }),
+        customPropEditor: new CustomPropEditor({
+            parent: this,
+            position: {left: '0px', right: '0px', top: '160px', height: '150px'}
+        }),
         stylePropEditor: new StylePropEditor({
             parent: this,
-            position: {left: '0px', right: '0px', top: '150px', height: '150px'}
+            position: {left: '0px', right: '0px', top: '320px', height: '150px'}
         }),
     }
 
@@ -27,6 +32,7 @@ class PropEditor extends Template {
     set cmpSelection(cmpSelection) {
         this._cmpSelection = cmpSelection
         this.children.positionPropEditor.cmpSelection = cmpSelection
+        this.children.customPropEditor.cmpSelection = cmpSelection
     }
 
     get cmpSelection() {
