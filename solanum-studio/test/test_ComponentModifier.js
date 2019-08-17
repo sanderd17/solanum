@@ -127,19 +127,41 @@ describe('ComponentModifier', function() {
     describe('addProp', function() {
         it('Should add a new default prop', function() {
             let cmpMod = new ComponentModifier(startCode)
-            cmpMod.setDefaultProp('prop2', 2)
+            cmpMod.addProp('prop2', 2)
             let newCode = cmpMod.print()
 
-            assert(newCode.includes('prop2: 2'))
+            assert(newCode.includes('prop2 = 2'))
         })
     })
-    describe.skip('setProp', function() {
-        it('Should alter an existing default prop', function() {
+    describe.skip('addProp_object', function() {
+        it('Should add a new default object prop', function() {
             let cmpMod = new ComponentModifier(startCode)
-            cmpMod.setDefaultProp('prop1', 1)
+            cmpMod.addProp('prop2', {myKey: 'myVal', numKey: 10})
             let newCode = cmpMod.print()
 
-            assert(newCode.includes('prop1: 1'))
+            assert(newCode.includes('prop2 = {'))
+            assert(newCode.includes('myKey:'))
+            assert(newCode.includes('numKey:'))
+        })
+    })
+    describe.skip('addProp_array', function() {
+        it('Should add a new default prop', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.addProp('prop2', [1,2,3,"string",{myKey: 'myVal'}])
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('prop2 = ['))
+            assert(newCode.includes('string'))
+            assert(newCode.includes('myKey:'))
+        })
+    })
+    describe('setProp', function() {
+        it('Should alter an existing default prop', function() {
+            let cmpMod = new ComponentModifier(startCode)
+            cmpMod.setProp('prop1', 1)
+            let newCode = cmpMod.print()
+
+            assert(newCode.includes('_prop1 = 1'))
         })
     })
     describe.skip('removeDefaultProp', function() {

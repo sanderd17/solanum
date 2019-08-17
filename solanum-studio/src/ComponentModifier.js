@@ -10,6 +10,16 @@ const parseOptions = {
     }
 }
 
+function valueToAst(value) {
+    const b = recast.types.builders
+    if (value instanceof Array)
+        throw new Error('Array props are not implemented yet')
+    if (value instanceof Object)
+        throw new Error('Object props are not implemented yet')
+    // primitive value
+    return b.literal(value)
+}
+
 /**
  * Class to allow modifications to component code.
  * This is based on a fixed structure of the components
@@ -43,7 +53,7 @@ class ComponentModifier {
     addChildComponent(childId, childClassName, childPath, position) {
         this.addImportStatement(childClassName, childPath)
 
-        let children = this.getClassField('children')
+        let children = this.getClassField('children').value
 
         let newChildAst = recast.parse(`
             let _ = new ${childClassName}({
@@ -66,7 +76,7 @@ class ComponentModifier {
      * @param {string} childId 
      */
     removeChildComponent(childId) {
-        let children = this.getClassField('children')
+        let children = this.getClassField('children').value
 
         for (let [i, prop] of children.properties.entries()) {
             if (prop.key.name == childId)
@@ -154,6 +164,44 @@ class ComponentModifier {
         }
     }
 
+    /**
+     * @param {string} propName 
+     */
+    testValidPropName(propName) {
+        const validPropName = /^[a-zA-Z]+\w*$/
+        return validPropName.test(propName)
+    }
+
+    addProp(propName, value) {
+        if (!this.testValidPropName(propName)) {
+            throw new Error(`Cannot add prop with name ${propName}. Only ASCII characters are allowed, starting with a letter and only containing letters, underscores and numbers`)
+        }
+        let existingRegularProp = this.getClassField(propName)
+        let existingGetSetProp = this.getClassField('_' + propName)
+
+        if (existingGetSetProp || existingRegularProp) {
+            throw new Error(`Cannot add prop with name ${propName}, as such a prop already exists`)
+        }
+
+        let classBody = this.getClassBodyAst()
+        const b = recast.types.builders
+        classBody.splice(classBody.length, 0, b.classProperty(b.identifier(propName), valueToAst(value)))
+
+    }
+
+
+    setProp(propName, value) {
+        if (!this.testValidPropName(propName)) {
+            throw new Error(`Cannot add prop with name ${propName}. Only ASCII characters are allowed, starting with a letter and only containing letters, underscores and numbers`)
+        }
+        let prop = this.getClassField('_' + propName)
+        if (!prop)
+            prop = this.getClassField(propName)
+        if (!prop)
+            throw new Error(`Prop with name ${propName} does not exist, cannot set a value for it`)
+        prop.value = valueToAst(value)
+    }
+
     setDefaultProp(propName, value) {
         const b = recast.types.builders
         let newValue = b.literal(value) // TODO this only supports numbers and strings as values. All JSON values should be supported
@@ -234,7 +282,7 @@ class ComponentModifier {
      * @returns {ObjectExpression} containing the different arguments (position, props and eventhandlers)
      */
     getChildDefinition(childId) {
-        let children = this.getClassField('children')
+        let children = this.getClassField('children').value
 
         for (let prop of children.properties) {
             if (prop.key.name != childId)
@@ -265,7 +313,7 @@ class ComponentModifier {
                 continue
             if (statement.key.name != fieldName)
                 continue
-            return statement.value
+            return statement
         }
     }
 }
