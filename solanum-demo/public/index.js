@@ -8,7 +8,7 @@ const mainWindow = new MainWindow({})
 let r = new Reloader(mainWindow)
 r.initMessageHandlers()
 let div = document.getElementById("root")
-div.appendChild(mainWindow.dom)
+div.appendChild(mainWindow.__dom)
 
 /*
 const svgDom = mainWindow.render().documentElement

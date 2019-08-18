@@ -7,53 +7,53 @@ class Checkbox extends Template {
 
     set text(text) {
         let found = false
-        for (let child of this.dom.childNodes) {
+        for (let child of this.__dom.childNodes) {
             if (child.nodeName == 'INPUT')
                 continue
             found = true
             child.nodeValue = text
         }
         if (!found)
-            this.dom.appendChild(document.createTextNode(text))
+            this.__dom.appendChild(document.createTextNode(text))
     }
 
     get text() {
-        return this.dom.innerText
+        return this.__dom.innerText
     }
 
     set checked(checked) {
-        this.innerNode.checked = checked
+        this.__innerNode.checked = checked
     }
 
     get checked() {
-        return this.innerNode.checked
+        return this.__innerNode.checked
     }
 
     set disabled(disabled) {
-        this.innerNode.disabled = disabled
+        this.__innerNode.disabled = disabled
     }
 
     get disabled() {
-        return this.innerNode.disabled
+        return this.__innerNode.disabled
     }
 
     createDomNode() {
-        this.dom = document.createElement("label")
+        this.__dom = document.createElement("label")
 
-        this.innerNode = document.createElement("input")
-        this.innerNode.setAttribute("type", "checkbox")
+        this.__innerNode = document.createElement("input")
+        this.__innerNode.setAttribute("type", "checkbox")
 
-        this.dom.appendChild(this.innerNode)
-        this.dom.style.setProperty('position', 'absolute')
+        this.__dom.appendChild(this.__innerNode)
+        this.__dom.style.setProperty('position', 'absolute')
 
-        this.classList.add(this.className)
+        this.classList.add(this.__className)
 
         for (let key of positionKeys)
-            if (key in this.position) this.dom.style[key] = this.position[key]
+            if (key in this.__position) this.__dom.style[key] = this.__position[key]
 
-        if (this.parent) {
-            this.parent.createDomNode()
-            this.parent.dom.appendChild(this.dom)
+        if (this.__parent) {
+            this.__parent.createDomNode()
+            this.__parent.__dom.appendChild(this.__dom)
         }
     }
 }

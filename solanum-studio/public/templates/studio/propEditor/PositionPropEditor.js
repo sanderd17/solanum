@@ -110,9 +110,9 @@ class PositionPropEditor extends Template {
      */
     async setPositionValue(textBox, type) {
         for (let [childId, child] of Object.entries(this.cmpSelection)) {
-            let newPosition = {...child.position}
+            let newPosition = {...child.__position}
             newPosition[type] = textBox.value
-            this.dom.dispatchEvent(new CustomEvent('positionpropchanged', {
+            this.__dom.dispatchEvent(new CustomEvent('positionpropchanged', {
                 bubbles: true,
                 detail: {childId, newPosition}
             }))
@@ -124,9 +124,9 @@ class PositionPropEditor extends Template {
             let enabled = false
             let text = null
             for (let cmp of Object.values(this.cmpSelection)) {
-                if (p in cmp.position) {
-                    if (text == null || text == cmp.position[p]) {
-                        text = cmp.position[p]
+                if (p in cmp.__position) {
+                    if (text == null || text == cmp.__position[p]) {
+                        text = cmp.__position[p]
                     } else {
                         text = ''
                     }

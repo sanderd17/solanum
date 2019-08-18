@@ -42,7 +42,7 @@ class CodeEditor extends Template {
 			this.eventOldCode = oldCode
 		}
 		this.eventTimerId = setTimeout(() => {
-			this.dom.dispatchEvent(new CustomEvent('codeContentChanged', {
+			this.__dom.dispatchEvent(new CustomEvent('codeContentChanged', {
 				bubbles: true,
 				detail: {
 					newCode: newCode,
@@ -106,7 +106,7 @@ class CodeEditor extends Template {
 		addLib('/lib/TagSet.js')
 		addLib('/templates/draw/Circle.js')
 
-		this.monacoEditor = monaco.editor.create(this.dom, {
+		this.monacoEditor = monaco.editor.create(this.__dom, {
 			value: '',
 			language: "javascript"
 		})

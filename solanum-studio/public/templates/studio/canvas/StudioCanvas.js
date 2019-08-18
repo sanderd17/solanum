@@ -64,7 +64,8 @@ class StudioCanvas extends Template {
             this.children.preview.disableEventHandlers()
             this.children.interaction.reloadSelectionRects()
         } catch (e) {
-            console.error(`Error while loading component ${cmp} from module ${mod}: ${e}`)
+            console.error(`Error while loading component ${cmp} from module ${mod}:`)
+            console.error(e)
         }
     }
 

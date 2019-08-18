@@ -13,7 +13,7 @@ let sc = new StudioWindow({
 let div = document.getElementById("root")
 div.style.width = window.innerWidth + 'px'
 div.style.height = window.innerHeight + 'px'
-div.appendChild(sc.dom)
+div.appendChild(sc.__dom)
 
 messager.connectToServer(location.host)
 window['ts'] = ts

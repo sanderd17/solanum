@@ -40,7 +40,7 @@ class ResizeHandle extends Template {
     set visible(visible) {
         this._visible = visible
         this.classList.toggle('visible', visible)
-        this.dom.setAttribute('draggable', visible)
+        this.__dom.setAttribute('draggable', visible)
     }
     get visible() {
         return this._visible

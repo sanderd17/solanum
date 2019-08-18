@@ -15,10 +15,12 @@ class CustomPropEditor extends Template {
                 this.removeChild(childId)
         }
 
+        this.defaultPropList = []
+
         // gather a list of all props in the selection
         this.selectedProps = {}
         for (let [childId, child] of Object.entries(this.cmpSelection)) {
-            let childProps = child.cArgs.props
+            let childProps = child.__cArgs.props
             for (let [key, value] of Object.entries(childProps)) {
                 if (key in this.selectedProps) {
                     this.selectedProps[key].children.push(childId)
@@ -61,7 +63,7 @@ class CustomPropEditor extends Template {
         let newValue = textBox.value
         for (let childId of childIds) {
             this.cmpSelection[childId][propName] = newValue
-            this.dom.dispatchEvent(new CustomEvent('childPropChanged', {
+            this.__dom.dispatchEvent(new CustomEvent('childPropChanged', {
                 bubbles: true,
                 detail: {childId, propName, newValue}
             }))

@@ -34,16 +34,16 @@ class Template {
      */
     constructor(p) {
         // store constructor args
-        this.cArgs = p
+        this.__cArgs = p
         /** @type {Template?} */
-        this.parent = p.parent
-        this.position = p.position || {}
+        this.__parent = p.parent
+        this.__position = p.position || {}
         /** @type {Object<string,function>} */
-        this.eventHandlers = p.eventHandlers || {}
-        this.eventHandlersEnabled = true
-        this.propChangedHandlers = {}
+        this.__eventHandlers = p.eventHandlers || {}
+        this.__eventHandlersEnabled = true
+        this.__propChangedHandlers = {}
 
-        this.className = style.registerClassStyle(this.constructor)
+        this.__className = style.registerClassStyle(this.constructor)
 
         this.createDomNode()
         this.addEventHandlers()
@@ -63,7 +63,7 @@ class Template {
     }
 
     get classList() {
-        return this.dom.classList
+        return this.__dom.classList
     }
 
     addChild(id, child) {
@@ -85,33 +85,33 @@ class Template {
      * @param {object} newPosition 
      */
     setPosition(newPosition) {
-        this.position = newPosition
-        if (this.dom) {
+        this.__position = newPosition
+        if (this.__dom) {
             for (let key of positionKeys) {
                 if (key in newPosition) {
-                    this.dom.style[key] = newPosition[key]
+                    this.__dom.style[key] = newPosition[key]
                 } else {
-                    this.dom.style[key] = ''
+                    this.__dom.style[key] = ''
                 }
             }
         }
     }
 
     addEventHandlers() {
-        if (this.handleEvent == null) {
-            this.handleEvent = (ev) => {
-                if (ev.type in this.eventHandlers) {
-                    this.eventHandlers[event.type](event, this.parent, this)
+        if (this.__handleEvent == null) {
+            this.__handleEvent = (ev) => {
+                if (ev.type in this.__eventHandlers) {
+                    this.__eventHandlers[event.type](event, this.__parent, this)
                 }
             }
         }
         // remove existing event handlers (if any)
-        for (let eventType in this.eventHandlers) {
-            this.dom.removeEventListener(eventType, this.handleEvent)
+        for (let eventType in this.__eventHandlers) {
+            this.__dom.removeEventListener(eventType, this.__handleEvent)
         }
         // add the new event handlers
-        for (let eventType in this.eventHandlers) {
-            this.dom.addEventListener(eventType, this.handleEvent)
+        for (let eventType in this.__eventHandlers) {
+            this.__dom.addEventListener(eventType, this.__handleEvent)
         }
     }
 
@@ -119,8 +119,8 @@ class Template {
      * Disable adding event handlers to the dom (recursively)
      */
     disableEventHandlers() {
-        for (let eventType in this.eventHandlers) {
-            this.dom.removeEventListener(eventType, this.handleEvent)
+        for (let eventType in this.__eventHandlers) {
+            this.__dom.removeEventListener(eventType, this.__handleEvent)
         }
         for (let childId in this.children) {
             this.children[childId].disableEventHandlers()
@@ -133,19 +133,19 @@ class Template {
     }
 
     createDomNode() {
-        if (this.dom) {
+        if (this.__dom) {
             return
         }
-        this.dom = document.createElement('div')
+        this.__dom = document.createElement('div')
 
-        this.classList.add(this.className)
+        this.classList.add(this.__className)
         this.classList.add('solanum')
 
-        this.setPosition(this.position)
+        this.setPosition(this.__position)
 
-        if (this.parent) {
-            this.parent.createDomNode()
-            this.parent.dom.appendChild(this.dom)
+        if (this.__parent) {
+            this.__parent.createDomNode()
+            this.__parent.__dom.appendChild(this.__dom)
         }
 
     } 
@@ -157,8 +157,8 @@ class Template {
         for (let child of Object.values(this.children)) {
             child.destroy()
         }
-        if (this.dom.parentNode) {
-            this.dom.parentNode.removeChild(this.dom)
+        if (this.__dom.parentNode) {
+            this.__dom.parentNode.removeChild(this.__dom)
         }
         ts.removeSubscription(this)
         this.children = null

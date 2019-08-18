@@ -6,34 +6,34 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Rect extends Template {
 
     get fill() {
-        return this.elNode.getAttribute('fill')
+        return this.__elNode.getAttribute('fill')
     }
     set fill(fill) {
-        this.elNode.setAttribute('fill', fill)
+        this.__elNode.setAttribute('fill', fill)
     }
 
     createDomNode() {
-        this.dom = document.createElementNS(ns, "svg")
-        this.dom.setAttribute("viewBox", "0 0 100 100")
-        this.dom.setAttribute("preserveAspectRatio", "none")
+        this.__dom = document.createElementNS(ns, "svg")
+        this.__dom.setAttribute("viewBox", "0 0 100 100")
+        this.__dom.setAttribute("preserveAspectRatio", "none")
 
-        this.elNode = document.createElementNS(ns, "rect")
-        this.elNode.setAttribute("x", "0")
-        this.elNode.setAttribute("y", "0")
-        this.elNode.setAttribute("width", "100")
-        this.elNode.setAttribute("height", "100")
-        this.elNode.setAttribute("pointer-events", "visible")
+        this.__elNode = document.createElementNS(ns, "rect")
+        this.__elNode.setAttribute("x", "0")
+        this.__elNode.setAttribute("y", "0")
+        this.__elNode.setAttribute("width", "100")
+        this.__elNode.setAttribute("height", "100")
+        this.__elNode.setAttribute("pointer-events", "visible")
 
-        this.classList.add(this.className)
+        this.classList.add(this.__className)
 
-        this.dom.appendChild(this.elNode)
+        this.__dom.appendChild(this.__elNode)
 
         for (let key of positionKeys)
-            if (key in this.position) this.dom.style[key] = this.position[key]
+            if (key in this.__position) this.__dom.style[key] = this.__position[key]
 
-        if (this.parent) {
-            this.parent.createDomNode()
-            this.parent.dom.appendChild(this.dom)
+        if (this.__parent) {
+            this.__parent.createDomNode()
+            this.__parent.__dom.appendChild(this.__dom)
         }
     }
 }

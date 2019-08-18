@@ -8,20 +8,20 @@ class StudioCanvasInteraction extends Template {
         super(...args)
         /** @type Array<string> */
 
-        this.eventHandlers.click = (ev) => {ev.stopPropagation(); this.selection = []}
-        this.eventHandlers.dragstart = (ev) => this.startedDrag = ev
-        this.eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
-        this.eventHandlers.drop = (ev) => this.newComponentDrop(ev)
+        this.__eventHandlers.click = (ev) => {ev.stopPropagation(); this.selection = []}
+        this.__eventHandlers.dragstart = (ev) => this.startedDrag = ev
+        this.__eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
+        this.__eventHandlers.drop = (ev) => this.newComponentDrop(ev)
         // prevent default drag action to allow drop
-        this.eventHandlers.dragover = (ev) => ev.preventDefault() 
-        this.eventHandlers.dragenter = (ev) => ev.preventDefault()
-        this.eventHandlers.keydown = (ev) => {
+        this.__eventHandlers.dragover = (ev) => ev.preventDefault() 
+        this.__eventHandlers.dragenter = (ev) => ev.preventDefault()
+        this.__eventHandlers.keydown = (ev) => {
             if (ev.code == 'Delete')
                 this.removeSelectedChildren(ev)
         }
         this.addEventHandlers()
-        this.dom.setAttribute('draggable', true) // draggable is required to allow selection drag
-        this.dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
+        this.__dom.setAttribute('draggable', true) // draggable is required to allow selection drag
+        this.__dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
     }
 
     /**
@@ -42,10 +42,10 @@ class StudioCanvasInteraction extends Template {
                 }
             })
         }
-        for (let [id, cmp] of Object.entries(this.parent.children.preview.children)) {
+        for (let [id, cmp] of Object.entries(this.__parent.children.preview.children)) {
             this.children[id] = new SelectionRect({
                 parent: this,
-                position: cmp.position,
+                position: cmp.__position,
                 props: {},
                 eventHandlers: {
                     click: (ev, root) => {ev.stopPropagation(); root.selection = [id]},
@@ -128,12 +128,12 @@ class StudioCanvasInteraction extends Template {
             }
         } else {
             // Set selection to multiple elements
-            let {left: cmpLeft, top: cmpTop} = this.dom.getBoundingClientRect()
+            let {left: cmpLeft, top: cmpTop} = this.__dom.getBoundingClientRect()
 
             // Warning: right and bottom have different meanings here; it's measured from the left top of the page
-            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[this.selection[0]].dom.getBoundingClientRect()
+            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[this.selection[0]].__dom.getBoundingClientRect()
             for (let id of this.selection) {
-                let {left, top, right, bottom} = this.children[id].dom.getBoundingClientRect()
+                let {left, top, right, bottom} = this.children[id].__dom.getBoundingClientRect()
                 minLeft = Math.min(left, minLeft)
                 maxRight = Math.max(right, maxRight)
                 minTop = Math.min(top, minTop)
@@ -167,7 +167,7 @@ class StudioCanvasInteraction extends Template {
         }
         this._selection = selection
         this.updateSelectionDraw()
-        this.dom.dispatchEvent(new CustomEvent('selectionchanged', {
+        this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
             bubbles: true,
             detail: {selection}
         }))
@@ -190,7 +190,7 @@ class StudioCanvasInteraction extends Template {
         for (let id of this.selection) {
             let child = this.children[id]
             let newPosition = {}
-            for (let [k, v] of Object.entries(child.position)) {
+            for (let [k, v] of Object.entries(child.__position)) {
                 let {unit, magnitude, factorVer, factorHor} = this.getCoordinateInfo(v)
                 if (k == 'left' || k == 'right') {
                     magnitude = (parseInt(magnitude) + xDiff * factorHor).toString()
@@ -221,7 +221,7 @@ class StudioCanvasInteraction extends Template {
             bottom: Math.max(startDragEvent.y, endDragEvent.y),
         }
         for (let [id, child] of Object.entries(this.children)) {
-            let childRect = child.dom.getBoundingClientRect()
+            let childRect = child.__dom.getBoundingClientRect()
             if (
                 selRect.left   < childRect.right  &&
                 selRect.right  > childRect.left   &&
@@ -282,7 +282,7 @@ class StudioCanvasInteraction extends Template {
     }
 
     getCoordinateInfo(value) {
-        let {width, height} = this.dom.getBoundingClientRect()
+        let {width, height} = this.__dom.getBoundingClientRect()
         let re = /(?<magnitude>[\-\d\.]*)(?<unit>[\w%]*)/u;
         let {magnitude, unit} = re.exec(value).groups
         let factorHor = 1
@@ -299,7 +299,7 @@ class StudioCanvasInteraction extends Template {
     }
 
     setChildPosition(childId, newPosition) {
-        this.dom.dispatchEvent(new CustomEvent('childpositionchanged', {
+        this.__dom.dispatchEvent(new CustomEvent('childpositionchanged', {
             bubbles: true,
             detail: {childId, newPosition}
         }))

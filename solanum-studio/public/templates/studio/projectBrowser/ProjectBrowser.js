@@ -59,11 +59,11 @@ class ProjectBrowser extends Template {
         }
         // FIXME should not edit dom directly; will not work on reloads
         // FIXME should use a "treeview" component instead of rendering itself
-        this.dom.appendChild(ulMain)
+        this.__dom.appendChild(ulMain)
     }
 
     openComponent(mod, cmp) {
-        this.parent.openComponent(mod, cmp)
+        this.__parent.openComponent(mod, cmp)
     }
 }
 

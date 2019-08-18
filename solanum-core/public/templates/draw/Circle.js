@@ -7,31 +7,31 @@ class Circle extends Template {
     static defaultSize = [20, 20]
 
     get fill() {
-        return this.elNode.getAttribute('fill')
+        return this.__elNode.getAttribute('fill')
     }
     set fill(fill) {
-        this.elNode.setAttribute('fill', fill)
+        this.__elNode.setAttribute('fill', fill)
     }
 
     get classList() {
-        return this.elNode.classList
+        return this.__elNode.classList
     }
 
     addEventHandlersToDom() {
-        if (this.handleEvent == null) {
-            this.handleEvent = (ev) => {
-                if (ev.type in this.eventHandlers) {
-                    this.eventHandlers[event.type](event, this.parent, this)
+        if (this.__handleEvent == null) {
+            this.__handleEvent = (ev) => {
+                if (ev.type in this.__eventHandlers) {
+                    this.__eventHandlers[event.type](event, this.__parent, this)
                 }
             }
         }
         // remove existing event handlers (if any)
-        for (let eventType in this.eventHandlers) {
-            this.elNode.removeEventListener(eventType, this.handleEvent)
+        for (let eventType in this.__eventHandlers) {
+            this.__elNode.removeEventListener(eventType, this.__handleEvent)
         }
         // add the new event handlers
-        for (let eventType in this.eventHandlers) {
-            this.elNode.addEventListener(eventType, this.handleEvent)
+        for (let eventType in this.__eventHandlers) {
+            this.__elNode.addEventListener(eventType, this.__handleEvent)
         }
     }
 
@@ -40,33 +40,33 @@ class Circle extends Template {
      * This needs to be called before the dom is created
      */
     disableEventHandlers() {
-        for (let eventType in this.eventHandlers) {
-            this.elNode.removeEventListener(eventType, this.handleEvent)
+        for (let eventType in this.__eventHandlers) {
+            this.__elNode.removeEventListener(eventType, this.__handleEvent)
         }
     }
 
     createDomNode() {
-        this.dom = document.createElementNS(ns, "svg")
-        this.dom.setAttribute("viewBox", "0 0 100 100")
-        this.dom.setAttribute("preserveAspectRatio", "none")
+        this.__dom = document.createElementNS(ns, "svg")
+        this.__dom.setAttribute("viewBox", "0 0 100 100")
+        this.__dom.setAttribute("preserveAspectRatio", "none")
 
-        this.elNode = document.createElementNS(ns, "circle")
-        this.elNode.setAttribute("cx", "50")
-        this.elNode.setAttribute("cy", "50")
-        this.elNode.setAttribute("r", "50")
-        this.elNode.setAttribute("pointer-events", "visible")
+        this.__elNode = document.createElementNS(ns, "circle")
+        this.__elNode.setAttribute("cx", "50")
+        this.__elNode.setAttribute("cy", "50")
+        this.__elNode.setAttribute("r", "50")
+        this.__elNode.setAttribute("pointer-events", "visible")
 
-        this.classList.add(this.className)
+        this.classList.add(this.__className)
         //circleNode.setAttribute("fill", "blue")
 
-        this.dom.appendChild(this.elNode)
+        this.__dom.appendChild(this.__elNode)
 
         for (let key of positionKeys)
-            if (key in this.position) this.dom.style[key] = this.position[key]
+            if (key in this.__position) this.__dom.style[key] = this.__position[key]
 
-        if (this.parent) {
-            this.parent.createDomNode()
-            this.parent.dom.appendChild(this.dom)
+        if (this.__parent) {
+            this.__parent.createDomNode()
+            this.__parent.__dom.appendChild(this.__dom)
         }
     }
 }

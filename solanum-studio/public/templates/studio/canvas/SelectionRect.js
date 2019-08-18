@@ -183,8 +183,8 @@ class SelectionRect extends Template {
     _selected = false
     set selected(selected) {
         this._selected = selected
-        this.dom.setAttribute('draggable', selected)
-        this.dom.style['z-index'] = selected ? 1 : 0 // raise selection rect when selected
+        this.__dom.setAttribute('draggable', selected)
+        this.__dom.style['z-index'] = selected ? 1 : 0 // raise selection rect when selected
         this.classList.toggle('selected', selected)
 
         // Set all handles visible

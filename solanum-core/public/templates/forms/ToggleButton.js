@@ -7,32 +7,32 @@ class ToggleButton extends Template {
 
     constructor(...args) {
         super(...args)
-        this.dom.addEventListener('click', () => this.selected = !this.selected)
+        this.__dom.addEventListener('click', () => this.selected = !this.selected)
     }
 
     selected = false
 
     set text(text) {
-        this.dom.innerText = text
+        this.__dom.innerText = text
     }
 
     get text() {
-        return this.dom.innerText
+        return this.__dom.innerText
     }
 
     createDomNode() {
-        this.dom = document.createElement("button")
-        this.dom.setAttribute("type", "button")
+        this.__dom = document.createElement("button")
+        this.__dom.setAttribute("type", "button")
 
-        this.classList.add(this.className)
+        this.classList.add(this.__className)
 
         for (let key of positionKeys) {
-            if (key in this.position) this.dom.style[key] = this.position[key]
+            if (key in this.__position) this.__dom.style[key] = this.__position[key]
         }
         
-        if (this.parent) {
-            this.parent.createDomNode()
-            this.parent.dom.appendChild(this.dom)
+        if (this.__parent) {
+            this.__parent.createDomNode()
+            this.__parent.__dom.appendChild(this.__dom)
         }
     }
 }
