@@ -163,6 +163,17 @@ class Template {
         ts.removeSubscription(this)
         this.children = null
     }
+
+
+    // DEFAULT PROPS //
+
+    /** @type {boolean} */
+    set hidden(hidden) {
+        this.__dom.hidden = hidden
+    }
+    get hidden() {
+        return this.__dom.hidden
+    }
 }
 
 
