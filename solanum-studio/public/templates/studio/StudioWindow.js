@@ -30,6 +30,8 @@ class StudioWindow extends Template {
                     root.children.propEditor.cmpSelection = cmpSelection
                 },
                 childpositionchanged: async (ev, root) => {
+                    if (ev.detail.previewOnly)
+                        return // don't update the server for only a preview
                     root.children.propEditor.recalcPositionParameters()
                     let newCode = await root.callStudioApi('setChildPosition', {
                         childId: ev.detail.childId,

@@ -24,7 +24,7 @@ class ResizeHandle extends Template {
             {
                 classes: ['visible'],
                 declarations: {
-                    'visibility': 'visible'
+                    'visibility': 'inherit'
                 }
             },
             {

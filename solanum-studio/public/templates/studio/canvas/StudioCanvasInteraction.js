@@ -38,6 +38,7 @@ class StudioCanvasInteraction extends Template {
                 eventHandlers: {
                     click: (ev) => {ev.stopPropagation()},
                     dragstart: (ev) => this.startedDrag = ev,
+                    drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
                     dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 }
             })
@@ -50,6 +51,7 @@ class StudioCanvasInteraction extends Template {
                 eventHandlers: {
                     click: (ev, root) => {ev.stopPropagation(); root.selection = [id]},
                     dragstart: (ev, root) => root.startedDrag = ev,
+                    drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
                     dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
                 },
             })
@@ -177,12 +179,12 @@ class StudioCanvasInteraction extends Template {
         return this._selection
     }
 
+
     /**
-     * @param {string} id
      * @param {DragEvent} startDrag 
      * @param {DragEvent} endDrag 
      */
-    async endComponentDrag(startDrag, endDrag) {
+    async endComponentDrag(startDrag, endDrag, previewOnly=false) {
         endDrag.stopPropagation()
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y
@@ -201,10 +203,12 @@ class StudioCanvasInteraction extends Template {
 
                 newPosition[k] = magnitude + unit
             }
-            this.setChildPosition(id, newPosition)
+            this.setChildPosition(id, newPosition, previewOnly)
         }
-        // move the selected rects
-        this.updateSelectionDraw()
+        if (!previewOnly) {
+            // move the selected rects
+            this.updateSelectionDraw()
+        }
     }
 
     /**
@@ -298,10 +302,10 @@ class StudioCanvasInteraction extends Template {
         return {unit, magnitude, factorVer, factorHor}
     }
 
-    setChildPosition(childId, newPosition) {
+    setChildPosition(childId, newPosition, previewOnly=false) {
         this.__dom.dispatchEvent(new CustomEvent('childpositionchanged', {
             bubbles: true,
-            detail: {childId, newPosition}
+            detail: {childId, newPosition, previewOnly}
         }))
     }
 }

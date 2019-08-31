@@ -168,11 +168,12 @@ class Template {
     // DEFAULT PROPS //
 
     /** @type {boolean} */
+    _hidden = false
     set hidden(hidden) {
-        this.__dom.hidden = hidden
+        this.__dom.style.visibility = hidden ? 'hidden' : ''
     }
     get hidden() {
-        return this.__dom.hidden
+        return this._hidden
     }
 }
 

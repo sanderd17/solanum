@@ -50,7 +50,7 @@ class StudioCanvas extends Template {
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
                 props: {elWidth: width, elHeight: height},
                 eventHandlers: {
-                    childpositionchanged: (ev, root) => root.setChildPosition(ev.detail.childId, ev.detail.newPosition),
+                    childpositionchanged: (ev, root) => root.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
                     droppedchild: (ev, root) => root.addNewChild(ev.detail.childId, {
                         type: ev.detail.type,
                         position: ev.detail.position,
@@ -75,9 +75,14 @@ class StudioCanvas extends Template {
         this.children.interaction.reloadSelectionRects()
     }
 
-    setChildPosition(id, newPosition) {
+    setChildPosition(id, newPosition, previewOnly=false) {
         this.children.preview.children[id].setPosition(newPosition)
-        this.children.interaction.children[id].setPosition(newPosition)
+        if (previewOnly) {
+            this.children.interaction.hidden = true
+        } else {
+            this.children.interaction.hidden = false
+            this.children.interaction.children[id].setPosition(newPosition)
+        }
     }
 
     /**
