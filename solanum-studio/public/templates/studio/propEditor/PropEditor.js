@@ -1,6 +1,7 @@
 import Template from "/lib/template.js"
 import PositionPropEditor from '/templates/studio/propEditor/PositionPropEditor.js'
 import ChildPropEditor from '/templates/studio/propEditor/ChildPropEditor.js'
+import OwnPropEditor from '/templates/studio/propEditor/OwnPropEditor.js'
 import StylePropEditor from '/templates/studio/propEditor/StylePropEditor.js'
 
 class PropEditor extends Template {
@@ -12,6 +13,11 @@ class PropEditor extends Template {
             position: {left: '0px', right: '0px', top: '0px', height: '150px'}
         }),
         childPropEditor: new ChildPropEditor({
+            parent: this,
+            position: {left: '0px', right: '0px', top: '160px', height: '150px'},
+            props: {hidden: true},
+        }),
+        ownPropEditor: new OwnPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '160px', height: '150px'}
         }),
@@ -31,6 +37,13 @@ class PropEditor extends Template {
     _cmpSelection = []
     set cmpSelection(cmpSelection) {
         this._cmpSelection = cmpSelection
+        if (Object.keys(cmpSelection).length > 0) {
+            this.children.childPropEditor.hidden = false
+            this.children.ownPropEditor.hidden = true
+        } else {
+            this.children.childPropEditor.hidden = true
+            this.children.ownPropEditor.hidden = false
+        }
         this.children.positionPropEditor.cmpSelection = cmpSelection
         this.children.childPropEditor.cmpSelection = cmpSelection
     }
