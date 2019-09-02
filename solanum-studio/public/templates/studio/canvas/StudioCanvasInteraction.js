@@ -246,7 +246,7 @@ class StudioCanvasInteraction extends Template {
      * @param {DragEvent} startDragEv 
      * @param {DragEvent} endDragEv 
      */
-    async endHandleDrag(directions, startDragEv, endDragEv) {
+    async endHandleDrag(directions, startDragEv, endDragEv, previewOnly) {
         endDragEv.stopPropagation()
         let xDiff = endDragEv.x - startDragEv.x
         let yDiff = endDragEv.y - startDragEv.y
@@ -254,7 +254,7 @@ class StudioCanvasInteraction extends Template {
         for (let childId of this.selection) {
             let child = this.children[childId]
             let newPosition = {}
-            for (let [k, v] of Object.entries(child.position)) {
+            for (let [k, v] of Object.entries(child.__position)) {
                 let {unit, magnitude, factorVer, factorHor} = this.getCoordinateInfo(v)
                 if ((k == 'left' || k == 'right') && directions.includes(k)) {
                     // dragging left or right, when aligned as such, just repositions the handle
@@ -279,10 +279,12 @@ class StudioCanvasInteraction extends Template {
 
                 newPosition[k] = magnitude + unit
             }
-            this.setChildPosition(childId, newPosition)
+            this.setChildPosition(childId, newPosition, previewOnly)
         }
-        // move the selected rects
-        this.updateSelectionDraw()
+        if (!previewOnly) {
+            // move the selected rects
+            this.updateSelectionDraw()
+        }
     }
 
     getCoordinateInfo(value) {

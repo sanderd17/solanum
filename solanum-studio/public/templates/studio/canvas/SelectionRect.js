@@ -23,6 +23,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev),
             },
         }),
@@ -34,6 +35,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev),
             },
         }),
@@ -45,6 +47,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev),
             },
         }),
@@ -56,6 +59,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev),
             },
         }),
@@ -67,6 +71,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev),
             },
         }),
@@ -78,6 +83,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev),
             },
         }),
@@ -89,6 +95,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev),
             },
         }),
@@ -100,6 +107,7 @@ class SelectionRect extends Template {
             },
             eventHandlers: {
                 dragstart: (ev, root) => root.startHandleDrag(ev),
+                drag: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev, true),
                 dragend: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev),
             },
         }),
@@ -210,8 +218,8 @@ class SelectionRect extends Template {
      * @param {DragEvent} startDragEv 
      * @param {DragEvent} endDragEv 
      */
-    async endHandleDrag(directions, startDragEv, endDragEv) {
-        await this.parent.endHandleDrag(directions, startDragEv, endDragEv)
+    async endHandleDrag(directions, startDragEv, endDragEv, previewOnly=false) {
+        await this.__parent.endHandleDrag(directions, startDragEv, endDragEv, previewOnly)
     }
 }
 
