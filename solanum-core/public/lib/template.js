@@ -127,11 +127,6 @@ class Template {
         }
     }
 
-    setTagSubscription(instance, propName, tagPath) {
-        // TODO remove listener to avoid memory leak after destroying
-        ts.addSubscription(instance, propName, tagPath)
-    }
-
     createDomNode() {
         if (this.__dom) {
             return
@@ -164,7 +159,6 @@ class Template {
         this.children = null
     }
 
-
     // DEFAULT PROPS //
 
     /** @type {boolean} */
@@ -176,6 +170,5 @@ class Template {
         return this._hidden
     }
 }
-
 
 export default Template
