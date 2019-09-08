@@ -57,7 +57,7 @@ class StudioWindow extends Template {
         }),
         projectBrowser: new ProjectBrowser({
             parent: this,
-            position: {left: "0px", width: "300px", top: "0px", height: "50%"},
+            position: {left: "0px", width: "300px", top: "20px", bottom: "50%"},
             props: {},
             eventHandlers: {},
         }),
