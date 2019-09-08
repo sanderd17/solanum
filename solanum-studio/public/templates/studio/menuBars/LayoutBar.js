@@ -27,17 +27,6 @@ class LayoutBar extends Template {
                 }
             },
         }),
-        test: new ToggleButton({
-            parent: this,
-            position: {left: '20px', width: '20px', height: '20px', top: '0px'},
-            props: {text: 'T'},
-            eventHandlers: {
-                click: (ev) => {
-                    solanum.openPopup('studio/propEditor/PositionPropEditor.js', {})
-                    console.log('clicked')
-                }
-            }
-        })
     }
 
     _positionUnit = '%'

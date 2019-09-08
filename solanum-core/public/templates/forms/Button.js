@@ -2,15 +2,8 @@ import Template from '/lib/template.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
-class ToggleButton extends Template {
+class Button extends Template {
     static defaultSize = [100, 20]
-
-    constructor(...args) {
-        super(...args)
-        this.__dom.addEventListener('click', () => this.selected = !this.selected)
-    }
-
-    selected = false
 
     set text(text) {
         this.__innerButton.innerText = text
@@ -34,4 +27,4 @@ class ToggleButton extends Template {
     }
 }
 
-export default ToggleButton
+export default Button

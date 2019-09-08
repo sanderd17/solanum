@@ -10,7 +10,7 @@ solanum.openPopup = async function(templatePath, props) {
     /*
         TODO: test this code
     */
-    const mdl = await import('/templates/' + templatePath)
+    const mdl = await import(`/templates/${templatePath}.js`)
     const cls = mdl.default
 
     // create floating outer div

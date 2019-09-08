@@ -1,6 +1,7 @@
 import Template from '/lib/template.js'
 import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
+import solanum from '/lib/solanum.js'
 
 class Motor extends Template {
     static childStyles = {
@@ -24,10 +25,10 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "3.000000534057577%",
-                width: "90.99999946594242%",
-                height: "85.99999954223637%",
-                top: "6.000000457763637%"
+                left: "5%",
+                width: "90%",
+                height: "90%",
+                top: "5%"
             },
             props: {fill: "red", prop2: 'test'},
             eventHandlers: {
@@ -37,7 +38,7 @@ class Motor extends Template {
                  */ 
                 click: (ev, root) => {
                     let path = 'Motors/' + root.motor
-                    ts.writeTag(path, 'black')
+                    solanum.openPopup('popMotorInfo', {path})
                 }
             },
         }),
