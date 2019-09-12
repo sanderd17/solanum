@@ -41,7 +41,6 @@ class Template {
         /** @type {Object<string,function>} */
         this.__eventHandlers = p.eventHandlers || {}
         this.__eventHandlersEnabled = true
-        this.__propChangedHandlers = {}
 
         this.__className = style.registerClassStyle(this.constructor)
 
