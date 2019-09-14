@@ -14,7 +14,6 @@
     "node": ">=12.10"
   },
   "dependencies": {
-    "esm": "^3.2.25",
     "express": "^4.17.1",
     "solanum-core": "file:../solanum-core",
     "solanum-studio": "file:../solanum-studio"
