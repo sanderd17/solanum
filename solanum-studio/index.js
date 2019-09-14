@@ -1,9 +1,12 @@
 import express from 'express'
 import path from 'path'
+import { fileURLToPath } from 'url'
 import jsonschema from 'jsonschema'
 import StudioAPI from './src/StudioAPI.js'
 import * as schema from './src/StudioApiSchema.js'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 /**
  * Add the editor api to the server instance

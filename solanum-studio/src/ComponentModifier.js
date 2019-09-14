@@ -1,4 +1,6 @@
-import * as recast from 'recast'
+import * as _recast from 'recast'
+// FIXME apparently recast is imported differently by native node vs the esm package. Get the default out if there is one
+const recast = ('default' in _recast) ? _recast.default : _recast
 import flow from 'flow-parser'
 
 const parseOptions = {

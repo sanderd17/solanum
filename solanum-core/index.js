@@ -1,4 +1,5 @@
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 import express from 'express'
 import bodyParser from 'body-parser'
@@ -8,6 +9,9 @@ import Client from './src/Client.js'
 import clientList from './src/ClientList.js'
 import TagSet from './src/TagSet.js'
 import Reloader from './src/Reloader.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 class Solanum {
     constructor(app, config) {

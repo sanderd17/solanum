@@ -1,3 +1,24 @@
-// @ts-ignore -- wait until node has native es6 modules
-require = require("esm")(module/*, options*/)
-module.exports = require("./main.js")
+import express from 'express'
+
+
+import config from './config.js'
+import tags from './tags/default.js'
+
+import {default as initCore} from 'solanum-core'
+import {default as initStudio} from 'solanum-studio'
+
+const app = express()
+
+/* OPTIONAL: add middleware to listen to all requests coming from clients
+app.use(function (req, res, next) {
+    return next();
+});
+*/
+
+let solanumCore = initCore(app, config)
+solanumCore.ts.setTags(tags)
+
+initStudio(app, config)
+
+app.listen(config.app.port);
+console.log(`Listening on port ${config.app.port}`)

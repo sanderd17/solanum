@@ -5,9 +5,8 @@
   "license": "AGPL-3.0",
   "description": "Experimental Scada package",
   "repository": "https://github.com/sanderd17/solanum",
-  "main": "index.js",
   "scripts": {
-    "start": "node solanum-demo/index.js",
+    "start": "node --experimental-modules solanum-demo/index.js",
     "inspect": "node --inspect index.js",
     "sample-server": "node tools/sample-server.js",
     "test": "cd solanum-core && mocha -r esm test/**/*.js && cd ../solanum-studio && mocha -r esm test/**/*.js && cd ..",
@@ -18,6 +17,9 @@
   },
   "bin": {
     "solanum": "bin/solanum.js"
+  },
+  "engines": {
+    "node": ">=12.10"
   },
   "dependencies": {
     "commander": "^3.0.0",

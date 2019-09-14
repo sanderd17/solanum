@@ -6,11 +6,17 @@
   "description": "Demo app",
   "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node --experimental-modules index.js"
+  },
+  "engines": {
+    "node": ">=12.10"
   },
   "dependencies": {
     "esm": "^3.2.25",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "solanum-core": "file:../solanum-core",
+    "solanum-studio": "file:../solanum-studio"
   }
 }

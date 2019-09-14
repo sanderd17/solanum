@@ -6,10 +6,14 @@
   "description": "Experimental Scada package",
   "repository": "https://github.com/sanderd17/solanum",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "inspect": "node --inspect index.js",
-    "test": "mocha -r esm */test/**/*.js"
+    "test": "mocha -r esm"
+  },
+  "engines": {
+    "node": ">=12.10"
   },
   "dependencies": {
     "chokidar": "^3.0.2",
