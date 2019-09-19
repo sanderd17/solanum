@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "esm": "^3.2.25",
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "mocha-jsdom": "^2.0.0"
   }
 }

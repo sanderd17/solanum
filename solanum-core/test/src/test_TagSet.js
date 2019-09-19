@@ -1,7 +1,7 @@
 // @ts-nocheck
 const assert = require('assert')
 
-import TagSet from '../src/TagSet.js'
+import TagSet from '../../src/TagSet.js'
 
 
 let DummyTag = function(tagSet, tagPath, otherArgs) {

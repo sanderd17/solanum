@@ -1,7 +1,7 @@
 // @ts-nocheck
 const assert = require('assert')
 
-import Client from '../src/Client.js'
+import Client from '../../src/Client.js'
 
 let dummyWebSocket = (expectedTypes) => ({
     'on': (type, fn) => {

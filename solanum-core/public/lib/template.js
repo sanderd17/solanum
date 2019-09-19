@@ -4,12 +4,12 @@ import ts from './TagSet.js';
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
  * @typedef {Object} TemplatePosition
- * @property {number|string=} left 
- * @property {number|string=} right 
- * @property {number|string=} top 
- * @property {number|string=} bottom 
- * @property {number|string=} width 
- * @property {number|string=} height 
+ * @property {string=} left 
+ * @property {string=} right 
+ * @property {string=} top 
+ * @property {string=} bottom 
+ * @property {string=} width 
+ * @property {string=} height 
  */
 
  /**
