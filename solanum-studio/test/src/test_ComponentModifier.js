@@ -2,7 +2,7 @@ const assert = require('assert')
 
 import * as recast from 'recast'
 import flow from 'flow-parser'
-import ComponentModifier from '../src/ComponentModifier.js'
+import ComponentModifier from '../../src/ComponentModifier.js'
 
 const parseOptions = {
     'parser': {

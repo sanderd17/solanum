@@ -1,7 +1,7 @@
 const assert = require('assert')
 
 import path from 'path'
-import StudioAPI from '../src/StudioAPI.js'
+import StudioAPI from '../../src/StudioAPI.js'
 
 
 describe('Studio', function() {
