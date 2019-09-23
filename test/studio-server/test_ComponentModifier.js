@@ -1,8 +1,9 @@
-const assert = require('assert')
+import assert from 'assert'
+import {describe, it} from '../solanumTestStructure.js'
 
-import * as recast from 'recast'
+import recast from 'recast'
 import flow from 'flow-parser'
-import ComponentModifier from '../../src/ComponentModifier.js'
+import ComponentModifier from '../../solanum-studio/src/ComponentModifier.js'
 
 const parseOptions = {
     'parser': {
@@ -24,7 +25,7 @@ assert.equalJS = function(js1, js2) {
 }
 
 const startCode = `
-import Template from '../lib/template.js'
+import Template from '/lib/template.js'
 
 class TestComponent extends Template {
     children = {

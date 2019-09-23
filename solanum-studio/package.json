@@ -9,7 +9,6 @@
   "type": "module",
   "scripts": {
     "inspect": "node --inspect index.js",
-    "test": "mocha -r esm",
     "build": "tsc --build jsconfig.json"
   },
   "engines": {
@@ -28,10 +27,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
-    "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.5",
-    "esm": "^3.2.25",
-    "mocha": "^6.2.0",
     "typescript": "^3.6.3"
   }
 }

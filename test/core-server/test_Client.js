@@ -1,7 +1,8 @@
 // @ts-nocheck
-const assert = require('assert')
+import assert from 'assert'
+import {describe, it} from '../solanumTestStructure.js'
 
-import Client from '../../src/Client.js'
+import Client from '../../solanum-core/src/Client.js'
 
 let dummyWebSocket = (expectedTypes) => ({
     'on': (type, fn) => {
