@@ -31,10 +31,7 @@
   },
   "devDependencies": {
     "chalk": "^2.4.2",
-    "esm": "^3.2.25",
     "flow-parser": "^0.108.0",
-    "mocha": "^6.2.0",
-    "mocha-jsdom": "^2.0.0",
     "recast": "^0.18.2",
     "yargs": "^14.0.0"
   }
