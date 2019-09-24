@@ -22,7 +22,9 @@ async function runTests(dir) {
         if (stat.isDirectory()) {
             await runTests(fullPath)
         } else if (f.startsWith('test_')) {
-            await import('file:' + fullPath)
+            let mdl = await import('file:' + fullPath)
+            console.log('\n' + chalk.bold.blue(f.split('_').pop()))
+            await mdl.default(supportFunctions)
         }
     }
 }
@@ -30,3 +32,43 @@ async function runTests(dir) {
 runTests(baseDir)
     .then((v) => console.log(chalk.black.bgGreen('\nAll tests successful\n')))
     .catch(err => console.error(err))
+
+
+var depth = 1
+let supportFunctions = {}
+supportFunctions.before = function(fn) {
+    throw Error('Not implemented yet')
+    // runs before all tests in this file regardless where this line is defined.
+}
+
+supportFunctions.after = function(fn) {
+    throw Error('Not implemented yet')
+    // runs after all tests in this file
+}
+
+supportFunctions.beforeEach = function(fn) {
+    throw Error('Not implemented yet')
+    // runs before each test in this block
+}
+
+supportFunctions.afterEach = function(fn) {
+    throw Error('Not implemented yet')
+    // runs after each test in this block
+}
+
+
+supportFunctions.describe = function(name, fn) {
+    console.log('  '.repeat(depth) + name)
+    depth++
+    fn()
+    depth--
+},
+
+supportFunctions.it = function(action, fn) {
+    let r = fn()
+    console.log(chalk.green('  '.repeat(depth) + '✓ ' + action))
+}
+
+supportFunctions.it.skip = function(action, fn) {
+    console.log(chalk.cyan('  '.repeat(depth) + '- ' + action))
+}

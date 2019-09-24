@@ -1,5 +1,4 @@
 import assert from 'assert'
-import {describe, it} from '../solanumTestStructure.js'
 
 import recast from 'recast'
 import flow from 'flow-parser'
@@ -51,7 +50,7 @@ class TestComponent extends Template {
 export default TestComponent
 `
 
-describe('ComponentModifier', function() {
+export default function({describe, it}) {
     describe('equalityTester', function() {
         it('Should test equal on itself', function() {
             assert.equalJS(startCode, startCode)
@@ -204,4 +203,4 @@ describe('ComponentModifier', function() {
             assert(!newCode.includes('prop1'))
         })
     })
-})
+}

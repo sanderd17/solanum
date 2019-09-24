@@ -1,6 +1,5 @@
 // @ts-nocheck
 import assert from 'assert'
-import {describe, it} from '../solanumTestStructure.js'
 
 import TagSet from '../../solanum-core/src/TagSet.js'
 
@@ -12,7 +11,7 @@ let DummyTag = function(tagSet, tagPath, otherArgs) {
     this.value = otherArgs.value
 }
 
-describe('TagSet', function() {
+export default function({describe, it}) {
     describe('constructor', function() {
         it('should construct a tagset', function() {
             let ts = new TagSet()
@@ -92,4 +91,4 @@ describe('TagSet', function() {
             assert.equal(ts.changedTags.size, 0)
         })
     })
-})
+}

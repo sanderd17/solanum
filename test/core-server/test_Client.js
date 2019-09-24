@@ -1,6 +1,5 @@
 // @ts-nocheck
 import assert from 'assert'
-import {describe, it} from '../solanumTestStructure.js'
 
 import Client from '../../solanum-core/src/Client.js'
 
@@ -10,7 +9,7 @@ let dummyWebSocket = (expectedTypes) => ({
 
     }
 })
-describe('Client', function() {
+export default function({describe, it}) {
     describe('constructor', function() {
         it('constructs', function() {
             let ip = "ip"
@@ -60,4 +59,4 @@ describe('Client', function() {
             assert.equal(execCount, 2)
         })
     })
-})
+}

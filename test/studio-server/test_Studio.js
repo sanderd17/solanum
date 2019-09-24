@@ -1,5 +1,4 @@
 import assert from 'assert'
-import {describe, it} from '../solanumTestStructure.js'
 
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -10,7 +9,7 @@ const __dirname = path.dirname(__filename)
 import StudioAPI from '../../solanum-studio/src/StudioAPI.js'
 
 
-describe('Studio', function() {
+export default function({describe, it}) {
     describe('getComponentPaths', function() {
         it('Should return all valid components', async function() {
             let config = {
@@ -45,4 +44,4 @@ describe('Studio', function() {
             editor.openComponent({query:{module: 'module2', component: 'file1.js'}}, response)
         })
     })
-})
+}

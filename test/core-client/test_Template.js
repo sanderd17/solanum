@@ -1,11 +1,9 @@
 import assert from 'assert'
 //import jsdom from 'mocha-jsdom'
 
-import {describe, it} from '../solanumTestStructure.js'
-
 import Template from '/lib/template.js'
 
-describe('Template', function() {
+export default function({describe, it}) {
     /*jsdom({
         url: 'http://example.org/',
     })*/
@@ -26,4 +24,4 @@ describe('Template', function() {
             assert(cmp.classList.contains('solanum'))*/
         })
     })
-})
+}
