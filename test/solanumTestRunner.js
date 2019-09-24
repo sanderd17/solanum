@@ -33,8 +33,6 @@ runTests(baseDir)
     .then((v) => console.log(chalk.black.bgGreen('\nAll tests successful\n')))
     .catch(err => console.error(err))
 
-
-var depth = 1
 let supportFunctions = {}
 supportFunctions.before = function(fn) {
     throw Error('Not implemented yet')
@@ -57,18 +55,22 @@ supportFunctions.afterEach = function(fn) {
 }
 
 
-supportFunctions.describe = function(name, fn) {
-    console.log('  '.repeat(depth) + name)
-    depth++
-    fn()
-    depth--
+supportFunctions.describe = async function(name, fn) {
+    console.log('  ' + name)
+    let r = fn()
+    if (r && 'then' in r) {
+        await r
+    }
 },
 
-supportFunctions.it = function(action, fn) {
+supportFunctions.it = async function(action, fn) {
     let r = fn()
-    console.log(chalk.green('  '.repeat(depth) + '✓ ' + action))
+    if (r && 'then' in r) {
+        await r
+    }
+    console.log(chalk.green('  ' + '✓ ' + action))
 }
 
 supportFunctions.it.skip = function(action, fn) {
-    console.log(chalk.cyan('  '.repeat(depth) + '- ' + action))
+    console.log(chalk.cyan('  ' + '- ' + action))
 }
