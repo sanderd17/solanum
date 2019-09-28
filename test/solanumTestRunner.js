@@ -24,6 +24,8 @@ async function runTests(dir) {
         } else if (f.startsWith('test_')) {
             let mdl = await import('file:' + fullPath)
             console.log('\n' + chalk.bold.blue(f.split('_').pop()))
+            beforeFunctions = []
+            afterFunctions = []
             await mdl.default(supportFunctions)
         }
     }
@@ -34,24 +36,17 @@ runTests(baseDir)
     .catch(err => console.error(err))
 
 let supportFunctions = {}
-supportFunctions.before = function(fn) {
-    throw Error('Not implemented yet')
-    // runs before all tests in this file regardless where this line is defined.
-}
 
-supportFunctions.after = function(fn) {
-    throw Error('Not implemented yet')
-    // runs after all tests in this file
-}
-
+let beforeFunctions = []
+let afterFunctions = []
 supportFunctions.beforeEach = function(fn) {
-    throw Error('Not implemented yet')
-    // runs before each test in this block
+    // runs before each test in this file, needs to be defined at the top
+    beforeFunctions.push(fn)
 }
 
 supportFunctions.afterEach = function(fn) {
-    throw Error('Not implemented yet')
-    // runs after each test in this block
+    // runs after each test in this file, needs to be defined at the top
+    afterFunctions.push(fn)
 }
 
 
@@ -64,9 +59,15 @@ supportFunctions.describe = async function(name, fn) {
 },
 
 supportFunctions.it = async function(action, fn) {
+    for (let beforeFn of beforeFunctions) {
+        beforeFn()
+    }
     let r = fn()
     if (r && 'then' in r) {
         await r
+    }
+    for (let afterFn of afterFunctions) {
+        afterFn()
     }
     console.log(chalk.green('  ' + '✓ ' + action))
 }

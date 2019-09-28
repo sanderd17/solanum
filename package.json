@@ -26,12 +26,13 @@
     "node": ">=12.10"
   },
   "dependencies": {
-    "commander": "^3.0.1",
+    "commander": "^3.0.2",
     "prompts": "^2.2.1"
   },
   "devDependencies": {
     "chalk": "^2.4.2",
     "flow-parser": "^0.108.0",
+    "jsdom": "^15.1.1",
     "recast": "^0.18.2",
     "yargs": "^14.0.0"
   }
