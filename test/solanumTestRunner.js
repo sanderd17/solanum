@@ -26,50 +26,100 @@ async function runTests(dir) {
             console.log('\n' + chalk.bold.blue(f.split('_').pop()))
             beforeFunctions = []
             afterFunctions = []
+            descriptions = []
             await mdl.default(supportFunctions)
+            for (let d of descriptions) {
+                await runDescription(d)
+            }
         }
     }
 }
 
+function showError({numError, err, descriptor, action}) {
+    console.log()
+    console.log(chalk.bgRed(`(${numError}) ${descriptor} :: ${action}`))
+    let stack = err.stack
+    let stackList = stack.split('\n')
+    stackList.splice(stackList.length - 3, 3)
+    console.log(stackList.join('\n'))
+}
+
 runTests(baseDir)
-    .then((v) => console.log(chalk.black.bgGreen('\nAll tests successful\n')))
-    .catch(err => console.error(err))
+    .then((v) => {
+        let numErrors = errorList.length
+        if (numErrors == 0) {
+            console.log(chalk.black.bgGreen('\nAll tests successful\n'))
+            return
+        }
+        for (let e of errorList) {
+            showError(e)
+        }
+
+        if (numErrors == 1)
+            console.error(chalk.bgRed(`\n 1 TEST FAILED \n`))
+        else
+            console.error(chalk.bgRed(`\n ${numErrors} TESTS FAILED`))
+        process.exit(1)
+    })
+    .catch(err => {
+        // This means errors didn't happen while the tests were run, but when importing files or running 0
+        console.error(chalk.bgRed('An exception happened in the test runner'))
+        console.error(err)
+        process.exit(2)
+    })
 
 let supportFunctions = {}
 
 let beforeFunctions = []
-let afterFunctions = []
 supportFunctions.beforeEach = function(fn) {
     // runs before each test in this file, needs to be defined at the top
     beforeFunctions.push(fn)
 }
 
+let afterFunctions = []
 supportFunctions.afterEach = function(fn) {
     // runs after each test in this file, needs to be defined at the top
     afterFunctions.push(fn)
 }
 
+let descriptions = []
+supportFunctions.describe = async function(descriptor, fn) {
+    descriptions.push({descriptor, fn})
+}
 
-supportFunctions.describe = async function(name, fn) {
-    console.log('  ' + name)
-    let r = fn()
-    if (r && 'then' in r) {
-        await r
+async function runDescription({descriptor, fn}) {
+    testers = []
+    console.log('  ' + descriptor)
+    await fn()
+    for (let t of testers) {
+        await runTest(t, descriptor)
     }
-},
+}
 
+/**
+ * @type {{numError: number, err: Error, descriptor: string, action: string}[]}list of gathered errors while testing
+ */
+let errorList = []
+let testers = []
 supportFunctions.it = async function(action, fn) {
+    testers.push({action, fn})
+}
+
+async function runTest({fn, action}, descriptor) {
     for (let beforeFn of beforeFunctions) {
         beforeFn()
     }
-    let r = fn()
-    if (r && 'then' in r) {
-        await r
+    try {
+        await fn()
+        console.log(chalk.green('  ✓ ' + action))
+    } catch (err) {
+        let numError = errorList.length + 1
+        errorList.push({numError, descriptor, action, err})
+        console.log(chalk.bgRed(`  E (${numError}) ` + action))
     }
     for (let afterFn of afterFunctions) {
         afterFn()
     }
-    console.log(chalk.green('  ' + '✓ ' + action))
 }
 
 supportFunctions.it.skip = function(action, fn) {
