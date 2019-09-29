@@ -17,8 +17,7 @@
   "dependencies": {
     "chokidar": "^3.0.2",
     "express": "^4.17.1",
-    "express-ws": "^4.0.0",
-    "node-opcua": "^2.1.7"
+    "express-ws": "^4.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
