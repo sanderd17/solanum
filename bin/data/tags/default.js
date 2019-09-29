@@ -1,4 +1,4 @@
-import MemoryTag from 'solanum-core/src/MemoryTag.js'
+import MemoryTag from '../../../solanum-core/server/MemoryTag.js.js'
 
 /**
  * @type {Object<string, import ('../../solanum-core/src/TagSet.js').TagDescription>}

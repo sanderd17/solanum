@@ -8,7 +8,7 @@ import Tag from './Tag.js'
  * @property {any} defaultValue
  */
 
-function TagSet (config) {
+function TagSet(config) {
     // TODO load tags list from config instead of hard coding
     this.activeSendTimer = null
     this.changedTags = new Set()
@@ -17,7 +17,7 @@ function TagSet (config) {
     this.subscribedTags = new WeakMap()// link clients to their subscribed tags
 }
 
-TagSet.prototype.initMessageHandlers = function() {
+TagSet.prototype.initMessageHandlers = function () {
     // Let clients set their subscribed tags
     ClientConnection.on(
         'TagSet:setSubscriptions',
@@ -50,7 +50,7 @@ TagSet.prototype.initMessageHandlers = function() {
 /**
  * @param {object} tagList 
  */
-TagSet.prototype.setTags = function(tagList) {
+TagSet.prototype.setTags = function (tagList) {
     for (let tagpath in tagList) {
         this.addTag(tagpath, tagList[tagpath])
     }
@@ -61,7 +61,7 @@ TagSet.prototype.setTags = function(tagList) {
  * @param {string} tagpath 
  * @param {TagDescription} tagDescr 
  */
-TagSet.prototype.addTag = function(tagpath, tagDescr) {
+TagSet.prototype.addTag = function (tagpath, tagDescr) {
     let tagType = tagDescr.type
     this.tags.set(tagpath, new tagType(this, tagpath, tagDescr))
 }
@@ -69,7 +69,7 @@ TagSet.prototype.addTag = function(tagpath, tagDescr) {
 /**
  * @param {Tag} tag 
  */
-TagSet.prototype.triggerChange = function(tag) {
+TagSet.prototype.triggerChange = function (tag) {
     this.changedTags.add(tag.tagPath)
     if (!this.activeSendTimer) {
         // notify clients at the end of the eval loop
@@ -82,17 +82,17 @@ TagSet.prototype.triggerChange = function(tag) {
  * @param {Set<ClientConnection>} clients 
  * @param {Set<string>} tagPaths 
  */
-TagSet.prototype.sendTags = function(clients=clientList, tagPaths=null) {
+TagSet.prototype.sendTags = function (clients = clientList, tagPaths = null) {
     let specificPaths = tagPaths || this.changedTags // default to changed tags
     this.activeSendTimer = 0
     /** @type {Object<string,{value: any}>} */
     let tagsToSend = {}
     for (let path of specificPaths) {
         let tag = this.tags.get(path)
-        tagsToSend[path] = {"value": tag ? tag.value : null}
+        tagsToSend[path] = { "value": tag ? tag.value : null }
     }
     for (let client of clients) {
-        client.sendMessage({'TagSet:updateTags': tagsToSend})//.then(() => {})
+        client.sendMessage({ 'TagSet:updateTags': tagsToSend })//.then(() => {})
     }
     if (!tagPaths)
         this.changedTags.clear()

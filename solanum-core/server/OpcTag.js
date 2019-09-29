@@ -3,7 +3,7 @@
 import Tag from './Tag.js'
 import ts from './TagSet.js'
 
-const opcUa = require('node-opcua')
+const opcUa = require('./node-opcua')
 
 /*
 options = {

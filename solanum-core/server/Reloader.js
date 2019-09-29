@@ -1,7 +1,6 @@
 import path from 'path'
 import chokidar from 'chokidar'
 import clientList from './ClientList.js'
-import { TIMEOUT } from 'dns';
 
 class Reloader {
 

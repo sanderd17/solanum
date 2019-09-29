@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
 
-import ClientConnection from '../../solanum-core/src/ClientConnection.js'
+import ClientConnection from '../../solanum-core/server/ClientConnection.js'
 
 let dummyWebSocket = (expectedTypes) => ({
     'on': (type, fn) => {

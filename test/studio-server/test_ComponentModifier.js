@@ -2,7 +2,7 @@ import assert from 'assert'
 
 import recast from 'recast'
 import flow from 'flow-parser'
-import ComponentModifier from '../../solanum-studio/src/ComponentModifier.js'
+import ComponentModifier from '../../solanum-studio/server/ComponentModifier.js'
 
 const parseOptions = {
     'parser': {

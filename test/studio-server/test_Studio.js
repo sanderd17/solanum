@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-import StudioAPI from '../../solanum-studio/src/StudioAPI.js'
+import StudioAPI from '../../solanum-studio/server/StudioAPI.js'
 
 
 export default async function({describe, it}) {

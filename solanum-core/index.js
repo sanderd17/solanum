@@ -5,10 +5,10 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import expressWs from 'express-ws'
 
-import ClientConnection from './src/ClientConnection.js'
-import clientList from './src/ClientList.js'
-import TagSet from './src/TagSet.js'
-import Reloader from './src/Reloader.js'
+import ClientConnection from './server/ClientConnection.js'
+import clientList from './server/ClientList.js'
+import TagSet from './server/TagSet.js'
+import Reloader from './server/Reloader.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

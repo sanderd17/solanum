@@ -1,7 +1,7 @@
 // @ts-nocheck
 import assert from 'assert'
 
-import TagSet from '../../solanum-core/src/TagSet.js'
+import TagSet from '../../solanum-core/server/TagSet.js'
 
 
 let DummyTag = function(tagSet, tagPath, otherArgs) {

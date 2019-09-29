@@ -1,7 +1,7 @@
-import MemoryTag from '../../solanum-core/src/MemoryTag.js'
+import MemoryTag from '../../solanum-core/server/MemoryTag.js'
 
 /**
- * @type {Object<string, import ('../../solanum-core/src/TagSet.js').TagDescription>}
+ * @type {Object<string, import ('../../solanum-core/server/TagSet.js.js').TagDescription>}
  */
 let tags = {
     'testMemoryTag': {
