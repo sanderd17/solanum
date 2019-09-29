@@ -5,7 +5,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import expressWs from 'express-ws'
 
-import Client from './src/Client.js'
+import ClientConnection from './src/ClientConnection.js'
 import clientList from './src/ClientList.js'
 import TagSet from './src/TagSet.js'
 import Reloader from './src/Reloader.js'
@@ -35,7 +35,7 @@ function init(app, config) {
 
     // @ts-ignore -- Wait until websockets are native in express
     app.ws('/socket', function(ws, req) {
-        let cl = new Client(ws, req.connection.remoteAddress)
+        let cl = new ClientConnection(ws, req.connection.remoteAddress)
         clientList.add(cl)
 
         console.log('Added new client: # ' + clientList.size)

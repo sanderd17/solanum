@@ -1,5 +1,5 @@
 import clientList from './ClientList.js'
-import Client from './Client.js'
+import ClientConnection from './ClientConnection.js'
 import Tag from './Tag.js'
 
 /**
@@ -19,12 +19,12 @@ function TagSet (config) {
 
 TagSet.prototype.initMessageHandlers = function() {
     // Let clients set their subscribed tags
-    Client.on(
+    ClientConnection.on(
         'TagSet:setSubscriptions',
         /**
          * On subscription, store the subscribed tags,
          * and resend all tags now subscribed to
-         * @param {Client} client
+         * @param {ClientConnection} client
          * @param {string[]} subscriptionList
          */
         (client, subscriptionList) => {
@@ -34,10 +34,10 @@ TagSet.prototype.initMessageHandlers = function() {
             this.sendTags(new Set([client]), tags)
         }
     )
-    Client.on(
+    ClientConnection.on(
         'TagSet:writeTag',
         /**
-         * @param {Client} client
+         * @param {ClientConnection} client
          * @param {{path: string, value: object}} data
          */
         (client, data) => {
@@ -79,7 +79,7 @@ TagSet.prototype.triggerChange = function(tag) {
 
 /**
  * 
- * @param {Set<Client>} clients 
+ * @param {Set<ClientConnection>} clients 
  * @param {Set<string>} tagPaths 
  */
 TagSet.prototype.sendTags = function(clients=clientList, tagPaths=null) {

@@ -1,4 +1,4 @@
-class Client {
+class ClientConnection {
     /**
      * @param {WebSocket} ws 
      * @param {string} ip 
@@ -14,7 +14,7 @@ class Client {
     }
 }
 
-Client.prototype.initPing = function() {
+ClientConnection.prototype.initPing = function() {
     function ping() {
         try {
             this.ws.ping(+new Date())
@@ -34,15 +34,15 @@ Client.prototype.initPing = function() {
 /**
  * @param {Object<string, object>} msg 
  */
-Client.prototype.handleMessage = function(msg) {
+ClientConnection.prototype.handleMessage = function(msg) {
     for (let key in msg) {
         console.log('received message ' + key)
         // TODO log somewhere if a message doesn't exist
-        if (!Client.messageTypes[key]) {
+        if (!ClientConnection.messageTypes[key]) {
             console.log("Message not found: " + key)
             continue
         }
-        for (let handler of Client.messageTypes[key]){
+        for (let handler of ClientConnection.messageTypes[key]){
             handler(this, msg[key])
         }
     }
@@ -51,7 +51,7 @@ Client.prototype.handleMessage = function(msg) {
 /**
  * @param {object} msg 
  */
-Client.prototype.sendMessage = function(msg) {
+ClientConnection.prototype.sendMessage = function(msg) {
     return new Promise((resolve, reject) => {
         try {
             let msgString = JSON.stringify(msg)
@@ -71,23 +71,23 @@ Client.prototype.sendMessage = function(msg) {
 }
 
 /**
- * @typedef {(c: Client, o: object) => void} MessageHandler
+ * @typedef {(c: ClientConnection, o: object) => void} MessageHandler
  */
 
 /** @type {Object<string,Array<MessageHandler>>} */
-Client.messageTypes = {}
+ClientConnection.messageTypes = {}
 /**
  * Register a message handler for a certain message coming from a client
  * @param {string} name - Name of the message
  * @param {MessageHandler} fn - Function to handle message
  */
-Client.on = function(name, fn) {
+ClientConnection.on = function(name, fn) {
     // TODO warn for double message adding
 
-    if (!(name in Client.messageTypes)) {
-        Client.messageTypes[name] = []
+    if (!(name in ClientConnection.messageTypes)) {
+        ClientConnection.messageTypes[name] = []
     }
-    Client.messageTypes[name].push(fn)
+    ClientConnection.messageTypes[name].push(fn)
 }
 
-export default Client
+export default ClientConnection
