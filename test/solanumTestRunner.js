@@ -44,6 +44,84 @@ function showError({numError, err, descriptor, action}) {
     console.log(stackList.join('\n'))
 }
 
+
+let supportFunctions = {}
+
+/** @type {Function[]} */
+let beforeFunctions = []
+supportFunctions.beforeEach = function(fn) {
+    // runs before each test in this file, needs to be defined at the top
+    beforeFunctions.push(fn)
+}
+
+/** @type {Function[]} */
+let afterFunctions = []
+supportFunctions.afterEach = function(fn) {
+    // runs after each test in this file, needs to be defined at the top
+    afterFunctions.push(fn)
+}
+
+/** @type {{descriptor: string, fn:Function}[]} */
+let descriptions = []
+/**
+ * @param {string} descriptor
+ * @param {Function} fn
+ */
+supportFunctions.describe = async function(descriptor, fn) {
+    descriptions.push({descriptor, fn})
+}
+
+/** @param {{descriptor: string, fn: Function}} param0 */
+async function runDescription({descriptor, fn}) {
+    testers = []
+    console.log('  ' + descriptor)
+    await fn()
+    for (let t of testers) {
+        await runTest(t, descriptor)
+    }
+}
+
+/** @type {{numError: number, err: Error, descriptor: string, action: string}[]} list of gathered errors while testing */
+let errorList = []
+/** @type {{action: string, fn: Function}[]} list of tests to run for the active descriptor*/
+let testers = []
+/**
+ * @param {string} action
+ * @param {Function} fn
+ */
+supportFunctions.it = async function(action, fn) {
+    testers.push({action, fn})
+}
+
+/** 
+ * @param {{action: string, fn: Function}} testFunction
+ * @param {string} descriptor
+ */
+async function runTest({fn, action}, descriptor) {
+    for (let beforeFn of beforeFunctions) {
+        beforeFn()
+    }
+    try {
+        await fn()
+        console.log(chalk.green('  ✓ ' + action))
+    } catch (err) {
+        let numError = errorList.length + 1
+        errorList.push({numError, descriptor, action, err})
+        console.log(chalk.bgRed(`  E (${numError}) ` + action))
+    }
+    for (let afterFn of afterFunctions) {
+        afterFn()
+    }
+}
+
+/**
+ * @param {string} action
+ * @param {Function} fn
+ */
+supportFunctions.it.skip = function(action, fn) {
+    console.log(chalk.cyan('  ' + '- ' + action))
+}
+
 runTests(baseDir)
     .then((v) => {
         let numErrors = errorList.length
@@ -67,61 +145,3 @@ runTests(baseDir)
         console.error(err)
         process.exit(2)
     })
-
-let supportFunctions = {}
-
-let beforeFunctions = []
-supportFunctions.beforeEach = function(fn) {
-    // runs before each test in this file, needs to be defined at the top
-    beforeFunctions.push(fn)
-}
-
-let afterFunctions = []
-supportFunctions.afterEach = function(fn) {
-    // runs after each test in this file, needs to be defined at the top
-    afterFunctions.push(fn)
-}
-
-let descriptions = []
-supportFunctions.describe = async function(descriptor, fn) {
-    descriptions.push({descriptor, fn})
-}
-
-async function runDescription({descriptor, fn}) {
-    testers = []
-    console.log('  ' + descriptor)
-    await fn()
-    for (let t of testers) {
-        await runTest(t, descriptor)
-    }
-}
-
-/**
- * @type {{numError: number, err: Error, descriptor: string, action: string}[]}list of gathered errors while testing
- */
-let errorList = []
-let testers = []
-supportFunctions.it = async function(action, fn) {
-    testers.push({action, fn})
-}
-
-async function runTest({fn, action}, descriptor) {
-    for (let beforeFn of beforeFunctions) {
-        beforeFn()
-    }
-    try {
-        await fn()
-        console.log(chalk.green('  ✓ ' + action))
-    } catch (err) {
-        let numError = errorList.length + 1
-        errorList.push({numError, descriptor, action, err})
-        console.log(chalk.bgRed(`  E (${numError}) ` + action))
-    }
-    for (let afterFn of afterFunctions) {
-        afterFn()
-    }
-}
-
-supportFunctions.it.skip = function(action, fn) {
-    console.log(chalk.cyan('  ' + '- ' + action))
-}

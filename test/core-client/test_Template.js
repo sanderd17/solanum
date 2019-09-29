@@ -12,7 +12,7 @@ export default function({describe, it, beforeEach}) {
         global.document = d.window.document
     })
     describe('constructor', function() {
-        it('Creates a div element', function() {
+        it('creates a div element', function() {
             let cmp = new Template({})
             assert.equal(cmp.__dom.nodeName, 'DIV')
         })
