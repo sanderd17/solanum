@@ -1,6 +1,3 @@
 node_modules/*
-solanum-core/node_modules/*
-solanum-studio/node_modules/*
-solanum-install/node_modules/*
-solanum-demo/node_modules/*
+*/node_modules/*
 src/OpcTag.js
