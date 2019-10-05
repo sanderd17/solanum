@@ -6,6 +6,7 @@ import tags from './tags/default.js'
 
 import {default as initCore} from 'solanum-core'
 import {default as initStudio} from 'solanum-studio'
+import createDemoOpcServer from './server/OpcServer.js'
 
 const app = express()
 
@@ -22,3 +23,6 @@ initStudio(app, config)
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)
+
+// create and start the demo server
+let opcServer = createDemoOpcServer()
