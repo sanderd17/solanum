@@ -1,4 +1,5 @@
-import MemoryTag from '../../solanum-core/server/MemoryTag.js'
+import MemoryTag from 'solanum-core/server/MemoryTag.js'
+import OpcUaTag from 'solanum-opcua/server/OpcUaTag.js'
 
 /**
  * @type {Object<string, import ('../../solanum-core/server/TagSet.js.js').TagDescription>}
@@ -17,12 +18,13 @@ for (let i = 0; i < 3000; i++) {
         defaultValue: `hsl(${(i) % 360}, 100%, 50%)`
     }
 }
-    /*testTag: {
-            type: "OpcTag",
-            OpcServer: "PLC01",
-            ns: 4,
-            nodeId: "`OPC.testTag",
-    },
+tags.watchDog = {
+        type: OpcUaTag,
+        OpcServer: "DemoServer",
+        ns: 1,
+        nodeId: "`iWatchDog",
+}
+    /*
     testUdtInst: {
             type: "UdtInstance",
             udtType: "ST_MOTOR",

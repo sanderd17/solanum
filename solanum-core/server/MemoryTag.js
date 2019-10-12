@@ -10,14 +10,14 @@ class MemoryTag extends Tag {
         super(tagSet, tagPath, data)
         this.quality = 'GOOD'
     }
-}
 
-/**
- * @param {object} value 
- */
-MemoryTag.prototype.write = function(value) {
-    this.value = value
-    this.triggerChange()
+    /**
+     * @param {object} value 
+     */
+    write(value) {
+        this.value = value
+        this.triggerChange()
+    }
 }
 
 export default MemoryTag

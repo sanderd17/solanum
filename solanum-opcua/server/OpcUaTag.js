@@ -1,9 +1,8 @@
-// @ts-nocheck
+import opcua  from 'node-opcua'
 
-import Tag from './Tag.js'
-import ts from './TagSet.js'
+import Tag from 'solanum-core/server/Tag.js'
+import ts from 'solanum-core/server/TagSet.js'
 
-const opcUa = require('./node-opcua')
 
 /*
 options = {
@@ -81,47 +80,52 @@ OpcConnection.prototype.getSubscription = function(subscriptionName) {
     return subscription
 }
 
-function OpcTag(tagPath, data) {
-    this.tagPath = tagPath
-    this.value = data.defaultValue
-    this.connectionName = data.connection
-    this.subscriptionName = data.subscription
-    this.nodeId = data.nodeId
-    this.quality = 'INIT'
-}
+class OpcUaTag extends Tag {
+    /**
+     * @param {TagSet} tagSet
+     * @param {string} tagPath 
+     * @param {{defaultValue: object}} data 
+     */
+    constructor(tagSet, tagPath, data) {
+        super(tagSet, tagPath, data)
+        this.value = data.defaultValue
+        this.connectionName = data.connection
+        this.subscriptionName = data.subscription
+        this.nodeId = data.nodeId
+        this.quality = 'INIT'
+    }
 
-OpcTag.prototype = Object.create(Tag.prototype)
+    async init() {
+        let connection = await getOpcConnection(this.connectionName)
+        let subscription = connection.getSubscription(this.subscriptionName)
+        /*{
+            samplingInterval: 10, // interval of sampling between OPC server and its data source, can be limited by the OPC server
+            discardOldest: true, // whether the oldest values must be discarded
+            queueSize: 1, // maximum number of values that will be shown in a message
+            // The example here is only interested in the latest change
+            // If you want to process all changes, 
+        }*/
+        samplingOptions = connection.options.subscriptionOptions[this.subscriptionName]
+        let monitoredItem = subscription.monitor(
+            {nodeId: data.nodeId, attributeId: opcua.AttributeIds.Value},
+            samplingOptions,
+            opcUa.read_service.TimestampsToReturn.Both
+        )
+        monitoredItem.on('changed', (value) => {
+            this.value = value.value.value
+            this.triggerChange()
+        })
+    }
 
-OpcTag.prototype.init = async function() {
-    let connection = await getOpcConnection(this.connectionName)
-    let subscription = connection.getSubscription(this.subscriptionName)
-    /*{
-        samplingInterval: 10, // interval of sampling between OPC server and its data source, can be limited by the OPC server
-        discardOldest: true, // whether the oldest values must be discarded
-        queueSize: 1, // maximum number of values that will be shown in a message
-        // The example here is only interested in the latest change
-        // If you want to process all changes, 
-    }*/
-    samplingOptions = connection.options.subscriptionOptions[this.subscriptionName]
-    let monitoredItem = subscription.monitor(
-        {nodeId: data.nodeId, attributeId: opcua.AttributeIds.Value},
-        samplingOptions,
-        opcUa.read_service.TimestampsToReturn.Both
-    )
-    monitoredItem.on('changed', (value) => {
-        this.value = value.value.value
+    triggerChange() {
+        ts.triggerChange(this)
+    }
+
+    write(value) {
+        this.value = value
         this.triggerChange()
-    })
+    }
 }
 
-OpcTag.prototype.triggerChange = function() {
-    ts.triggerChange(this)
-}
-
-OpcTag.prototype.write = function(value) {
-    this.value = value
-    this.triggerChange()
-}
-
-export default OpcTag
+export default OpcUaTag
 

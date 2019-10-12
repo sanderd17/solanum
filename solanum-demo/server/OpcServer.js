@@ -8,7 +8,7 @@ export default function createDemoOpcServer() {
         buildInfo: {
             productName: "SolanumDemoServer",
             buildNumber: "1",
-            buildDate: new Date(2019, 10, 5),
+            buildDate: new Date(),
         }
     });
 
@@ -32,7 +32,7 @@ export default function createDemoOpcServer() {
         namespace.addVariable({
             componentOf: device,
             browseName: "iWatchDog",
-            nodeId: 's=OPCUA_VARS/iWatchDog',
+            nodeId: 's=iWatchDog',
             dataType: "Integer",
             value: {
                 get: function () {
@@ -89,25 +89,11 @@ export default function createDemoOpcServer() {
             let motorName = 'M' + (i).toString().padStart(3, '0')
             const motorNode = addFolder(dolNode, motorName)
             addVariable(motorNode, 'bAuto', opcua.DataType.Boolean, false, true)
-            addVariable(motorNode, 'iState', opcua.DataType.Int32, 2, true)
+            addVariable(motorNode, 'iState', opcua.DataType.Int32, 2, false)
         }
+
         let variable2 = false;
-
         namespace.addVariable({
-            componentOf: device,
-            browseName: "bAuto",
-            dataType: "Boolean",
-            value: {
-                get: () => new opcua.Variant({dataType: opcua.DataType.Boolean, value: variable2}),
-                set: (variant) => {
-                    variable2 = !!variant.value
-                    return opcua.StatusCodes.Good
-                }
-            }
-        })
-
-
-        setTimeout(() => {namespace.addVariable({
             componentOf: device,
             nodeId: "b=1020ffab", // some opaque NodeId in namespace 4
             browseName: "Percentage Memory Used",
@@ -120,11 +106,7 @@ export default function createDemoOpcServer() {
                     return new opcua.Variant({dataType: opcua.DataType.Double, value: memUsed * 100});
                 }
             }
-            
         })
-            server.buildInfo.buildNumber = "2"}, 20000)
-
-
 
         server.start(function() {
             console.log("OPC Server is now listening ... ( press CTRL+C to stop)");
@@ -132,7 +114,6 @@ export default function createDemoOpcServer() {
             const endpointUrl = server.endpoints[0].endpointDescriptions()[0].endpointUrl;
             console.log(" the primary server endpoint url is ", endpointUrl );
         });
-
 
     })
     return server

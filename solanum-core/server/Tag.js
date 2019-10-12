@@ -11,20 +11,18 @@ class Tag {
         this.value = data.defaultValue
         this.ts = tagSet
     }
+
+    triggerChange() {
+        this.ts.triggerChange(this)
+    }
+
+    /**
+     * @param {object} value 
+     * @returns {void}
+     */
+    write(value) {
+        throw 'Not implemented'
+    }
 }
-
-Tag.prototype.triggerChange = function() {
-    this.ts.triggerChange(this)
-}
-
-/**
- * @param {object} value 
- * @returns {void}
- */
-Tag.prototype.write = function(value) {
-    throw 'Not implemented'
-}
-
-
 
 export default Tag
