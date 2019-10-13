@@ -13,7 +13,7 @@
     "test-core-server": "node --experimental-modules --loader ./test/solanumTestLoader.mjs ./test/solanumTestRunner.js -d ./core-server",
     "test-core-client": "node --experimental-modules --loader ./test/solanumTestLoader.mjs ./test/solanumTestRunner.js -d ./core-client",
     "test-studio-server": "node --experimental-modules --loader ./test/solanumTestLoader.mjs ./test/solanumTestRunner.js -d ./studio-server",
-    "test-studio-client": "mocha -r esm \"solanum-studio/test/public/**/*.js\"",
+    "test-studio-client": "node --experimental-modules --loader ./test/solanumTestLoader.mjs ./test/solanumTestRunner.js -d ./studio-client",
     "build": "tsc --build jsconfig.json",
     "high_latency_netw": "sudo tc qdisc add dev lo root netem delay 50ms # add 50 ms latency to localhost (lo)",
     "low_bandwidth_netw": "sudo tc qdisc add dev lo root netem rate 300kbit # limil localhost speed to 300kbit",

@@ -7,18 +7,6 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "-r",
-                "esm",
-                "*/test/**/*.js"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/solanum-demo/index.js",
             "runtimeArgs": ["--experimental-modules"]
