@@ -21,11 +21,6 @@ Working
 
 
 
-
-
-
-
-
 /**
  * Add the editor api to the server instance
  * @param {Express.Application} app The active express app

@@ -13,7 +13,7 @@ export default function createDemoOpcServer() {
     });
 
     server.initialize(() => {
-        console.log(server)
+        //console.log(server)
 
         const addressSpace = server.engine.addressSpace;
         const namespace = addressSpace.getOwnNamespace();
