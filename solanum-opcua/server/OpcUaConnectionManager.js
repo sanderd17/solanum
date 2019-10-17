@@ -1,8 +1,6 @@
-/**
- * This file will manage the state of all opc ua connections
- */
-
 import opcua from "node-opcua"
+
+const timeout = ms => new Promise(res => setTimeout(res, ms))
  
 export class OpcUaConnection {
     /**
@@ -14,7 +12,7 @@ export class OpcUaConnection {
     constructor(name, endpoint, options) {
         this.name = name
         this.endpoint = endpoint
-        this.options = this.options
+        this.options = options
         /** @type {Map<string, opcua.ClientSubscription>} */
         this.subscriptionMap = new Map()
     }
@@ -58,8 +56,11 @@ export class OpcUaConnection {
      */
     addSubscription(name, subscriptionOptions) {
         let subscription = opcua.ClientSubscription.create(this.session, subscriptionOptions)
+        console.log("CREATED")
         subscription.on('started', () => {
             console.debug(`OPCUA subscription started ${name} (id: ${subscription.subscriptionId})`)
+            this.subscriptionMap.set(name, subscription)
+            console.log('STARTED')
         })
         subscription.on('status_changed', (statusCode) => {
             console.debug(`OPCUA subscription ${name} status_changed: ${statusCode}`)
@@ -70,7 +71,6 @@ export class OpcUaConnection {
         subscription.on('terminated', () => {
             console.debug(`OPCUA subscription ${name} terminated`)
         })
-        this.subscriptionMap.set(name, subscription)
     }
 
     /**
@@ -87,6 +87,18 @@ export class OpcUaConnectionManager {
         this.connectionMap = new Map()
     }
 
+    async init(config) {
+        this.config = config
+        // TODO: PERFORMANCE: make async functions parallel
+        for (let serverConfig of this.config.servers) {
+            let connection = await this.addConnection(serverConfig.name, serverConfig.endpoint, serverConfig.options)
+            for (let subsciptionconfig of this.config.subscriptions) {
+                console.log(subsciptionconfig.options)
+                await connection.addSubscription(subsciptionconfig.name, subsciptionconfig.options)
+            }
+        }
+    }
+
     /**
      * Adds a connection and immediately connects to the OPC UA server
      * @param {string} name 
@@ -97,7 +109,36 @@ export class OpcUaConnectionManager {
         let connection =  new OpcUaConnection(name, endpoint, options)
         this.connectionMap.set(name,connection)
         await connection.connect()
+        return connection
+    }
 
+    async subscribeTag(connectionName, subscriptionName, nodeId, changeTrigger) {
+        // FIXME limit time for trying if connection exists
+        let connection = this.getConnection(connectionName)
+        while (connection == null) {
+            await timeout(100)
+            connection = this.getConnection(connectionName)
+        }
+        let subscription = connection.getSubscription(subscriptionName)
+        while (subscription == null) {
+            await timeout(100)
+            subscription = connection.getSubscription(subscriptionName)
+        }
+        let itemToMonitor = {nodeId, attributeId: opcua.AttributeIds.Value}
+        // TODO move some options to configuration
+        let samplingOptions = {
+            samplingInterval: 10, // interval of sampling between OPC server and its data source, can be limited by the OPC server
+            discardOldest: true, // whether the oldest values must be discarded
+            queueSize: 1, // maximum number of values that will be shown in a message
+            // The example here is only interested in the latest change
+        }
+        let monitoredItem = opcua.ClientMonitoredItem.create(
+            subscription,
+            itemToMonitor,
+            samplingOptions,
+            opcua.TimestampsToReturn.Both
+        )
+        monitoredItem.on('changed', changeTrigger)
     }
 
     /**
@@ -122,6 +163,5 @@ export class OpcUaConnectionManager {
     }
 }
  
-const opcUaConnections = new OpcUaConnectionManager()
-
-export default opcUaConnections
+let connectionManager = new OpcUaConnectionManager()
+export default connectionManager

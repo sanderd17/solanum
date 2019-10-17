@@ -26,7 +26,7 @@ export default function createDemoOpcServer() {
         // add a variable named MyVariable1 to the newly created folder "MyDevice"
         let variable1 = 1
 
-        // emulate variable1 changing every 500 ms
+        // emulate variable1 changing every 50 ms
         setInterval(() => variable1 = (variable1 + 1) % 2**16 , 50)
 
         namespace.addVariable({

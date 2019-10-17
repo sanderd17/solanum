@@ -5,6 +5,7 @@ import config from './config.js'
 import tags from './tags/default.js'
 
 import {default as initCore} from 'solanum-core'
+import {default as initOpcUa} from 'solanum-opcua'
 import {default as initStudio} from 'solanum-studio'
 import createDemoOpcServer from './server/OpcServer.js'
 
@@ -17,6 +18,7 @@ app.use(function (req, res, next) {
 */
 
 let solanumCore = initCore(app, config)
+initOpcUa(app, config)
 solanumCore.ts.setTags(tags)
 
 initStudio(app, config)

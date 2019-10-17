@@ -1,9 +1,8 @@
 import opcua  from 'node-opcua'
 
 import Tag from 'solanum-core/server/Tag.js'
-import ts from 'solanum-core/server/TagSet.js'
 
-import opcUaConnections from './OpcUaConnectionManager.js'
+import connectionManager from './OpcUaConnectionManager.js'
 
 class OpcUaTag extends Tag {
     /**
@@ -16,32 +15,20 @@ class OpcUaTag extends Tag {
         this.value = data.defaultValue
         this.connectionName = data.connection
         this.subscriptionName = data.subscription
-        this.nodeId = data.nodeId
+        this.nodeId = data.nodeId // FISME wrong format causes nasty error deep in opcua module. Check format is "ns=x;s=xxx"
         this.quality = 'INIT'
     }
 
     async init() {
-        let connection = opcUaConnections.getConnection(this.connectionName)
-        let subscription = connection.getSubscription(this.subscriptionName)
-        let samplingOptions = {
-            samplingInterval: 10, // interval of sampling between OPC server and its data source, can be limited by the OPC server
-            discardOldest: true, // whether the oldest values must be discarded
-            queueSize: 1, // maximum number of values that will be shown in a message
-            // The example here is only interested in the latest change
-        }
-        let monitoredItem = subscription.monitor(
-            {nodeId: this.nodeId, attributeId: opcua.AttributeIds.Value},
-            samplingOptions,
-            opcua.read_service.TimestampsToReturn.Both
-        )
-        monitoredItem.on('changed', (value) => {
+        await connectionManager.subscribeTag(this.connectionName, this.subscriptionName, this.nodeId, (value) => {
             this.value = value.value.value
             this.triggerChange()
         })
     }
 
     triggerChange() {
-        ts.triggerChange(this)
+        this.ts.triggerChange(this)
+        console.log('IT WORKS', this.tagPath, this.value)
     }
 
     write(value) {

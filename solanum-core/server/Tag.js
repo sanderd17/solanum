@@ -17,6 +17,11 @@ class Tag {
     }
 
     /**
+     * Init function (optional)
+     */
+    async init() {}
+
+    /**
      * @param {object} value 
      * @returns {void}
      */

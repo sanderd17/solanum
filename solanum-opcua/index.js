@@ -2,6 +2,7 @@ import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import jsonschema from 'jsonschema'
+import connectionManager from './server/OpcUaConnectionManager.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -26,12 +27,10 @@ Working
  * @param {Express.Application} app The active express app
  * @param {any} config 
  */
-function init(app, config) {
+async function init(app, config) {
+    await connectionManager.init(config.opcua)
+    /*
     const opcua = new OpcUaAPI(app, config)
-
-    const endpoint = 'opc.tcp://localhost:4334' // TODO get from config
-
-    
 
     // Allow calling any function defined in the Studio API, but do check if the request is valid
     app.get('/API/OpcUa/xyz',
@@ -40,6 +39,7 @@ function init(app, config) {
             res.send("OpcUa status")
         }
     )
+    */
 }
 
 export default init

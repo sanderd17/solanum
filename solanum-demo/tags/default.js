@@ -20,9 +20,10 @@ for (let i = 0; i < 3000; i++) {
 }
 tags.watchDog = {
         type: OpcUaTag,
-        OpcServer: "DemoServer",
+        connection: "DemoServer",
+        subscription: "default",
         ns: 1,
-        nodeId: "`iWatchDog",
+        nodeId: "ns=1;s=iWatchDog",
 }
     /*
     testUdtInst: {

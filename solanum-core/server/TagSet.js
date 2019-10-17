@@ -9,7 +9,6 @@ import Tag from './Tag.js'
  */
 
 function TagSet(config) {
-    // TODO load tags list from config instead of hard coding
     this.activeSendTimer = null
     this.changedTags = new Set()
     /** @type {Map<string, Tag>} */
@@ -63,7 +62,9 @@ TagSet.prototype.setTags = function (tagList) {
  */
 TagSet.prototype.addTag = function (tagpath, tagDescr) {
     let tagType = tagDescr.type
-    this.tags.set(tagpath, new tagType(this, tagpath, tagDescr))
+    let tag = new tagType(this, tagpath, tagDescr)
+    this.tags.set(tagpath, tag)
+    tag.init()
 }
 
 /**
