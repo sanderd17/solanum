@@ -28,7 +28,6 @@ class OpcUaTag extends Tag {
 
     triggerChange() {
         this.ts.triggerChange(this)
-        console.log('IT WORKS', this.tagPath, this.value)
     }
 
     write(value) {

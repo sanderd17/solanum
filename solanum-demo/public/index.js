@@ -4,29 +4,18 @@ import Reloader from './lib/Reloader.js'
 import messager from "./lib/Messager.js"
 ts.initMessageHandlers()
 
-const mainWindow = new MainWindow({})
+let root = document.getElementById('root')
+root.style.width = window.innerWidth + 'px'
+root.style.height = window.innerHeight + 'px'
+
+const mainWindow = new MainWindow({
+    position: {left: '0px', right: '0px', top: '0px', bottom: '0px' }
+})
 let r = new Reloader(mainWindow)
 r.initMessageHandlers()
 let div = document.getElementById("root")
 div.appendChild(mainWindow.__dom)
 
-/*
-const svgDom = mainWindow.render().documentElement
-svgDom.setAttribute("width", window.innerWidth)
-svgDom.setAttribute("height", window.innerHeight)
-
-
-let styleEl = document.createElement('style')
-document.head.appendChild(styleEl)
-let rules = ''
-for (let rule of Object.values(mainWindow.getCssMap())) {
-    rules += rule + ' \n'
-}
-styleEl.innerHTML = rules
-
-mainWindow.addBindings()
-mainWindow.addEventHandlers()
-*/
 
 messager.connectToServer(location.host)
 // expose singletons for debugging purposes (via browser console)
