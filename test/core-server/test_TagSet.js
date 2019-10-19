@@ -9,6 +9,7 @@ let DummyTag = function(tagSet, tagPath, otherArgs) {
     this.tagPath = tagPath
     this.otherArgs = otherArgs
     this.value = otherArgs.value
+    this.init = () => {}
 }
 
 export default function({describe, it}) {

@@ -18,6 +18,7 @@ class Tag {
 
     /**
      * Init function (optional)
+     * called when the tag is added to the tagset
      */
     async init() {}
 
