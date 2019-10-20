@@ -4,9 +4,9 @@ import express from 'express'
 import config from './config.js'
 import tags from './tags/default.js'
 
-import {default as initCore} from 'solanum-core'
-import {default as initOpcUa} from 'solanum-opcua'
-import {default as initStudio} from 'solanum-studio'
+import Solanum from 'solanum-core'
+import SolanumOpcUa from 'solanum-opcua'
+import SolanumStudio from 'solanum-studio'
 import createDemoOpcServer from './server/OpcServer.js'
 
 const app = express()
@@ -17,11 +17,12 @@ app.use(function (req, res, next) {
 });
 */
 
-let solanumCore = initCore(app, config)
-initOpcUa(app, config)
-solanumCore.ts.setTags(tags)
+let solanum = new Solanum(app, config)
+solanum.addModule(SolanumOpcUa)
+solanum.addModule(SolanumStudio)
 
-initStudio(app, config)
+solanum.init()
+solanum.ts.setTags(tags)
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)

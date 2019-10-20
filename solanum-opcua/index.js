@@ -20,26 +20,15 @@ Working
 
 */
 
+class SolanumOpcUa {
+    constructor(solanum) {
+        this.app = solanum.app
+        this.config = solanum.config
+    }
 
-
-/**
- * Add the editor api to the server instance
- * @param {Express.Application} app The active express app
- * @param {any} config 
- */
-async function init(app, config) {
-    await connectionManager.init(config.opcua)
-    /*
-    const opcua = new OpcUaAPI(app, config)
-
-    // Allow calling any function defined in the Studio API, but do check if the request is valid
-    app.get('/API/OpcUa/xyz',
-        async (req, res) => {
-            // TODO return some OPC UA status
-            res.send("OpcUa status")
-        }
-    )
-    */
+    async init() {
+        await connectionManager.init(this.config.opcua)
+    }
 }
 
-export default init
+export default SolanumOpcUa

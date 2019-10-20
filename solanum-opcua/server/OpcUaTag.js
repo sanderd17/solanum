@@ -15,7 +15,7 @@ class OpcUaTag extends Tag {
         this.value = data.defaultValue
         this.connectionName = data.connection
         this.subscriptionName = data.subscription
-        this.nodeId = data.nodeId // FISME wrong format causes nasty error deep in opcua module. Check format is "ns=x;s=xxx"
+        this.nodeId = data.nodeId // FIXME wrong format causes nasty error deep in opcua module. Check format is "ns=x;s=xxx"
         this.quality = 'INIT'
     }
 

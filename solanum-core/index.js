@@ -19,41 +19,48 @@ class Solanum {
         this.config = config
         this.ts = new TagSet(config)
         this.ts.initMessageHandlers()
+
+        this.modules = []
     }
-}
 
-function init(app, config) {
+    async init() {
+        expressWs(this.app)
+        this.app.use(bodyParser.json({'limit': '10MB'})) // auto parse json into req.body
 
-    expressWs(app)
-    app.use(bodyParser.json({'limit': '10MB'})) // auto parse json into req.body
+        for (let dir of this.config.publicDirs) {
+            this.app.use(express.static(dir))
+        }
+        this.app.use('/scripts', 
+            express.static(path.join(__dirname, '../node_modules')))
 
-    for (let dir of config.publicDirs) {
-        app.use(express.static(dir))
-    }
-    app.use('/scripts', 
-        express.static(path.join(__dirname, '../node_modules')))
+        // @ts-ignore -- Wait until websockets are native in express
+        this.app.ws('/socket', function(ws, req) {
+            let cl = new ClientConnection(ws, req.connection.remoteAddress)
+            clientList.add(cl)
 
-    // @ts-ignore -- Wait until websockets are native in express
-    app.ws('/socket', function(ws, req) {
-        let cl = new ClientConnection(ws, req.connection.remoteAddress)
-        clientList.add(cl)
-
-        console.log('Added new client: # ' + clientList.size)
-        ws.on('close', function(msg) {
-            // Delete from the client list
-            for (let cl of clientList) {
-                if (cl.ws == ws) {
-                    clientList.delete(cl)
+            console.log('Added new client: # ' + clientList.size)
+            ws.on('close', function(msg) {
+                // Delete from the client list
+                for (let cl of clientList) {
+                    if (cl.ws == ws) {
+                        clientList.delete(cl)
+                    }
                 }
-            }
-            console.log('Removed client: # ' + clientList.size)
+                console.log('Removed client: # ' + clientList.size)
+            })
         })
-    })
 
-    let reloader = new Reloader(app, config)
+        let reloader = new Reloader(this.app, this.config)
 
-    return new Solanum(app, config)
+        for (let m of this.modules) {
+            await m.init()
+        }
+    }
+
+    addModule(cnstr) {
+        this.modules.push(new cnstr(this))
+    }
 }
 
 
-export default init
+export default Solanum
