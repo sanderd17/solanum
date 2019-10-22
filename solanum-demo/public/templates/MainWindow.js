@@ -3,6 +3,8 @@ import Template from "/lib/template.js"
 import Motor from "/templates/Motor.js"
 import Label from "/templates/forms/Label.js"
 import ts from '/lib/TagSet.js'
+import Icon from "/templates/draw/Icon.js"
+
 class MainWindow extends Template {
     constructor(...args) {
         super(...args)
@@ -13,6 +15,13 @@ class MainWindow extends Template {
             props: {text: "INIT"},
             eventHandlers: {}
         }))
+
+        this.addChild('icon', new Icon({
+            parent: this,
+            position: {right: '10px', top: '40px', width: '15px', height: '15px'},
+            props: {iconSet: 'material-design', iconPath: 'device/svg/production/ic_battery_80_24px.svg'}
+        }))
+
         let size = 15
         for (let i = 0; i < 3000; i++) {
             let child = new Motor({

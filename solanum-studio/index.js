@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename)
 
 class SolanumStudio {
     constructor(solanum) {
+        this.solanum = solanum
         this.app = solanum.app
         this.config = solanum.config
     }

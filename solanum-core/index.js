@@ -9,6 +9,7 @@ import ClientConnection from './server/ClientConnection.js'
 import clientList from './server/ClientList.js'
 import TagSet from './server/TagSet.js'
 import Reloader from './server/Reloader.js'
+import IconManager from './server/IconManager.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -33,6 +34,10 @@ class Solanum {
         this.app.use('/scripts', 
             express.static(path.join(__dirname, '../node_modules')))
 
+        this.app.get('/icons', (req, res) => {
+            iconManager.getIcon(req, res)
+        })
+
         // @ts-ignore -- Wait until websockets are native in express
         this.app.ws('/socket', function(ws, req) {
             let cl = new ClientConnection(ws, req.connection.remoteAddress)
@@ -51,6 +56,9 @@ class Solanum {
         })
 
         let reloader = new Reloader(this.app, this.config)
+
+        let iconManager = new IconManager()
+        iconManager.addIconSet('material-design', path.join(__dirname, 'node_modules', 'material-design-icons'), '(.*)/svg/production/(.*)\\.svg')
 
         for (let m of this.modules) {
             await m.init()
