@@ -41,6 +41,10 @@ TagSet.prototype.initMessageHandlers = function () {
          */
         (client, data) => {
             let tag = this.tags.get(data.path)
+            if (!tag) {
+                console.error(`Could not find tag with path ${data.path}`)
+                return
+            }
             tag.write(data.value)
         }
     )

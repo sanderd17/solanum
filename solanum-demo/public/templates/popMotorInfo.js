@@ -7,7 +7,7 @@ class PopMotorInfo extends Template {
         btnStart: new Button({
             parent: this,
             position: {left: '10%', right: '10%', top: '10px', height: '25px'},
-            props: {text: 'Start'},
+            props: {text: '"Start"'},
             eventHandlers: {
                 click: (ev, root) => ts.writeTag(root.path, 'lightgreen')
             }
@@ -15,7 +15,7 @@ class PopMotorInfo extends Template {
         btnStop: new Button({
             parent: this,
             position: {left: '10%', right: '10%', top: '40px', height: '25px'},
-            props: {text: 'Stop'},
+            props: {text: '"Stop"'},
             eventHandlers: {
                 click: (ev, root) => ts.writeTag(root.path, 'gray')
             }

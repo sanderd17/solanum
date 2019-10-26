@@ -13,21 +13,21 @@ class StyleBlock extends Template {
             parent: this,
             position: {right: '0px', width: '50px', top: '0px', height: '20px'},
             props: {
-                text: ':hov'
+                text: '":hov"'
             }
         }),
         tglAct: new ToggleButton({
             parent: this,
             position: {right: '55px', width: '50px', top: '0px', height: '20px'},
             props: {
-                text: ':act'
+                text: '":act"'
             }
         }),
         tglFoc: new ToggleButton({
             parent: this,
             position: {right: '110px', width: '50px', top: '0px', height: '20px'},
             props: {
-                text: ':foc'
+                text: '":foc"'
             }
         }),
         txtClasses: new Textbox({

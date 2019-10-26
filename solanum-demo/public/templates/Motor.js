@@ -30,14 +30,14 @@ class Motor extends Template {
                 height: "84%",
                 top: "6%"
             },
-            props: {fill: "red", prop2: 'test'},
+            props: {fill: '"red"', prop2: '"test"'},
             eventHandlers: {
                 /**
                  * @param {Event} ev
                  * @param {Motor} root
                  */ 
                 click: (ev, root) => {
-                    let path = 'Motors/' + root.motor
+                    let path = `"Motors/${root.motor}"`
                     solanum.openPopup('popMotorInfo', {path})
                 }
             },
@@ -51,7 +51,7 @@ class Motor extends Template {
                 top: "67%",
                 height: "25%"
             },
-            props: {fill: "blue"},
+            props: {fill: '"blue"'},
             eventHandlers: { }
         })
     }
@@ -65,7 +65,6 @@ class Motor extends Template {
     get motor() {
         return this._motor
     }
-
     static defaultSize = [100, 100]
 }
 

@@ -13,7 +13,7 @@ class StudioWindow extends Template {
             parent: this,
             position: {left: '0px', top:'0px', width: '100%', height: '20px'},
             props: {
-                positionUnit: 'px'
+                positionUnit: '"px"'
             },
             eventHandlers: {}
         }),
