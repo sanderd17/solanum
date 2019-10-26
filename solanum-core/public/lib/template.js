@@ -67,40 +67,56 @@ class Template {
                 child.classList.add(id)
             }
 
+            // Turn the prop value into a function body. Allow the binding function to use the props of the parent.
+
+            // Get all the prop names to construct the argument list
             let bindingArgNames = []
             if (this.__parent)
                 bindingArgNames = Object.keys(this.__parent.props)
+
+            // Add custom variable names that must be available
             bindingArgNames.push('Tag')
 
             for (let key in p.props) {
                 try {
+                    // Create a function that evaluates the body given in the prop
                     let propBinding = Function(`return ({${bindingArgNames.join(',')}}) => (${p.props[key]})`)()
                     this.__propBindings[key] = propBinding
                 } catch (e) {
                     console.error(`Error while defining function body ${p.props[key]}\n`, e)
                 }
             }
+            // Calculate the actual prop values from the defined functions
             this.recalcPropValues()
         })
     }
 
     recalcPropValues() {
+        // Keep track of updates, in case of updates to these values, children may need an update too
         let childrenNeedUpdates = false
+        // Get the current values for the props of the parent. They need to be given as arguments
         let bindingArgs = {}
         if (this.__parent) {
             for (let key in this.__parent.props) {
                 bindingArgs[key] = this.__parent[key]
             }
         }
+
         for (let [key, binding] of Object.entries(this.__propBindings)) {
+            // store the old value to check changes
             let oldValue = this[key]
-            bindingArgs.Tag = function(tagpath) {
-                // TODO subscribe to key on this object
-                return undefined
+            // Special function 'Tag' allows props to subscribe to a tag. This function initialises a subscription on the tagset
+            bindingArgs.Tag = (tagpath, defaultValue) => {
+                // TODO manage subscriptions here: erase subscription when changed, still allow two subscriptions to one prop, ...
+                ts.setSubscription(this, key, tagpath)
+                return defaultValue // TODO return the known value if the tag is already known
             }
+
             try {
+                // calculate the new value from the binding function
                 let newValue = binding(bindingArgs)
                 if (oldValue != newValue) {
+                    // TODO allow (grand)parents to follow changes. Sending messages?
                     this[key] = newValue
                     childrenNeedUpdates = true
                 }
@@ -109,6 +125,7 @@ class Template {
             }
         }
 
+        // If any value has changed, children might need updates too
         if (childrenNeedUpdates) {
             for (let child of Object.values(this.children)) {
                 child.recalcPropValues()

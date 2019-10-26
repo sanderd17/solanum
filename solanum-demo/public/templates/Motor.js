@@ -34,7 +34,7 @@ class Motor extends Template {
                 height: "84%",
                 top: "6%"
             },
-            props: {fill: '"red"', prop2: '`Motors/${motor}`'},
+            props: {fill: 'Tag(`Motors/${motor}`, "red")', prop2: '`Motors/${motor}`'},
             eventHandlers: {
                 /**
                  * @param {Event} ev
@@ -60,15 +60,6 @@ class Motor extends Template {
         })
     }
 
-    _motor = ''
-    set motor(motor) {
-        this._motor = motor
-        ts.setSubscription(this.children.icon, 'fill', `Motors/${motor}`)
-    }
-
-    get motor() {
-        return this._motor
-    }
     static defaultSize = [100, 100]
 }
 
