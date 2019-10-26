@@ -29,6 +29,9 @@ class Template {
     /** @type {Object<string,Template>} */
     children = {}
 
+    /** @type {Object<string,any>} default props for this template */
+    props = {}
+
     /**
      * @param {TemplateConstructParams} p
      */
@@ -58,16 +61,20 @@ class Template {
         this.__propBindings = {}
 
         // Copy the prop values to own values
-        // Set the props async, to allow the children to be initialised before prop setters are called
+        // Set the props async, to allow the inherited classes to be initialised before prop setters are called
         Promise.resolve().then(() => {
             for (let [id, child] of Object.entries(this.children)) {
                 child.classList.add(id)
             }
 
+            let bindingArgNames = []
+            if (this.__parent)
+                bindingArgNames = Object.keys(this.__parent.props)
+            bindingArgNames.push('Tag')
+
             for (let key in p.props) {
                 try {
-                    // TODO get the names of own props from parent object
-                    let propBinding = Function(`return ({myProp1, myProp2, Tag}) => (${p.props[key]})`)()
+                    let propBinding = Function(`return ({${bindingArgNames.join(',')}}) => (${p.props[key]})`)()
                     this.__propBindings[key] = propBinding
                 } catch (e) {
                     console.error(`Error while defining function body ${p.props[key]}\n`, e)
@@ -79,17 +86,20 @@ class Template {
 
     recalcPropValues() {
         let childrenNeedUpdates = false
+        let bindingArgs = {}
+        if (this.__parent) {
+            for (let key in this.__parent.props) {
+                bindingArgs[key] = this.__parent[key]
+            }
+        }
         for (let [key, binding] of Object.entries(this.__propBindings)) {
             let oldValue = this[key]
-            let Tag = function(tagpath) {
+            bindingArgs.Tag = function(tagpath) {
                 // TODO subscribe to key on this object
                 return undefined
             }
             try {
-                let newValue = binding({
-                    myProp: '', //TODO: get default prop keys and values of parent object
-                    Tag
-                })
+                let newValue = binding(bindingArgs)
                 if (oldValue != newValue) {
                     this[key] = newValue
                     childrenNeedUpdates = true
