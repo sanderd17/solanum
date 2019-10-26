@@ -12,14 +12,15 @@ class MainWindow extends Template {
         this.addChild('label', new Label({
             parent: this,
             position: {right: '10px', width: '100px', top: '10px', height: '20px'},
-            props: {text: "INIT"},
+            props: {text: '"INIT"'},
             eventHandlers: {}
         }))
+
 
         this.addChild('icon', new Icon({
             parent: this,
             position: {right: '10px', top: '40px', width: '15px', height: '15px'},
-            props: {iconSet: 'material-design', iconPath: 'device/svg/production/ic_battery_80_24px.svg'}
+            props: {iconSet: '"material-design"', iconPath: '"device/svg/production/ic_battery_80_24px.svg"'}
         }))
 
         let size = 15
@@ -28,7 +29,7 @@ class MainWindow extends Template {
                 parent: this,
                 position: {left: (size * Math.floor(i/50)) + 'px', width: size + 'px', top: (size * (i % 50)) + 'px', height: size + 'px'},
                 props: {
-                    motor: `M${i}`,
+                    motor: `"M${i}"`,
                 },
                 eventHandlers: {}
             })
@@ -36,6 +37,7 @@ class MainWindow extends Template {
         }
 
         ts.setSubscription(this.children.label, 'text', `watchDog`)
+
     }
 }
 

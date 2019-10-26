@@ -10,8 +10,8 @@ class PositionPropEditor extends Template {
             parent: this,
             position: { left: '0px', top: '0px', height: '20px', width: '100px' },
             props: {
-                text: 'Left',
-                disabled: true
+                text: '"Left"',
+                disabled: 'true'
             },
             eventHandlers: {},
         }),
@@ -19,8 +19,8 @@ class PositionPropEditor extends Template {
             parent: this,
             position: { left: '0px', top: '25px', height: '20px', width: '100px' },
             props: {
-                text: 'Right',
-                disabled: true
+                text: '"Right"',
+                disabled: 'true'
             },
             eventHandlers: {},
         }),
@@ -28,8 +28,8 @@ class PositionPropEditor extends Template {
             parent: this,
             position: { left: '0px', top: '50px', height: '20px', width: '100px' },
             props: {
-                text: 'Width',
-                disabled: true
+                text: '"Width"',
+                disabled: 'true'
             },
             eventHandlers: {},
         }),
@@ -37,8 +37,8 @@ class PositionPropEditor extends Template {
             parent: this,
             position: { left: '0px', top: '75px', height: '20px', width: '100px' },
             props: {
-                text: 'Top',
-                disabled: true
+                text: '"Top"',
+                disabled: 'true'
             },
             eventHandlers: {},
         }),
@@ -46,8 +46,8 @@ class PositionPropEditor extends Template {
             parent: this,
             position: { left: '0px', top: '100px', height: '20px', width: '100px' },
             props: {
-                text: 'Bottom',
-                disabled: true
+                text: '"Bottom"',
+                disabled: 'true'
             },
             eventHandlers: {},
         }),
@@ -55,39 +55,39 @@ class PositionPropEditor extends Template {
             parent: this,
             position: { left: '0px', top: '125px', height: '20px', width: '100px' },
             props: {
-                text: 'Height',
-                disabled: true
+                text: '"Height"',
+                disabled: 'true'
             },
             eventHandlers: {},
         }),
         leftValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '0px', height: '20px', right: '0px' },
-            props: { disabled: true },
+            props: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'left') },
         }),
         rightValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '25px', height: '20px', right: '0px' },
-            props: { disabled: true },
+            props: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'right') },
         }),
         widthValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '50px', height: '20px', right: '0px' },
-            props: { disabled: true },
+            props: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'width') },
         }),
         topValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '75px', height: '20px', right: '0px' },
-            props: { disabled: true },
+            props: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'top') },
         }),
         bottomValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '100px', height: '20px', right: '0px' },
-            props: { disabled: true },
+            props: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'bottom') },
         }),
         heightValue: new Textbox({
@@ -98,7 +98,7 @@ class PositionPropEditor extends Template {
                 height: "20px",
                 right: "0px"
             },
-            props: { disabled: true },
+            props: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'height') },
         }),
     }

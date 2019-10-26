@@ -83,7 +83,7 @@ class Popup extends Template {
 
         document.body.appendChild(this.__dom)
 
-        this.setTemplate(this.__cArgs.props.templatePath, this.__cArgs.props.props)
+        this.setTemplate(this.__cArgs.templatePath, this.__cArgs.props)
     }
 
     /**

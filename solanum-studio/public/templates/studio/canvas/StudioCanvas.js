@@ -48,7 +48,7 @@ class StudioCanvas extends Template {
             this.addChild('interaction', new StudioCanvasInteraction({
                 parent: this,
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
-                props: {elWidth: width, elHeight: height},
+                props: {elWidth: '"' + width + '"', elHeight: '"' + height + '"'},
                 eventHandlers: {
                     childpositionchanged: (ev, root) => root.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
                     droppedchild: (ev, root) => root.addNewChild(ev.detail.childId, {

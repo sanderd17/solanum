@@ -11,10 +11,8 @@ const solanum = {}
 solanum.openPopup = async function(templatePath, props) {
     const popup = new Popup({
         parent: null,
-        props: {
-            templatePath,
-            props
-        }
+        templatePath,
+        props
     })
 }
 

@@ -14,8 +14,8 @@ class LayoutBar extends Template {
                 height: "20px"
             },
             props: {
-                selected: false,
-                text: '%'
+                selected: 'false',
+                text: '"%"'
             },
             eventHandlers: {
                 click: (ev, root, child) => {

@@ -15,7 +15,7 @@ class PropEditor extends Template {
         childPropEditor: new ChildPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '160px', height: '150px'},
-            props: {hidden: true},
+            props: {hidden: 'true'},
         }),
         ownPropEditor: new OwnPropEditor({
             parent: this,
