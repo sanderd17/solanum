@@ -23,24 +23,30 @@ async function runTests(dir) {
             await runTests(fullPath)
         } else if (f.startsWith('test_')) {
             let mdl = await import('file:' + fullPath)
-            console.log('\n' + chalk.bold.blue(f.split('_').pop()))
+            let file = f.split('_').pop()
+            console.log('\n' + chalk.bold.blue(file))
             beforeFunctions = []
             afterFunctions = []
             descriptions = []
             await mdl.default(supportFunctions)
             for (let d of descriptions) {
+                d.file = file
                 await runDescription(d)
             }
         }
     }
 }
 
-function showError({numError, err, descriptor, action}) {
+function showError({numError, err, file, descriptor, action}) {
     console.log()
-    console.log(chalk.bgRed(`(${numError}) ${descriptor} :: ${action}`))
+    console.log(chalk.bgRed(`(${numError})`) + chalk.bold.red(` ${file} :: ${descriptor} :: ${action}`))
     let stack = err.stack
     let stackList = stack.split('\n')
+    stackList[0] = chalk.bold(stackList[0])
     stackList.splice(stackList.length - 3, 3)
+    for (let i = 1; i < stackList.length; i++) {
+        stackList[i] = chalk.dim(stackList[i])
+    }
     console.log(stackList.join('\n'))
 }
 
@@ -61,27 +67,27 @@ supportFunctions.afterEach = function(fn) {
     afterFunctions.push(fn)
 }
 
-/** @type {{descriptor: string, fn:Function}[]} */
+/** @type {{file: string?, descriptor: string, fn:Function}[]} */
 let descriptions = []
 /**
  * @param {string} descriptor
  * @param {Function} fn
  */
 supportFunctions.describe = async function(descriptor, fn) {
-    descriptions.push({descriptor, fn})
+    descriptions.push({file: null, descriptor, fn})
 }
 
-/** @param {{descriptor: string, fn: Function}} param0 */
-async function runDescription({descriptor, fn}) {
+/** @param {{file: string, descriptor: string, fn: Function}} param0 */
+async function runDescription({file, descriptor, fn}) {
     testers = []
     console.log('  ' + descriptor)
     await fn()
     for (let t of testers) {
-        await runTest(t, descriptor)
+        await runTest(t, descriptor, file)
     }
 }
 
-/** @type {{numError: number, err: Error, descriptor: string, action: string}[]} list of gathered errors while testing */
+/** @type {{numError: number, err: Error, file: string, descriptor: string, action: string}[]} list of gathered errors while testing */
 let errorList = []
 /** @type {{action: string, fn: Function}[]} list of tests to run for the active descriptor*/
 let testers = []
@@ -93,20 +99,23 @@ supportFunctions.it = async function(action, fn) {
     testers.push({action, fn})
 }
 
+let testsRan = 0
+
 /** 
  * @param {{action: string, fn: Function}} testFunction
  * @param {string} descriptor
  */
-async function runTest({fn, action}, descriptor) {
+async function runTest({fn, action}, descriptor, file) {
     for (let beforeFn of beforeFunctions) {
         beforeFn()
     }
     try {
         await fn()
         console.log(chalk.green('  ✓ ' + action))
+        testsRan++
     } catch (err) {
         let numError = errorList.length + 1
-        errorList.push({numError, descriptor, action, err})
+        errorList.push({numError, file, descriptor, action, err})
         console.log(chalk.bgRed(`  E (${numError}) ` + action))
     }
     for (let afterFn of afterFunctions) {
@@ -126,7 +135,7 @@ runTests(baseDir)
     .then((v) => {
         let numErrors = errorList.length
         if (numErrors == 0) {
-            console.log(chalk.black.bgGreen('\nAll tests successful\n'))
+            console.log(chalk.black.bgGreen(`\n ${testsRan} tests successful\n`))
             return
         }
         for (let e of errorList) {
@@ -134,9 +143,9 @@ runTests(baseDir)
         }
 
         if (numErrors == 1)
-            console.error(chalk.bgRed(`\n 1 TEST FAILED \n`))
+            console.error(`\n${testsRan} tests sucessful; ` + chalk.bgRed(`1 TEST FAILED \n`))
         else
-            console.error(chalk.bgRed(`\n ${numErrors} TESTS FAILED`))
+            console.error(`\n${testsRan} tests sucessful; ` + chalk.bgRed(`${numErrors} TESTS FAILED`))
         process.exit(1)
     })
     .catch(err => {

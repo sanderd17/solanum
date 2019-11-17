@@ -16,6 +16,7 @@ function TagSet() {
      */
     this.subscriptionLookup = new Map()
 
+    this.tagCache = new Map()
     this.needsTagRefresh = true
 }
 
@@ -42,6 +43,7 @@ TagSet.prototype.refreshAllTags = function() {
  */
 TagSet.prototype.updateTags = function(tags) {
     for (let path in tags) {
+        this.tagCache.set(path, tags[path].value)
         if (!this.subscriptionLookup.has(path))
             continue
         let instanceSet = this.subscriptionLookup.get(path)
@@ -82,12 +84,16 @@ TagSet.prototype.setSubscription = function(instance, propName, tagPath) {
     }
     this.subscriptionLookup.get(tagPath).add(instance)
 
+    if (this.tagCache.has(tagPath)) {
+        return this.tagCache.get(tagPath) // return the value already known
+    } 
     if (!this.needsTagRefresh) {
         // Refresh tags after a timeout (to ensure help with batch adding)
         // TODO only refresh new tags
         this.needsTagRefresh = true
         setTimeout(() => this.refreshAllTags())
     }
+    return undefined // No value is known yet
 }
 
 /**

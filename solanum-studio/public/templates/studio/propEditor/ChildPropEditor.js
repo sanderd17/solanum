@@ -39,12 +39,12 @@ class ChildPropEditor extends Template {
             this.addChild('propName_' + i, new Textbox({
                 parent: this,
                 position: {left: '0px', top: (i*25) + 'px', height: '20px', width: '100px'},
-                props: {value: '"' + propName + '"'},
+                props: {value: JSON.stringify(propName)},
             }))
             this.addChild('propValue_' + i, new Textbox({
                 parent: this,
                 position: {left: '120px', right: '0px', top: (i*25) + 'px', height: '20px'},
-                props: {value: '"' + propState.values.join(',') + '"'}, // TODO should be greyed out if not all children hav the same
+                props: {value: JSON.stringify(propState.values.join(','))}, // TODO should be greyed out if not all children hav the same
                 eventHandlers: { change: (ev, root, textBox) => root.setPropValue(propName, textBox) },
             }))
             i++

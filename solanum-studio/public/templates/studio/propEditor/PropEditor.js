@@ -6,11 +6,16 @@ import StylePropEditor from '/templates/studio/propEditor/StylePropEditor.js'
 
 class PropEditor extends Template {
 
+    props = {
+        cmpSelection: []
+    }
+
     static defaultSize = [300, 1000]
     children  = {
         positionPropEditor: new PositionPropEditor({
             parent: this,
-            position: {left: '0px', right: '0px', top: '0px', height: '150px'}
+            position: {left: '0px', right: '0px', top: '0px', height: '150px'},
+            props: {cmpSelection: 'cmpSelection'},
         }),
         childPropEditor: new ChildPropEditor({
             parent: this,
@@ -19,11 +24,11 @@ class PropEditor extends Template {
         }),
         ownPropEditor: new OwnPropEditor({
             parent: this,
-            position: {left: '0px', right: '0px', top: '160px', height: '150px'}
+            position: {left: '0px', right: '0px', top: '160px', height: '150px'},
         }),
         stylePropEditor: new StylePropEditor({
             parent: this,
-            position: {left: '0px', right: '0px', top: '320px', height: '150px'}
+            position: {left: '0px', right: '0px', top: '320px', height: '150px'},
         }),
     }
 
@@ -44,8 +49,9 @@ class PropEditor extends Template {
             this.children.childPropEditor.hidden = true
             this.children.ownPropEditor.hidden = false
         }
-        this.children.positionPropEditor.cmpSelection = cmpSelection
+        //this.children.positionPropEditor.cmpSelection = cmpSelection
         this.children.childPropEditor.cmpSelection = cmpSelection
+        this.recalcPositionParameters()
     }
 
     get cmpSelection() {

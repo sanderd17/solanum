@@ -55,6 +55,16 @@ class Template {
         * 5 >>> Function("return (5)")() returns just a number
         * 'test' >>> Function("return ('test')") returns just a string
         * myProp1 + 5 >>> Function("return ({myProp1, myProp2, Tag}) => {(myProp1 + 5)}")() returns a function, a parameter {myProp1, myProp2, Tag} can be passed. Tag can be a function that refers to the current element being set.... SUCCESS!!!!
+        * 
+        * 
+        * 
+        * NIEUW IDEE:
+        * Props zijn aparte key onder template. Dus `this.props.motor.value` om aan de waarde te komen. Kan afgekort wordne naar `this.p.motor.v`
+        * Aparte klasse om props te definieren:
+        *   * Getter om waarde te krijgen (van cache)
+        *   * Setter beslist hoe waarde geschreven wordt
+        *   * Default waarde meegeven in eigen template
+        *   * Parent geeft een binding functie mee
         */
 
         /** @type {Object<string, function>} */
@@ -67,29 +77,94 @@ class Template {
                 child.classList.add(id)
             }
 
-            // Turn the prop value into a function body. Allow the binding function to use the props of the parent.
-
-            // Get all the prop names to construct the argument list
-            let bindingArgNames = []
-            if (this.__parent)
-                bindingArgNames = Object.keys(this.__parent.props)
-
-            // Add custom variable names that must be available
-            bindingArgNames.push('Tag')
-
-            for (let key in p.props) {
-                try {
-                    // Create a function that evaluates the body given in the prop
-                    let propBinding = Function(`return ({${bindingArgNames.join(',')}}) => (${p.props[key]})`)()
-                    this.__propBindings[key] = propBinding
-                } catch (e) {
-                    console.error(`Error while defining function body ${p.props[key]}\n`, e)
+            // TODO for every prop in props
+            Object.defineProperty(this, 'propName', {
+                set: function(newValue) {
+                    // TODO update the binding function
+                    // TODO Create a cached value
+                    // TODO force a recalc on children
+                },
+                get: function() {
+                    // TODO return the cached value
                 }
-            }
+            })
+
+            // Turn the prop value into a function body. Allow the binding function to use the props of the parent.
+            this.configurePropBindings(p.props)
+
             // Calculate the actual prop values from the defined functions
             this.recalcPropValues()
         })
     }
+
+    /**
+     * Configure the props of this object
+     * This is a combination of the props defined on the class, and the prop bindings passed through the constructor
+     * @param {Object<string, string>} props object passed through the constructor (from the parent)
+     */
+    configurePropBindings(props) {
+        let ownPropNames = this.getPropNames()
+
+        for (let key in props) {
+            if (!ownPropNames.includes(key))
+                console.warn(`Warning: prop with name ${key} is being used on constructor of ${Object.getPrototypeOf(this).constructor.name}, no such key is available`)
+        }
+
+        // Get all the prop names of the parent to construct the argument list
+        let bindingArgNames = []
+        if (this.__parent)
+            bindingArgNames = this.__parent.getPropNames()
+        // Add custom variable names that must be available
+        bindingArgNames.push('Tag')
+
+        // Transform all object keys into real props that can be listened to
+        this.__propValueCache = {}
+        for (let propName of ownPropNames) {
+            if (props && propName in props) {
+    // TODO this should use a getter/setter
+    // TODO get difference between static and calculated props:
+    // If a prop depends on a tag, it should write to the tag
+    // If a prop is calculated from other props of the parent, it cannot be written to
+    // If a prop is just static, it can be written 
+                Object.defineProperty(this, propName, {
+                    enumerable: true,
+                    get: function() {
+                        return this.__propValueCache[propName]
+                    },
+                    set: function(newValue) {
+                        let oldValue = this.__propValueCache[propName]
+                        this.__dom.dispatchEvent(new CustomEvent('propChanged', {
+                            bubbles: true,
+                            detail: {propName, oldValue, newValue}
+                        }))
+                        //throw new Error("Needs implementation")
+                    }
+                })
+                try {
+                    let propBinding = Function(`return ({${bindingArgNames.join(',')}}) => (${props[propName]})`)()
+                    this.__propBindings[propName] = propBinding
+                    // Create a function that evaluates the body given in the prop
+                } catch (e) {
+                    console.error(`Error while defining function body ${props[propName]} with arguments (${bindingArgNames.join(', ')})\n`, e)
+                }
+            } else {
+                this.__propValueCache[propName] = this[propName]
+                Object.defineProperty(this, propName, {
+                    enumerable: true,
+                    get: function() {
+                        return this.__propValueCache[propName]
+                    },
+                    set: function(newValue) {
+                        if (this.__propValueCache[propName] == newValue)
+                            return // nothing to do
+                        // TODO call OnPropChanged method or something to allow hooks
+                        this.__propValueCache[propName] = newValue
+                    }
+                })
+            }
+        }
+    }
+
 
     recalcPropValues() {
         // Keep track of updates, in case of updates to these values, children may need an update too
@@ -97,28 +172,31 @@ class Template {
         // Get the current values for the props of the parent. They need to be given as arguments
         let bindingArgs = {}
         if (this.__parent) {
-            for (let key in this.__parent.props) {
+            for (let key of this.__parent.getPropNames()) {
                 bindingArgs[key] = this.__parent[key]
             }
         }
 
         for (let [key, binding] of Object.entries(this.__propBindings)) {
             // store the old value to check changes
-            let oldValue = this[key]
+            let oldValue = this.__propValueCache[key]
             // Special function 'Tag' allows props to subscribe to a tag. This function initialises a subscription on the tagset
             bindingArgs.Tag = (tagpath, defaultValue) => {
                 // TODO manage subscriptions here: erase subscription when changed, still allow two subscriptions to one prop, ...
-                ts.setSubscription(this, key, tagpath)
-                return defaultValue // TODO return the known value if the tag is already known
+                let tagValue = ts.setSubscription(this, key, tagpath)
+                return tagValue != undefined ? tagValue : defaultValue
             }
 
             try {
                 // calculate the new value from the binding function
                 let newValue = binding(bindingArgs)
                 if (oldValue != newValue) {
-                    // TODO allow (grand)parents to follow changes. Sending messages?
-                    this[key] = newValue
+                    this.__propValueCache[key] = newValue
                     childrenNeedUpdates = true
+                    this.__dom.dispatchEvent(new CustomEvent('propChanged', {
+                        bubbles: true,
+                        detail: {propName: key, oldValue, newValue}
+                    }))
                 }
             } catch (e) {
                 console.error(`Error setting property ${key} with binding ${binding.toString()}\n`, e)
@@ -131,6 +209,12 @@ class Template {
                 child.recalcPropValues()
             }
         }
+    }
+
+    getPropNames() {
+        return Object.keys(this)
+            .filter(n => !n.startsWith('_')) // own properties starting with _ are used by this internally
+            .filter(n => n != 'children') // children is not part of the props
     }
 
     get classList() {

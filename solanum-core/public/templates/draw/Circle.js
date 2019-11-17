@@ -6,18 +6,14 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Circle extends Template {
     static defaultSize = [20, 20]
 
-    get fill() {
-        return this.__elNode.getAttribute('fill')
-    }
-    set fill(fill) {
-        this.__elNode.setAttribute('fill', fill)
-    }
+    fill = '#000000'
 
     get classList() {
         return this.__elNode.classList
     }
 
-    addEventHandlersToDom() {
+    addEventHandlers() {
+
         if (this.__handleEvent == null) {
             this.__handleEvent = (ev) => {
                 if (ev.type in this.__eventHandlers) {
@@ -68,6 +64,11 @@ class Circle extends Template {
             this.__parent.createDomNode()
             this.__parent.__dom.appendChild(this.__dom)
         }
+        // Listen to changes of props > bring everything to the circle dom node
+        this.__dom.addEventListener('propChanged', (event) => {
+            this.__elNode.setAttribute(event.detail.propName, event.detail.newValue)
+        })
+
     }
 }
 

@@ -1,12 +1,9 @@
 import Template from '/lib/template.js'
-import ts from '/lib/TagSet.js'
 import Circle from '/templates/draw/Circle.js'
 import solanum from '/lib/solanum.js'
 
 class Motor extends Template {
-    props = {
-        motor: 'M1'
-    }
+    motor = 'M1'
 
     static childStyles = {
         icon: [
@@ -29,10 +26,10 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "12%",
+                left: "6%",
                 width: "79%",
-                height: "84%",
-                top: "6%"
+                height: "79%",
+                top: "12%"
             },
             props: {fill: 'Tag(`Motors/${motor}`, "red")', prop2: '`Motors/${motor}`'},
             eventHandlers: {

@@ -4,6 +4,10 @@ import Rect from '/templates/draw/Rect.js'
 
 
 class ResizeHandle extends Template {
+    props = {
+        visible: false
+    }
+
     children = {
         icon: new Rect({
             parent: this,
