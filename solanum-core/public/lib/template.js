@@ -1,5 +1,6 @@
 import style from './Styling.js'
-import ts from './TagSet.js';
+import ts from './TagSet.js'
+import Prop from './ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
@@ -24,12 +25,16 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
-    /** @type {Object<string,TemplateConstructParams>} */
-    static childDefinitions = null
     /** @type {Object<string,Template>} */
     children = {}
 
-    /** @type {Object<string,any>} default props for this template */
+    /** @type {Object<string, Prop>} */
+    properties = {}
+    
+    /**
+     * @type {Object<string,any>} default props for this template
+     * @deprecated
+    */
     props = {}
 
     /**

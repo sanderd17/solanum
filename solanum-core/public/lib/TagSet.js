@@ -1,5 +1,7 @@
 import messager from './Messager.js'
 
+/** @typedef { import('./ComponentProp').default } Prop */
+
 /**
  * Singleton class to guide all tag writing and handle triggers
  * @typedef {Object} Tag
@@ -11,6 +13,10 @@ function TagSet() {
      * @type {Map<Object,Map<string,string>>} Mapping an object with keys to tagpaths 
      */
     this.subscriptions = new Map()
+    /**
+     * @type {Map<Prop, string>} Mapping an object with keys to tagpaths 
+     */
+    this.propSubscriptions = new Map()
     /**
      * @type {Map<string, Set<Object>>} Reverse lookup: bind tagpath to objects
      */
@@ -66,6 +72,45 @@ TagSet.prototype.writeTag = function(path, value) {
     messager.sendMessage({'TagSet:writeTag': {path, value}})
 }
 
+/**
+ * @param {Prop} componentProp
+ * @param {string} tagPath
+ */
+TagSet.prototype.addPropSubscription = function(componentProp, tagPath) {
+    if (!this.subscriptionLookup.has(tagPath)) {
+        this.subscriptionLookup.set(tagPath, new Set())
+    }
+    this.subscriptionLookup.get(tagPath).add(componentProp)
+
+    if (this.tagCache.has(tagPath))
+        return
+
+    if (!this.needsTagRefresh) {
+        // Refresh tags after a timeout (to ensure help with batch adding)
+        // TODO only refresh new tags
+        this.needsTagRefresh = true
+        setTimeout(() => this.refreshAllTags())
+    }
+}
+
+TagSet.prototype.getCachedTagValue = function(tagPath) {
+    if (this.tagCache.has(tagPath))
+        return this.tagCache.get(tagPath)
+    return undefined
+}
+
+/**
+ * @param {Prop} componentProp
+ * @param {string} tagPath
+ */
+TagSet.prototype.removePropSubscription = function(componentProp, tagPath) {
+    if (!this.subscriptionLookup.has(tagPath)) 
+        return // How did this happen? Deleted twice?
+
+    let subscribedElements = this.subscriptionLookup.get(tagPath)
+    subscribedElements.delete(componentProp)
+    //TODO notify server?
+}
 
 TagSet.prototype.setSubscription = function(instance, propName, tagPath) {
     if (!this.subscriptions.has(instance)) {
