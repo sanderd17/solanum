@@ -1,16 +1,20 @@
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Button extends Template {
     static defaultSize = [100, 20]
 
-    set text(text) {
-        this.__innerButton.innerText = text
+    constructor(...args) {
+        super(...args)
+        this.properties.text.addChangeListener((newValue) => {
+            this.__innerButton.innerText = newValue
+        })
     }
 
-    get text() {
-        return this.__innerButton.innerText
+    properties = {
+        text: new Prop("Button")
     }
 
     createDomNode() {

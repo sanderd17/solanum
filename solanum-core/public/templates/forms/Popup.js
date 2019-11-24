@@ -5,7 +5,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Popup extends Template {
     static defaultSize = [200, 300]
 
-    async setTemplate(templatePath, props) {
+    async setTemplate(templatePath, properties) {
         const mdl = await import(`/templates/${templatePath}.js`)
         const cls = mdl.default
 
@@ -18,7 +18,7 @@ class Popup extends Template {
         const template = new cls({
             parent: this,
             position: {left: '0px', top: '15px', right: '0px', bottom: '0px'},
-            props,
+            properties,
             eventHandlers: {},
         })
 

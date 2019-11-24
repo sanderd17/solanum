@@ -41,7 +41,7 @@ class Motor extends Template {
                  * @param {Motor} root
                  */ 
                 click: (ev, root) => {
-                    let path = `"Motors/${root.motor}"`
+                    let path = `"Motors/${root.p.motor.value}"`
                     solanum.openPopup('popMotorInfo', {path})
                 }
             },

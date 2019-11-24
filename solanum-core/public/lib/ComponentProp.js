@@ -132,6 +132,16 @@ class Prop {
 
         this.value = newValue
     }
+
+    /**
+     * Remove all binding to this prop
+     */
+    destroy() {
+        for (let tagPath of this.subscribedTags) {
+            this.ts.removePropSubscription(this, tagPath)
+        }
+        this.ctx = null
+    }
 }
 
 export default Prop

@@ -76,6 +76,10 @@ class Template {
         })
     }
 
+    // shortcuts to properties and children
+    get p() {return this.properties}
+    get c() {return this.children}
+
     getPropNames() {
         return Object.keys(this)
             .filter(n => !n.startsWith('_')) // own properties starting with _ are used by this internally
@@ -175,8 +179,11 @@ class Template {
         if (this.__dom.parentNode) {
             this.__dom.parentNode.removeChild(this.__dom)
         }
-        ts.removeSubscription(this)
+        for (let prop of Object.values(this.properties)) {
+            prop.destroy()
+        }
         this.children = null
+        this.properties = null
     }
 
     // DEFAULT PROPS //
