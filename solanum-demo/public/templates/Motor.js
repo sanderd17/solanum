@@ -1,9 +1,12 @@
 import Template from '/lib/template.js'
 import Circle from '/templates/draw/Circle.js'
 import solanum from '/lib/solanum.js'
+import Prop from '/lib/ComponentProp.js'
 
 class Motor extends Template {
-    motor = 'M1'
+    properties = {
+        motor: new Prop("'M1'"),
+    }
 
     static childStyles = {
         icon: [
@@ -31,7 +34,7 @@ class Motor extends Template {
                 height: "79%",
                 top: "12%"
             },
-            props: {fill: 'Tag(`Motors/${motor}`, "red")', prop2: '`Motors/${motor}`'},
+            properties: {fill: 'Tag(`Motors/${Prop("motor")}`, "red")', prop2: '`Motors/${Prop("motor")}`'},
             eventHandlers: {
                 /**
                  * @param {Event} ev
@@ -52,7 +55,7 @@ class Motor extends Template {
                 top: "67%",
                 height: "25%"
             },
-            props: {fill: '"blue"'},
+            properties: {fill: '"blue"'},
             eventHandlers: { }
         })
     }

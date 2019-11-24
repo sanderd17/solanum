@@ -7,7 +7,7 @@ import Template from '/lib/template.js'
 export default function({describe, it, beforeEach}) {
     beforeEach(function() {
         const d = new JSDOM('', {
-            url: 'http://example.org/',
+            url: 'http://solanum.org/',
         })
         global.document = d.window.document
     })

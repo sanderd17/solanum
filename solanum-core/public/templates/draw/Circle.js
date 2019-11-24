@@ -1,4 +1,5 @@
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 
 const ns = "http://www.w3.org/2000/svg"
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
@@ -6,7 +7,19 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Circle extends Template {
     static defaultSize = [20, 20]
 
+    properties = {
+        fill: new Prop("'#000000'")
+    }
     fill = '#000000'
+
+    constructor(...args) {
+        super(...args)
+        for (let name in this.properties) {
+            this.properties[name].addChangeListener((newValue) => {
+                this.__elNode.setAttribute(name, newValue)
+            })
+        }
+    }
 
     get classList() {
         return this.__elNode.classList
@@ -64,11 +77,16 @@ class Circle extends Template {
             this.__parent.createDomNode()
             this.__parent.__dom.appendChild(this.__dom)
         }
+        /*
+        for (let name in this.properties) {
+            this.properties[name].addChangeListener((newValue) => {
+            })
+        }
         // Listen to changes of props > bring everything to the circle dom node
         this.__dom.addEventListener('propChanged', (event) => {
             this.__elNode.setAttribute(event.detail.propName, event.detail.newValue)
         })
-
+*/
     }
 }
 

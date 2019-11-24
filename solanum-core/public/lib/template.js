@@ -4,13 +4,14 @@ import Prop from './ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
- * @typedef {Object} TemplatePosition
- * @property {string=} left 
- * @property {string=} right 
- * @property {string=} top 
- * @property {string=} bottom 
- * @property {string=} width 
- * @property {string=} height 
+ * @typedef {{
+ *  left?:   string,
+ *  right?:  string,
+ *  top?:    string,
+ *  bottom?: string,
+ *  width?:  string,
+ *  height?: string
+ * }} TemplatePosition
  */
 
  /**
@@ -18,6 +19,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
   * @property {Template} parent
   * @property {TemplatePosition} position
   * @property {object} props
+  * @property {{string}} properties
   * @property {object} eventHandlers
   */
 
@@ -45,6 +47,7 @@ class Template {
         this.__cArgs = p
         /** @type {Template?} */
         this.__parent = p.parent
+        /** @type {TemplatePosition} */
         this.__position = p.position || {}
         /** @type {Object<string,function>} */
         this.__eventHandlers = p.eventHandlers || {}
@@ -82,23 +85,29 @@ class Template {
                 child.classList.add(id)
             }
 
-            // TODO for every prop in props
-            Object.defineProperty(this, 'propName', {
-                set: function(newValue) {
-                    // TODO update the binding function
-                    // TODO Create a cached value
-                    // TODO force a recalc on children
-                },
-                get: function() {
-                    // TODO return the cached value
+            // Handle the props defined on the inheriting class and coming from the constructor
+            for (let [name, prop] of Object.entries(this.properties)) {
+                if (name in p.properties) {
+                    // override binding from the constructor definition
+                    prop.setBinding(p.properties[name])
+                    prop.setContext(p.parent) // Context of the prop is parent that called the constructor
+                } else {
+                    prop.setContext(this) // Context of the prop is this component
                 }
-            })
+                for (let dependency of prop.subscribedProps) {
+                    prop.ctx.properties[dependency].addChangeListener(() => {
+                        prop.recalcValue()
+                    })
+                }
+            }
 
+            /*
             // Turn the prop value into a function body. Allow the binding function to use the props of the parent.
             this.configurePropBindings(p.props)
 
             // Calculate the actual prop values from the defined functions
             this.recalcPropValues()
+            */
         })
     }
 

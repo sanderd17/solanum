@@ -52,6 +52,10 @@ TagSet.prototype.updateTags = function(tags) {
         this.tagCache.set(path, tags[path].value)
         if (!this.subscriptionLookup.has(path))
             continue
+        for (let prop of this.subscriptionLookup.get(path)) {
+            prop.recalcValue()
+        }
+        /* TODELETE old tag handling
         let instanceSet = this.subscriptionLookup.get(path)
         for (let instance of instanceSet) {
             for (let [propName, tagPath] of this.subscriptions.get(instance)) {
@@ -60,6 +64,7 @@ TagSet.prototype.updateTags = function(tags) {
                 }
             }
         }
+        */
     }
 }
 
@@ -105,7 +110,8 @@ TagSet.prototype.getCachedTagValue = function(tagPath) {
  */
 TagSet.prototype.removePropSubscription = function(componentProp, tagPath) {
     if (!this.subscriptionLookup.has(tagPath)) 
-        return // How did this happen? Deleted twice?
+        console.error(`Cannot remove tagpath ${tagPath} from tag subscriptions. Was it already removed?`)
+        return
 
     let subscribedElements = this.subscriptionLookup.get(tagPath)
     subscribedElements.delete(componentProp)

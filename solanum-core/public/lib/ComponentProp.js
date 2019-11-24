@@ -6,9 +6,10 @@ class Prop {
     /**
      * Constructs a dynamic property
      * @param {string} expression A valid JS expression
+     * @param {(newValue: any, oldValue: any) => void} changeListener
      * @param {TagSet} tsMock mock for unit testing purposes
      */
-    constructor(expression, tsMock) {
+    constructor(expression, changeListener, tsMock) {
         if (tsMock) {
             this.ts = tsMock
         } else {
@@ -18,12 +19,39 @@ class Prop {
         this.subscribedTags = new Set()
         /** @type {Set<string>} */
         this.subscribedProps = new Set()
+        /** @type {Set<Function>} */
+        this.changeListeners = new Set()
+        if (changeListener) {
+            this.addChangeListener(changeListener)
+        }
         /** @type {Template} */
-        this.dependencyCmp = null
+        this.ctx = null
         this.setBinding(expression)
+    }
 
+    /**
+     * Set the context and do a first recalculation
+     * @param {Template} ctx Component supplying the props that can be used for the prop bindings. Can be a parent or the same as the prop holder
+     */
+    setContext(ctx) {
+        this.ctx = ctx
+    
         // Do a first recalc, will subscribe to the original tags, and store which props to use
         this.recalcValue()
+    }
+
+    /**
+     * @param {(newValue: any, oldValue: any) => void} fn 
+     */
+    addChangeListener(fn) {
+        this.changeListeners.add(fn)
+    }
+
+    /**
+     * @param {(newValue: any, oldValue: any) => void} fn 
+     */
+    removeChangeListener(fn) {
+        this.changeListeners.delete(fn)
     }
 
     /**
@@ -34,8 +62,14 @@ class Prop {
     }
 
     set value(newValue) {
+        if (newValue === this.cachedValue)
+            return
         // Sets only the cached value, if a recalc happens at some point, the value will be the original
+        let oldValue = this.cachedValue
         this.cachedValue = newValue
+        for (let fn of this.changeListeners) {
+            fn(newValue, oldValue)
+        }
     }
 
     /**
@@ -62,16 +96,8 @@ class Prop {
      * Force a recalculation of the cached value
      * This needs to be called any time a subscribed tag or prop value has changed
      * This should not be called in other occasions to make sure the cached value remains intact
-     * @param {Template?} cmp The component on which to get the props from. If null, will use the previous value 
-     * @returns {boolean} true if the value has changed
      */
-    recalcValue(cmp) {
-        if (!cmp) {
-            cmp = this.dependencyCmp
-        } else {
-            this.dependencyCmp = cmp
-        }
-
+    recalcValue() {
         let subscribedTags = new Set()
         /** local function to subscribe to tags
          * @param {string} tagPath 
@@ -90,9 +116,7 @@ class Prop {
          * @param {string} propName */
         let Prop = (propName) => {
             this.subscribedProps.add(propName)
-            if (!cmp)
-                return undefined // fallback for initial call
-            return cmp.properties[propName].value
+            return this.ctx.properties[propName].value
         }
 
         let newValue = this.bindingFunction({Prop, Tag})
@@ -106,11 +130,7 @@ class Prop {
         }
         this.subscribedTags = subscribedTags
 
-        if (newValue != this.cachedValue) {
-            this.cachedValue = newValue
-            return true
-        }
-        return false
+        this.value = newValue
     }
 }
 
