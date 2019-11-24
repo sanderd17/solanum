@@ -10,7 +10,6 @@ class Circle extends Template {
     properties = {
         fill: new Prop("'#000000'")
     }
-    fill = '#000000'
 
     constructor(...args) {
         super(...args)
@@ -77,16 +76,6 @@ class Circle extends Template {
             this.__parent.createDomNode()
             this.__parent.__dom.appendChild(this.__dom)
         }
-        /*
-        for (let name in this.properties) {
-            this.properties[name].addChangeListener((newValue) => {
-            })
-        }
-        // Listen to changes of props > bring everything to the circle dom node
-        this.__dom.addEventListener('propChanged', (event) => {
-            this.__elNode.setAttribute(event.detail.propName, event.detail.newValue)
-        })
-*/
     }
 }
 
