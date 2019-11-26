@@ -3,6 +3,11 @@ import Template from '/lib/template.js'
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Popup extends Template {
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
+
     static defaultSize = [200, 300]
 
     async setTemplate(templatePath, properties) {

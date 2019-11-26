@@ -13,6 +13,7 @@ class Circle extends Template {
 
     constructor(...args) {
         super(...args)
+        this.init()
         for (let name in this.properties) {
             this.properties[name].addChangeListener((newValue) => {
                 this.__elNode.setAttribute(name, newValue)

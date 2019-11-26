@@ -50,30 +50,32 @@ class Template {
 
         this.createDomNode()
         this.addEventHandlers()
+    }
 
-        // Copy the prop values to own values
-        // Set the props async, to allow the inherited classes to be initialised before prop setters are called
-        Promise.resolve().then(() => {
-            for (let [id, child] of Object.entries(this.children)) {
-                child.classList.add(id)
-            }
+    /**
+     * Initialise component-defined properties
+     * This needs to be called from the inheriting constructor
+     */
+    init() {
+        for (let [id, child] of Object.entries(this.children)) {
+            child.classList.add(id)
+        }
 
-            // Handle the props defined on the inheriting class and coming from the constructor
-            for (let [name, prop] of Object.entries(this.properties)) {
-                if (name in p.properties) {
-                    // override binding from the constructor definition
-                    prop.setBinding(p.properties[name])
-                    prop.setContext(p.parent) // Context of the prop is parent that called the constructor
-                } else {
-                    prop.setContext(this) // Context of the prop is this component
-                }
-                for (let dependency of prop.subscribedProps) {
-                    prop.ctx.properties[dependency].addChangeListener(() => {
-                        prop.recalcValue()
-                    })
-                }
+        // Handle the props defined on the inheriting class and coming from the constructor
+        for (let [name, prop] of Object.entries(this.properties)) {
+            if (name in this.__cArgs.properties) {
+                // override binding from the constructor definition
+                prop.setBinding(this.__cArgs.properties[name])
+                prop.setContext(this.__cArgs.parent) // Context of the prop is parent that called the constructor
+            } else {
+                prop.setContext(this) // Context of the prop is this component
             }
-        })
+            for (let dependency of prop.subscribedProps) {
+                prop.ctx.properties[dependency].addChangeListener(() => {
+                    prop.recalcValue()
+                })
+            }
+        }
     }
 
     // shortcuts to properties and children

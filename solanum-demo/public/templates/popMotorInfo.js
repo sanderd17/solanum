@@ -4,6 +4,11 @@ import Button from '/templates/forms/Button.js'
 import Prop from '/lib/ComponentProp.js'
 
 class PopMotorInfo extends Template {
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
+
     properties = {
         path: new Prop("''")
     }
