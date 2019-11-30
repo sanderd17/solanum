@@ -1,4 +1,5 @@
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
@@ -7,16 +8,14 @@ class Label extends Template {
 
     constructor(...args) {
         super(...args)
+        this.properties.text.addChangeListener((newValue) => {
+            this.__dom.innerText = newValue
+        })
         this.init()
     }
 
-
-    set text(text) {
-        this.__dom.innerText = text
-    }
-
-    get text() {
-        return this.__dom.innerText
+    properties = {
+        text: new Prop("'Label'")
     }
 
     createDomNode() {

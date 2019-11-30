@@ -25,25 +25,20 @@ assert.equalJS = function(js1, js2) {
 
 const startCode = `
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 
 class TestComponent extends Template {
     children = {
         child1: new Child({
             parent: this,
             position: {left: '0', width: '100%', top: '0', height: '100%'},
-            props: {childProp: 0},
+            properties: {childProp: "0"},
             eventHandlers: {ev1: () => {}}
         })
     }
 
-    _prop1 = 'val1'
-
-    get prop1 () {
-        return this._prop1
-    }
-
-    set prop1(prop1) {
-        this._prop1 = prop1
+    properties = {
+        "prop1" = new Prop("'val1'")
     }
 }
 
@@ -100,11 +95,11 @@ export default function({describe, it}) {
     describe('setChildProp', function() {
         it('Should set a prop of a child', function() {
             let cmpMod = new ComponentModifier(startCode)
-            cmpMod.setChildProp('child1', 'myProp', 'myVal')
+            cmpMod.setChildProp('child1', 'myProp', "'myVal'")
             let newCode = cmpMod.print()
 
             assert(newCode.includes('myProp:'))
-            assert(newCode.includes('myVal'))
+            assert(newCode.includes("'myVal'"))
         })
     })
     describe('removeChildProp', function() {
@@ -144,54 +139,22 @@ export default function({describe, it}) {
         })
     })
     describe('addProp', function() {
-        it('Should add a new numeric prop', function() {
+        it('Should add a new prop with a text body', function() {
             let cmpMod = new ComponentModifier(startCode)
-            cmpMod.addProp('prop2', 2)
+            cmpMod.addProp('prop2', "'newVal'")
             let newCode = cmpMod.print()
 
-            assert(newCode.includes('prop2 = 2'))
-        })
-        it('Should add a new string prop', function() {
-            let cmpMod = new ComponentModifier(startCode)
-            cmpMod.addProp('prop2', 'myVal')
-            let newCode = cmpMod.print()
-
-            assert(newCode.includes('prop2 = '))
-            assert(newCode.includes('myVal'))
-        })
-        it.skip('Should add a new null prop', function() {
-            let cmpMod = new ComponentModifier(startCode)
-            cmpMod.addProp('prop2', null)
-            let newCode = cmpMod.print()
-
-            assert(newCode.includes('prop2 = null'))
-        })
-        it.skip('Should add a new object prop', function() {
-            let cmpMod = new ComponentModifier(startCode)
-            cmpMod.addProp('prop2', {myKey: 'myVal', numKey: 10})
-            let newCode = cmpMod.print()
-
-            assert(newCode.includes('prop2 = {'))
-            assert(newCode.includes('myKey:'))
-            assert(newCode.includes('numKey:'))
-        })
-        it.skip('Should add a new array prop', function() {
-            let cmpMod = new ComponentModifier(startCode)
-            cmpMod.addProp('prop2', [1,2,3,"string",{myKey: 'myVal'}])
-            let newCode = cmpMod.print()
-
-            assert(newCode.includes('prop2 = ['))
-            assert(newCode.includes('string'))
-            assert(newCode.includes('myKey:'))
+            assert(newCode.includes('prop2: new Prop('))
+            assert(newCode.includes("'newVal'"))
         })
     })
     describe('setProp', function() {
         it('Should alter an existing prop', function() {
             let cmpMod = new ComponentModifier(startCode)
-            cmpMod.setProp('prop1', 1)
+            cmpMod.setProp('prop1', "'newVal'")
             let newCode = cmpMod.print()
 
-            assert(newCode.includes('_prop1 = 1'))
+            assert(newCode.includes("'newVal'"))
         })
     })
     describe('removeProp', function() {

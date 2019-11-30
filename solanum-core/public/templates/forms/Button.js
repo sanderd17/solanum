@@ -11,6 +11,7 @@ class Button extends Template {
         this.properties.text.addChangeListener((newValue) => {
             this.__innerButton.innerText = newValue
         })
+        this.init()
     }
 
     properties = {

@@ -7,10 +7,6 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Circle extends Template {
     static defaultSize = [20, 20]
 
-    properties = {
-        fill: new Prop("'#000000'")
-    }
-
     constructor(...args) {
         super(...args)
         this.init()
@@ -19,6 +15,10 @@ class Circle extends Template {
                 this.__elNode.setAttribute(name, newValue)
             })
         }
+    }
+
+    properties = {
+        fill: new Prop("'#000000'")
     }
 
     get classList() {

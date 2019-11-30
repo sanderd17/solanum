@@ -63,7 +63,7 @@ class Template {
 
         // Handle the props defined on the inheriting class and coming from the constructor
         for (let [name, prop] of Object.entries(this.properties)) {
-            if (name in this.__cArgs.properties) {
+            if (this.__cArgs.properties && name in this.__cArgs.properties) {
                 // override binding from the constructor definition
                 prop.setBinding(this.__cArgs.properties[name])
                 prop.setContext(this.__cArgs.parent) // Context of the prop is parent that called the constructor

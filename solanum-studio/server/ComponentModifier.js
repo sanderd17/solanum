@@ -1,6 +1,4 @@
-import * as _recast from 'recast'
-// FIXME apparently recast is imported differently by native node vs the esm package. Get the default out if there is one
-const recast = ('default' in _recast) ? _recast.default : _recast
+import recast from 'recast'
 import flow from 'flow-parser'
 
 const parseOptions = {
@@ -12,8 +10,8 @@ const parseOptions = {
     }
 }
 
+const b = recast.types.builders
 function valueToAst(value) {
-    const b = recast.types.builders
     if (value instanceof Array)
         throw new Error('Array props are not implemented yet')
     if (value instanceof Object)
@@ -65,7 +63,6 @@ class ComponentModifier {
                 eventHandlers: {},
             })`, parseOptions)
 
-        const b = recast.types.builders
         let newArgProperty = b.property('init', b.identifier(childId), newChildAst.program.body[0].declarations[0].init)
         // TODO order keys alphabeticlly by default?
         children.properties.splice(children.properties.length, 0, newArgProperty)
@@ -79,11 +76,7 @@ class ComponentModifier {
      */
     removeChildComponent(childId) {
         let children = this.getClassField('children').value
-
-        for (let [i, prop] of children.properties.entries()) {
-            if (prop.key.name == childId)
-                children.properties.splice(i, 1)
-        }
+        this.removeKeyFromObject(children, childId)
     }
 
     /**
@@ -97,7 +90,6 @@ class ComponentModifier {
             throw new Error(`Could not find the constructor arguments of child ${childId}`)
         }
         // construct the position object ast
-        const b = recast.types.builders
         let objProps = []
         for (let key in position) {
             objProps.push(b.property('init', b.identifier(key), b.literal(position[key])))
@@ -129,7 +121,6 @@ class ComponentModifier {
         }
 
         if (!foundProp) {
-            const b = recast.types.builders
             let newProp = b.property('init', b.identifier(propName), valueToAst(value))
             childProps.splice(childProps.length, 0, newProp)
         }
@@ -170,7 +161,6 @@ class ComponentModifier {
             }
             // handler with id was not found, add a new handler
 
-            const b = recast.types.builders
             let newHandlerProperty = b.property('init', b.identifier(eventId), newEventhandlerAst)
             prop.value.properties.splice(prop.value.properties.length, 0, newHandlerProperty)
         }
@@ -179,18 +169,10 @@ class ComponentModifier {
     removeChildEventHandler(childId, eventId) {
         let childArg = this.getChildDefinition(childId)
 
-        for (let prop of childArg.properties) {
-            if (prop.key.name != 'eventHandlers')
-                continue
-            if (prop.value.type != 'ObjectExpression')
-                throw new Error('eventHandlers parameter should be of type `ObjectExpression`')
-            for(let [i, handler] of prop.value.properties.entries()) {
-                if (handler.key.name == eventId) {
-                    prop.value.properties.splice(i, 1) // remove the handler
-                    return
-                }
-            }
-        }
+        let handlers = this.getObjectPropertyValueByName(childArg, "eventHandlers")
+        if (handlers.type != 'ObjectExpression')
+            throw new Error('eventHandlers parameter should be of type `ObjectExpression`')
+        this.removeKeyFromObject(handlers, eventId)
     }
 
     /**
@@ -205,48 +187,82 @@ class ComponentModifier {
         if (!this.testValidPropName(propName)) {
             throw new Error(`Cannot add prop with name ${propName}. Only ASCII characters are allowed, starting with a letter and only containing letters, underscores and numbers`)
         }
-        let existingRegularProp = this.getClassField(propName)
-        let existingGetSetProp = this.getClassField('_' + propName)
 
-        if (existingGetSetProp || existingRegularProp) {
-            throw new Error(`Cannot add prop with name ${propName}, as such a prop already exists`)
-        }
+        let propertiesAst = this.getClassField('properties').value
+        let newPropertyAst = b.property('init',
+            b.identifier(propName),
+            b.newExpression(
+                b.identifier("Prop"),
+                [
+                    b.literal(value)
+                ]
+            )
+        )
 
-        let classBody = this.getClassBodyAst()
-        const b = recast.types.builders
-        classBody.splice(classBody.length, 0, b.classProperty(b.identifier(propName), valueToAst(value)))
-
+        // TODO order keys alphabeticlly by default?
+        propertiesAst.properties.splice(propertiesAst.properties.length, 0, newPropertyAst)
     }
 
 
     setProp(propName, value) {
-        if (!this.testValidPropName(propName)) {
-            throw new Error(`Cannot add prop with name ${propName}. Only ASCII characters are allowed, starting with a letter and only containing letters, underscores and numbers`)
-        }
-        let prop = this.getClassField('_' + propName)
-        if (!prop)
-            prop = this.getClassField(propName)
-        if (!prop)
-            throw new Error(`Prop with name ${propName} does not exist, cannot set a value for it`)
-        prop.value = valueToAst(value)
+        let propertiesAst = this.getClassField('properties').value
+        let property = this.getObjectPropertyValueByName(propertiesAst, propName)
+        if (!property)
+            throw new Error(`Cannot find property ${propName}`)
+        if (property.type != "NewExpression")
+            throw new Error(`Property ${propName} is not a new object`)
+        if (property.arguments.length != 1)
+            throw new Error(`Property ${propName} requires 1 argument, ${property.arguments.length} given`)
+
+        property.arguments[0] = b.literal(value)
     }
 
     removeProp(propName) {
-        let classBody = this.getClassBodyAst()
-        for (let i = classBody.length - 1; i >= 0; i--) {
-            let field = classBody[i] 
-            if (field.type != 'ClassProperty' && field.type != 'MethodDefinition')
-                continue
-            if (field.key.type !=  'Identifier')
-                continue
-            if (field.key.name == propName || field.key.name == '_' + propName)
-                classBody.splice(i, 1)
-        }
+        let propertiesAst = this.getClassField('properties').value
+        this.removeKeyFromObject(propertiesAst, propName)
     }
 
     //////////////////////////
     // INTERNAL USE METHODS //
     //////////////////////////
+
+    /**
+     * @param {recast.types.namedTypes.ObjectExpression} objectExpression 
+     * @param {string} propName 
+     */
+    removeKeyFromObject(objectExpression, propName) {
+        for (let i = objectExpression.properties.length - 1; i >= 0; i--) {
+            let property = objectExpression.properties[i]
+            if (property.type != "Property")
+                continue
+            let key = property.key
+            if (key.type == "Identifier" && key.name == propName) {
+                objectExpression.properties.splice(i, 1)
+                break
+            }
+            if (key.type == "Literal" && key.value == propName) {
+                objectExpression.properties.splice(i, 1)
+                break
+            }
+        }
+    }
+
+    /**
+     * @param {recast.types.namedTypes.ObjectExpression} objectExpression 
+     * @param {string} propName
+     */
+    getObjectPropertyValueByName(objectExpression, propName) {
+        for (let property of objectExpression.properties) {
+            if (property.type != "Property")
+                continue
+            let key = property.key
+            if (key.type == "Identifier" && key.name == propName)
+                return property.value
+            if (key.type == "Literal" && key.value == propName)
+                return property.value
+        }
+    }
+
 
     /**
      * Add the import of a new class to a component
@@ -286,33 +302,35 @@ class ComponentModifier {
     /**
      * 
      * @param {string} childId Id of the child to get the arguments from
-     * @returns {ObjectExpression} containing the different arguments (position, props and eventhandlers)
+     * @returns {recast.types.namedTypes.ObjectExpression} containing the different arguments (position, props and eventhandlers)
      */
     getChildDefinition(childId) {
         let children = this.getClassField('children').value
-
-        for (let prop of children.properties) {
-            if (prop.key.name != childId)
-                continue
-            let childCreation = prop.value
-            if (childCreation.type != 'NewExpression')
-                continue
-            if (childCreation.arguments.length != 1)
-                continue
-            return childCreation.arguments[0]
-        }
+        let childExpression = this.getObjectPropertyValueByName(children, childId)
+        if (childExpression == undefined)
+            return undefined
+        
+        if (childExpression.type != 'NewExpression')
+            throw new Error(`Child with id ${childId} was not created as a new expression`)
+        if (childExpression.arguments.length != 1)
+            throw new Error(`Child with id ${childId} has no arguments`)
+        let firstArg = childExpression.arguments[0]
+        if (firstArg.type != "ObjectExpression")
+            throw new Error(`Child with id ${childId} doesn't have an object as argument`)
+        return firstArg
     }
     
+    /**
+     * @param {string} childId 
+     */
     getChildProps(childId) {
         let childArg = this.getChildDefinition(childId)
-
-        for (let prop of childArg.properties) {
-            if (!prop.key || prop.key.name != 'props')
-                continue
-            if (!prop.value.type == "ObjectExpression")
-                continue
-            return prop.value.properties
-        }
+        let propertiesAst = this.getObjectPropertyValueByName(childArg, "properties")
+        if (propertiesAst == undefined)
+            return undefined
+        if (propertiesAst.type != "ObjectExpression")
+            throw new Error(`Child with id ${childId} has no object as properties parameter`)
+        return propertiesAst.properties
     }
 
     /**

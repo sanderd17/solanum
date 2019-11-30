@@ -1,31 +1,32 @@
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Icon extends Template {
 
-    _iconSet = ''
-    get iconSet() {
-        return this._iconSet
-    }
-
-    set iconSet(iconSet) {
-        this._iconSet = iconSet
-        if (this.iconPath != '') {
-            this.__dom.setAttribute("src", `/icons?iconSet=${encodeURIComponent(this.iconSet)}&iconPath=${encodeURIComponent(this.iconPath)}`)
+    constructor(...args) {
+        super(...args)
+        for (let name of ['iconSet', 'iconPath']) {
+            this.properties[name].addChangeListener((newValue) => {
+                this.resetUrl()
+            })
         }
+        this.init()
     }
 
-    _iconPath = ''
-    get iconPath() {
-        return this._iconPath
+    properties = {
+        iconSet: new Prop("''"),
+        iconPath: new Prop("''"),
     }
 
-    set iconPath(iconPath) {
-        this._iconPath = iconPath
-        if (this.iconSet != '' ) {
-            this.__dom.setAttribute("src", `/icons?iconSet=${encodeURIComponent(this.iconSet)}&iconPath=${encodeURIComponent(this.iconPath)}`)
-        }
+    resetUrl() {
+        if (this.properties.iconPath.value == '' || this.properties.iconSet.value == '')
+            return
+        this.__dom.setAttribute(
+            "src", 
+            `/icons?iconSet=${encodeURIComponent(this.properties.iconSet.value)}&iconPath=${encodeURIComponent(this.properties.iconPath.value)}`
+        )
     }
 
     createDomNode() {

@@ -10,21 +10,19 @@ class MainWindow extends Template {
         super(...args)
         this.init()
 
-        /*
         this.addChild('label', new Label({
             parent: this,
             position: {right: '10px', width: '100px', top: '10px', height: '20px'},
-            props: {text: '"INIT"'},
+            properties: {text: 'Tag("watchDog")'},
             eventHandlers: {}
         }))
-
 
         this.addChild('icon', new Icon({
             parent: this,
             position: {right: '10px', top: '40px', width: '15px', height: '15px'},
-            props: {iconSet: '"material-design"', iconPath: '"device/svg/production/ic_battery_80_24px.svg"'}
+            properties: {iconSet: '"material-design"', iconPath: '"device/svg/production/ic_battery_80_24px.svg"'}
         }))
-        */
+
         let size = 15
         for (let i = 0; i < 3000; i++) {
             let child = new Motor({
@@ -37,9 +35,6 @@ class MainWindow extends Template {
             })
             this.addChild('motor_' + i, child)
         }
-
-        //ts.setSubscription(this.children.label, 'text', `watchDog`)
-
     }
 }
 
