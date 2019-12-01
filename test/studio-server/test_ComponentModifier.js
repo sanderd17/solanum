@@ -138,17 +138,15 @@ export default function({describe, it}) {
             assert(!newCode.includes('ev1:'))
         })
     })
-    describe('addProp', function() {
+    describe('setProp', function() {
         it('Should add a new prop with a text body', function() {
             let cmpMod = new ComponentModifier(startCode)
-            cmpMod.addProp('prop2', "'newVal'")
+            cmpMod.setProp('prop2', "'newVal'")
             let newCode = cmpMod.print()
 
             assert(newCode.includes('prop2: new Prop('))
             assert(newCode.includes("'newVal'"))
         })
-    })
-    describe('setProp', function() {
         it('Should alter an existing prop', function() {
             let cmpMod = new ComponentModifier(startCode)
             cmpMod.setProp('prop1', "'newVal'")
