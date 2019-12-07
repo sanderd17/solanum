@@ -1,5 +1,6 @@
 
 import Template from "/lib/template.js"
+import Prop from '/lib/ComponentProp.js'
 import SelectionRect from "/templates/studio/canvas/SelectionRect.js"
 
 class StudioCanvasInteraction extends Template {
@@ -8,7 +9,7 @@ class StudioCanvasInteraction extends Template {
         super(...args)
         /** @type Array<string> */
 
-        this.__eventHandlers.click = (ev) => {ev.stopPropagation(); this.selection = []}
+        this.__eventHandlers.click = (ev) => {ev.stopPropagation(); this.properties.selection.value = []}
         this.__eventHandlers.dragstart = (ev) => this.startedDrag = ev
         this.__eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
         this.__eventHandlers.drop = (ev) => this.newComponentDrop(ev)
@@ -22,6 +23,22 @@ class StudioCanvasInteraction extends Template {
         this.addEventHandlers()
         this.__dom.setAttribute('draggable', true) // draggable is required to allow selection drag
         this.__dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
+        this.init()
+    }
+
+    properties = {
+        selection: new Prop('[]', (newSelection, oldSelection) => {
+            if (oldSelection && oldSelection.length > 1 && newSelection.length <= 1) {
+                // there were multiple objects selected, hide the multi select rect again
+                this.children['#multiSelectRect'].selected = false
+                this.children['#multiSelectRect'].setPosition({left:0, width: 0, top: 0, height: 0})
+            }
+            this.updateSelectionDraw()
+            this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
+                bubbles: true,
+                detail: {selection: newSelection}
+            }))
+        }),
     }
 
     /**
@@ -34,7 +51,6 @@ class StudioCanvasInteraction extends Template {
             '#multiSelectRect': new SelectionRect({
                 parent: this,
                 position: {left:0, width: 0, top: 0, height: 0},
-                props: {},
                 eventHandlers: {
                     click: (ev) => {ev.stopPropagation()},
                     dragstart: (ev) => this.startedDrag = ev,
@@ -47,9 +63,8 @@ class StudioCanvasInteraction extends Template {
             this.children[id] = new SelectionRect({
                 parent: this,
                 position: cmp.__position,
-                props: {},
                 eventHandlers: {
-                    click: (ev, root) => {ev.stopPropagation(); root.selection = [id]},
+                    click: (ev, root) => {ev.stopPropagation(); root.properties.selection.value = [id]},
                     dragstart: (ev, root) => root.startedDrag = ev,
                     drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
                     dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
@@ -117,24 +132,25 @@ class StudioCanvasInteraction extends Template {
     async removeSelectedChildren(ev) {
         this.dom.dispatchEvent(new CustomEvent('deletedchildren', {
             bubbles: true,
-            detail: {childIds: this.selection}
+            detail: {childIds: this.properties.selection.value}
         }))
         this.reloadSelectionRects()
     }
 
     updateSelectionDraw() {
-        if (this.selection.length <= 1) {
+        let selection = this.properties.selection.value
+        if (selection.length <= 1) {
             // single or no child selected, use their own selection rects
             for (let [id, child] of Object.entries(this.children)) {
-                child.selected = this.selection.includes(id)
+                child.properties.selected.value = selection.includes(id)
             }
         } else {
             // Set selection to multiple elements
             let {left: cmpLeft, top: cmpTop} = this.__dom.getBoundingClientRect()
 
             // Warning: right and bottom have different meanings here; it's measured from the left top of the page
-            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[this.selection[0]].__dom.getBoundingClientRect()
-            for (let id of this.selection) {
+            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[selection[0]].__dom.getBoundingClientRect()
+            for (let id of selection) {
                 let {left, top, right, bottom} = this.children[id].__dom.getBoundingClientRect()
                 minLeft = Math.min(left, minLeft)
                 maxRight = Math.max(right, maxRight)
@@ -149,36 +165,13 @@ class StudioCanvasInteraction extends Template {
             })
             for (let [id, child] of Object.entries(this.children)) {
                 if (id == '#multiSelectRect') {
-                    child.selected = true
+                    child.properties.selected.value = true
                 } else {
-                    child.selected = false
+                    child.properties.selected.value = false
                 }
             }
         }
     }
-
-    _selection = []
-    /**
-     * @param {Array<string>} selection
-     */
-    set selection(selection) {
-        if (this._selection.length > 1 && selection.length <= 1) {
-            // there were multiple objects selected, hide the multi select rect again
-            this.children['#multiSelectRect'].selected = false
-            this.children['#multiSelectRect'].setPosition({left:0, width: 0, top: 0, height: 0})
-        }
-        this._selection = selection
-        this.updateSelectionDraw()
-        this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
-            bubbles: true,
-            detail: {selection}
-        }))
-    }
-
-    get selection() {
-        return this._selection
-    }
-
 
     /**
      * @param {DragEvent} startDrag 
@@ -189,7 +182,7 @@ class StudioCanvasInteraction extends Template {
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y
 
-        for (let id of this.selection) {
+        for (let id of this.properties.selection.value) {
             let child = this.children[id]
             let newPosition = {}
             for (let [k, v] of Object.entries(child.__position)) {
@@ -237,7 +230,7 @@ class StudioCanvasInteraction extends Template {
             } 
         }
         // set selection again to update selection rect
-        this.selection = selectedElements
+        this.properties.selection.value = selectedElements
     }
 
     /**
@@ -251,7 +244,7 @@ class StudioCanvasInteraction extends Template {
         let xDiff = endDragEv.x - startDragEv.x
         let yDiff = endDragEv.y - startDragEv.y
 
-        for (let childId of this.selection) {
+        for (let childId of this.properties.selection.value) {
             let child = this.children[childId]
             let newPosition = {}
             for (let [k, v] of Object.entries(child.__position)) {

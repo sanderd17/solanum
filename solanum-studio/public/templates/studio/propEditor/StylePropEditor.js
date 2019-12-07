@@ -3,6 +3,11 @@ import StyleBlock from "/templates/studio/propEditor/StyleBlock.js"
 
 class StylePropEditor extends Template {
 
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
+
     static defaultSize = [300, 300]
 
     static stateList = ['hover', 'active', 'focus']

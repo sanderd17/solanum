@@ -6,13 +6,17 @@ import PropEditor from '/templates/studio/propEditor/PropEditor.js'
 import LayoutBar from "/templates/studio/menuBars/LayoutBar.js"
 import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 
-
 class StudioWindow extends Template {
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
+
     children = {
         layoutBar: new LayoutBar({
             parent: this,
             position: {left: '0px', top:'0px', width: '100%', height: '20px'},
-            props: {
+            properties: {
                 positionUnit: '"px"'
             },
             eventHandlers: {}
@@ -20,14 +24,15 @@ class StudioWindow extends Template {
         canvas: new StudioCanvas({
             parent: this,
             position: {left: "300px", right: "300px", top: "20px", bottom: "0px"},
-            props: {},
+            properties: {},
             eventHandlers: {
                 selectionchanged: (ev, root) => {
                     let cmpSelection = {}
+                    console.log(ev.detail)
                     for (let id of ev.detail.selection) {
                         cmpSelection[id] = root.children.canvas.children.preview.children[id]
                     }
-                    root.children.propEditor.cmpSelection = cmpSelection
+                    root.children.propEditor.properties.cmpSelection.value = cmpSelection
                 },
                 childpositionchanged: async (ev, root) => {
                     if (ev.detail.previewOnly)
@@ -58,19 +63,19 @@ class StudioWindow extends Template {
         projectBrowser: new ProjectBrowser({
             parent: this,
             position: {left: "0px", width: "300px", top: "20px", bottom: "50%"},
-            props: {},
+            properties: {},
             eventHandlers: {},
         }),
         tagBrowser: new TagBrowser({
             parent: this,
             position: {left: "0px", width: "300px", bottom: "0px", height: "50%"},
-            props: {},
+            properties: {},
             eventHandlers: {},
         }),
         propEditor: new PropEditor({
             parent: this,
             position: {right: "0px", width: "300px", top: "20px", bottom: "0px"},
-            props: {},
+            properties: {},
             eventHandlers: {
                 positionpropchanged: async (ev, root) => {
                     root.children.canvas.setChildPosition(ev.detail.childId, ev.detail.newPosition)
@@ -95,7 +100,7 @@ class StudioWindow extends Template {
         codeEditor: new CodeEditor({
             parent: this,
             position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
-            props: {},
+            properties: {},
             eventHandlers: {
                 codeContentChanged: async (ev, root) => {
                     let newCode = await root.callStudioApi('setComponentCode', {

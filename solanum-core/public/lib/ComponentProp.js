@@ -6,8 +6,8 @@ class Prop {
     /**
      * Constructs a dynamic property
      * @param {string} expression A valid JS expression
-     * @param {(newValue: any, oldValue: any) => void} changeListener
-     * @param {TagSet} tsMock mock for unit testing purposes
+     * @param {((newValue: any, oldValue: any) => void)=} changeListener
+     * @param {TagSet=} tsMock mock for unit testing purposes
      */
     constructor(expression, changeListener, tsMock) {
         if (tsMock) {
@@ -32,9 +32,11 @@ class Prop {
     /**
      * Set the context and do a first recalculation
      * @param {Template} ctx Component supplying the props that can be used for the prop bindings. Can be a parent or the same as the prop holder
+     * @param {Node} domNode The dom node to dispatch events to
      */
-    setContext(ctx) {
+    setContext(ctx, domNode) {
         this.ctx = ctx
+        this.domNode = domNode
     
         // Do a first recalc, will subscribe to the original tags, and store which props to use
         this.recalcValue()

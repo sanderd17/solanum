@@ -1,8 +1,20 @@
   
 import Template from "/lib/template.js"
+import Prop from "/lib/ComponentProp.js"
 import Textbox from '/templates/forms/Textbox.js'
 
 class ChildPropEditor extends Template {
+
+    properties = {
+        cmpSelection: new Prop('{}', () => {
+            this.resetSelectionProps()
+        })
+    }
+
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
 
     static defaultSize = [300, 150]
     children  = {
@@ -18,8 +30,9 @@ class ChildPropEditor extends Template {
 
         // gather a list of all props in the selection
         this.selectedProps = {}
-        for (let [childId, child] of Object.entries(this.cmpSelection)) {
-            let childProps = child.__cArgs.props
+        let cmpSelection = this.properties.cmpSelection.value
+        for (let [childId, child] of Object.entries(cmpSelection)) {
+            let childProps = child.__cArgs.props || {}
             for (let [key, value] of Object.entries(childProps)) {
                 if (key in this.selectedProps) {
                     this.selectedProps[key].children.push(childId)
@@ -67,19 +80,6 @@ class ChildPropEditor extends Template {
                 detail: {childId, propName, newValue}
             }))
         }
-    }
-
-    /**
-     * @type {Object<string, Template>}
-     */
-    _cmpSelection = {}
-    set cmpSelection(cmpSelection) {
-        this._cmpSelection = cmpSelection
-        this.resetSelectionProps()
-    }
-
-    get cmpSelection() {
-        return this._cmpSelection
     }
 }
 

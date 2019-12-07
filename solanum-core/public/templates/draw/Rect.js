@@ -1,15 +1,24 @@
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 
 const ns = "http://www.w3.org/2000/svg"
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Rect extends Template {
 
-    get fill() {
-        return this.__elNode.getAttribute('fill')
+    constructor(...args) {
+        super(...args)
+        this.init()
+        for (let name in this.properties) {
+            this.properties[name].addChangeListener((newValue) => {
+                this.__elNode.setAttribute(name, newValue)
+            })
+        }
     }
-    set fill(fill) {
-        this.__elNode.setAttribute('fill', fill)
+
+    properties = {
+        fill: new Prop("'#000000'"),
+        'stroke-dasharray': new Prop('"None"'),
     }
 
     createDomNode() {

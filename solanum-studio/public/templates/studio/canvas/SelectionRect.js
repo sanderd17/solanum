@@ -1,16 +1,37 @@
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 import ts from '/lib/TagSet.js'
 import Rect from '/templates/draw/Rect.js'
 import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
 
 
 class SelectionRect extends Template {
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
+
+    properties = {
+        selected: new Prop("false", (newValue) => {
+            this.__dom.setAttribute('draggable', newValue)
+            this.__dom.style['z-index'] = newValue ? 1 : 0 // raise selection rect when selected
+            this.classList.toggle('selected', newValue)
+
+            // Set all handles visible
+            for (let childId in this.children) {
+                if (childId.endsWith('Handle')) {
+                    this.children[childId].visible = newValue
+                }
+            }
+            this.children.rect.properties['stroke-dasharray'].value = newValue ? 'none' : '1 4'
+        })
+    }
 
     children = {
         rect: new Rect({
             parent: this,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
-            props: {
+            properties: {
                 'stroke-dasharray': '"1 4"',
             },
             eventHandlers: {},
@@ -18,7 +39,7 @@ class SelectionRect extends Template {
         topLeftHandle: new ResizeHandle({
             parent: this,
             position: {left: "0%", width: "4px", top: "0%", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -30,7 +51,7 @@ class SelectionRect extends Template {
         topHandle: new ResizeHandle({
             parent: this,
             position: {left: "calc(50% - 2px)", width: "4px", top: "0%", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -42,7 +63,7 @@ class SelectionRect extends Template {
         topRightHandle:new ResizeHandle({
             parent: this,
             position: {right: "0%", width: "4px", top: "0%", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -54,7 +75,7 @@ class SelectionRect extends Template {
         rightHandle: new ResizeHandle({
             parent: this,
             position: {right: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -66,7 +87,7 @@ class SelectionRect extends Template {
         bottomRightHandle: new ResizeHandle({
             parent: this,
             position: {right: "0%", width: "4px", bottom: "0%", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -78,7 +99,7 @@ class SelectionRect extends Template {
         bottomHandle: new ResizeHandle({
             parent: this,
             position: {left: "calc(50% - 2px)", width: "4px", bottom: "0%", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -90,7 +111,7 @@ class SelectionRect extends Template {
         bottomLeftHandle: new ResizeHandle({
             parent: this,
             position: {left: "0%", width: "4px", bottom: "0%", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -102,7 +123,7 @@ class SelectionRect extends Template {
         leftHandle: new ResizeHandle({
             parent: this,
             position: {left: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
-            props: {
+            properties: {
                 'visible': "false",
             },
             eventHandlers: {
@@ -186,26 +207,6 @@ class SelectionRect extends Template {
                 'cursor': 'ew-resize'
             }
         }],
-    }
-    
-    _selected = false
-    set selected(selected) {
-        this._selected = selected
-        this.__dom.setAttribute('draggable', selected)
-        this.__dom.style['z-index'] = selected ? 1 : 0 // raise selection rect when selected
-        this.classList.toggle('selected', selected)
-
-        // Set all handles visible
-        for (let childId in this.children) {
-            if (childId.endsWith('Handle')) {
-                this.children[childId].visible = selected
-            }
-        }
-        this.children.rect.strokeDasharray = selected ? 'none' : '1 4'
-    }
-
-    get selected() {
-        return this._selected
     }
 
     startHandleDrag(ev) {

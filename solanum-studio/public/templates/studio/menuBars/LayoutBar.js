@@ -3,6 +3,10 @@ import ToggleButton from '/templates/forms/ToggleButton.js'
 import solanum from "/lib/solanum.js"
 
 class LayoutBar extends Template {
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
 
     children = {
         unitToggle: new ToggleButton({
@@ -13,7 +17,7 @@ class LayoutBar extends Template {
                 top: "0px",
                 height: "20px"
             },
-            props: {
+            properties: {
                 selected: 'false',
                 text: '"%"'
             },

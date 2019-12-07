@@ -20,6 +20,7 @@ class StudioCanvas extends Template {
 
     constructor(...args) {
         super(...args)
+        this.init()
         this.cnt = 1
     }
 
@@ -40,22 +41,18 @@ class StudioCanvas extends Template {
             this.addChild('preview', new cls({
                 parent: this,
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
-                props: {},
-                eventHandlers: {}
             }))
 
 
             this.addChild('interaction', new StudioCanvasInteraction({
                 parent: this,
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
-                props: {elWidth: '"' + width + '"', elHeight: '"' + height + '"'},
+                properties: {elWidth: `'${width}'`, elHeight: `'${height}'`},
                 eventHandlers: {
                     childpositionchanged: (ev, root) => root.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
                     droppedchild: (ev, root) => root.addNewChild(ev.detail.childId, {
                         type: ev.detail.type,
                         position: ev.detail.position,
-                        props: {},
-                        eventHandlers: {},
                     }),
                     deletedchildren: (ev, root) => root.removeChildren(ev.detail.childIds)
                 },

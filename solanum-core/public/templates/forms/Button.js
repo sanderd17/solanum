@@ -15,7 +15,7 @@ class Button extends Template {
     }
 
     properties = {
-        text: new Prop("Button")
+        text: new Prop("'Button'")
     }
 
     createDomNode() {

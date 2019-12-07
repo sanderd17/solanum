@@ -19,7 +19,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
   * @property {Template} parent
   * @property {TemplatePosition} position
   * @property {{string}} properties
-  * @property {object} eventHandlers
+  * @property {{Function}} eventHandlers
   */
 
 /**
@@ -49,7 +49,6 @@ class Template {
         this.__className = style.registerClassStyle(this.constructor)
 
         this.createDomNode()
-        this.addEventHandlers()
     }
 
     /**
@@ -60,15 +59,16 @@ class Template {
         for (let [id, child] of Object.entries(this.children)) {
             child.classList.add(id)
         }
+        this.addEventHandlers()
 
         // Handle the props defined on the inheriting class and coming from the constructor
         for (let [name, prop] of Object.entries(this.properties)) {
             if (this.__cArgs.properties && name in this.__cArgs.properties) {
                 // override binding from the constructor definition
                 prop.setBinding(this.__cArgs.properties[name])
-                prop.setContext(this.__cArgs.parent) // Context of the prop is parent that called the constructor
+                prop.setContext(this.__cArgs.parent, this.__dom) // Context of the prop is parent that called the constructor
             } else {
-                prop.setContext(this) // Context of the prop is this component
+                prop.setContext(this, this.__dom) // Context of the prop is this component
             }
             for (let dependency of prop.subscribedProps) {
                 prop.ctx.properties[dependency].addChangeListener(() => {
@@ -82,15 +82,6 @@ class Template {
     get p() {return this.properties}
     get c() {return this.children}
 
-    getPropNames() {
-        return Object.keys(this)
-            .filter(n => !n.startsWith('_')) // own properties starting with _ are used by this internally
-            .filter(n => n != 'children') // children is not part of the props
-    }
-
-    get classList() {
-        return this.__dom.classList
-    }
 
     addChild(id, child) {
         this.children[id] = child
@@ -188,15 +179,18 @@ class Template {
         this.properties = null
     }
 
-    // DEFAULT PROPS //
+    // QUICK ACCESS PROPS //
+
+    get classList() {
+        return this.__dom.classList
+    }
 
     /** @type {boolean} */
-    _hidden = false
     set hidden(hidden) {
         this.__dom.style.visibility = hidden ? 'hidden' : ''
     }
     get hidden() {
-        return this._hidden
+        return this.__dom.style.visibility == 'hidden'
     }
 }
 

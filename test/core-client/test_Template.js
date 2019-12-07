@@ -10,6 +10,7 @@ export default function({describe, it, beforeEach}) {
             url: 'http://solanum.org/',
         })
         global.document = d.window.document
+        global.window = d.window
     })
     describe('constructor', function() {
         it('creates a div element', function() {

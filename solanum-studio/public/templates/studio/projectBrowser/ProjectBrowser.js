@@ -11,6 +11,7 @@ class ProjectBrowser extends Template {
     constructor(...args) {
         super(...args)
         this.loadComponents()
+        this.init()
     }
 
     async loadComponents() {

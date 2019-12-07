@@ -3,6 +3,11 @@ import ToggleButton from "/templates/forms/ToggleButton.js"
 import Textbox from "/templates/forms/Textbox.js"
 
 class StyleBlock extends Template {
+    
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
 
     static defaultSize = [300, 300]
 

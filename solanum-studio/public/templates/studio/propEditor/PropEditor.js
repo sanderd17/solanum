@@ -1,4 +1,5 @@
 import Template from "/lib/template.js"
+import Prop from "/lib/ComponentProp.js"
 import PositionPropEditor from '/templates/studio/propEditor/PositionPropEditor.js'
 import ChildPropEditor from '/templates/studio/propEditor/ChildPropEditor.js'
 import OwnPropEditor from '/templates/studio/propEditor/OwnPropEditor.js'
@@ -6,8 +7,23 @@ import StylePropEditor from '/templates/studio/propEditor/StylePropEditor.js'
 
 class PropEditor extends Template {
 
-    props = {
-        cmpSelection: []
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
+    properties = {
+        cmpSelection: new Prop('{}', (cmpSelection) => {
+            if (Object.keys(cmpSelection).length > 0) {
+                this.children.childPropEditor.hidden = false
+                this.children.ownPropEditor.hidden = true
+            } else {
+                this.children.childPropEditor.hidden = true
+                this.children.ownPropEditor.hidden = false
+            }
+            //this.children.positionPropEditor.cmpSelection = cmpSelection
+            this.children.childPropEditor.properties.cmpSelection.value = cmpSelection
+            this.recalcPositionParameters()
+        })
     }
 
     static defaultSize = [300, 1000]
@@ -41,17 +57,6 @@ class PropEditor extends Template {
      */
     _cmpSelection = []
     set cmpSelection(cmpSelection) {
-        this._cmpSelection = cmpSelection
-        if (Object.keys(cmpSelection).length > 0) {
-            this.children.childPropEditor.hidden = false
-            this.children.ownPropEditor.hidden = true
-        } else {
-            this.children.childPropEditor.hidden = true
-            this.children.ownPropEditor.hidden = false
-        }
-        //this.children.positionPropEditor.cmpSelection = cmpSelection
-        this.children.childPropEditor.cmpSelection = cmpSelection
-        this.recalcPositionParameters()
     }
 
     get cmpSelection() {

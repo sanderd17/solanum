@@ -3,6 +3,10 @@ import Checkbox from '/templates/forms/Checkbox.js'
 import Textbox from '/templates/forms/Textbox.js'
 
 class PositionPropEditor extends Template {
+    constructor(...args) {
+        super(...args)
+        this.init()
+    }
 
     static defaultSize = [300, 150]
     children  = {
