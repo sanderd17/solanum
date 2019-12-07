@@ -1,40 +1,34 @@
 import Template from '/lib/template.js'
+import Prop from "/lib/ComponentProp.js"
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Checkbox extends Template {
     static defaultSize = [100, 20]
 
-    set text(text) {
-        let found = false
-        for (let child of this.__dom.childNodes) {
-            if (child.nodeName == 'INPUT')
-                continue
-            found = true
-            child.nodeValue = text
-        }
-        if (!found)
-            this.__dom.appendChild(document.createTextNode(text))
+    properties = {
+        text: new Prop("'Checkbox'", (text) => {
+            let found = false
+            for (let child of this.__dom.childNodes) {
+                if (child.nodeName == 'INPUT')
+                    continue
+                found = true
+                child.nodeValue = text
+            }
+            if (!found)
+                this.__dom.appendChild(document.createTextNode(text))
+        }),
+        checked: new Prop("false", (newValue) => {
+            this.__innerNode.checked = newValue
+        }),
+        disabled: new Prop("false", (newValue) => {
+            this.__innerNode.disabled = newValue
+        })
     }
 
-    get text() {
-        return this.__dom.innerText
-    }
-
-    set checked(checked) {
-        this.__innerNode.checked = checked
-    }
-
-    get checked() {
-        return this.__innerNode.checked
-    }
-
-    set disabled(disabled) {
-        this.__innerNode.disabled = disabled
-    }
-
-    get disabled() {
-        return this.__innerNode.disabled
+    constructor(...args) {
+        super(...args)
+        this.init()
     }
 
     createDomNode() {

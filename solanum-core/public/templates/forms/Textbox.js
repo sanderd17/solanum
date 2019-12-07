@@ -1,40 +1,29 @@
 import Template from '/lib/template.js'
+import Prop from '/lib/ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Textbox extends Template {
     static defaultSize = [100, 20]
 
-    set value(value) {
-        this.__dom.value = value
+    properties = {
+        value: new Prop("''", (newValue) => {
+            this.__dom.value = newValue
+        }),
+        disabled: new Prop('false', (newValue) => {
+            this.__dom.disabled = newValue
+        }),
+        type: new Prop("'text'", (newValue) => {
+            this.__dom.type = newValue
+        }),
+        step: new Prop("1", (newValue) => {
+            this.__dom.step = newValue
+        }),
     }
 
-    get value() {
-        return this.__dom.value
-    }
-
-    set disabled(disabled) {
-        this.__dom.disabled = disabled
-    }
-
-    get disabled() {
-        return this.__dom.disabled
-    }
-
-    set type(type) {
-        this.__dom.type = type
-    }
-
-    get type() {
-        return this.__dom.type
-    }
-
-    set step(step) {
-        this.__dom.step = step
-    }
-
-    get step() {
-        return this.__dom.step
+    constructor(...args) {
+        super(...args)
+        this.init()
     }
 
     createDomNode() {

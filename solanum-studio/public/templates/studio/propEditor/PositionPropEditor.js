@@ -1,8 +1,15 @@
 import Template from "/lib/template.js"
+import Prop from "/lib/ComponentProp.js"
 import Checkbox from '/templates/forms/Checkbox.js'
 import Textbox from '/templates/forms/Textbox.js'
 
 class PositionPropEditor extends Template {
+
+    properties = {
+        cmpSelection: new Prop('{}', () => {
+            this.recalcPositionParameters()
+        })
+    }
     constructor(...args) {
         super(...args)
         this.init()
@@ -13,7 +20,7 @@ class PositionPropEditor extends Template {
         leftActive: new Checkbox({
             parent: this,
             position: { left: '0px', top: '0px', height: '20px', width: '100px' },
-            props: {
+            properties: {
                 text: '"Left"',
                 disabled: 'true'
             },
@@ -22,7 +29,7 @@ class PositionPropEditor extends Template {
         rightActive: new Checkbox({
             parent: this,
             position: { left: '0px', top: '25px', height: '20px', width: '100px' },
-            props: {
+            properties: {
                 text: '"Right"',
                 disabled: 'true'
             },
@@ -31,7 +38,7 @@ class PositionPropEditor extends Template {
         widthActive: new Checkbox({
             parent: this,
             position: { left: '0px', top: '50px', height: '20px', width: '100px' },
-            props: {
+            properties: {
                 text: '"Width"',
                 disabled: 'true'
             },
@@ -40,7 +47,7 @@ class PositionPropEditor extends Template {
         topActive: new Checkbox({
             parent: this,
             position: { left: '0px', top: '75px', height: '20px', width: '100px' },
-            props: {
+            properties: {
                 text: '"Top"',
                 disabled: 'true'
             },
@@ -49,7 +56,7 @@ class PositionPropEditor extends Template {
         bottomActive: new Checkbox({
             parent: this,
             position: { left: '0px', top: '100px', height: '20px', width: '100px' },
-            props: {
+            properties: {
                 text: '"Bottom"',
                 disabled: 'true'
             },
@@ -58,7 +65,7 @@ class PositionPropEditor extends Template {
         heightActive: new Checkbox({
             parent: this,
             position: { left: '0px', top: '125px', height: '20px', width: '100px' },
-            props: {
+            properties: {
                 text: '"Height"',
                 disabled: 'true'
             },
@@ -67,31 +74,31 @@ class PositionPropEditor extends Template {
         leftValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '0px', height: '20px', right: '0px' },
-            props: { disabled: 'true' },
+            properties: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'left') },
         }),
         rightValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '25px', height: '20px', right: '0px' },
-            props: { disabled: 'true' },
+            properties: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'right') },
         }),
         widthValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '50px', height: '20px', right: '0px' },
-            props: { disabled: 'true' },
+            properties: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'width') },
         }),
         topValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '75px', height: '20px', right: '0px' },
-            props: { disabled: 'true' },
+            properties: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'top') },
         }),
         bottomValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '100px', height: '20px', right: '0px' },
-            props: { disabled: 'true' },
+            properties: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'bottom') },
         }),
         heightValue: new Textbox({
@@ -102,7 +109,7 @@ class PositionPropEditor extends Template {
                 height: "20px",
                 right: "0px"
             },
-            props: { disabled: 'true' },
+            properties: { disabled: 'true' },
             eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'height') },
         }),
     }
@@ -113,9 +120,9 @@ class PositionPropEditor extends Template {
      * @param {stirng} type 
      */
     async setPositionValue(textBox, type) {
-        for (let [childId, child] of Object.entries(this.cmpSelection)) {
+        for (let [childId, child] of Object.entries(this.properties.cmpSelection.value)) {
             let newPosition = {...child.__position}
-            newPosition[type] = textBox.value
+            newPosition[type] = textBox.properties.value.value
             this.__dom.dispatchEvent(new CustomEvent('positionpropchanged', {
                 bubbles: true,
                 detail: {childId, newPosition}
@@ -127,7 +134,7 @@ class PositionPropEditor extends Template {
         for (let p of ['left', 'right', 'width', 'top', 'bottom', 'height']) {
             let enabled = false
             let text = null
-            for (let cmp of Object.values(this.cmpSelection)) {
+            for (let cmp of Object.values(this.properties.cmpSelection.value)) {
                 if (p in cmp.__position) {
                     if (text == null || text == cmp.__position[p]) {
                         text = cmp.__position[p]
@@ -139,24 +146,11 @@ class PositionPropEditor extends Template {
                     enabled = false
                 }
             }
-            this.children[p + 'Value'].disabled = !enabled
-            this.children[p + 'Value'].value = text || ''
-            this.children[p + 'Active'].checked = enabled
-            this.children[p + 'Active'].disabled = !enabled
+            this.children[p + 'Value'].properties.disabled.value = !enabled
+            this.children[p + 'Value'].properties.value.value = text || ''
+            this.children[p + 'Active'].properties.checked.value = enabled
+            this.children[p + 'Active'].properties.disabled.value = !enabled
         }
-    }
-
-    /**
-     * @type {Object<string, Template>}
-     */
-    _cmpSelection = []
-    set cmpSelection(cmpSelection) {
-        this._cmpSelection = cmpSelection
-        this.recalcPositionParameters()
-    }
-
-    get cmpSelection() {
-        return this._cmpSelection
     }
 }
 
