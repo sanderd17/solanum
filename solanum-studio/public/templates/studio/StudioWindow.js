@@ -26,9 +26,13 @@ class StudioWindow extends Template {
             position: {left: "300px", right: "300px", top: "20px", bottom: "0px"},
             properties: {},
             eventHandlers: {
+                click: (ev, root) => {
+                    // click in the grey area, remove selection
+                    root.children.propEditor.properties.cmpSelection.value = []
+                    root.children.canvas.children.interaction.properties.selection.value = []
+                },
                 selectionchanged: (ev, root) => {
                     let cmpSelection = {}
-                    console.log(ev.detail)
                     for (let id of ev.detail.selection) {
                         cmpSelection[id] = root.children.canvas.children.preview.children[id]
                     }

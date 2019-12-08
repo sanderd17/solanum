@@ -75,31 +75,31 @@ class PositionPropEditor extends Template {
             parent: this,
             position: { left: '120px', top: '0px', height: '20px', right: '0px' },
             properties: { disabled: 'true' },
-            eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'left') },
+            eventHandlers: { change: (ev, root, child) => this.setPositionValue(child, 'left') },
         }),
         rightValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '25px', height: '20px', right: '0px' },
             properties: { disabled: 'true' },
-            eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'right') },
+            eventHandlers: { change: (ev, root, child) => this.setPositionValue(child, 'right') },
         }),
         widthValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '50px', height: '20px', right: '0px' },
             properties: { disabled: 'true' },
-            eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'width') },
+            eventHandlers: { change: (ev, root, child) => this.setPositionValue(child, 'width') },
         }),
         topValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '75px', height: '20px', right: '0px' },
             properties: { disabled: 'true' },
-            eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'top') },
+            eventHandlers: { change: (ev, root, child) => this.setPositionValue(child, 'top') },
         }),
         bottomValue: new Textbox({
             parent: this,
             position: { left: '120px', top: '100px', height: '20px', right: '0px' },
             properties: { disabled: 'true' },
-            eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'bottom') },
+            eventHandlers: { change: (ev, root, child) => this.setPositionValue(child, 'bottom') },
         }),
         heightValue: new Textbox({
             parent: this,
@@ -110,7 +110,7 @@ class PositionPropEditor extends Template {
                 right: "0px"
             },
             properties: { disabled: 'true' },
-            eventHandlers: { change: (ev, root, child) => root.setPositionValue(child, 'height') },
+            eventHandlers: { change: (ev, root, child) => this.setPositionValue(child, 'height') },
         }),
     }
 
@@ -123,6 +123,7 @@ class PositionPropEditor extends Template {
         for (let [childId, child] of Object.entries(this.properties.cmpSelection.value)) {
             let newPosition = {...child.__position}
             newPosition[type] = textBox.properties.value.value
+            console.log(textBox)
             this.__dom.dispatchEvent(new CustomEvent('positionpropchanged', {
                 bubbles: true,
                 detail: {childId, newPosition}

@@ -49,7 +49,7 @@ class StudioCanvas extends Template {
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
                 properties: {elWidth: `'${width}'`, elHeight: `'${height}'`},
                 eventHandlers: {
-                    childpositionchanged: (ev, root) => root.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
+                    childpositionchanged: (ev) => this.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
                     droppedchild: (ev, root) => root.addNewChild(ev.detail.childId, {
                         type: ev.detail.type,
                         position: ev.detail.position,
@@ -73,6 +73,7 @@ class StudioCanvas extends Template {
     }
 
     setChildPosition(id, newPosition, previewOnly=false) {
+        console.log(newPosition)
         this.children.preview.children[id].setPosition(newPosition)
         if (previewOnly) {
             this.children.interaction.hidden = true

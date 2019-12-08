@@ -146,4 +146,32 @@ class Prop {
     }
 }
 
+//TODO investigate MutationObserver to react on external dom changes
+class DomProp extends Prop {
+    /**
+     * @param {Node} boundNode
+     * @param {string} boundAttribute
+     */
+    setDomBinding(boundNode, boundAttribute) {
+        this.boundNode = boundNode
+        this.boundAttribute = boundAttribute
+    }
+    
+    get value() {
+        return this.boundNode[this.boundAttribute]
+    }
+
+    set value(newValue) {
+        let oldValue = this.boundNode[this.boundAttribute]
+        if (newValue === oldValue)
+            return
+        // Sets only the cached value, if a recalc happens at some point, the value will be the original
+        this.boundNode[this.boundAttribute] = newValue
+        for (let fn of this.changeListeners) {
+            fn(newValue, oldValue)
+        }
+    }
+}
+
 export default Prop
+export {DomProp}

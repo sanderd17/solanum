@@ -20,9 +20,8 @@ class PropEditor extends Template {
                 this.children.childPropEditor.hidden = true
                 this.children.ownPropEditor.hidden = false
             }
-            //this.children.positionPropEditor.cmpSelection = cmpSelection
+            this.children.positionPropEditor.properties.cmpSelection.value = cmpSelection
             this.children.childPropEditor.properties.cmpSelection.value = cmpSelection
-            this.recalcPositionParameters()
         })
     }
 
@@ -46,21 +45,6 @@ class PropEditor extends Template {
             parent: this,
             position: {left: '0px', right: '0px', top: '320px', height: '150px'},
         }),
-    }
-
-    recalcPositionParameters() {
-        this.children.positionPropEditor.recalcPositionParameters()
-    }
-
-    /**
-     * @type {Object<string, Template>}
-     */
-    _cmpSelection = []
-    set cmpSelection(cmpSelection) {
-    }
-
-    get cmpSelection() {
-        return this._cmpSelection
     }
 }
 

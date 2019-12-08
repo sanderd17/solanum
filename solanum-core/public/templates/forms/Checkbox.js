@@ -1,5 +1,6 @@
 import Template from '/lib/template.js'
 import Prop from "/lib/ComponentProp.js"
+import {DomProp} from "/lib/ComponentProp.js"
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
@@ -18,16 +19,14 @@ class Checkbox extends Template {
             if (!found)
                 this.__dom.appendChild(document.createTextNode(text))
         }),
-        checked: new Prop("false", (newValue) => {
-            this.__innerNode.checked = newValue
-        }),
-        disabled: new Prop("false", (newValue) => {
-            this.__innerNode.disabled = newValue
-        })
+        checked: new DomProp("false"),
+        disabled: new DomProp("false")
     }
 
     constructor(...args) {
         super(...args)
+        this.properties.checked.setDomBinding(this.__innerNode, 'checked')
+        this.properties.disabled.setDomBinding(this.__innerNode, 'disabled')
         this.init()
     }
 

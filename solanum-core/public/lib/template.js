@@ -1,6 +1,7 @@
 import style from './Styling.js'
 import ts from './TagSet.js'
 import Prop from './ComponentProp.js'
+import {DomProp} from './ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
@@ -63,6 +64,9 @@ class Template {
 
         // Handle the props defined on the inheriting class and coming from the constructor
         for (let [name, prop] of Object.entries(this.properties)) {
+            if (prop instanceof DomProp && !prop.boundNode) {
+                prop.setDomBinding(this.__dom, name)
+            }
             if (this.__cArgs.properties && name in this.__cArgs.properties) {
                 // override binding from the constructor definition
                 prop.setBinding(this.__cArgs.properties[name])
