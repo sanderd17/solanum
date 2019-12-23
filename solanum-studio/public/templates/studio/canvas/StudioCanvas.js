@@ -73,7 +73,6 @@ class StudioCanvas extends Template {
     }
 
     setChildPosition(id, newPosition, previewOnly=false) {
-        console.log(newPosition)
         this.children.preview.children[id].setPosition(newPosition)
         if (previewOnly) {
             this.children.interaction.hidden = true

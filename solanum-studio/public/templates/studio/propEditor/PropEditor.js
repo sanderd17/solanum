@@ -46,6 +46,10 @@ class PropEditor extends Template {
             position: {left: '0px', right: '0px', top: '320px', height: '150px'},
         }),
     }
+
+    recalcPositionParameters() {
+        this.children.positionPropEditor.recalcPositionParameters()
+    }
 }
 
 export default PropEditor

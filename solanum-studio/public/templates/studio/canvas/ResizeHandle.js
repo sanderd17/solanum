@@ -10,6 +10,7 @@ class ResizeHandle extends Template {
 
     properties = {
         visible: new Prop("'false'", (newValue) => {
+            console.log(newValue)
             this.classList.toggle('visible', newValue)
             this.__dom.setAttribute('draggable', newValue)
         })

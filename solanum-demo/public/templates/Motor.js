@@ -34,10 +34,10 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "8%",
-                width: "79%",
-                height: "79%",
-                top: "6%"
+                left: "7.000001754760607%",
+                width: "82.9999982452394%",
+                height: "84.99999786376969%",
+                top: "4.000002136230307%"
             },
             properties: {fill: 'Tag(`Motors/${Prop("motor")}`, "red")', prop2: '`Motors/${Prop("motor")}`'},
             eventHandlers: {
@@ -55,9 +55,9 @@ class Motor extends Template {
         icon2: new Circle({
             parent: this,
             position: {
-                left: "71%",
+                left: "65.99999992370606%",
                 width: "25%",
-                top: "67%",
+                top: "59.00000045776363%",
                 height: "25%"
             },
             properties: {fill: '"blue"'},
