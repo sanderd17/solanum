@@ -1,4 +1,5 @@
 import Template from "/lib/template.js"
+import Prop from "/lib/ComponentProp.js"
 
 
 // TODO TODO TODO: see https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodel.html for merging / getting edits
@@ -27,6 +28,14 @@ class CodeEditor extends Template {
 		setTimeout(() => this.createMonacoEditor())
 	}
 	
+	properties = {
+		code: new Prop('null', (newValue) => {
+			if (newValue)
+				// TODO bring complete custom field setter into property
+				this.code = newValue
+		})
+	}
+
 	eventTimerId = null
 	eventOldCode = ''
 	/**
@@ -71,7 +80,7 @@ class CodeEditor extends Template {
 			this.sendContentChangedEvent(oldCode, this.code, ev)
 
 		})
-		this.monacoEditor.getAction('editor.foldLevel3').run()
+		//this.monacoEditor.getAction('editor.foldLevel3').run()
 	}
 
 	get code() {
@@ -112,16 +121,6 @@ class CodeEditor extends Template {
 		})
 
 
-	}
-
-	/**
-	 * load the code of the specified component from the server
-	 * @param {string} mod 
-	 * @param {string} cmp 
-	 */
-	async loadCode(mod, cmp) {
-		let response = await fetch(`/API/Studio/openComponent?module=${mod}&component=${cmp}`, { cache: "no-cache" })
-		this.code =  await response.text()
 	}
 }
 

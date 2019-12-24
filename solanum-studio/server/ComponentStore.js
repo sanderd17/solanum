@@ -112,6 +112,10 @@ class File {
         return await readFile(this.filePath, {encoding: 'utf-8'})
     }
 
+    async read_NOLOCK() {
+        return await readFile(this.filePath, {encoding: 'utf-8'})
+    }
+
     async write(newCode) {
         if (this.isWritten)
             throw new Error(`Error, file with path ${this.filePath} is being written twice`)

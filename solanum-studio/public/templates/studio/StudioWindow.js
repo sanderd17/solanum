@@ -1,4 +1,5 @@
 import Template from "/lib/template.js"
+import Prop from "/lib/ComponentProp.js"
 import StudioCanvas from '/templates/studio/canvas/StudioCanvas.js'
 import ProjectBrowser from '/templates/studio/projectBrowser/ProjectBrowser.js'
 import TagBrowser from '/templates/studio/tagBrowser/TagBrowser.js'
@@ -6,10 +7,109 @@ import PropEditor from '/templates/studio/propEditor/PropEditor.js'
 import LayoutBar from "/templates/studio/menuBars/LayoutBar.js"
 import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 
+// TODO code is copied from componentModifier. Should be in shared script
+
+/**
+ * @param {recast.types.namedTypes.ObjectExpression} objectExpression 
+ * @param {string} propName
+ */
+function getObjectPropertyByName(objectExpression, propName) {
+    for (let property of objectExpression.properties) {
+        if (property.type != "Property")
+            continue
+        let key = property.key
+        if (key.type == "Identifier" && key.name == propName)
+            return property
+        if (key.type == "Literal" && key.value == propName)
+            return property
+    }
+}
+
+function getClassAst(ast) {
+    const astBody = ast.program.body
+    for (let statement of astBody) {
+        if (statement.type != 'ClassDeclaration')
+            continue
+
+        return statement.body
+    }
+}
+
+/**
+ * Get a class field
+ * @param {string} fieldName 
+ * @returns {recast.types.namedTypes.ClassProperty?} class field with give name
+ */
+function getClassField(ast,fieldName) {
+    let classAst = getClassAst(ast);
+
+    for (let statement of classAst.body) {
+        if (statement.type != 'ClassProperty')
+            continue
+        if (!statement.key || statement.key.type != 'Identifier')
+            continue
+        if (statement.key.name != fieldName)
+            continue
+        return statement
+    }
+}
+
+/**
+ * 
+ * @param {string} childId Id of the child to get the arguments from
+ * @returns {recast.types.namedTypes.ObjectExpression} containing the different arguments (position, props and eventhandlers)
+ */
+function getChildAst(ast,childId) {
+    let children = getClassField(ast, 'children').value
+    if (children == undefined)
+        return undefined
+
+    if (children.type != "ObjectExpression")
+        throw new Error(`Children of edited class are not defined as an object property`)
+
+    return getObjectPropertyByName(children, childId)
+}
+
+function getChildKeyLoc(ast, childId) {
+    let childAst = getChildAst(ast, childId)
+
+    return childAst.key.loc
+}
+
+
 class StudioWindow extends Template {
     constructor(...args) {
         super(...args)
         this.init()
+        this.cnt = 1
+    }
+
+    properties = {
+        moduleName: new Prop('null'),
+        componentName: new Prop('null'),
+        componentClass: new Prop('null'),
+        componentInstance: new Prop('null'),
+        componentCode: new Prop('""'),
+        componentAST: new Prop('null'),
+
+        cmpSelection: new Prop('null', (newSelection) => {
+            if (!newSelection)
+                return
+
+            if (Object.keys(newSelection).length == 1) {
+                //TODO scroll to position   
+                let ast = this.properties.componentAST.value
+                let childKeyLoc = getChildKeyLoc(ast, Object.keys(newSelection)[0])
+                console.log(childKeyLoc)
+
+                this.children.codeEditor.monacoEditor.revealRangeInCenterIfOutsideViewport({
+                    startColumn: childKeyLoc.start.column,
+                    startLineNumber: childKeyLoc.start.line,
+                    endColumn: childKeyLoc.end.column,
+                    endLineNumber: childKeyLoc.end.line,
+                })
+            }
+        })
     }
 
     children = {
@@ -36,6 +136,8 @@ class StudioWindow extends Template {
                     for (let id of ev.detail.selection) {
                         cmpSelection[id] = root.children.canvas.children.preview.children[id]
                     }
+                    root.properties.cmpSelection.value = cmpSelection
+                    // TODO use prop binding
                     root.children.propEditor.properties.cmpSelection.value = cmpSelection
                 },
                 childpositionchanged: async (ev, root) => {
@@ -79,7 +181,10 @@ class StudioWindow extends Template {
         propEditor: new PropEditor({
             parent: this,
             position: {right: "0px", width: "300px", top: "20px", bottom: "0px"},
-            properties: {},
+            properties: {
+                module: "Prop('moduleName')",
+                component: "Prop('componentName')",
+            },
             eventHandlers: {
                 positionpropchanged: async (ev, root) => {
                     root.children.canvas.setChildPosition(ev.detail.childId, ev.detail.newPosition)
@@ -121,15 +226,27 @@ class StudioWindow extends Template {
 
     positionUnit = 'px'
 
-    openComponent(mod, cmp) {
-        this.mod = mod
-        this.cmp = cmp
-        this.children.canvas.setComponent(mod, cmp)
-        this.children.codeEditor.loadCode(mod, cmp)
-    }
+    async openComponent(moduleName, componentName) {
+        this.properties.moduleName.value = moduleName
+        this.properties.componentName.value = componentName
 
-    mod = ''
-    cmp = ''
+        this.cnt++
+        let mdl = await import(`/API/Studio/openComponent?module=${moduleName}&component=${componentName}&v=${this.cnt}`)
+
+        // cls is the class of the template that we'er going to edit
+        this.properties.componentClass.value = mdl.default
+        this.properties.componentInstance.value = this.children.canvas.setComponent(this.properties.componentClass.value)
+        
+        let response = await fetch(`/API/Studio/openComponent?module=${moduleName}&component=${componentName}`, { cache: "no-cache" })
+        let code = await response.text()
+        // TODO turn into valid property, and pass as property binding
+        this.children.codeEditor.code = code
+        this.properties.componentCode.value = code
+
+        let ast = await this.callStudioApi('getComponentAST', {'module': moduleName, 'component': componentName})
+        this.properties.componentAST.value = JSON.parse(ast)
+        console.log(this.properties.componentAST.value)
+    }
 
     setCode(newCode) {
         this.children.codeEditor.code = newCode
@@ -142,8 +259,8 @@ class StudioWindow extends Template {
      */
     async callStudioApi(apiFunction, args) {
         let body = {
-            module: this.mod,
-            component: this.cmp,
+            module: this.properties.moduleName.value,
+            component: this.properties.componentName.value,
             ...args
         }
         let result = await fetch(`/API/studio/${apiFunction}`, {

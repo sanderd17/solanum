@@ -10,6 +10,14 @@ export const openComponent = {
     properties: {}
 }
 
+export const getComponentAST = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+    }
+}
+
 export const childPosition = {
     type: 'object',
     required: true,

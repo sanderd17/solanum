@@ -21,22 +21,14 @@ class StudioCanvas extends Template {
     constructor(...args) {
         super(...args)
         this.init()
-        this.cnt = 1
     }
 
-    async setComponent(mod, cmp) {
-        console.log(`Set component to ${mod}:${cmp}`)
+    setComponent(cls) {
         // load the module from the Studio API
         // cnt ensures a reload by using a different URL
         this.removeChild('preview')
         this.removeChild('interaction')
-        this.cnt++
         try {
-            let mdl = await import(`/API/Studio/openComponent?module=${mod}&component=${cmp}&v=${this.cnt}`)
-
-            // cls is the class of the template that we'er going to edit
-            let cls = mdl.default
-
             let [width, height] = cls.defaultSize
             this.addChild('preview', new cls({
                 parent: this,
@@ -64,6 +56,7 @@ class StudioCanvas extends Template {
             console.error(`Error while loading component ${cmp} from module ${mod}:`)
             console.error(e)
         }
+        return this.children.preview
     }
 
     addNewChild(id, childDefinition) {
