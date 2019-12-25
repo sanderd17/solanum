@@ -40,6 +40,11 @@ svg {
   left:0;
   position: absolute;
 }
+
+.textHighlightColor {
+	background: lightblue;
+}
+
 /*
 .translation {
   animation: tr 2s linear alternate infinite;

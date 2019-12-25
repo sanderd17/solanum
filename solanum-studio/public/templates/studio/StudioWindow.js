@@ -34,12 +34,7 @@ class StudioWindow extends Template {
                 let childKeyLoc = getChildAst(ast, childId).key.loc
                 console.log(childKeyLoc)
 
-                this.children.codeEditor.monacoEditor.revealRangeInCenterIfOutsideViewport({
-                    startColumn: childKeyLoc.start.column,
-                    startLineNumber: childKeyLoc.start.line,
-                    endColumn: childKeyLoc.end.column,
-                    endLineNumber: childKeyLoc.end.line,
-                })
+                this.children.codeEditor.highlightLoc(childKeyLoc)
             }
         })
     }

@@ -122,6 +122,21 @@ class CodeEditor extends Template {
 
 
 	}
+
+	decorations = []
+	highlightLoc(loc) {
+		let range = {
+			startColumn: loc.start.column + 1,
+			startLineNumber: loc.start.line,
+			endColumn: loc.end.column + 1,
+			endLineNumber: loc.end.line,
+		} 
+		this.decorations = this.monacoEditor.deltaDecorations(this.decorations, [
+			{ range, options: { inlineClassName: 'textHighlightColor' }},
+		])
+        this.monacoEditor.revealRangeInCenterIfOutsideViewport(range)
+	}
+
 }
 
 export default CodeEditor
