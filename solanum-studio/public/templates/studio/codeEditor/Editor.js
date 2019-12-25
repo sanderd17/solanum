@@ -132,7 +132,7 @@ class CodeEditor extends Template {
 			endLineNumber: loc.end.line,
 		} 
 		this.decorations = this.monacoEditor.deltaDecorations(this.decorations, [
-			{ range, options: { inlineClassName: 'textHighlightColor' }},
+			{ range, options: { inlineClassName: 'textHighlight' }},
 		])
         this.monacoEditor.revealRangeInCenterIfOutsideViewport(range)
 	}

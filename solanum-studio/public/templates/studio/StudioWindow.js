@@ -24,7 +24,7 @@ class StudioWindow extends Template {
         componentCode: new Prop('""'),
         componentAST: new Prop('null'),
 
-        cmpSelection: new Prop('null', (newSelection) => {
+        cmpSelection: new Prop('{}', (newSelection) => {
             if (!newSelection)
                 return
 
@@ -66,8 +66,6 @@ class StudioWindow extends Template {
                         cmpSelection[id] = root.children.canvas.children.preview.children[id]
                     }
                     root.properties.cmpSelection.value = cmpSelection
-                    // TODO use prop binding
-                    root.children.propEditor.properties.cmpSelection.value = cmpSelection
                 },
                 childpositionchanged: async (ev, root) => {
                     if (ev.detail.previewOnly)
@@ -113,6 +111,7 @@ class StudioWindow extends Template {
             properties: {
                 module: "Prop('moduleName')",
                 component: "Prop('componentName')",
+                cmpSelection: "Prop('cmpSelection')",
             },
             eventHandlers: {
                 positionpropchanged: async (ev, root) => {

@@ -1,7 +1,7 @@
 div#errorOverlay {
   opacity:    0.5;
   visibility: hidden;
-  background: #F00;
+  background: red;
   width:      100%;
   height:     100%;
   z-index:    10;
@@ -41,7 +41,8 @@ svg {
   position: absolute;
 }
 
-.textHighlightColor {
+.textHighlight {
+  /* TODO used in the monaco editor, should also support dark theme */
 	background: lightblue;
 }
 
