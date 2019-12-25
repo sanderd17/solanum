@@ -7,75 +7,7 @@ import PropEditor from '/templates/studio/propEditor/PropEditor.js'
 import LayoutBar from "/templates/studio/menuBars/LayoutBar.js"
 import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 
-// TODO code is copied from componentModifier. Should be in shared script
-
-/**
- * @param {recast.types.namedTypes.ObjectExpression} objectExpression 
- * @param {string} propName
- */
-function getObjectPropertyByName(objectExpression, propName) {
-    for (let property of objectExpression.properties) {
-        if (property.type != "Property")
-            continue
-        let key = property.key
-        if (key.type == "Identifier" && key.name == propName)
-            return property
-        if (key.type == "Literal" && key.value == propName)
-            return property
-    }
-}
-
-function getClassAst(ast) {
-    const astBody = ast.program.body
-    for (let statement of astBody) {
-        if (statement.type != 'ClassDeclaration')
-            continue
-
-        return statement.body
-    }
-}
-
-/**
- * Get a class field
- * @param {string} fieldName 
- * @returns {recast.types.namedTypes.ClassProperty?} class field with give name
- */
-function getClassField(ast,fieldName) {
-    let classAst = getClassAst(ast);
-
-    for (let statement of classAst.body) {
-        if (statement.type != 'ClassProperty')
-            continue
-        if (!statement.key || statement.key.type != 'Identifier')
-            continue
-        if (statement.key.name != fieldName)
-            continue
-        return statement
-    }
-}
-
-/**
- * 
- * @param {string} childId Id of the child to get the arguments from
- * @returns {recast.types.namedTypes.ObjectExpression} containing the different arguments (position, props and eventhandlers)
- */
-function getChildAst(ast,childId) {
-    let children = getClassField(ast, 'children').value
-    if (children == undefined)
-        return undefined
-
-    if (children.type != "ObjectExpression")
-        throw new Error(`Children of edited class are not defined as an object property`)
-
-    return getObjectPropertyByName(children, childId)
-}
-
-function getChildKeyLoc(ast, childId) {
-    let childAst = getChildAst(ast, childId)
-
-    return childAst.key.loc
-}
-
+import {getChildAst} from '/lib/AstNavigator.js'
 
 class StudioWindow extends Template {
     constructor(...args) {
@@ -97,9 +29,9 @@ class StudioWindow extends Template {
                 return
 
             if (Object.keys(newSelection).length == 1) {
-                //TODO scroll to position   
                 let ast = this.properties.componentAST.value
-                let childKeyLoc = getChildKeyLoc(ast, Object.keys(newSelection)[0])
+                let childId = Object.keys(newSelection)[0]
+                let childKeyLoc = getChildAst(ast, childId).key.loc
                 console.log(childKeyLoc)
 
                 this.children.codeEditor.monacoEditor.revealRangeInCenterIfOutsideViewport({
@@ -124,7 +56,9 @@ class StudioWindow extends Template {
         canvas: new StudioCanvas({
             parent: this,
             position: {left: "300px", right: "300px", top: "20px", bottom: "0px"},
-            properties: {},
+            properties: {
+                cmpSelection: "Prop('cmpSelection')",
+            },
             eventHandlers: {
                 click: (ev, root) => {
                     // click in the grey area, remove selection
