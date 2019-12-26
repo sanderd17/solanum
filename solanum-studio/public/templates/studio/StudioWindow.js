@@ -55,37 +55,37 @@ class StudioWindow extends Template {
                 cmpSelection: "Prop('cmpSelection')",
             },
             eventHandlers: {
-                click: (ev, root) => {
+                click: (ev) => {
                     // click in the grey area, remove selection
-                    root.children.propEditor.properties.cmpSelection.value = []
-                    root.children.canvas.children.interaction.properties.selection.value = []
+                    this.children.propEditor.properties.cmpSelection.value = []
+                    this.children.canvas.children.interaction.properties.selection.value = []
                 },
-                selectionchanged: (ev, root) => {
+                selectionchanged: (ev) => {
                     let cmpSelection = {}
                     for (let id of ev.detail.selection) {
-                        cmpSelection[id] = root.children.canvas.children.preview.children[id]
+                        cmpSelection[id] = this.children.canvas.children.preview.children[id]
                     }
-                    root.properties.cmpSelection.value = cmpSelection
+                    this.properties.cmpSelection.value = cmpSelection
                 },
-                childpositionchanged: async (ev, root) => {
+                childpositionchanged: async (ev) => {
                     if (ev.detail.previewOnly)
                         return // don't update the server for only a preview
-                    root.children.propEditor.recalcPositionParameters()
-                    let newCode = await root.callStudioApi('setChildPosition', {
+                    this.children.propEditor.recalcPositionParameters()
+                    let newCode = await this.callStudioApi('setChildPosition', {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
-                    root.setCode(newCode)
+                    this.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
-                droppedchild: async (ev, root) => {
-                    let newCode = await root.callStudioApi('addChildComponent', {
+                droppedchild: async (ev) => {
+                    let newCode = await this.callStudioApi('addChildComponent', {
                         childId: ev.detail.childId,
                         childClassName: ev.detail.childClassName, 
                         childPath: ev.detail.childPath,
                         position: ev.detail.position,
                     })
-                    root.setCode(newCode)
+                    this.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
                 deletedchildren: async (ev, root) => {
