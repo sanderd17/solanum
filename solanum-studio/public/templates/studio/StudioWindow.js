@@ -57,8 +57,8 @@ class StudioWindow extends Template {
             eventHandlers: {
                 click: (ev) => {
                     // click in the grey area, remove selection
-                    this.children.propEditor.properties.cmpSelection.value = []
-                    this.children.canvas.children.interaction.properties.selection.value = []
+                    this.properties.cmpSelection.value = {}
+                    //this.children.canvas.children.interaction.properties.selection.value = []
                 },
                 selectionchanged: (ev) => {
                     let cmpSelection = {}

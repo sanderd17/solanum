@@ -1,4 +1,5 @@
 import Template from "/lib/template.js"
+import Prop from '/lib/ComponentProp.js'
 import StudioCanvasInteraction from '/templates/studio/canvas/StudioCanvasInteraction.js'
 
 class StudioCanvas extends Template {
@@ -23,6 +24,10 @@ class StudioCanvas extends Template {
         this.init()
     }
 
+    properties = {
+        cmpSelection: new Prop('{}')
+    }
+
     setComponent(cls) {
         // load the module from the Studio API
         // cnt ensures a reload by using a different URL
@@ -35,25 +40,24 @@ class StudioCanvas extends Template {
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             }))
 
-
             this.addChild('interaction', new StudioCanvasInteraction({
                 parent: this,
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
-                properties: {elWidth: `'${width}'`, elHeight: `'${height}'`},
+                properties: {elWidth: `'${width}'`, elHeight: `'${height}'`, selection: "Object.keys(Prop('cmpSelection'))"},
                 eventHandlers: {
                     childpositionchanged: (ev) => this.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
-                    droppedchild: (ev, root) => root.addNewChild(ev.detail.childId, {
+                    droppedchild: (ev) => this.addNewChild(ev.detail.childId, {
                         type: ev.detail.type,
                         position: ev.detail.position,
                     }),
-                    deletedchildren: (ev, root) => root.removeChildren(ev.detail.childIds)
+                    deletedchildren: (ev) => this.removeChildren(ev.detail.childIds)
                 },
             }))
 
             this.children.preview.disableEventHandlers()
             this.children.interaction.reloadSelectionRects()
         } catch (e) {
-            console.error(`Error while loading component ${cmp} from module ${mod}:`)
+            console.error(`Error while loading component ${cls}:`)
             console.error(e)
         }
         return this.children.preview

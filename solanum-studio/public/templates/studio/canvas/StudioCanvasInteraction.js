@@ -34,10 +34,6 @@ class StudioCanvasInteraction extends Template {
                 this.children['#multiSelectRect'].setPosition({left:0, width: 0, top: 0, height: 0})
             }
             this.updateSelectionDraw()
-            this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
-                bubbles: true,
-                detail: {selection: newSelection}
-            }))
         }),
     }
 
@@ -64,7 +60,13 @@ class StudioCanvasInteraction extends Template {
                 parent: this,
                 position: cmp.__position,
                 eventHandlers: {
-                    click: (ev, root) => {ev.stopPropagation(); root.properties.selection.value = [id]},
+                    click: (ev, root) => {
+                        ev.stopPropagation()
+                        this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
+                            bubbles: true,
+                            detail: {selection: [id]}
+                        }))
+                    },
                     dragstart: (ev, root) => root.startedDrag = ev,
                     drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
                     dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
@@ -230,7 +232,10 @@ class StudioCanvasInteraction extends Template {
             } 
         }
         // set selection again to update selection rect
-        this.properties.selection.value = selectedElements
+        this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
+            bubbles: true,
+            detail: {selection: selectedElements}
+        }))
     }
 
     /**
