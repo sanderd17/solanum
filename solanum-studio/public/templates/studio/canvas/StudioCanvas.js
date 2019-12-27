@@ -28,6 +28,9 @@ class StudioCanvas extends Template {
         cmpSelection: new Prop('{}')
     }
 
+    /**
+     * @param {function} cls 
+     */
     setComponent(cls) {
         // load the module from the Studio API
         // cnt ensures a reload by using a different URL
@@ -57,7 +60,7 @@ class StudioCanvas extends Template {
             this.children.preview.disableEventHandlers()
             this.children.interaction.reloadSelectionRects()
         } catch (e) {
-            console.error(`Error while loading component ${cls}:`)
+            console.error(`Error while loading component ${cls.name}:`)
             console.error(e)
         }
         return this.children.preview

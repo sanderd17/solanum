@@ -56,7 +56,7 @@ class StudioAPI {
         res.sendFile(cmpPath)
     }
 
-    async getComponentAST(req, res) {
+    async getComponentAst(req, res) {
         const body = req.body
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read_NOLOCK()

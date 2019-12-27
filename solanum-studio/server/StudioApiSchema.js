@@ -10,7 +10,7 @@ export const openComponent = {
     properties: {}
 }
 
-export const getComponentAST = {
+export const getComponentAst = {
     type: 'object',
     properties: {
         module:         {type: 'string', required: true},

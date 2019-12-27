@@ -55,6 +55,29 @@ export function getClassField(ast, fieldName) {
             continue
         return statement
     }
+    return undefined
+}
+
+/**
+ * @param {File} ast 
+ * @returns {Property[]}
+ */
+export function getOwnPropertiesAst(ast) {
+    let propertiesAst = getClassField(ast, 'properties')
+    if (!propertiesAst)
+        return undefined
+    if (propertiesAst.value.type != 'ObjectExpression')
+        throw new Error('The properties field is not configured as an object')
+
+    let propertiesList = []
+    for (let p of propertiesAst.value.properties) {
+        if (p.type == "Property")
+            propertiesList.push(p)
+        else
+            throw new Error("Properties field has elements that aren't of type Property")
+    }
+
+    return propertiesList
 }
 
 /**

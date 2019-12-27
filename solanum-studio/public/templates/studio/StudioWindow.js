@@ -22,14 +22,14 @@ class StudioWindow extends Template {
         componentClass: new Prop('null'),
         componentInstance: new Prop('null'),
         componentCode: new Prop('""'),
-        componentAST: new Prop('null'),
+        componentAst: new Prop('null'),
 
         cmpSelection: new Prop('{}', (newSelection) => {
             if (!newSelection)
                 return
 
             if (Object.keys(newSelection).length == 1) {
-                let ast = this.properties.componentAST.value
+                let ast = this.properties.componentAst.value
                 let childId = Object.keys(newSelection)[0]
                 let childKeyLoc = getChildAst(ast, childId).key.loc
                 console.log(childKeyLoc)
@@ -88,8 +88,8 @@ class StudioWindow extends Template {
                     this.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
-                deletedchildren: async (ev, root) => {
-                    let newCode = await root.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
+                deletedchildren: async (ev) => {
+                    let newCode = await this.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
                 },
             },
         }),
@@ -110,26 +110,25 @@ class StudioWindow extends Template {
             position: {right: "0px", width: "300px", top: "20px", bottom: "0px"},
             properties: {
                 module: "Prop('moduleName')",
-                component: "Prop('componentName')",
-                cmpSelection: "Prop('cmpSelection')",
+                componentAst: "Prop('componentAst')",
             },
             eventHandlers: {
-                positionpropchanged: async (ev, root) => {
-                    root.children.canvas.setChildPosition(ev.detail.childId, ev.detail.newPosition)
-                    let newCode = await root.callStudioApi('setChildPosition', {
+                positionpropchanged: async (ev) => {
+                    this.children.canvas.setChildPosition(ev.detail.childId, ev.detail.newPosition)
+                    let newCode = await this.callStudioApi('setChildPosition', {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
-                    root.setCode(newCode)
+                    this.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
-                childPropChanged: async (ev, root) => {
-                    let newCode = await root.callStudioApi('setChildProp', {
+                childPropChanged: async (ev) => {
+                    let newCode = await this.callStudioApi('setChildProp', {
                         childId: ev.detail.childId,
                         propName: ev.detail.propName,
                         value: ev.detail.newValue,
                     })
-                    root.setCode(newCode)
+                    this.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
             },
@@ -139,13 +138,13 @@ class StudioWindow extends Template {
             position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
             properties: {},
             eventHandlers: {
-                codeContentChanged: async (ev, root) => {
-                    let newCode = await root.callStudioApi('setComponentCode', {
+                codeContentChanged: async (ev) => {
+                    let newCode = await this.callStudioApi('setComponentCode', {
                         oldCode: ev.detail.oldCode,
                         newCode: ev.detail.newCode,
                     })
-                    root.children.canvas.setComponent(root.mod, root.cmp)
-                    root.children.propEditor.cmpSelection = []
+                    this.children.canvas.setComponent(this.properties.moduleName.value, this.properties.componentName.value)
+                    this.children.propEditor.cmpSelection = []
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 }
             },
@@ -171,9 +170,9 @@ class StudioWindow extends Template {
         this.children.codeEditor.code = code
         this.properties.componentCode.value = code
 
-        let ast = await this.callStudioApi('getComponentAST', {'module': moduleName, 'component': componentName})
-        this.properties.componentAST.value = JSON.parse(ast)
-        console.log(this.properties.componentAST.value)
+        let ast = await this.callStudioApi('getComponentAst', {'module': moduleName, 'component': componentName})
+        this.properties.componentAst.value = JSON.parse(ast)
+        console.log(this.properties.componentAst.value)
     }
 
     setCode(newCode) {

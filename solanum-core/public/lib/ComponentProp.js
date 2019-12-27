@@ -57,7 +57,7 @@ class Prop {
     }
 
     /**
-     * cached value of this property
+     * Value of this property
      */
     get value() {
         return this.cachedValue

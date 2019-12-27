@@ -23,8 +23,7 @@ class PropEditor extends Template {
             this.children.positionPropEditor.properties.cmpSelection.value = cmpSelection
             this.children.childPropEditor.properties.cmpSelection.value = cmpSelection
         }),
-        component: new Prop('null'),
-        module: new Prop('null'),
+        componentAst: new Prop('null'),
     }
 
     static defaultSize = [300, 1000]
@@ -36,20 +35,19 @@ class PropEditor extends Template {
         }),
         childPropEditor: new ChildPropEditor({
             parent: this,
-            position: {left: '0px', right: '0px', top: '160px', height: '150px'},
+            position: {left: '0px', right: '0px', top: '160px', height: '140px'},
             props: {hidden: 'true'},
         }),
         ownPropEditor: new OwnPropEditor({
             parent: this,
-            position: {left: '0px', right: '0px', top: '160px', height: '150px'},
+            position: {left: '0px', right: '0px', top: '300px', height: '140px'},
             properties: {
-                component: 'Prop("component")',
-                module: 'Prop("module")',
+                componentAst: 'Prop("componentAst")',
             }
         }),
         stylePropEditor: new StylePropEditor({
             parent: this,
-            position: {left: '0px', right: '0px', top: '320px', height: '150px'},
+            position: {left: '0px', right: '0px', top: '440px', height: '140px'},
         }),
     }
 
