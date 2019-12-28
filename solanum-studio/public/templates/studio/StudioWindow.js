@@ -122,6 +122,14 @@ class StudioWindow extends Template {
                     this.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 },
+                ownPropChanged: async (ev) => {
+                    this.children.canvas.setOwnPropBinding(ev.detail.propertyName, ev.detail.newBinding)
+                    let newCode = await this.callStudioApi('setOwnPropBinding', {
+                        propertyName: ev.detail.propertyName,
+                        newBinding: ev.detail.newBinding,
+                    })
+                    this.setCode(newCode)
+                },
                 childPropChanged: async (ev) => {
                     let newCode = await this.callStudioApi('setChildProp', {
                         childId: ev.detail.childId,
@@ -164,14 +172,12 @@ class StudioWindow extends Template {
         this.properties.componentClass.value = mdl.default
         this.properties.componentInstance.value = this.children.canvas.setComponent(this.properties.componentClass.value)
         
-        let response = await fetch(`/API/Studio/openComponent?module=${moduleName}&component=${componentName}`, { cache: "no-cache" })
-        let code = await response.text()
+        let code = mdl.code
         // TODO turn into valid property, and pass as property binding
         this.children.codeEditor.code = code
         this.properties.componentCode.value = code
 
-        let ast = await this.callStudioApi('getComponentAst', {'module': moduleName, 'component': componentName})
-        this.properties.componentAst.value = JSON.parse(ast)
+        this.properties.componentAst.value = mdl.ast
         console.log(this.properties.componentAst.value)
     }
 

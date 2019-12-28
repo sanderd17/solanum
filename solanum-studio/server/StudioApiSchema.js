@@ -10,14 +10,6 @@ export const openComponent = {
     properties: {}
 }
 
-export const getComponentAst = {
-    type: 'object',
-    properties: {
-        module:         {type: 'string', required: true},
-        component:      {type: 'string', required: true},
-    }
-}
-
 export const childPosition = {
     type: 'object',
     required: true,
@@ -38,6 +30,16 @@ export const setComponentCode = {
         component:      {type: 'string', required: true},
         newCode:        {type: 'string', required: true},
         oldCode:        {type: 'string', required: true},
+    }
+}
+
+export const setOwnPropBinding = {
+    type: 'object',
+    properties: {
+        module:         {type: 'string', required: true},
+        component:      {type: 'string', required: true},
+        propertyName:   {type: 'string', required: true},
+        newBinding:     {type: 'string', required: true},
     }
 }
 

@@ -2,7 +2,7 @@
 import Template from "/lib/template.js"
 import Prop from "/lib/ComponentProp.js"
 import Textbox from '/templates/forms/Textbox.js'
-import {getOwnPropertiesAst} from '/lib/AstNavigator.js'
+import {getPropertyKeyName, getOwnPropertiesAst} from '/lib/AstNavigator.js'
  
 /** @typedef { import('recast').types.namedTypes.Property} Property */
 
@@ -27,28 +27,29 @@ class OwnPropEditor extends Template {
     children  = {
     }
 
+    /** @type {Property[]} */
+    propertiesAst = null
     loadModuleProperties() {
+        for (let c in this.children) {
+            this.children[c].destroy()
+            delete this.children[c]
+        }
+
         let ast = this.properties.componentAst.value
         if (ast == null)
             return
 
-        /** @type {Property[]} */
-        let propertiesAst = getOwnPropertiesAst(this.properties.componentAst.value)
+        this.propertiesAst = getOwnPropertiesAst(this.properties.componentAst.value)
 
-        if (!propertiesAst) {
+        if (!this.propertiesAst) {
             // TODO configure empty properties object
             throw new Error('Could not find properties for given AST')
         }
 
-        for (let [i, el] of Object.entries(propertiesAst)) {
-            let name = ""
-            if (el.key.type == "Identifier") {
-                name = '"' + el.key.name + '"'
-            } else if (el.key.type == "Literal") {
-                name = el.key.raw
-            }
+        for (let [i, el] of Object.entries(this.propertiesAst)) {
+            let name = getPropertyKeyName(el)
 
-            let value = ""
+            let binding = ""
             if (el.value.type != "NewExpression") {
                 console.error(`Property with name ${name} isn't constructed with a Prop constructor`)
             } else if (el.value.arguments.length < 1) {
@@ -56,29 +57,43 @@ class OwnPropEditor extends Template {
             } else if (el.value.arguments[0].type != 'Literal') {
                 console.error(`Property with name ${name} has no literal string as first argument`)
             } else {
-                value = el.value.arguments[0].raw
+                binding = el.value.arguments[0].value
             }
 
             this.children['key_' + i] =  new Textbox({
                 parent: this,
                 position: { left: '1%', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
-                properties: { value: name },
-                eventHandlers: { change: (ev, root, child) => this.setKeyName(child) },
+                properties: { value: "''" },
+                eventHandlers: { change: (ev, root, child) => this.setKeyName(child, i) },
             })
-            this.children['value_' + i] =  new Textbox({
+            this.children['key_' + i].properties.value.value = name
+            this.children['binding_' + i] =  new Textbox({
                 parent: this,
                 position: { right: '1%', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
-                properties: { value: value },
-                eventHandlers: { change: (ev, root, child) => this.setKeyName(child) },
+                properties: { value: "''" },
+                eventHandlers: { change: (ev, root, child) => this.setPropValue(child, i) },
             })
-
-
-            console.log(name, value)
+            this.children['binding_' + i].properties.value.value = binding
         }
     }
 
-    setKeyName(textBoxId) {
-        console.log(textBoxId)
+    setKeyName(textBox, index) {
+        console.warn(textBox)
+    }
+
+    /**
+     * 
+     * @param {Textbox} textBox 
+     */
+    setPropValue(textBox, index) {
+        let newBinding = textBox.properties.value.value
+        let propertyName = getPropertyKeyName(this.propertiesAst[index])
+
+        console.log(propertyName, newBinding)
+        this.__dom.dispatchEvent(new CustomEvent('ownPropChanged', {
+            bubbles: true,
+            detail: {propertyName, newBinding}
+        }))
     }
 }
 

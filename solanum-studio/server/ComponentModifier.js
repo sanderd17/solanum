@@ -1,7 +1,7 @@
 import recast from 'recast'
 import flow from 'flow-parser'
 
-import {getObjectPropertyByName, getClassField, getChildDefinition, getChildProps} from '../public/lib/AstNavigator.js'
+import {getObjectPropertyByName, getClassField, getOwnPropertiesAst, getChildDefinition, getChildProps} from '../public/lib/AstNavigator.js'
 
 const parseOptions = {
     'parser': {
@@ -45,6 +45,32 @@ class ComponentModifier {
      */
     print() {
         return recast.print(this.ast).code
+    }
+
+    setOwnPropBinding(propertyName, newBinding) {
+        let propertiesAst = getClassField(this.ast, 'properties')
+        if (!propertiesAst) {
+            // TODO add new properties to class
+        }
+        if (propertiesAst.value.type != 'ObjectExpression')
+            throw new Error('The properties field is not configured as an object')
+
+        let existingProperty = getObjectPropertyByName(propertiesAst.value, propertyName)
+
+        if (!existingProperty) {
+            // TODO add new property
+        }
+
+        if (existingProperty.value.type != "NewExpression" || existingProperty.value.callee.type != "Identifier" || existingProperty.value.callee.name != 'Prop') {
+            throw new Error(`Property ${propertyName} is not a new Prop object`)
+        }
+
+        let propArgs = existingProperty.value.arguments
+        if (propArgs.length < 1 || propArgs[0].type != 'Literal') {
+            throw new Error(`The first argumment for property ${propertyName} is not a string`)
+        }
+        
+        propArgs[0].value = newBinding
     }
 
     /**

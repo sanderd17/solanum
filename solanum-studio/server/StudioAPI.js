@@ -52,16 +52,16 @@ class StudioAPI {
      * @param {Response} res 
      */
     async openComponent(req, res) {
-        let cmpPath = this.componentStore.getComponentPath(req.query.module, req.query.component)
-        res.sendFile(cmpPath)
-    }
-
-    async getComponentAst(req, res) {
-        const body = req.body
-        let cmpFile = this.componentStore.getFile(body.module, body.component)
+        let cmpFile = this.componentStore.getFile(req.query.module, req.query.component)
         let cmpCode = await cmpFile.read_NOLOCK()
         let cmpMod = new ComponentModifier(cmpCode)
-        res.send(cmpMod.ast)
+
+        // Add own code as string, and add ast tree for editor
+        // Avoid version differences by including the same loaded file
+        cmpCode += '\n;export let code = ' + JSON.stringify(cmpCode)
+        cmpCode += '\n;export let ast = ' + JSON.stringify(cmpMod.ast)
+        res.type('application/javascript')
+        res.send(cmpCode)
     }
 
     // Component modifications
@@ -77,6 +77,24 @@ class StudioAPI {
         let cmpCode = await cmpFile.read()
         // TODO perform some diffing?
         let newCmpCode = body.newCode
+        await cmpFile.write(newCmpCode)
+        res.send(newCmpCode)
+    }
+
+    /**
+     * @param {Request} req 
+     * @param {Express.Response} res 
+     */
+    async setOwnPropBinding(req, res) {
+        const body = req.body
+        console.log(body.propertyName, body.newBinding)
+        let cmpFile = this.componentStore.getFile(body.module, body.component)
+        let cmpCode = await cmpFile.read()
+
+        let cmpMod = new ComponentModifier(cmpCode)
+
+        cmpMod.setOwnPropBinding(body.propertyName, body.newBinding)
+        let newCmpCode = cmpMod.print()
         await cmpFile.write(newCmpCode)
         res.send(newCmpCode)
     }

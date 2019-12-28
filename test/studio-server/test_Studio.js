@@ -29,7 +29,7 @@ export default async function({describe, it}) {
         })
     })
     await describe('openComponent', async function() {
-        await it('Should return the contents of the correct component', async function() {
+        await it.skip('Should return the contents of the correct component', async function() {
             let config = {
                 editableDirs: {
                     "module1": path.join(__dirname, 'testModules/module1/'),

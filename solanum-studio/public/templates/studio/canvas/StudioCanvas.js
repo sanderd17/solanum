@@ -29,7 +29,7 @@ class StudioCanvas extends Template {
     }
 
     /**
-     * @param {function} cls 
+     * @param {new({}) => *} cls Class to construct the preview
      */
     setComponent(cls) {
         // load the module from the Studio API
@@ -64,6 +64,12 @@ class StudioCanvas extends Template {
             console.error(e)
         }
         return this.children.preview
+    }
+
+    setOwnPropBinding(propName, newBinding) {
+        let prop = this.children.preview.properties[propName]
+        prop.setBinding(newBinding)
+        prop.recalcValue()
     }
 
     addNewChild(id, childDefinition) {

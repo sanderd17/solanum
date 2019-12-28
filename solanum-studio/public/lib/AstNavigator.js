@@ -9,6 +9,18 @@
 */
 
 /**
+ * 
+ * @param {Property} objectProperty 
+ */
+export function getPropertyKeyName(objectProperty) {
+    let key = objectProperty.key
+    if (key.type == "Identifier")
+        return key.name
+    if (key.type == "Literal")
+        return key.value
+}
+
+/**
  * @param {ObjectExpression} objectExpression 
  * @param {string} propName
  */
@@ -16,10 +28,7 @@ export function getObjectPropertyByName(objectExpression, propName) {
     for (let property of objectExpression.properties) {
         if (property.type != "Property")
             continue
-        let key = property.key
-        if (key.type == "Identifier" && key.name == propName)
-            return property
-        if (key.type == "Literal" && key.value == propName)
+        if (getPropertyKeyName(property) == propName)
             return property
     }
 }

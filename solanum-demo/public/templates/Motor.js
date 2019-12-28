@@ -10,7 +10,7 @@ class Motor extends Template {
     }
 
     properties = {
-        motor: new Prop("'M1'"),
+        motor: new Prop("'M50'"),
     }
 
     static childStyles = {
