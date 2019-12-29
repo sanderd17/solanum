@@ -10,15 +10,10 @@ class Circle extends Template {
     constructor(...args) {
         super(...args)
         this.init()
-        for (let name in this.properties) {
-            this.properties[name].addChangeListener((newValue) => {
-                this.__elNode.setAttribute(name, newValue)
-            })
-        }
     }
 
     properties = {
-        fill: new Prop("'#000000'")
+        fill: new Prop("'#000000'", v => this.__elNode.setAttribute('fill', v)),
     }
 
     get classList() {
