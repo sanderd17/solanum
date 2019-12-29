@@ -24,6 +24,7 @@ class CodeEditor extends Template {
 
     constructor(...args) {
 		super(...args)
+		this.createDomNode()
 		// create editor after loading dom
 		setTimeout(() => this.createMonacoEditor())
 	}

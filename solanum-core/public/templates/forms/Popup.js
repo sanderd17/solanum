@@ -32,9 +32,6 @@ class Popup extends Template {
     }
 
     createDomNode() {
-        if (this.__dom) {
-            return
-        }
         this.__dom = document.createElement('div')
 
         this.currentPos = [100, 100] // TODO depend on current pos

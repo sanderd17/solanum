@@ -40,7 +40,6 @@ class Icon extends Template {
             if (key in this.__position) this.__dom.style[key] = this.__position[key]
 
         if (this.__parent) {
-            this.__parent.createDomNode()
             this.__parent.__dom.appendChild(this.__dom)
         }
     }

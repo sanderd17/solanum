@@ -27,6 +27,9 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
+    __dom = document.createElement('div')
+
+
     /** @type {Object<string,Template>} */
     children = {}
 
@@ -48,8 +51,6 @@ class Template {
         this.__eventHandlersEnabled = true
 
         this.__className = style.registerClassStyle(this.constructor)
-
-        this.createDomNode()
     }
 
     /**
@@ -57,8 +58,10 @@ class Template {
      * This needs to be called from the inheriting constructor
      */
     init() {
+        this.createDomNode()
         for (let [id, child] of Object.entries(this.children)) {
             child.classList.add(id)
+            this.__dom.appendChild(child.__dom)
         }
         this.addEventHandlers()
 
@@ -90,6 +93,7 @@ class Template {
     addChild(id, child) {
         this.children[id] = child
         child.classList.add(id)
+        this.__dom.appendChild(child.__dom)
     }
 
     removeChild(id) {
@@ -148,22 +152,12 @@ class Template {
         }
     }
 
+    // TODO create dom as class field, use it in Dom-bound properties
     createDomNode() {
-        if (this.__dom) {
-            return
-        }
-        this.__dom = document.createElement('div')
-
         this.classList.add(this.__className)
         this.classList.add('solanum')
 
         this.setPosition(this.__position)
-
-        if (this.__parent) {
-            this.__parent.createDomNode()
-            this.__parent.__dom.appendChild(this.__dom)
-        }
-
     } 
 
     /**

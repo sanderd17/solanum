@@ -42,9 +42,12 @@ class StudioCanvasInteraction extends Template {
      * of a different component
      */
     reloadSelectionRects() {
+        for (let id in this.children) {
+            this.removeChild(id)
+        }
         // draw a rect for every child of the previewed component
-        this.children = {
-            '#multiSelectRect': new SelectionRect({
+        this.addChild('#multiSelectRect',
+            new SelectionRect({
                 parent: this,
                 position: {left:0, width: 0, top: 0, height: 0},
                 eventHandlers: {
@@ -54,24 +57,26 @@ class StudioCanvasInteraction extends Template {
                     dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 }
             })
-        }
+        )
         for (let [id, cmp] of Object.entries(this.__parent.children.preview.children)) {
-            this.children[id] = new SelectionRect({
-                parent: this,
-                position: cmp.__position,
-                eventHandlers: {
-                    click: (ev, root) => {
-                        ev.stopPropagation()
-                        this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
-                            bubbles: true,
-                            detail: {selection: [id]}
-                        }))
+            this.addChild(id, 
+                new SelectionRect({
+                    parent: this,
+                    position: cmp.__position,
+                    eventHandlers: {
+                        click: (ev, root) => {
+                            ev.stopPropagation()
+                            this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
+                                bubbles: true,
+                                detail: {selection: [id]}
+                            }))
+                        },
+                        dragstart: (ev, root) => root.startedDrag = ev,
+                        drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
+                        dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
                     },
-                    dragstart: (ev, root) => root.startedDrag = ev,
-                    drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
-                    dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
-                },
-            })
+                })
+            )
         }
     }
 

@@ -21,10 +21,12 @@ export default function({describe, it, beforeEach}) {
     describe('classList', function() {
         it('equals the dom class list', function() {
             let cmp = new Template({})
+            cmp.init()
             assert.equal(cmp.__dom.classList, cmp.classList)
         })
         it("contains 'solanum'", function() {
             let cmp = new Template({})
+            cmp.init()
             assert(cmp.classList.contains('solanum'))
         })
     })

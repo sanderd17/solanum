@@ -32,11 +32,9 @@ class Prop {
     /**
      * Set the context and do a first recalculation
      * @param {Template} ctx Component supplying the props that can be used for the prop bindings. Can be a parent or the same as the prop holder
-     * @param {Node} domNode The dom node to dispatch events to
      */
-    setContext(ctx, domNode) {
+    setContext(ctx) {
         this.ctx = ctx
-        this.domNode = domNode
     
         // Do a first recalc, will subscribe to the original tags, and store which props to use
         this.recalcValue()

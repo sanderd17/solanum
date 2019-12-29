@@ -21,7 +21,6 @@ class Circle extends Template {
     }
 
     addEventHandlers() {
-
         if (this.__handleEvent == null) {
             this.__handleEvent = (ev) => {
                 if (ev.type in this.__eventHandlers) {
@@ -35,6 +34,7 @@ class Circle extends Template {
         }
         // add the new event handlers
         for (let eventType in this.__eventHandlers) {
+            console.log(this.__elNode, eventType)
             this.__elNode.addEventListener(eventType, this.__handleEvent)
         }
     }
@@ -69,7 +69,6 @@ class Circle extends Template {
             if (key in this.__position) this.__dom.style[key] = this.__position[key]
 
         if (this.__parent) {
-            this.__parent.createDomNode()
             this.__parent.__dom.appendChild(this.__dom)
         }
     }
