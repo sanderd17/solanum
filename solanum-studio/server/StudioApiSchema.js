@@ -90,7 +90,7 @@ export const setChildProp = {
         component:      {type: 'string', required: true},
         childId:        {type: 'string', required: true},
         propName:       {type: 'string', required: true},
-        value:          {type: 'any',    required: true},
+        value:          {type: 'string', required: true},
     }
 }
 

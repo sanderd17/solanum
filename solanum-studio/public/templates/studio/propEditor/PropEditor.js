@@ -12,18 +12,8 @@ class PropEditor extends Template {
         this.init()
     }
     properties = {
-        cmpSelection: new Prop('{}', (cmpSelection) => {
-            if (Object.keys(cmpSelection).length > 0) {
-                this.children.childPropEditor.hidden = false
-                this.children.ownPropEditor.hidden = true
-            } else {
-                this.children.childPropEditor.hidden = true
-                this.children.ownPropEditor.hidden = false
-            }
-            this.children.positionPropEditor.properties.cmpSelection.value = cmpSelection
-            this.children.childPropEditor.properties.cmpSelection.value = cmpSelection
-        }),
-        componentAst: new Prop('null'),
+        cmpSelection: new Prop('{}'),
+        componentInfo: new Prop('null'),
     }
 
     static defaultSize = [300, 1000]
@@ -31,18 +21,21 @@ class PropEditor extends Template {
         positionPropEditor: new PositionPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '0px', height: '150px'},
-            props: {cmpSelection: 'cmpSelection'},
+            properties: {cmpSelection: "Prop('cmpSelection')"},
         }),
         childPropEditor: new ChildPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '160px', height: '140px'},
-            props: {hidden: 'true'},
+            properties: {
+                cmpSelection: 'Prop("cmpSelection")',
+                componentInfo: 'Prop("componentInfo")',
+            },
         }),
         ownPropEditor: new OwnPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '300px', height: '140px'},
             properties: {
-                componentAst: 'Prop("componentAst")',
+                componentInfo: 'Prop("componentInfo")',
             }
         }),
         stylePropEditor: new StylePropEditor({

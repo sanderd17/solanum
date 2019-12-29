@@ -21,15 +21,14 @@ class StudioWindow extends Template {
         componentName: new Prop('null'),
         componentClass: new Prop('null'),
         componentInstance: new Prop('null'),
-        componentCode: new Prop('""'),
-        componentAst: new Prop('null'),
+        componentInfo: new Prop('null'),
 
         cmpSelection: new Prop('{}', (newSelection) => {
             if (!newSelection)
                 return
 
             if (Object.keys(newSelection).length == 1) {
-                let ast = this.properties.componentAst.value
+                let ast = this.properties.componentInfo.value.ast
                 let childId = Object.keys(newSelection)[0]
                 let childKeyLoc = getChildAst(ast, childId).key.loc
                 console.log(childKeyLoc)
@@ -110,7 +109,8 @@ class StudioWindow extends Template {
             position: {right: "0px", width: "300px", top: "20px", bottom: "0px"},
             properties: {
                 module: "Prop('moduleName')",
-                componentAst: "Prop('componentAst')",
+                componentInfo: "Prop('componentInfo')",
+                cmpSelection: "Prop('cmpSelection')",
             },
             eventHandlers: {
                 positionpropchanged: async (ev) => {
@@ -134,7 +134,7 @@ class StudioWindow extends Template {
                     let newCode = await this.callStudioApi('setChildProp', {
                         childId: ev.detail.childId,
                         propName: ev.detail.propName,
-                        value: ev.detail.newValue,
+                        value: ev.detail.value,
                     })
                     this.setCode(newCode)
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
@@ -175,10 +175,9 @@ class StudioWindow extends Template {
         let code = mdl.code
         // TODO turn into valid property, and pass as property binding
         this.children.codeEditor.code = code
-        this.properties.componentCode.value = code
 
-        this.properties.componentAst.value = mdl.ast
-        console.log(this.properties.componentAst.value)
+        let ast = mdl.ast
+        this.properties.componentInfo.value = {ast, code}
     }
 
     setCode(newCode) {

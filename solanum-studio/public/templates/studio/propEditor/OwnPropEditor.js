@@ -17,7 +17,7 @@ class OwnPropEditor extends Template {
     }
 
     properties = {
-        componentAst: new Prop('null', () => {
+        componentInfo: new Prop('null', () => {
             this.loadModuleProperties()
         }),
     }
@@ -31,15 +31,15 @@ class OwnPropEditor extends Template {
     propertiesAst = null
     loadModuleProperties() {
         for (let c in this.children) {
-            this.children[c].destroy()
-            delete this.children[c]
+            this.removeChild(c)
         }
 
-        let ast = this.properties.componentAst.value
-        if (ast == null)
+        let info = this.properties.componentInfo.value
+        if (info == null)
             return
+        let ast = info.ast
 
-        this.propertiesAst = getOwnPropertiesAst(this.properties.componentAst.value)
+        this.propertiesAst = getOwnPropertiesAst(ast)
 
         if (!this.propertiesAst) {
             // TODO configure empty properties object
@@ -62,32 +62,35 @@ class OwnPropEditor extends Template {
 
             this.children['key_' + i] =  new Textbox({
                 parent: this,
-                position: { left: '1%', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
+                position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
-                eventHandlers: { change: (ev, root, child) => this.setKeyName(child, i) },
+                eventHandlers: { change: (ev, root, child) => this.setKeyName(name, child) },
             })
             this.children['key_' + i].properties.value.value = name
             this.children['binding_' + i] =  new Textbox({
                 parent: this,
-                position: { right: '1%', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
+                position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
-                eventHandlers: { change: (ev, root, child) => this.setPropValue(child, i) },
+                eventHandlers: { change: (ev, root, child) => this.setPropValue(name, child) },
             })
             this.children['binding_' + i].properties.value.value = binding
         }
     }
 
-    setKeyName(textBox, index) {
+    /**
+     * @param {string} propertyName
+     * @param {Textbox} textBox 
+     */
+    setKeyName(propertyName, textBox) {
         console.warn(textBox)
     }
 
     /**
-     * 
+     * @param {string} propertyName
      * @param {Textbox} textBox 
      */
-    setPropValue(textBox, index) {
+    setPropValue(propertyName, textBox) {
         let newBinding = textBox.properties.value.value
-        let propertyName = getPropertyKeyName(this.propertiesAst[index])
 
         console.log(propertyName, newBinding)
         this.__dom.dispatchEvent(new CustomEvent('ownPropChanged', {

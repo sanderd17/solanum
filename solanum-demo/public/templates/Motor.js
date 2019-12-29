@@ -10,7 +10,7 @@ class Motor extends Template {
     }
 
     properties = {
-        motor: new Prop("'M50'"),
+        motor: new Prop("'M1'"),
     }
 
     static childStyles = {
@@ -34,9 +34,9 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "2.000000305175758%",
-                width: "82.9999982452394%",
-                height: "84.99999786376969%",
+                left: "2%",
+                width: "90%",
+                height: "90%",
                 top: "0%"
             },
             properties: {fill: 'Tag(`Motors/${Prop("motor")}`, "red")', prop2: '`Motors/${Prop("motor")}`'},
@@ -55,12 +55,12 @@ class Motor extends Template {
         icon2: new Circle({
             parent: this,
             position: {
-                left: "72.99999938964848%",
+                left: "73.99999984741213%",
                 width: "25%",
-                top: "64.99999954223637%",
+                top: "72.99999931335455%",
                 height: "25%"
             },
-            properties: {fill: '"blue"'},
+            properties: {fill: "\"blue\" "},
             eventHandlers: { }
         })
     }
