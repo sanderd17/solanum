@@ -94,10 +94,7 @@ class ChildPropEditor extends Template {
             let childInstance = this.properties.cmpSelection.value[childId]
             childInstance.properties[propName].setBinding(value)
             childInstance.properties[propName].recalcValue()
-            this.__dom.dispatchEvent(new CustomEvent('childPropChanged', {
-                bubbles: true,
-                detail: {childId, propName, value}
-            }))
+            this.dispatchEvent('childPropChanged', {childId, propName, value})
         }
     }
 }

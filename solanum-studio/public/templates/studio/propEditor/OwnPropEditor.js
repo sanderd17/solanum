@@ -93,10 +93,7 @@ class OwnPropEditor extends Template {
         let newBinding = textBox.properties.value.value
 
         console.log(propertyName, newBinding)
-        this.__dom.dispatchEvent(new CustomEvent('ownPropChanged', {
-            bubbles: true,
-            detail: {propertyName, newBinding}
-        }))
+        this.dispatchEvent('ownPropChanged', {propertyName, newBinding})
     }
 }
 

@@ -66,10 +66,7 @@ class StudioCanvasInteraction extends Template {
                     eventHandlers: {
                         click: (ev, root) => {
                             ev.stopPropagation()
-                            this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
-                                bubbles: true,
-                                detail: {selection: [id]}
-                            }))
+                            this.dispatchEvent('selectionchanged', {selection: [id]})
                         },
                         dragstart: (ev, root) => root.startedDrag = ev,
                         drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
@@ -124,23 +121,17 @@ class StudioCanvasInteraction extends Template {
             height: clsNewCmp.defaultSize[1] + unit,
         }
 
-        this.dom.dispatchEvent(new CustomEvent('droppedchild', {
-            bubbles: true,
-            detail: {
-                childId,
-                type: clsNewCmp,
-                childClassName: clsNewCmp.name, 
-                childPath,
-                position,
-            }
-        }))
+        this.dispatchEvent('droppedchild', {
+            childId,
+            type: clsNewCmp,
+            childClassName: clsNewCmp.name, 
+            childPath,
+            position,
+        })
     }
 
     async removeSelectedChildren(ev) {
-        this.dom.dispatchEvent(new CustomEvent('deletedchildren', {
-            bubbles: true,
-            detail: {childIds: this.properties.selection.value}
-        }))
+        this.dispatchEvent('deletedchildren', {childIds: this.properties.selection.value})
         this.reloadSelectionRects()
     }
 
@@ -237,10 +228,7 @@ class StudioCanvasInteraction extends Template {
             } 
         }
         // set selection again to update selection rect
-        this.__dom.dispatchEvent(new CustomEvent('selectionchanged', {
-            bubbles: true,
-            detail: {selection: selectedElements}
-        }))
+        this.dispatchEvent('selectionchanged', {selection: selectedElements})
     }
 
     /**
@@ -308,10 +296,7 @@ class StudioCanvasInteraction extends Template {
     }
 
     setChildPosition(childId, newPosition, previewOnly=false) {
-        this.__dom.dispatchEvent(new CustomEvent('childpositionchanged', {
-            bubbles: true,
-            detail: {childId, newPosition, previewOnly}
-        }))
+        this.dispatchEvent('childpositionchanged', {childId, newPosition, previewOnly})
     }
 }
 

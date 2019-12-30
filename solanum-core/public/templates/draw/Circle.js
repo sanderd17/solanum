@@ -34,7 +34,6 @@ class Circle extends Template {
         }
         // add the new event handlers
         for (let eventType in this.__eventHandlers) {
-            console.log(this.__elNode, eventType)
             this.__elNode.addEventListener(eventType, this.__handleEvent)
         }
     }

@@ -123,10 +123,7 @@ class PositionPropEditor extends Template {
         for (let [childId, child] of Object.entries(this.properties.cmpSelection.value)) {
             let newPosition = {...child.__position}
             newPosition[type] = textBox.properties.value.value
-            this.__dom.dispatchEvent(new CustomEvent('positionpropchanged', {
-                bubbles: true,
-                detail: {childId, newPosition}
-            }))
+            this.dispatchEvent('positionpropchanged', {childId, newPosition})
         }
     }
 

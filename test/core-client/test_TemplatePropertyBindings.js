@@ -54,7 +54,7 @@ export default function({describe, it, beforeEach}) {
                 properties: {}
             })
             // sleep for a tick to let the constructor run
-            assert.equal(cmp.c.child1.p.myProp.value, "b")
+            assert.equal(cmp.children.child1.properties.myProp.value, "b")
         })
     })
     // TODO check child prop can depend on prop that comes from parent, check parent-defined prop can depend on other parent prop

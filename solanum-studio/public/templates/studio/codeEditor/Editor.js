@@ -52,13 +52,7 @@ class CodeEditor extends Template {
 			this.eventOldCode = oldCode
 		}
 		this.eventTimerId = setTimeout(() => {
-			this.__dom.dispatchEvent(new CustomEvent('codeContentChanged', {
-				bubbles: true,
-				detail: {
-					newCode: newCode,
-					oldCode: this.eventOldCode,
-				}
-			}))
+			this.dispatchEvent('codeContentChanged', {newCode, oldCode: this.eventOldCode})
 			this.eventTimerId = null
 		}, 2000)
 	}

@@ -85,11 +85,6 @@ class Template {
         }
     }
 
-    // shortcuts to properties and children
-    get p() {return this.properties}
-    get c() {return this.children}
-
-
     addChild(id, child) {
         this.children[id] = child
         child.classList.add(id)
@@ -120,6 +115,15 @@ class Template {
                 }
             }
         }
+    }
+
+    /**
+     * Send a CustomEvent from this dom node
+     * @param {string} eventName Custom event name
+     * @param {*} detail Extra data to pass on the event
+     */
+    dispatchEvent(eventName, detail) {
+        this.__dom.dispatchEvent(new CustomEvent(eventName, {bubbles: true, detail}))
     }
 
     addEventHandlers() {
