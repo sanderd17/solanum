@@ -23,24 +23,24 @@ class Icon extends Template {
     resetUrl() {
         if (this.properties.iconPath.value == '' || this.properties.iconSet.value == '')
             return
-        this.__dom.setAttribute(
+        this.dom.setAttribute(
             "src", 
             `/icons?iconSet=${encodeURIComponent(this.properties.iconSet.value)}&iconPath=${encodeURIComponent(this.properties.iconPath.value)}`
         )
     }
 
     createDomNode() {
-        this.__dom = document.createElement("img")
-        this.__dom.setAttribute("preserveAspectRatio", "none")
+        this.dom = document.createElement("img")
+        this.dom.setAttribute("preserveAspectRatio", "none")
 
         this.classList.add('solanum')
         this.classList.add(this.__className)
 
         for (let key of positionKeys)
-            if (key in this.__position) this.__dom.style[key] = this.__position[key]
+            if (key in this.__position) this.dom.style[key] = this.__position[key]
 
         if (this.__parent) {
-            this.__parent.__dom.appendChild(this.__dom)
+            this.__parent.dom.appendChild(this.dom)
         }
     }
 }

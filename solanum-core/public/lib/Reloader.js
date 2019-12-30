@@ -9,7 +9,7 @@ function recursiveCheckClass(root, cls) {
             child.destroy()
             // get defined props, eventhandlers, ... and apply to new child
             let newChild = new cls(child.__cArgs)
-            root.__dom.appendChild(newChild.__dom)
+            root.dom.appendChild(newChild.dom)
             root.children[id] = newChild
         } else {
             recursiveCheckClass(child, cls)

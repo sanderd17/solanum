@@ -10,14 +10,14 @@ class Checkbox extends Template {
     properties = {
         text: new Prop("'Checkbox'", (text) => {
             let found = false
-            for (let child of this.__dom.childNodes) {
+            for (let child of this.dom.childNodes) {
                 if (child.nodeName == 'INPUT')
                     continue
                 found = true
                 child.nodeValue = text
             }
             if (!found)
-                this.__dom.appendChild(document.createTextNode(text))
+                this.dom.appendChild(document.createTextNode(text))
         }),
         checked: new DomProp("false"),
         disabled: new DomProp("false")
@@ -31,22 +31,22 @@ class Checkbox extends Template {
     }
 
     createDomNode() {
-        this.__dom = document.createElement("label")
+        this.dom = document.createElement("label")
 
         this.__innerNode = document.createElement("input")
         this.__innerNode.setAttribute("type", "checkbox")
 
-        this.__dom.appendChild(this.__innerNode)
-        this.__dom.style.setProperty('position', 'absolute')
+        this.dom.appendChild(this.__innerNode)
+        this.dom.style.setProperty('position', 'absolute')
 
         this.classList.add(this.__className)
 
         for (let key of positionKeys)
-            if (key in this.__position) this.__dom.style[key] = this.__position[key]
+            if (key in this.__position) this.dom.style[key] = this.__position[key]
 
         if (this.__parent) {
             this.__parent.createDomNode()
-            this.__parent.__dom.appendChild(this.__dom)
+            this.__parent.dom.appendChild(this.dom)
         }
     }
 }

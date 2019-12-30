@@ -21,8 +21,8 @@ class StudioCanvasInteraction extends Template {
                 this.removeSelectedChildren(ev)
         }
         this.addEventHandlers()
-        this.__dom.setAttribute('draggable', true) // draggable is required to allow selection drag
-        this.__dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
+        this.dom.setAttribute('draggable', true) // draggable is required to allow selection drag
+        this.dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
         this.init()
     }
 
@@ -144,12 +144,12 @@ class StudioCanvasInteraction extends Template {
             }
         } else {
             // Set selection to multiple elements
-            let {left: cmpLeft, top: cmpTop} = this.__dom.getBoundingClientRect()
+            let {left: cmpLeft, top: cmpTop} = this.dom.getBoundingClientRect()
 
             // Warning: right and bottom have different meanings here; it's measured from the left top of the page
-            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[selection[0]].__dom.getBoundingClientRect()
+            let {left: minLeft, top: minTop, right: maxRight, bottom: maxBottom} = this.children[selection[0]].dom.getBoundingClientRect()
             for (let id of selection) {
-                let {left, top, right, bottom} = this.children[id].__dom.getBoundingClientRect()
+                let {left, top, right, bottom} = this.children[id].dom.getBoundingClientRect()
                 minLeft = Math.min(left, minLeft)
                 maxRight = Math.max(right, maxRight)
                 minTop = Math.min(top, minTop)
@@ -216,7 +216,7 @@ class StudioCanvasInteraction extends Template {
             bottom: Math.max(startDragEvent.y, endDragEvent.y),
         }
         for (let [id, child] of Object.entries(this.children)) {
-            let childRect = child.__dom.getBoundingClientRect()
+            let childRect = child.dom.getBoundingClientRect()
             if (
                 selRect.left   < childRect.right  &&
                 selRect.right  > childRect.left   &&
@@ -279,7 +279,7 @@ class StudioCanvasInteraction extends Template {
     }
 
     getCoordinateInfo(value) {
-        let {width, height} = this.__dom.getBoundingClientRect()
+        let {width, height} = this.dom.getBoundingClientRect()
         let re = /(?<magnitude>[\-\d\.]*)(?<unit>[\w%]*)/u;
         let {magnitude, unit} = re.exec(value).groups
         let factorHor = 1

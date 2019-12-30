@@ -14,7 +14,7 @@ const mainWindow = new MainWindow({
 let r = new Reloader(mainWindow)
 r.initMessageHandlers()
 let div = document.getElementById("root")
-div.appendChild(mainWindow.__dom)
+div.appendChild(mainWindow.dom)
 
 
 messager.connectToServer(location.host)

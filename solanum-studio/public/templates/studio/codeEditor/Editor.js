@@ -110,7 +110,7 @@ class CodeEditor extends Template {
 		addLib('/lib/TagSet.js')
 		addLib('/templates/draw/Circle.js')
 
-		this.monacoEditor = monaco.editor.create(this.__dom, {
+		this.monacoEditor = monaco.editor.create(this.dom, {
 			value: '',
 			language: "javascript"
 		})

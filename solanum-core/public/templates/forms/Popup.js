@@ -14,7 +14,7 @@ class Popup extends Template {
         const mdl = await import(`/templates/${templatePath}.js`)
         const cls = mdl.default
 
-        const outerDiv = this.__dom
+        const outerDiv = this.dom
         let [width, height] = cls.defaultSize
         outerDiv.style.width = width + 'px'
         outerDiv.style.height = (height + 15) + 'px'
@@ -27,12 +27,12 @@ class Popup extends Template {
             eventHandlers: {},
         })
 
-        const innerDiv = template.__dom
+        const innerDiv = template.dom
         outerDiv.appendChild(innerDiv)
     }
 
     createDomNode() {
-        this.__dom = document.createElement('div')
+        this.dom = document.createElement('div')
 
         this.currentPos = [100, 100] // TODO depend on current pos
 
@@ -40,12 +40,12 @@ class Popup extends Template {
         this.classList.add('solanum')
 
         // create floating outer div
-        this.__dom.style.border = '2px solid darkgrey' // TODO make configuable
-        this.__dom.style.top = this.currentPos[0] + 'px'
-        this.__dom.style.left = this.currentPos[1] + 'px'
-        //this.__dom.style.transition = 'all .01s'
+        this.dom.style.border = '2px solid darkgrey' // TODO make configuable
+        this.dom.style.top = this.currentPos[0] + 'px'
+        this.dom.style.left = this.currentPos[1] + 'px'
+        //this.dom.style.transition = 'all .01s'
 
-        this.__dom.style.backgroundColor = 'white' // TODO make configurable
+        this.dom.style.backgroundColor = 'white' // TODO make configurable
 
         
         // Make draggable title bar (extra argument?)
@@ -67,7 +67,7 @@ class Popup extends Template {
             ev.stopPropagation
             this.dragTitleBar(ev)
         })
-        this.__dom.appendChild(titleBar)
+        this.dom.appendChild(titleBar)
 
         // close button
         const closeButton = document.createElement('div')
@@ -83,7 +83,7 @@ class Popup extends Template {
         closeButton.addEventListener('click', (ev) => this.destroy())
         titleBar.appendChild(closeButton)
 
-        document.body.appendChild(this.__dom)
+        document.body.appendChild(this.dom)
 
         this.setTemplate(this.__cArgs.templatePath, this.__cArgs.props)
     }
@@ -107,8 +107,8 @@ class Popup extends Template {
             return
         this.currentPos = [this.positionDiff[0] + ev.x, this.positionDiff[0] + ev.y]
         console.log(ev)
-        this.__dom.style.left = (this.positionDiff[0] + ev.x) + 'px'
-        this.__dom.style.top = (this.positionDiff[1] + ev.y) + 'px'
+        this.dom.style.left = (this.positionDiff[0] + ev.x) + 'px'
+        this.dom.style.top = (this.positionDiff[1] + ev.y) + 'px'
     }
 }
 

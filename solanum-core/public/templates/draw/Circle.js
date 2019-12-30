@@ -49,9 +49,9 @@ class Circle extends Template {
     }
 
     createDomNode() {
-        this.__dom = document.createElementNS(ns, "svg")
-        this.__dom.setAttribute("viewBox", "0 0 100 100")
-        this.__dom.setAttribute("preserveAspectRatio", "none")
+        this.dom = document.createElementNS(ns, "svg")
+        this.dom.setAttribute("viewBox", "0 0 100 100")
+        this.dom.setAttribute("preserveAspectRatio", "none")
 
         this.__elNode = document.createElementNS(ns, "circle")
         this.__elNode.setAttribute("cx", "50")
@@ -62,13 +62,13 @@ class Circle extends Template {
         this.classList.add(this.__className)
         //circleNode.setAttribute("fill", "blue")
 
-        this.__dom.appendChild(this.__elNode)
+        this.dom.appendChild(this.__elNode)
 
         for (let key of positionKeys)
-            if (key in this.__position) this.__dom.style[key] = this.__position[key]
+            if (key in this.__position) this.dom.style[key] = this.__position[key]
 
         if (this.__parent) {
-            this.__parent.__dom.appendChild(this.__dom)
+            this.__parent.dom.appendChild(this.dom)
         }
     }
 }

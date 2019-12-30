@@ -27,7 +27,7 @@ class Button extends Template {
         this.__innerButton.classList.add('solanum')
         this.__innerButton.classList.add(this.__className)
 
-        this.__dom.appendChild(this.__innerButton)
+        this.dom.appendChild(this.__innerButton)
 
     }
 }

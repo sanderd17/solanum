@@ -9,7 +9,7 @@ class Label extends Template {
     constructor(...args) {
         super(...args)
         this.properties.text.addChangeListener((newValue) => {
-            this.__dom.innerText = newValue
+            this.dom.innerText = newValue
         })
         this.init()
     }

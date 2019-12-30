@@ -20,19 +20,19 @@ class Textbox extends Template {
     }
 
     createDomNode() {
-        this.__dom = document.createElement("input")
+        this.dom = document.createElement("input")
 
-        this.__dom.style.setProperty('position', 'absolute')
-        this.__dom.style.setProperty('box-sizing', 'border-box')
+        this.dom.style.setProperty('position', 'absolute')
+        this.dom.style.setProperty('box-sizing', 'border-box')
 
         this.classList.add(this.__className)
 
         for (let key of positionKeys)
-            if (key in this.__position) this.__dom.style[key] = this.__position[key]
+            if (key in this.__position) this.dom.style[key] = this.__position[key]
 
         if (this.__parent) {
             this.__parent.createDomNode()
-            this.__parent.__dom.appendChild(this.__dom)
+            this.__parent.dom.appendChild(this.dom)
         }
     }
 }

@@ -27,7 +27,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
-    __dom = document.createElement('div')
+    dom = document.createElement('div')
 
 
     /** @type {Object<string,Template>} */
@@ -61,21 +61,21 @@ class Template {
         this.createDomNode()
         for (let [id, child] of Object.entries(this.children)) {
             child.classList.add(id)
-            this.__dom.appendChild(child.__dom)
+            this.dom.appendChild(child.dom)
         }
         this.addEventHandlers()
 
         // Handle the props defined on the inheriting class and coming from the constructor
         for (let [name, prop] of Object.entries(this.properties)) {
             if (prop instanceof DomProp && !prop.boundNode) {
-                prop.setDomBinding(this.__dom, name)
+                prop.setDomBinding(this.dom, name)
             }
             if (this.__cArgs.properties && name in this.__cArgs.properties) {
                 // override binding from the constructor definition
                 prop.setBinding(this.__cArgs.properties[name])
-                prop.setContext(this.__cArgs.parent, this.__dom) // Context of the prop is parent that called the constructor
+                prop.setContext(this.__cArgs.parent, this.dom) // Context of the prop is parent that called the constructor
             } else {
-                prop.setContext(this, this.__dom) // Context of the prop is this component
+                prop.setContext(this, this.dom) // Context of the prop is this component
             }
             for (let dependency of prop.subscribedProps) {
                 prop.ctx.properties[dependency].addChangeListener(() => {
@@ -88,7 +88,7 @@ class Template {
     addChild(id, child) {
         this.children[id] = child
         child.classList.add(id)
-        this.__dom.appendChild(child.__dom)
+        this.dom.appendChild(child.dom)
     }
 
     removeChild(id) {
@@ -106,12 +106,12 @@ class Template {
      */
     setPosition(newPosition) {
         this.__position = newPosition
-        if (this.__dom) {
+        if (this.dom) {
             for (let key of positionKeys) {
                 if (key in newPosition) {
-                    this.__dom.style[key] = newPosition[key]
+                    this.dom.style[key] = newPosition[key]
                 } else {
-                    this.__dom.style[key] = ''
+                    this.dom.style[key] = ''
                 }
             }
         }
@@ -123,7 +123,7 @@ class Template {
      * @param {*} detail Extra data to pass on the event
      */
     dispatchEvent(eventName, detail) {
-        this.__dom.dispatchEvent(new CustomEvent(eventName, {bubbles: true, detail}))
+        this.dom.dispatchEvent(new CustomEvent(eventName, {bubbles: true, detail}))
     }
 
     addEventHandlers() {
@@ -136,11 +136,11 @@ class Template {
         }
         // remove existing event handlers (if any)
         for (let eventType in this.__eventHandlers) {
-            this.__dom.removeEventListener(eventType, this.__handleEvent)
+            this.dom.removeEventListener(eventType, this.__handleEvent)
         }
         // add the new event handlers
         for (let eventType in this.__eventHandlers) {
-            this.__dom.addEventListener(eventType, this.__handleEvent)
+            this.dom.addEventListener(eventType, this.__handleEvent)
         }
     }
 
@@ -149,7 +149,7 @@ class Template {
      */
     disableEventHandlers() {
         for (let eventType in this.__eventHandlers) {
-            this.__dom.removeEventListener(eventType, this.__handleEvent)
+            this.dom.removeEventListener(eventType, this.__handleEvent)
         }
         for (let childId in this.children) {
             this.children[childId].disableEventHandlers()
@@ -171,8 +171,8 @@ class Template {
         for (let child of Object.values(this.children)) {
             child.destroy()
         }
-        if (this.__dom.parentNode) {
-            this.__dom.parentNode.removeChild(this.__dom)
+        if (this.dom.parentNode) {
+            this.dom.parentNode.removeChild(this.dom)
         }
         for (let prop of Object.values(this.properties)) {
             prop.destroy()
@@ -184,15 +184,15 @@ class Template {
     // QUICK ACCESS PROPS //
 
     get classList() {
-        return this.__dom.classList
+        return this.dom.classList
     }
 
     /** @type {boolean} */
     set hidden(hidden) {
-        this.__dom.style.visibility = hidden ? 'hidden' : ''
+        this.dom.style.visibility = hidden ? 'hidden' : ''
     }
     get hidden() {
-        return this.__dom.style.visibility == 'hidden'
+        return this.dom.style.visibility == 'hidden'
     }
 }
 
