@@ -15,14 +15,14 @@ export default function({describe, it, beforeEach}) {
     describe('constructor', function() {
         it('creates a div element', function() {
             let cmp = new Template({})
-            assert.equal(cmp.__dom.nodeName, 'DIV')
+            assert.equal(cmp.dom.nodeName, 'DIV')
         })
     })
     describe('classList', function() {
         it('equals the dom class list', function() {
             let cmp = new Template({})
             cmp.init()
-            assert.equal(cmp.__dom.classList, cmp.classList)
+            assert.equal(cmp.dom.classList, cmp.classList)
         })
         it("contains 'solanum'", function() {
             let cmp = new Template({})
