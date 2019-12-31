@@ -67,15 +67,12 @@ class Template {
 
         // Handle the props defined on the inheriting class and coming from the constructor
         for (let [name, prop] of Object.entries(this.properties)) {
-            if (prop instanceof DomProp && !prop.boundNode) {
-                prop.setDomBinding(this.dom, name)
-            }
             if (this.__cArgs.properties && name in this.__cArgs.properties) {
                 // override binding from the constructor definition
                 prop.setBinding(this.__cArgs.properties[name])
-                prop.setContext(this.__cArgs.parent, this.dom) // Context of the prop is parent that called the constructor
+                prop.setContext(this.__cArgs.parent) // Context of the prop is parent that called the constructor
             } else {
-                prop.setContext(this, this.dom) // Context of the prop is this component
+                prop.setContext(this) // Context of the prop is this component
             }
             for (let dependency of prop.subscribedProps) {
                 prop.ctx.properties[dependency].addChangeListener(() => {

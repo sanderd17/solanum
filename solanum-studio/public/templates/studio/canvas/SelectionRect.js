@@ -32,6 +32,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
             properties: {
+                'fill': '"#00000000"',
                 'stroke-dasharray': '"1 4"',
             },
             eventHandlers: {},

@@ -60,19 +60,19 @@ class OwnPropEditor extends Template {
                 binding = el.value.arguments[0].value
             }
 
-            this.children['key_' + i] =  new Textbox({
+            this.addChild('key_' + i, new Textbox({
                 parent: this,
                 position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, root, child) => this.setKeyName(name, child) },
-            })
+            }))
             this.children['key_' + i].properties.value.value = name
-            this.children['binding_' + i] =  new Textbox({
+            this.addChild('binding_' + i, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, root, child) => this.setPropValue(name, child) },
-            })
+            }))
             this.children['binding_' + i].properties.value.value = binding
         }
     }

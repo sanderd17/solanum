@@ -9,7 +9,7 @@ const VMARGIN = 5
 class ChildPropEditor extends Template {
 
     properties = {
-        cmpSelection: new Prop('{}', () => {
+        cmpSelection: new Prop('{}', (v) => {
             this.resetSelectionProps()
         }),
         componentInfo: new Prop('null'),
@@ -67,19 +67,19 @@ class ChildPropEditor extends Template {
         this.propNames = Object.keys(commonProps).sort()
         for (let [i, name] of Object.entries(this.propNames)) {
             let binding = commonProps[name]
-            this.children['key_' + i] =  new Textbox({
+            this.addChild('key_' + i, new Textbox({
                 parent: this,
                 position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, root, child) => this.setKeyName(name, child) },
-            })
+            }))
             this.children['key_' + i].properties.value.value = name
-            this.children['binding_' + i] =  new Textbox({
+            this.addChild('binding_' + i, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, root, child) => this.setPropBinding(name, child) },
-            })
+            }))
             this.children['binding_' + i].properties.value.value = binding
         }
     }

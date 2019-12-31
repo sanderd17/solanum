@@ -1,5 +1,5 @@
 import Template from '/lib/template.js'
-import Prop from '/lib/ComponentProp.js'
+import {DomProp} from '/lib/ComponentProp.js'
 
 const ns = "http://www.w3.org/2000/svg"
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
@@ -7,17 +7,20 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Circle extends Template {
     static defaultSize = [20, 20]
 
+    dom = document.createElementNS(ns, "svg")
+    elNode = document.createElementNS(ns, "circle")
+
     constructor(...args) {
         super(...args)
         this.init()
     }
 
     properties = {
-        fill: new Prop("'#000000'", v => this.__elNode.setAttribute('fill', v)),
+        fill: new DomProp(this.elNode, 'fill', "'#000000'"),
     }
 
     get classList() {
-        return this.__elNode.classList
+        return this.elNode.classList
     }
 
     addEventHandlers() {
@@ -30,11 +33,11 @@ class Circle extends Template {
         }
         // remove existing event handlers (if any)
         for (let eventType in this.__eventHandlers) {
-            this.__elNode.removeEventListener(eventType, this.__handleEvent)
+            this.elNode.removeEventListener(eventType, this.__handleEvent)
         }
         // add the new event handlers
         for (let eventType in this.__eventHandlers) {
-            this.__elNode.addEventListener(eventType, this.__handleEvent)
+            this.elNode.addEventListener(eventType, this.__handleEvent)
         }
     }
 
@@ -44,32 +47,25 @@ class Circle extends Template {
      */
     disableEventHandlers() {
         for (let eventType in this.__eventHandlers) {
-            this.__elNode.removeEventListener(eventType, this.__handleEvent)
+            this.elNode.removeEventListener(eventType, this.__handleEvent)
         }
     }
 
     createDomNode() {
-        this.dom = document.createElementNS(ns, "svg")
         this.dom.setAttribute("viewBox", "0 0 100 100")
         this.dom.setAttribute("preserveAspectRatio", "none")
 
-        this.__elNode = document.createElementNS(ns, "circle")
-        this.__elNode.setAttribute("cx", "50")
-        this.__elNode.setAttribute("cy", "50")
-        this.__elNode.setAttribute("r", "50")
-        this.__elNode.setAttribute("pointer-events", "visible")
+        this.elNode.setAttribute("cx", "50")
+        this.elNode.setAttribute("cy", "50")
+        this.elNode.setAttribute("r", "50")
+        this.elNode.setAttribute("pointer-events", "visible")
 
         this.classList.add(this.__className)
-        //circleNode.setAttribute("fill", "blue")
 
-        this.dom.appendChild(this.__elNode)
+        this.dom.appendChild(this.elNode)
 
         for (let key of positionKeys)
             if (key in this.__position) this.dom.style[key] = this.__position[key]
-
-        if (this.__parent) {
-            this.__parent.dom.appendChild(this.dom)
-        }
     }
 }
 

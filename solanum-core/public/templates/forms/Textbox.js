@@ -7,9 +7,10 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Textbox extends Template {
     static defaultSize = [100, 20]
 
+    dom = document.createElement("input")
     properties = {
-        value: new DomProp("''"),
-        disabled: new DomProp('false'),
+        value: new DomProp(this.dom, 'value', "''"),
+        disabled: new DomProp(this.dom, 'disabled', 'false'),
         type: new Prop("'text'"),
         step: new Prop("1"),
     }
@@ -20,8 +21,6 @@ class Textbox extends Template {
     }
 
     createDomNode() {
-        this.dom = document.createElement("input")
-
         this.dom.style.setProperty('position', 'absolute')
         this.dom.style.setProperty('box-sizing', 'border-box')
 
@@ -29,11 +28,6 @@ class Textbox extends Template {
 
         for (let key of positionKeys)
             if (key in this.__position) this.dom.style[key] = this.__position[key]
-
-        if (this.__parent) {
-            this.__parent.createDomNode()
-            this.__parent.dom.appendChild(this.dom)
-        }
     }
 }
 

@@ -7,6 +7,9 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Checkbox extends Template {
     static defaultSize = [100, 20]
 
+    dom = document.createElement("label")
+    innerNode = document.createElement("input")
+
     properties = {
         text: new Prop("'Checkbox'", (text) => {
             let found = false
@@ -19,35 +22,25 @@ class Checkbox extends Template {
             if (!found)
                 this.dom.appendChild(document.createTextNode(text))
         }),
-        checked: new DomProp("false"),
-        disabled: new DomProp("false")
+        checked: new DomProp(this.innerNode, 'checked', "false"),
+        disabled: new DomProp(this.innerNode, 'disabled', "false")
     }
 
     constructor(...args) {
         super(...args)
-        this.properties.checked.setDomBinding(this.__innerNode, 'checked')
-        this.properties.disabled.setDomBinding(this.__innerNode, 'disabled')
         this.init()
     }
 
     createDomNode() {
-        this.dom = document.createElement("label")
+        this.innerNode.setAttribute("type", "checkbox")
 
-        this.__innerNode = document.createElement("input")
-        this.__innerNode.setAttribute("type", "checkbox")
-
-        this.dom.appendChild(this.__innerNode)
+        this.dom.appendChild(this.innerNode)
         this.dom.style.setProperty('position', 'absolute')
 
         this.classList.add(this.__className)
 
         for (let key of positionKeys)
             if (key in this.__position) this.dom.style[key] = this.__position[key]
-
-        if (this.__parent) {
-            this.__parent.createDomNode()
-            this.__parent.dom.appendChild(this.dom)
-        }
     }
 }
 

@@ -5,6 +5,13 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Icon extends Template {
 
+    dom = document.createElement("img")
+
+    properties = {
+        iconSet: new Prop("''"),
+        iconPath: new Prop("''"),
+    }
+
     constructor(...args) {
         super(...args)
         for (let name of ['iconSet', 'iconPath']) {
@@ -13,11 +20,6 @@ class Icon extends Template {
             })
         }
         this.init()
-    }
-
-    properties = {
-        iconSet: new Prop("''"),
-        iconPath: new Prop("''"),
     }
 
     resetUrl() {
@@ -30,7 +32,6 @@ class Icon extends Template {
     }
 
     createDomNode() {
-        this.dom = document.createElement("img")
         this.dom.setAttribute("preserveAspectRatio", "none")
 
         this.classList.add('solanum')
@@ -38,10 +39,6 @@ class Icon extends Template {
 
         for (let key of positionKeys)
             if (key in this.__position) this.dom.style[key] = this.__position[key]
-
-        if (this.__parent) {
-            this.__parent.dom.appendChild(this.dom)
-        }
     }
 }
 

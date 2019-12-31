@@ -155,24 +155,34 @@ class Prop {
 //TODO investigate MutationObserver to react on external dom changes
 class DomProp extends Prop {
     /**
-     * @param {Node} boundNode
+     * Constructs a dynamic property
+     * @param {HTMLElement} boundNode
      * @param {string} boundAttribute
+     * @param {string} expression A valid JS expression
+     * @param {((newValue: any, oldValue: any) => void)=} changeListener
+     * @param {TagSet=} tsMock mock for unit testing purposes
      */
-    setDomBinding(boundNode, boundAttribute) {
+    constructor(boundNode, boundAttribute, expression, changeListener, tsMock) {
+        super(expression, changeListener, tsMock)
         this.boundNode = boundNode
         this.boundAttribute = boundAttribute
     }
-    
+
     get value() {
-        return this.boundNode[this.boundAttribute]
+        return this.boundNode.getAttribute(this.boundAttribute)
     }
 
     set value(newValue) {
-        let oldValue = this.boundNode[this.boundAttribute]
+        let oldValue = this.boundNode.getAttribute(this.boundAttribute)
         if (newValue === oldValue)
             return
-        // Sets only the cached value, if a recalc happens at some point, the value will be the original
-        this.boundNode[this.boundAttribute] = newValue
+        if (newValue == null) {
+            this.boundNode.removeAttribute(this.boundAttribute)
+        } else if (typeof newValue == 'boolean') {
+            this.boundNode[this.boundAttribute] = newValue
+        } else {
+            this.boundNode.setAttribute(this.boundAttribute, newValue)
+        }
         for (let fn of this.changeListeners) {
             fn(newValue, oldValue)
         }
