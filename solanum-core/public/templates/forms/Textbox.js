@@ -8,6 +8,7 @@ class Textbox extends Template {
     static defaultSize = [100, 20]
 
     dom = document.createElement("input")
+
     properties = {
         value: new DomProp(this.dom, 'value', "''"),
         disabled: new DomProp(this.dom, 'disabled', 'false'),
