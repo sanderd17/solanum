@@ -9,14 +9,14 @@ class StudioCanvasInteraction extends Template {
         super(...args)
         /** @type Array<string> */
 
-        this.__eventHandlers.click = (ev) => {ev.stopPropagation(); this.properties.selection.value = []}
-        this.__eventHandlers.dragstart = (ev) => this.startedDrag = ev
-        this.__eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
-        this.__eventHandlers.drop = (ev) => this.newComponentDrop(ev)
+        this.eventHandlers.click = (ev) => {ev.stopPropagation(); this.properties.selection.value = []}
+        this.eventHandlers.dragstart = (ev) => this.startedDrag = ev
+        this.eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
+        this.eventHandlers.drop = (ev) => this.newComponentDrop(ev)
         // prevent default drag action to allow drop
-        this.__eventHandlers.dragover = (ev) => ev.preventDefault() 
-        this.__eventHandlers.dragenter = (ev) => ev.preventDefault()
-        this.__eventHandlers.keydown = (ev) => {
+        this.eventHandlers.dragover = (ev) => ev.preventDefault() 
+        this.eventHandlers.dragenter = (ev) => ev.preventDefault()
+        this.eventHandlers.keydown = (ev) => {
             if (ev.code == 'Delete')
                 this.removeSelectedChildren(ev)
         }

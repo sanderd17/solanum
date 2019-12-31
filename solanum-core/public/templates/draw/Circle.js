@@ -26,17 +26,17 @@ class Circle extends Template {
     addEventHandlers() {
         if (this.__handleEvent == null) {
             this.__handleEvent = (ev) => {
-                if (ev.type in this.__eventHandlers) {
-                    this.__eventHandlers[event.type](event, this)
+                if (ev.type in this.eventHandlers) {
+                    this.eventHandlers[event.type](event, this)
                 }
             }
         }
         // remove existing event handlers (if any)
-        for (let eventType in this.__eventHandlers) {
+        for (let eventType in this.eventHandlers) {
             this.elNode.removeEventListener(eventType, this.__handleEvent)
         }
         // add the new event handlers
-        for (let eventType in this.__eventHandlers) {
+        for (let eventType in this.eventHandlers) {
             this.elNode.addEventListener(eventType, this.__handleEvent)
         }
     }
@@ -46,7 +46,7 @@ class Circle extends Template {
      * This needs to be called before the dom is created
      */
     disableEventHandlers() {
-        for (let eventType in this.__eventHandlers) {
+        for (let eventType in this.eventHandlers) {
             this.elNode.removeEventListener(eventType, this.__handleEvent)
         }
     }

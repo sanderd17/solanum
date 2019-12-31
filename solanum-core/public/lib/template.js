@@ -47,8 +47,8 @@ class Template {
         /** @type {TemplatePosition} */
         this.__position = p.position || {}
         /** @type {Object<string,function>} */
-        this.__eventHandlers = p.eventHandlers || {}
-        this.__eventHandlersEnabled = true
+        this.eventHandlers = p.eventHandlers || {}
+        this.eventHandlersEnabled = true
 
         this.__className = style.registerClassStyle(this.constructor)
     }
@@ -130,17 +130,17 @@ class Template {
         if (this.__handleEvent == null) {
             /** @param {Event} ev */
             this.__handleEvent = (ev) => {
-                if (ev.type in this.__eventHandlers) {
-                    this.__eventHandlers[ev.type](ev, this)
+                if (ev.type in this.eventHandlers) {
+                    this.eventHandlers[ev.type](ev, this)
                 }
             }
         }
         // remove existing event handlers (if any)
-        for (let eventType in this.__eventHandlers) {
+        for (let eventType in this.eventHandlers) {
             this.dom.removeEventListener(eventType, this.__handleEvent)
         }
         // add the new event handlers
-        for (let eventType in this.__eventHandlers) {
+        for (let eventType in this.eventHandlers) {
             this.dom.addEventListener(eventType, this.__handleEvent)
         }
     }
@@ -149,7 +149,7 @@ class Template {
      * Disable adding event handlers to the dom (recursively)
      */
     disableEventHandlers() {
-        for (let eventType in this.__eventHandlers) {
+        for (let eventType in this.eventHandlers) {
             this.dom.removeEventListener(eventType, this.__handleEvent)
         }
         for (let childId in this.children) {
