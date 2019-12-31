@@ -26,6 +26,11 @@ button.solanum {
   display: block;
 }
 
+input.solanum {
+  position: absolute;
+  box-sizing: border-box;
+}
+
 img.solanum {
   position: absolute;
   margin: 0;
