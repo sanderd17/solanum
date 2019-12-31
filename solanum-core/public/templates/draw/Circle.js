@@ -27,7 +27,7 @@ class Circle extends Template {
         if (this.__handleEvent == null) {
             this.__handleEvent = (ev) => {
                 if (ev.type in this.__eventHandlers) {
-                    this.__eventHandlers[event.type](event, this.__parent, this)
+                    this.__eventHandlers[event.type](event, this)
                 }
             }
         }

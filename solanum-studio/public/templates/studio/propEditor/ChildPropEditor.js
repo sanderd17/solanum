@@ -71,14 +71,14 @@ class ChildPropEditor extends Template {
                 parent: this,
                 position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
-                eventHandlers: { change: (ev, root, child) => this.setKeyName(name, child) },
+                eventHandlers: { change: (ev, child) => this.setKeyName(name, child) },
             }))
             this.children['key_' + i].properties.value.value = name
             this.addChild('binding_' + i, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
-                eventHandlers: { change: (ev, root, child) => this.setPropBinding(name, child) },
+                eventHandlers: { change: (ev, child) => this.setPropBinding(name, child) },
             }))
             this.children['binding_' + i].properties.value.value = binding
         }

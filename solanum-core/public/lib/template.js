@@ -20,7 +20,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
   * @property {Template} parent
   * @property {TemplatePosition} position
   * @property {{string}} properties
-  * @property {{Function}} eventHandlers
+  * @property {Object<string, (Event, Template) => void>} eventHandlers
   */
 
 /**
@@ -75,6 +75,9 @@ class Template {
                 prop.setContext(this) // Context of the prop is this component
             }
             for (let dependency of prop.subscribedProps) {
+                if (!prop.ctx.properties[dependency]) {
+                    throw new Error(`Property ${dependency} is required by ${name}, but is not found`)
+                }
                 prop.ctx.properties[dependency].addChangeListener(() => {
                     prop.recalcValue()
                 })
@@ -125,9 +128,10 @@ class Template {
 
     addEventHandlers() {
         if (this.__handleEvent == null) {
+            /** @param {Event} ev */
             this.__handleEvent = (ev) => {
                 if (ev.type in this.__eventHandlers) {
-                    this.__eventHandlers[event.type](event, this.__parent, this)
+                    this.__eventHandlers[ev.type](ev, this)
                 }
             }
         }

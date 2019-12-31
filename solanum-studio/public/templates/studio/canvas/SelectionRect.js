@@ -44,9 +44,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['left', 'top'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['left', 'top'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['left', 'top'], this.startedDrag, ev),
             },
         }),
         topHandle: new ResizeHandle({
@@ -56,9 +56,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['top'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['top'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['top'], this.startedDrag, ev),
             },
         }),
         topRightHandle:new ResizeHandle({
@@ -68,9 +68,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['right', 'top'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['right', 'top'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['right', 'top'], this.startedDrag, ev),
             },
         }),
         rightHandle: new ResizeHandle({
@@ -80,9 +80,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['right'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['right'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['right'], this.startedDrag, ev),
             },
         }),
         bottomRightHandle: new ResizeHandle({
@@ -92,9 +92,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['right', 'bottom'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['right', 'bottom'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['right', 'bottom'], this.startedDrag, ev),
             },
         }),
         bottomHandle: new ResizeHandle({
@@ -104,9 +104,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['bottom'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['bottom'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['bottom'], this.startedDrag, ev),
             },
         }),
         bottomLeftHandle: new ResizeHandle({
@@ -116,9 +116,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['left', 'bottom'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['left', 'bottom'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['left', 'bottom'], this.startedDrag, ev),
             },
         }),
         leftHandle: new ResizeHandle({
@@ -128,9 +128,9 @@ class SelectionRect extends Template {
                 'visible': "false",
             },
             eventHandlers: {
-                dragstart: (ev, root) => root.startHandleDrag(ev),
-                drag: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev, true),
-                dragend: (ev, root) => root.endHandleDrag(['left'], root.startedDrag, ev),
+                dragstart: (ev) => this.startHandleDrag(ev),
+                drag: (ev) => this.endHandleDrag(['left'], this.startedDrag, ev, true),
+                dragend: (ev) => this.endHandleDrag(['left'], this.startedDrag, ev),
             },
         }),
     }

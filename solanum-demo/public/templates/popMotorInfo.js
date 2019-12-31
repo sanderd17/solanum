@@ -19,9 +19,9 @@ class PopMotorInfo extends Template {
             position: {left: '10%', right: '10%', top: '10px', height: '25px'},
             properties: {text: '"Start"'},
             eventHandlers: {
-                click: (ev, root) => {
-                    console.log(root.properties.path.value)
-                    ts.writeTag(root.properties.path.value, 'lightgreen')
+                click: (ev) => {
+                    console.log(this.properties.path.value)
+                    ts.writeTag(this.properties.path.value, 'lightgreen')
                 }
             }
         }),
@@ -30,7 +30,7 @@ class PopMotorInfo extends Template {
             position: {left: '10%', right: '10%', top: '40px', height: '25px'},
             properties: {text: '"Stop"'},
             eventHandlers: {
-                click: (ev, root) => ts.writeTag(root.properties.path.value, 'gray')
+                click: (ev) => ts.writeTag(this.properties.path.value, 'gray')
             }
         }),
     }

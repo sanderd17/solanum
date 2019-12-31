@@ -2,7 +2,14 @@ import Template from "/lib/template.js"
 import ToggleButton from '/templates/forms/ToggleButton.js'
 import solanum from "/lib/solanum.js"
 
+import Prop from '/lib/ComponentProp.js'
+
 class LayoutBar extends Template {
+
+    properties = {
+        positionUnit: new Prop('"%"')
+    }
+
     constructor(...args) {
         super(...args)
         this.init()
@@ -19,28 +26,14 @@ class LayoutBar extends Template {
             },
             properties: {
                 selected: 'false',
-                text: '"%"'
+                text: 'Prop("positionUnit")'
             },
             eventHandlers: {
-                click: (ev, root, child) => {
-                    if (child.selected) {
-                        root.positionUnit = 'px'
-                    } else {
-                        root.positionUnit = '%'
-                    }
+                click: (ev, child) => {
+                    this.properties.positionUnit.value = child.properteis.selected.value ? 'px' : '%'
                 }
             },
         }),
-    }
-
-    _positionUnit = '%'
-    set positionUnit(positionUnit) {
-        this._positionUnit = positionUnit
-        this.children.unitToggle.text = positionUnit
-    }
-
-    get positionUnit() {
-        return this._positionUnit
     }
 
     static defaultSize = [20, 20]

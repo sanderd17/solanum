@@ -34,19 +34,16 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "7%",
+                left: "8%",
                 width: "90%",
                 height: "90%",
-                top: "4%"
+                top: "9%"
             },
             properties: {fill: 'Tag(`Motors/${Prop("motor")}`, "red")', prop2: '`Motors/${Prop("motor")}`'},
             eventHandlers: {
-                /**
-                 * @param {Event} ev
-                 * @param {Motor} root
-                 */ 
-                click: (ev, root) => {
-                    let path = `"Motors/${root.properties.motor.value}"`
+                /**@param {Event} ev */ 
+                click: (ev) => {
+                    let path = `"Motors/${this.properties.motor.value}"`
                     solanum.openPopup('popMotorInfo', {path})
                 }
             },

@@ -53,7 +53,7 @@ class StudioCanvasInteraction extends Template {
                 eventHandlers: {
                     click: (ev) => {ev.stopPropagation()},
                     dragstart: (ev) => this.startedDrag = ev,
-                    drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
+                    drag: (ev) => this.endComponentDrag(this.startedDrag, ev, true),
                     dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                 }
             })
@@ -64,13 +64,13 @@ class StudioCanvasInteraction extends Template {
                     parent: this,
                     position: cmp.__position,
                     eventHandlers: {
-                        click: (ev, root) => {
+                        click: (ev) => {
                             ev.stopPropagation()
                             this.dispatchEvent('selectionchanged', {selection: [id]})
                         },
-                        dragstart: (ev, root) => root.startedDrag = ev,
-                        drag: (ev, root) => root.endComponentDrag(root.startedDrag, ev, true),
-                        dragend: (ev, root) => root.endComponentDrag(root.startedDrag, ev),
+                        dragstart: (ev) => this.startedDrag = ev,
+                        drag: (ev) => this.endComponentDrag(this.startedDrag, ev, true),
+                        dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
                     },
                 })
             )
