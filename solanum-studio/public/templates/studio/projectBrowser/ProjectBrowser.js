@@ -64,7 +64,7 @@ class ProjectBrowser extends Template {
     }
 
     openComponent(mod, cmp) {
-        this.__parent.openComponent(mod, cmp)
+        this.dispatchEvent("openComponent", {mod, cmp})
     }
 }
 

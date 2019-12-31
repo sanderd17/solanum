@@ -96,7 +96,9 @@ class StudioWindow extends Template {
             parent: this,
             position: {left: "0px", width: "300px", top: "20px", bottom: "50%"},
             properties: {},
-            eventHandlers: {},
+            eventHandlers: {
+                openComponent: (ev) => this.openComponent(ev.detail.mod, ev.detail.cmp)
+            },
         }),
         tagBrowser: new TagBrowser({
             parent: this,

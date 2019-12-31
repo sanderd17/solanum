@@ -221,7 +221,7 @@ class SelectionRect extends Template {
      * @param {DragEvent} endDragEv 
      */
     async endHandleDrag(directions, startDragEv, endDragEv, previewOnly=false) {
-        await this.__parent.endHandleDrag(directions, startDragEv, endDragEv, previewOnly)
+        this.dispatchEvent('endHandleDrag', {directions, startDragEv, endDragEv, previewOnly})
     }
 }
 

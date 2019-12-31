@@ -55,6 +55,7 @@ class StudioCanvasInteraction extends Template {
                     dragstart: (ev) => this.startedDrag = ev,
                     drag: (ev) => this.endComponentDrag(this.startedDrag, ev, true),
                     dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
+                    endHandleDrag: (ev) => this.endHandleDrag(ev.detail),
                 }
             })
         )
@@ -71,6 +72,7 @@ class StudioCanvasInteraction extends Template {
                         dragstart: (ev) => this.startedDrag = ev,
                         drag: (ev) => this.endComponentDrag(this.startedDrag, ev, true),
                         dragend: (ev) => this.endComponentDrag(this.startedDrag, ev),
+                        endHandleDrag: (ev) => this.endHandleDrag(ev.detail),
                     },
                 })
             )
@@ -237,7 +239,7 @@ class StudioCanvasInteraction extends Template {
      * @param {DragEvent} startDragEv 
      * @param {DragEvent} endDragEv 
      */
-    async endHandleDrag(directions, startDragEv, endDragEv, previewOnly) {
+    async endHandleDrag({directions, startDragEv, endDragEv, previewOnly}) {
         endDragEv.stopPropagation()
         let xDiff = endDragEv.x - startDragEv.x
         let yDiff = endDragEv.y - startDragEv.y

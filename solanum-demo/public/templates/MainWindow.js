@@ -27,7 +27,7 @@ class MainWindow extends Template {
         for (let i = 0; i < 3000; i++) {
             let child = new Motor({
                 parent: this,
-                position: {left: (size * Math.floor(i/50)) + 'px', width: size + 'px', top: (size * (i % 50)) + 'px', height: size + 'px'},
+                position: {left: (size * Math.floor(i/60)) + 'px', width: size + 'px', top: (size * (i % 60)) + 'px', height: size + 'px'},
                 properties: {
                     motor: `"M${i}"`,
                 },
