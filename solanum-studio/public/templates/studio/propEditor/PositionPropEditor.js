@@ -117,7 +117,7 @@ class PositionPropEditor extends Template {
     /**
      * 
      * @param {Textbox} child 
-     * @param {stirng} type 
+     * @param {string} type 
      */
     async setPositionValue(textBox, type) {
         for (let [childId, child] of Object.entries(this.properties.cmpSelection.value)) {
