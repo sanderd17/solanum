@@ -40,8 +40,9 @@ class StudioCanvasInteraction extends Template {
     /**
      * Reload this component when it has to represent the positions
      * of a different component
+     * @param {{Template}} children
      */
-    reloadSelectionRects() {
+    reloadSelectionRects(children) {
         for (let id in this.children) {
             this.removeChild(id)
         }
@@ -59,7 +60,7 @@ class StudioCanvasInteraction extends Template {
                 }
             })
         )
-        for (let [id, cmp] of Object.entries(this.__parent.children.preview.children)) {
+        for (let [id, cmp] of Object.entries(children)) {
             this.addChild(id, 
                 new SelectionRect({
                     parent: this,

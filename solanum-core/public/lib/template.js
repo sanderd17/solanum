@@ -42,8 +42,6 @@ class Template {
     constructor(p) {
         // store constructor args
         this.__cArgs = p
-        /** @type {Template?} */
-        this.__parent = p.parent
         /** @type {TemplatePosition} */
         this.__position = p.position || {}
         /** @type {Object<string,function>} */

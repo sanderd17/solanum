@@ -58,7 +58,7 @@ class StudioCanvas extends Template {
             }))
 
             this.children.preview.disableEventHandlers()
-            this.children.interaction.reloadSelectionRects()
+            this.children.interaction.reloadSelectionRects(this.children.preview.children)
         } catch (e) {
             console.error(`Error while loading component ${cls.name}:`)
             console.error(e)
