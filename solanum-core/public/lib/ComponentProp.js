@@ -169,8 +169,8 @@ class DomProp extends Prop {
     }
 
     get value() {
-        if (this.boundAttribute == 'value')
-            return this.boundNode.value
+        if (this.boundAttribute in this.boundNode)
+            return this.boundNode[this.boundAttribute]
         return this.boundNode.getAttribute(this.boundAttribute)
     }
 
@@ -180,7 +180,7 @@ class DomProp extends Prop {
             return
         if (newValue == null) {
             this.boundNode.removeAttribute(this.boundAttribute)
-        } else if (this.boundAttribute == 'value' || typeof newValue == 'boolean') {
+        } else if (this.boundAttribute in this.boundNode) {
             this.boundNode[this.boundAttribute] = newValue
         } else {
             this.boundNode.setAttribute(this.boundAttribute, newValue)

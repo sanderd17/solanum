@@ -3,20 +3,14 @@ import Prop from '/lib/ComponentProp.js'
 import StudioCanvasInteraction from '/templates/studio/canvas/StudioCanvasInteraction.js'
 
 class StudioCanvas extends Template {
-    static styles = [
-        {
-            declarations: {
-                'background-color': '#909090'
-            }
-        }
-    ]
+    static styles = {
+        'background-color': '#909090'
+    }
 
     static childStyles = {
-        preview: [{
-            declarations: {
-                'background-color': '#FFFFFF'
-            }
-        }]
+        preview: {
+            'background-color': '#FFFFFF'
+        }
     }
 
     constructor(...args) {

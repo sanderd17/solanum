@@ -10,7 +10,7 @@ class ResizeHandle extends Template {
 
     properties = {
         visible: new Prop("false", (newValue) => {
-            this.classList.toggle('visible', newValue)
+            this.children.icon.classList.toggle('visible', newValue)
             this.dom.setAttribute('draggable', newValue)
         })
     }
@@ -23,26 +23,16 @@ class ResizeHandle extends Template {
     }
 
     static childStyles = {
-        icon: [
-            {
-                declarations: {
-                    'visibility': 'hidden',
-                    'fill': '#000000',
-                }
+        icon: {
+            'visibility': 'hidden',
+            'fill': '#000000',
+            '.visible': {
+                'visibility': 'inherit'
             },
-            {
-                classes: ['visible'],
-                declarations: {
-                    'visibility': 'inherit'
-                }
+            ':hover': {
+                'fill': '#0000A0',
             },
-            {
-                states: ['hover'],
-                declarations: {
-                    'fill': '#0000A0',
-                }
-            }
-        ]
+        }
     }
 }
 

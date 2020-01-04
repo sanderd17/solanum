@@ -16,14 +16,15 @@ class SelectionRect extends Template {
             this.dom.setAttribute('draggable', newValue)
             this.dom.style['z-index'] = newValue ? 1 : 0 // raise selection rect when selected
             this.classList.toggle('selected', newValue)
+            this.children.rect.classList.toggle('selected', newValue)
 
             // Set all handles visible
             for (let childId in this.children) {
                 if (childId.endsWith('Handle')) {
                     this.children[childId].properties.visible.value = newValue
+                    this.children[childId].classList.toggle('selected', newValue)
                 }
             }
-            this.children.rect.properties['stroke-dasharray'].value = newValue ? 'none' : '1 4'
         })
     }
 
@@ -33,7 +34,6 @@ class SelectionRect extends Template {
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
             properties: {
                 'fill': '"#00000000"',
-                'stroke-dasharray': '"1 4"',
             },
             eventHandlers: {},
         }),
@@ -136,78 +136,60 @@ class SelectionRect extends Template {
     }
 
     static childStyles = {
-        rect: [
-            {
-                declarations: {
-                    'fill': 'none',
-                    'stroke-linecap': 'round',
-                }
+        rect: {
+            'fill': 'none',
+            'stroke-linecap': 'round',
+            '.selected': {
+                'stroke-dasharray': '1 4',
+                'stroke': '#00008080',
+                'stroke-width': '1px',
             },
-            {
-                classes: ['selected'],
-                declarations: {
-                    'stroke-dasharray': '1 4',
-                    'stroke': '#00008080',
-                    'stroke-width': '1px',
-                }
+            ':hover': {
+                'cursor': 'pointer',
+                'stroke': '#00008080',
+                'stroke-width': '1px',
             },
-            {
-                states: ['hover'],
-                declarations: {
-                    'cursor': 'pointer',
-                    'stroke': '#00008080',
-                    'stroke-width': '1px',
-                }
-            },
-        ],
-        topLeftHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        topLeftHandle: {
+            '.selected': {
                 'cursor': 'nwse-resize'
             }
-        }],
-        topHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        topHandle: {
+            '.selected': {
                 'cursor': 'ns-resize'
             }
-        }],
-        topRightHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        topRightHandle: {
+            '.selected': {
                 'cursor': 'nesw-resize'
             }
-        }],
-        rightHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        rightHandle: {
+            '.selected': {
                 'cursor': 'ew-resize'
             }
-        }],
-        bottomRightHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        bottomRightHandle: {
+            '.selected': {
                 'cursor': 'nwse-resize'
             }
-        }],
-        bottomHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        bottomHandle: {
+            '.selected': {
                 'cursor': 'ns-resize'
             }
-        }],
-        bottomLeftHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        bottomLeftHandle: {
+            '.selected': {
                 'cursor': 'nesw-resize'
             }
-        }],
-        leftHandle: [{
-            classes: ['selected'],
-            declarations: {
+        },
+        leftHandle: {
+            '.selected': {
                 'cursor': 'ew-resize'
             }
-        }],
+        },
     }
 
     startHandleDrag(ev) {

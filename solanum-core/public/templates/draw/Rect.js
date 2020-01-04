@@ -11,7 +11,7 @@ class Rect extends Template {
 
     properties = {
         fill: new DomProp(this.elNode, 'fill', "'#000000'"),
-        'stroke-dasharray': new DomProp(this.elNode, 'stroke-dasharray', '"None"'),
+        'stroke-dasharray': new DomProp(this.elNode, 'stroke-dasharray', 'null'),
     }
 
     constructor(...args) {

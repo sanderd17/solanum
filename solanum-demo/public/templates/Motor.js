@@ -14,30 +14,23 @@ class Motor extends Template {
     }
 
     static childStyles = {
-        icon: [
-            {
-                declarations: {
-                    'stroke': 'black',
-                    'stroke-width': '2px',
-                }
-            },
-            {
-                states: ['hover'],
-                declarations: {
-                    'cursor': 'pointer',
-                }
+        icon: {
+            'stroke': 'black',
+            'stroke-width': '2px',
+            ':hover': {
+                'cursor': 'pointer'
             }
-        ]
+        },
     }
 
     children = {
         icon: new Circle({
             parent: this,
             position: {
-                left: "4%",
-                width: "88%",
-                height: "90%",
-                top: "7%"
+                left: "3%",
+                width: "92%",
+                height: "88%",
+                top: "6%"
             },
             properties: {fill: 'Tag(`Motors/${Prop("motor")}`, "red")', prop2: '`Motors/${Prop("motor")}`'},
             eventHandlers: {
@@ -52,9 +45,9 @@ class Motor extends Template {
         icon2: new Circle({
             parent: this,
             position: {
-                left: "73%",
+                left: "73.99999984741213%",
                 width: "25%",
-                top: "74%",
+                top: "72.99999931335455%",
                 height: "25%"
             },
             properties: {fill: "\"blue\" "},

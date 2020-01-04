@@ -37,39 +37,35 @@ class Styling {
         this.addClassToDom(className)
     }
 
+    /**
+     * @param {string} selector 
+     * @param {Object} declarations 
+     */
+    entryToCss(selector, declarations) {
+        let declarationString = Object.entries(declarations)
+            .filter(([p,v]) => /^[a-z\-]/.test(p)) // get all properties that start with a lowercase letter or dash
+            .map(([p,v]) => `${p}: ${v}`)
+            .join(';\n\t')
+        let css = selector + '{\n\t' + declarationString + '\n}\n'
+
+        css += Object.entries(declarations)
+            .filter(([p,v]) => /^[\.\:]/.test(p)) // get sub-class selector or state
+            .map(([p, v]) => this.entryToCss(selector + p, v))
+            .join('\n\n')
+        return css
+    }
+
     getClassCss(className) {
-        const entryToCss = (entry, id) => {
-            let selector = `.${className}`
-            if (entry.classes) {
-                for (let className of entry.classes) {
-                    selector += `.${className}`
-                }
-            }
-            if (id != null) {
-                selector += ` .${id}`
-            }
-            if (entry.states) {
-                for (let state of entry.states) {
-                    selector += `:${state}`
-                }
-            }
-            let declarationString = Object.entries(entry.declarations).map(([p,v]) => `${p}: ${v}`).join(';\n\t')
-            return selector + '{\n\t' + declarationString + '\n}\n'
-        }
         let cls = this.styleMapping[className]
         let ownCss = ''
         if (cls.styles) {
-            for (let entry of cls.styles) {
-                ownCss += entryToCss(entry, null)
-            }
+            ownCss += this.entryToCss('.' + className, cls.styles)
         }
 
         let childCss = ''
         if (cls.childStyles) {
             for (let [id, definition] of Object.entries(cls.childStyles)) {
-                for (let entry of definition) {
-                    childCss += entryToCss(entry, id)
-                }
+                childCss += this.entryToCss('.' + className + ' .' + id, definition)
             }
         }
 
