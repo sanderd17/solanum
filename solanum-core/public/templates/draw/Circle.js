@@ -19,10 +19,6 @@ class Circle extends Template {
         fill: new DomProp(this.elNode, 'fill', "'#000000'"),
     }
 
-    get classList() {
-        return this.elNode.classList
-    }
-
     addEventHandlers() {
         if (this.__handleEvent == null) {
             this.__handleEvent = (ev) => {

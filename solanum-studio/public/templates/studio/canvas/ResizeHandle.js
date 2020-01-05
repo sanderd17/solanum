@@ -22,8 +22,8 @@ class ResizeHandle extends Template {
         })
     }
 
-    static childStyles = {
-        icon: {
+    static styles = {
+        '>.icon': {
             'visibility': 'hidden',
             'fill': '#000000',
             '.visible': {

@@ -16,13 +16,11 @@ class SelectionRect extends Template {
             this.dom.setAttribute('draggable', newValue)
             this.dom.style['z-index'] = newValue ? 1 : 0 // raise selection rect when selected
             this.classList.toggle('selected', newValue)
-            this.children.rect.classList.toggle('selected', newValue)
 
             // Set all handles visible
             for (let childId in this.children) {
                 if (childId.endsWith('Handle')) {
                     this.children[childId].properties.visible.value = newValue
-                    this.children[childId].classList.toggle('selected', newValue)
                 }
             }
         })
@@ -135,61 +133,47 @@ class SelectionRect extends Template {
         }),
     }
 
-    static childStyles = {
-        rect: {
+    static styles = {
+        '>.rect': {
             'fill': 'none',
             'stroke-linecap': 'round',
-            '.selected': {
-                'stroke-dasharray': '1 4',
-                'stroke': '#00008080',
-                'stroke-width': '1px',
-            },
             ':hover': {
                 'cursor': 'pointer',
                 'stroke': '#00008080',
                 'stroke-width': '1px',
             },
         },
-        topLeftHandle: {
-            '.selected': {
+        '.selected': {
+            '>.rect': {
+                'stroke-dasharray': '1 4',
+                'stroke': '#00008080',
+                'stroke-width': '1px',
+            },
+            '>.topLeftHandle': {
                 'cursor': 'nwse-resize'
-            }
-        },
-        topHandle: {
-            '.selected': {
+            },
+            '>.topHandle': {
                 'cursor': 'ns-resize'
-            }
-        },
-        topRightHandle: {
-            '.selected': {
+            },
+            '>.topRightHandle': {
                 'cursor': 'nesw-resize'
-            }
-        },
-        rightHandle: {
-            '.selected': {
+            },
+            '>.rightHandle': {
                 'cursor': 'ew-resize'
-            }
-        },
-        bottomRightHandle: {
-            '.selected': {
+            },
+            '>.bottomRightHandle': {
                 'cursor': 'nwse-resize'
-            }
-        },
-        bottomHandle: {
-            '.selected': {
+            },
+            '>.bottomHandle': {
                 'cursor': 'ns-resize'
-            }
-        },
-        bottomLeftHandle: {
-            '.selected': {
+            },
+            '>.bottomLeftHandle': {
                 'cursor': 'nesw-resize'
-            }
-        },
-        leftHandle: {
-            '.selected': {
+            },
+            '>.leftHandle': {
                 'cursor': 'ew-resize'
-            }
-        },
+            },
+        }
     }
 
     startHandleDrag(ev) {

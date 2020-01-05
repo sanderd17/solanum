@@ -34,7 +34,9 @@ class Template {
     children = {}
 
     /** @type {Object<string, Prop>} */
-    properties = {}
+    properties = {
+        hidden: new Prop('false', hidden => this.dom.style.visibility = hidden ? 'hidden' : '')
+    }
 
     /**
      * @param {TemplateConstructParams} p
@@ -184,14 +186,6 @@ class Template {
 
     get classList() {
         return this.dom.classList
-    }
-
-    /** @type {boolean} */
-    set hidden(hidden) {
-        this.dom.style.visibility = hidden ? 'hidden' : ''
-    }
-    get hidden() {
-        return this.dom.style.visibility == 'hidden'
     }
 }
 

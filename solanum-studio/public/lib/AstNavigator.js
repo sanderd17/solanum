@@ -80,6 +80,8 @@ export function getOwnPropertiesAst(ast) {
 
     let propertiesList = []
     for (let p of propertiesAst.value.properties) {
+        if (p.type == 'SpreadProperty')
+            continue
         if (p.type == "Property")
             propertiesList.push(p)
         else

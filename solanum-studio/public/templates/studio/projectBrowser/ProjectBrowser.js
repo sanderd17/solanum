@@ -1,13 +1,10 @@
 import Template from "/lib/template.js"
 
 class ProjectBrowser extends Template {
-    static styles = [
-        {
-            declarations: {
-                'overflow': 'scroll'
-            }
-        }
-    ]
+    static styles = {
+        'overflow': 'scroll'
+    }
+
     constructor(...args) {
         super(...args)
         this.loadComponents()

@@ -4,13 +4,10 @@ import StudioCanvasInteraction from '/templates/studio/canvas/StudioCanvasIntera
 
 class StudioCanvas extends Template {
     static styles = {
-        'background-color': '#909090'
-    }
-
-    static childStyles = {
-        preview: {
+        'background-color': '#909090',
+        '>.preview': {
             'background-color': '#FFFFFF'
-        }
+        },
     }
 
     constructor(...args) {

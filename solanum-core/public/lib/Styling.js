@@ -43,35 +43,24 @@ class Styling {
      */
     entryToCss(selector, declarations) {
         let declarationString = Object.entries(declarations)
-            .filter(([p,v]) => /^[a-z\-]/.test(p)) // get all properties that start with a lowercase letter or dash
+            .filter(([p,v]) => typeof v != 'object') // get all properties that start with a lowercase letter or dash
             .map(([p,v]) => `${p}: ${v}`)
             .join(';\n\t')
-        let css = selector + '{\n\t' + declarationString + '\n}\n'
+        let css = '\n' + selector + '{\n\t' + declarationString + '\n}'
 
         css += Object.entries(declarations)
-            .filter(([p,v]) => /^[\.\:]/.test(p)) // get sub-class selector or state
+            .filter(([p,v]) => typeof v == 'object') // get sub-class selector or state
             .map(([p, v]) => this.entryToCss(selector + p, v))
-            .join('\n\n')
+            .join('')
         return css
     }
 
     getClassCss(className) {
         let cls = this.styleMapping[className]
-        let ownCss = ''
         if (cls.styles) {
-            ownCss += this.entryToCss('.' + className, cls.styles)
+            return this.entryToCss('.' + className, cls.styles)
         }
-
-        let childCss = ''
-        if (cls.childStyles) {
-            for (let [id, definition] of Object.entries(cls.childStyles)) {
-                childCss += this.entryToCss('.' + className + ' .' + id, definition)
-            }
-        }
-
-        if (ownCss == '' && childCss == '')
-            return null
-        return ownCss + '\n' + childCss
+        return null
     }   
 
     addClassToDom(className) {
@@ -81,6 +70,7 @@ class Styling {
         let styleNode = this.styleNodes[className]
         if (!styleNode) {
             styleNode = document.createElement('style')
+            styleNode.id = className
             document.head.appendChild(styleNode)
             this.styleNodes[className] = styleNode
 
