@@ -44,7 +44,7 @@ class Styling {
     entryToCss(selector, declarations) {
         let declarationString = Object.entries(declarations)
             .filter(([p,v]) => typeof v != 'object') // get all properties that start with a lowercase letter or dash
-            .map(([p,v]) => `${p}: ${v}`)
+            .map(([p,v]) => `${p.replace(/([A-Z])/g, (g) => '-' + g.toLowerCase()) }: ${v}`)
             .join(';\n\t')
         let css = '\n' + selector + '{\n\t' + declarationString + '\n}'
 

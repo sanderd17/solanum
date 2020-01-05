@@ -16,8 +16,8 @@ class Motor extends Template {
 
     static styles = {
         '>.icon': {
-            'stroke': 'black',
-            'stroke-width': '2px',
+            stroke: 'black',
+            strokeWidth: '2px',
             ':hover': {
                 'cursor': 'pointer'
             }
