@@ -78,6 +78,7 @@ class ChildPropEditor extends Template {
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
+                style: { background: "'#FFFFFF'" },
                 eventHandlers: { change: (ev, child) => this.setPropBinding(name, child) },
             }))
             this.children['binding_' + i].properties.value.value = binding
@@ -90,6 +91,16 @@ class ChildPropEditor extends Template {
      */
     setPropBinding(propName, textBox) {
         let value = textBox.properties.value.value
+        try {
+            let f = new Function(value)
+        } catch (e) {
+            console.error(e)
+            textBox.style.background.value = '#FF8080'
+            return
+        }
+
+        textBox.style.background.value = '#FFFFFF'
+
         for (let childId in this.properties.cmpSelection.value) {
             let childInstance = this.properties.cmpSelection.value[childId]
             childInstance.properties[propName].setBinding(value)

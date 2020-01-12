@@ -1,7 +1,7 @@
 import style from './Styling.js'
 import ts from './TagSet.js'
 import Prop from './ComponentProp.js'
-import {DomProp} from './ComponentProp.js'
+import {DomProp, StyleProp} from './ComponentProp.js'
 
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
@@ -20,6 +20,7 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
   * @property {Template} parent
   * @property {TemplatePosition} position
   * @property {{string}} properties
+  * @property {{string}} style
   * @property {Object<string, (Event, Template) => void>} eventHandlers
   */
 
@@ -49,6 +50,8 @@ class Template {
         /** @type {Object<string,function>} */
         this.eventHandlers = p.eventHandlers || {}
         this.eventHandlersEnabled = true
+        this.style = {}
+
 
         this.__className = style.registerClassStyle(this.constructor)
     }
@@ -80,6 +83,21 @@ class Template {
                 }
                 prop.ctx.properties[dependency].addChangeListener(() => {
                     prop.recalcValue()
+                })
+            }
+        }
+
+        for (let [name, styleBinding] of Object.entries(this.__cArgs.style || {})) {
+            let styleProp = new StyleProp(this.dom, name, styleBinding)
+            styleProp.setContext(this.__cArgs.parent)
+            this.style[name] = styleProp
+
+            for (let dependency of styleProp.subscribedProps) {
+                if (!styleProp.ctx.properties[dependency]) {
+                    throw new Error(`Property ${dependency} is required by style prop ${name}, but is not found`)
+                }
+                styleProp.ctx.properties[dependency].addChangeListener(() => {
+                    styleProp.recalcValue()
                 })
             }
         }

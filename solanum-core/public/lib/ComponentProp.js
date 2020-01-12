@@ -191,5 +191,31 @@ class DomProp extends Prop {
     }
 }
 
+class StyleProp extends Prop {
+    /**
+     * Constructs a dynamic property
+     * @param {HTMLElement} boundNode
+     * @param {string} boundKey
+     * @param {string} expression A valid JS expression
+     * @param {TagSet=} tsMock mock for unit testing purposes
+     */
+    constructor(boundNode, boundKey, expression, tsMock) {
+        super(expression, null, tsMock)
+        this.boundNode = boundNode
+        this.boundKey = boundKey
+    }
+
+    get value() {
+        return this.boundNode.style[this.boundKey]
+    }
+
+    set value(newValue) {
+        let oldValue = this.value
+        if (newValue === oldValue)
+            return
+        this.boundNode.style[this.boundKey] = newValue
+    }
+}
+
 export default Prop
-export {DomProp}
+export {DomProp, StyleProp}
