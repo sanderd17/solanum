@@ -30,7 +30,7 @@ class LayoutBar extends Template {
             },
             eventHandlers: {
                 click: (ev, child) => {
-                    this.properties.positionUnit.value = child.properteis.selected.value ? 'px' : '%'
+                    this.prop.positionUnit = child.prop.selected ? 'px' : '%'
                 }
             },
         }),

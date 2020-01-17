@@ -20,7 +20,7 @@ class SelectionRect extends Template {
             // Set all handles visible
             for (let childId in this.children) {
                 if (childId.endsWith('Handle')) {
-                    this.children[childId].properties.visible.value = newValue
+                    this.children[childId].prop.visible = newValue
                 }
             }
         })

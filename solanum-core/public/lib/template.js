@@ -17,26 +17,62 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
  /**
   * @typedef {Object} TemplateConstructParams
-  * @property {Template} parent
-  * @property {TemplatePosition} position
-  * @property {{string}} properties
-  * @property {{string}} style
-  * @property {Object<string, (Event, Template) => void>} eventHandlers
+  * @property {Template} parent Link to the parent, null for the top template
+  * @property {TemplatePosition} position position of the element
+  * @property {{string}} properties custom property bindings
+  * @property {{string}} style custom style bindings
+  * @property {Object<string, (Event, Template) => void>} eventHandlers event handling functions
   */
 
 /**
  * Template
  */
 class Template {
+    /** Reference to the dom node in the document */
     dom = document.createElement('div')
 
 
-    /** @type {Object<string,Template>} */
+    /** @type {Object<string,Template>} Child templates of this template*/
     children = {}
 
     /** @type {Object<string, Prop>} */
-    properties = {
-        hidden: new Prop('false', hidden => this.dom.style.visibility = hidden ? 'hidden' : '')
+    properties = {}
+
+    /** @type {Object} */
+    prop = ((cmp) => new Proxy({}, {
+        // get the property value
+        get(target, key) {
+            if (typeof key == 'symbol')
+                return undefined
+            if (key in cmp.properties) {
+                return cmp.properties[key].value
+            }
+            return undefined
+        },
+        set(target, key, value) {
+            if (typeof key == 'symbol')
+                return false // symbols not allowed as property keys
+            if (key in cmp.properties) {
+                cmp.properties[key].value = value
+                return true
+            }
+            return false
+        }
+    }))(this)
+
+    /**
+     * bound properties
+     * @type {Object<string,StyleProp>}
+     */
+    styleBindings = {}
+
+
+    /**
+     * Custom styling for this node
+     * @type {CSSStyleDeclaration}
+     */
+    get style() {
+        return this.dom.style
     }
 
     /**
@@ -50,8 +86,6 @@ class Template {
         /** @type {Object<string,function>} */
         this.eventHandlers = p.eventHandlers || {}
         this.eventHandlersEnabled = true
-        this.style = {}
-
 
         this.__className = style.registerClassStyle(this.constructor)
     }
@@ -67,6 +101,7 @@ class Template {
             this.dom.appendChild(child.dom)
         }
         this.addEventHandlers()
+
 
         // Handle the props defined on the inheriting class and coming from the constructor
         for (let [name, prop] of Object.entries(this.properties)) {
@@ -90,7 +125,7 @@ class Template {
         for (let [name, styleBinding] of Object.entries(this.__cArgs.style || {})) {
             let styleProp = new StyleProp(this.dom, name, styleBinding)
             styleProp.setContext(this.__cArgs.parent)
-            this.style[name] = styleProp
+            this.styleBindings[name] = styleProp
 
             for (let dependency of styleProp.subscribedProps) {
                 if (!styleProp.ctx.properties[dependency]) {
@@ -124,13 +159,11 @@ class Template {
      */
     setPosition(newPosition) {
         this.__position = newPosition
-        if (this.dom) {
-            for (let key of positionKeys) {
-                if (key in newPosition) {
-                    this.dom.style[key] = newPosition[key]
-                } else {
-                    this.dom.style[key] = ''
-                }
+        for (let key of positionKeys) {
+            if (key in newPosition) {
+                this.style[key] = newPosition[key]
+            } else {
+                this.style[key] = ''
             }
         }
     }
@@ -175,7 +208,6 @@ class Template {
         }
     }
 
-    // TODO create dom as class field, use it in Dom-bound properties
     createDomNode() {
         this.classList.add(this.__className)
         this.classList.add('solanum')

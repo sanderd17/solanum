@@ -28,7 +28,7 @@ class StudioWindow extends Template {
                 return
 
             if (Object.keys(newSelection).length == 1) {
-                let ast = this.properties.componentInfo.value.ast
+                let ast = this.prop.componentInfo.ast
                 let childId = Object.keys(newSelection)[0]
                 let childKeyLoc = getChildAst(ast, childId).key.loc
                 console.log(childKeyLoc)
@@ -56,15 +56,15 @@ class StudioWindow extends Template {
             eventHandlers: {
                 click: (ev) => {
                     // click in the grey area, remove selection
-                    this.properties.cmpSelection.value = {}
-                    //this.children.canvas.children.interaction.properties.selection.value = []
+                    this.prop.cmpSelection = {}
+                    //this.children.canvas.children.interaction.prop.selection = []
                 },
                 selectionchanged: (ev) => {
                     let cmpSelection = {}
                     for (let id of ev.detail.selection) {
                         cmpSelection[id] = this.children.canvas.children.preview.children[id]
                     }
-                    this.properties.cmpSelection.value = cmpSelection
+                    this.prop.cmpSelection = cmpSelection
                 },
                 childpositionchanged: async (ev) => {
                     if (ev.detail.previewOnly)
@@ -153,7 +153,7 @@ class StudioWindow extends Template {
                         oldCode: ev.detail.oldCode,
                         newCode: ev.detail.newCode,
                     })
-                    this.children.canvas.setComponent(this.properties.moduleName.value, this.properties.componentName.value)
+                    this.children.canvas.setComponent(this.prop.moduleName, this.prop.componentName)
                     this.children.propEditor.cmpSelection = []
                     // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 }
@@ -164,22 +164,22 @@ class StudioWindow extends Template {
     positionUnit = 'px'
 
     async openComponent(moduleName, componentName) {
-        this.properties.moduleName.value = moduleName
-        this.properties.componentName.value = componentName
+        this.prop.moduleName = moduleName
+        this.prop.componentName = componentName
 
         this.cnt++
         let mdl = await import(`/API/Studio/openComponent?module=${moduleName}&component=${componentName}&v=${this.cnt}`)
 
         // cls is the class of the template that we'er going to edit
-        this.properties.componentClass.value = mdl.default
-        this.properties.componentInstance.value = this.children.canvas.setComponent(this.properties.componentClass.value)
+        this.prop.componentClass = mdl.default
+        this.prop.componentInstance = this.children.canvas.setComponent(this.prop.componentClass)
         
         let code = mdl.code
         // TODO turn into valid property, and pass as property binding
         this.children.codeEditor.code = code
 
         let ast = mdl.ast
-        this.properties.componentInfo.value = {ast, code}
+        this.prop.componentInfo = {ast, code}
     }
 
     setCode(newCode) {
@@ -193,8 +193,8 @@ class StudioWindow extends Template {
      */
     async callStudioApi(apiFunction, args) {
         let body = {
-            module: this.properties.moduleName.value,
-            component: this.properties.componentName.value,
+            module: this.prop.moduleName,
+            component: this.prop.componentName,
             ...args
         }
         let result = await fetch(`/API/studio/${apiFunction}`, {

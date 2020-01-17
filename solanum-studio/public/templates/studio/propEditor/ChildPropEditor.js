@@ -31,13 +31,13 @@ class ChildPropEditor extends Template {
         }
 
         // get the configured properties for the selected children
-        if (!this.properties.componentInfo.value)
+        if (!this.prop.componentInfo)
             return // No component loaded
 
-        let ast = this.properties.componentInfo.value.ast
+        let ast = this.prop.componentInfo.ast
 
         let childPropList = []
-        let cmpSelection = this.properties.cmpSelection.value
+        let cmpSelection = this.prop.cmpSelection
         for (let childId of Object.keys(cmpSelection)) {
             let propBinding = {}
             let propsAst = getChildProps(ast, childId)
@@ -70,10 +70,10 @@ class ChildPropEditor extends Template {
             this.addChild('key_' + i, new Textbox({
                 parent: this,
                 position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
-                properties: { value: "''" },
+                properties: { value: "''", datalist: "['test1','test2']" }, // TODO get all possible property names into the datalist
                 eventHandlers: { change: (ev, child) => this.setKeyName(name, child) },
             }))
-            this.children['key_' + i].properties.value.value = name
+            this.children['key_' + i].prop.value = name
             this.addChild('binding_' + i, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
@@ -81,7 +81,7 @@ class ChildPropEditor extends Template {
                 style: { background: "'#FFFFFF'" },
                 eventHandlers: { change: (ev, child) => this.setPropBinding(name, child) },
             }))
-            this.children['binding_' + i].properties.value.value = binding
+            this.children['binding_' + i].prop.value = binding
         }
     }
 
@@ -90,19 +90,19 @@ class ChildPropEditor extends Template {
      * @param {Textbox} textBox 
      */
     setPropBinding(propName, textBox) {
-        let value = textBox.properties.value.value
+        let value = textBox.prop.value
         try {
             let f = new Function(value)
         } catch (e) {
             console.error(e)
-            textBox.style.background.value = '#FF8080'
+            textBox.style.background = '#FF8080'
             return
         }
 
-        textBox.style.background.value = '#FFFFFF'
+        textBox.style.background = '#FFFFFF'
 
-        for (let childId in this.properties.cmpSelection.value) {
-            let childInstance = this.properties.cmpSelection.value[childId]
+        for (let childId in this.prop.cmpSelection) {
+            let childInstance = this.prop.cmpSelection[childId]
             childInstance.properties[propName].setBinding(value)
             childInstance.properties[propName].recalcValue()
             this.dispatchEvent('childPropChanged', {childId, propName, value})

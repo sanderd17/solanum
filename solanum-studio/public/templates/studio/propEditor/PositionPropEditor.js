@@ -120,9 +120,9 @@ class PositionPropEditor extends Template {
      * @param {string} type 
      */
     async setPositionValue(textBox, type) {
-        for (let [childId, child] of Object.entries(this.properties.cmpSelection.value)) {
+        for (let [childId, child] of Object.entries(this.prop.cmpSelection)) {
             let newPosition = {...child.__position}
-            newPosition[type] = textBox.properties.value.value
+            newPosition[type] = textBox.prop.value
             this.dispatchEvent('positionpropchanged', {childId, newPosition})
         }
     }
@@ -131,7 +131,7 @@ class PositionPropEditor extends Template {
         for (let p of ['left', 'right', 'width', 'top', 'bottom', 'height']) {
             let enabled = false
             let text = null
-            for (let cmp of Object.values(this.properties.cmpSelection.value)) {
+            for (let cmp of Object.values(this.prop.cmpSelection)) {
                 if (p in cmp.__position) {
                     if (text == null || text == cmp.__position[p]) {
                         text = cmp.__position[p]
@@ -143,10 +143,10 @@ class PositionPropEditor extends Template {
                     enabled = false
                 }
             }
-            this.children[p + 'Value'].properties.disabled.value = !enabled
-            this.children[p + 'Value'].properties.value.value = text || ''
-            this.children[p + 'Active'].properties.checked.value = enabled
-            this.children[p + 'Active'].properties.disabled.value = !enabled
+            this.children[p + 'Value'].prop.disabled = !enabled
+            this.children[p + 'Value'].prop.value = text || ''
+            this.children[p + 'Active'].prop.checked = enabled
+            this.children[p + 'Active'].prop.disabled = !enabled
         }
     }
 }

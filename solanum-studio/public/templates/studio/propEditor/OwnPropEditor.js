@@ -34,7 +34,7 @@ class OwnPropEditor extends Template {
             this.removeChild(c)
         }
 
-        let info = this.properties.componentInfo.value
+        let info = this.prop.componentInfo
         if (info == null)
             return
         let ast = info.ast
@@ -66,14 +66,14 @@ class OwnPropEditor extends Template {
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, child) => this.setKeyName(name, child) },
             }))
-            this.children['key_' + i].properties.value.value = name
+            this.children['key_' + i].prop.value = name
             this.addChild('binding_' + i, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, child) => this.setPropValue(name, child) },
             }))
-            this.children['binding_' + i].properties.value.value = binding
+            this.children['binding_' + i].prop.value = binding
         }
     }
 
@@ -90,7 +90,7 @@ class OwnPropEditor extends Template {
      * @param {Textbox} textBox 
      */
     setPropValue(propertyName, textBox) {
-        let newBinding = textBox.properties.value.value
+        let newBinding = textBox.prop.value
 
         console.log(propertyName, newBinding)
         this.dispatchEvent('ownPropChanged', {propertyName, newBinding})

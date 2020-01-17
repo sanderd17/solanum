@@ -23,11 +23,11 @@ class Icon extends Template {
     }
 
     resetUrl() {
-        if (this.properties.iconPath.value == '' || this.properties.iconSet.value == '')
+        if (this.prop.iconPath == '' || this.prop.iconSet == '')
             return
         this.dom.setAttribute(
             "src", 
-            `/icons?iconSet=${encodeURIComponent(this.properties.iconSet.value)}&iconPath=${encodeURIComponent(this.properties.iconPath.value)}`
+            `/icons?iconSet=${encodeURIComponent(this.prop.iconSet)}&iconPath=${encodeURIComponent(this.prop.iconPath)}`
         )
     }
 

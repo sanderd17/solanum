@@ -9,7 +9,7 @@ class StudioCanvasInteraction extends Template {
         super(...args)
         /** @type Array<string> */
 
-        this.eventHandlers.click = (ev) => {ev.stopPropagation(); this.properties.selection.value = []}
+        this.eventHandlers.click = (ev) => {ev.stopPropagation(); this.prop.selection = []}
         this.eventHandlers.dragstart = (ev) => this.startedDrag = ev
         this.eventHandlers.dragend = (ev) => this.endSelectionDrag(this.startedDrag, ev)
         this.eventHandlers.drop = (ev) => this.newComponentDrop(ev)
@@ -134,16 +134,16 @@ class StudioCanvasInteraction extends Template {
     }
 
     async removeSelectedChildren(ev) {
-        this.dispatchEvent('deletedchildren', {childIds: this.properties.selection.value})
+        this.dispatchEvent('deletedchildren', {childIds: this.prop.selection})
         this.reloadSelectionRects()
     }
 
     updateSelectionDraw() {
-        let selection = this.properties.selection.value
+        let selection = this.prop.selection
         if (selection.length <= 1) {
             // single or no child selected, use their own selection rects
             for (let [id, child] of Object.entries(this.children)) {
-                child.properties.selected.value = selection.includes(id)
+                child.prop.selected = selection.includes(id)
             }
         } else {
             // Set selection to multiple elements
@@ -166,9 +166,9 @@ class StudioCanvasInteraction extends Template {
             })
             for (let [id, child] of Object.entries(this.children)) {
                 if (id == '#multiSelectRect') {
-                    child.properties.selected.value = true
+                    child.prop.selected = true
                 } else {
-                    child.properties.selected.value = false
+                    child.prop.selected= false
                 }
             }
         }
@@ -183,7 +183,7 @@ class StudioCanvasInteraction extends Template {
         let xDiff = endDrag.x - startDrag.x
         let yDiff = endDrag.y - startDrag.y
 
-        for (let id of this.properties.selection.value) {
+        for (let id of this.prop.selection) {
             let child = this.children[id]
             let newPosition = {}
             for (let [k, v] of Object.entries(child.__position)) {
@@ -245,7 +245,7 @@ class StudioCanvasInteraction extends Template {
         let xDiff = endDragEv.x - startDragEv.x
         let yDiff = endDragEv.y - startDragEv.y
 
-        for (let childId of this.properties.selection.value) {
+        for (let childId of this.prop.selection) {
             let child = this.children[childId]
             let newPosition = {}
             for (let [k, v] of Object.entries(child.__position)) {
