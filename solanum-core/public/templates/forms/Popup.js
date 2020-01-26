@@ -82,8 +82,6 @@ class Popup extends Template {
         titleBar.appendChild(closeButton)
 
         document.body.appendChild(this.dom)
-
-        this.setTemplate(this.__cArgs.templatePath, this.__cArgs.props)
     }
 
     /**

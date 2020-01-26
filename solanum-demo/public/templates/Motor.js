@@ -4,8 +4,8 @@ import solanum from '/lib/solanum.js'
 import Prop from '/lib/ComponentProp.js'
 
 class Motor extends Template {
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 

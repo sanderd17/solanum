@@ -17,8 +17,8 @@ class Textbox extends Template {
         datalist: new Prop('null', (datalist) => {this.setDatalist(datalist)})
     }
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 

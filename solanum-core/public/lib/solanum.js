@@ -6,14 +6,14 @@ const solanum = {}
 /**
  * 
  * @param {string} templatePath 
- * @param {object} props 
+ * @param {object} properties 
  */
-solanum.openPopup = async function(templatePath, props) {
+solanum.openPopup = async function(templatePath, properties) {
     const popup = new Popup({
         parent: null,
-        templatePath,
-        props
+        properties
     })
+    popup.setTemplate(templatePath, properties)
 }
 
 export default solanum
