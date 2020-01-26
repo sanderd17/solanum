@@ -156,7 +156,7 @@ class Prop {
 class DomProp extends Prop {
     /**
      * Constructs a dynamic property
-     * @param {HTMLElement} boundNode
+     * @param {HTMLElement|SVGElement} boundNode
      * @param {string} boundAttribute
      * @param {string} expression A valid JS expression
      * @param {((newValue: any, oldValue: any) => void)=} changeListener
@@ -194,7 +194,7 @@ class DomProp extends Prop {
 class StyleProp extends Prop {
     /**
      * Constructs a dynamic property
-     * @param {HTMLElement} boundNode
+     * @param {HTMLElement|SVGElement} boundNode
      * @param {string} boundKey
      * @param {string} expression A valid JS expression
      * @param {TagSet=} tsMock mock for unit testing purposes

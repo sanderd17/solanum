@@ -28,7 +28,10 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
  * Template
  */
 class Template {
-    /** Reference to the dom node in the document */
+    /** 
+     * @type {HTMLElement|SVGElement}
+     * Reference to the dom node in the document
+     */
     dom = document.createElement('div')
 
 

@@ -12,8 +12,8 @@ class Icon extends Template {
         iconPath: new Prop("''"),
     }
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         for (let name of ['iconSet', 'iconPath']) {
             this.properties[name].addChangeListener((newValue) => {
                 this.resetUrl()

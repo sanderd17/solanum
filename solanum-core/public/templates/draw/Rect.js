@@ -14,8 +14,8 @@ class Rect extends Template {
         'stroke-dasharray': new DomProp(this.elNode, 'stroke-dasharray', 'null'),
     }
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 

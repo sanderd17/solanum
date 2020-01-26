@@ -26,8 +26,8 @@ class Checkbox extends Template {
         disabled: new DomProp(this.innerNode, 'disabled', "false")
     }
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 

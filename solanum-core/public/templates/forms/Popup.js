@@ -3,8 +3,8 @@ import Template from '/lib/template.js'
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 
 class Popup extends Template {
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 
@@ -32,8 +32,6 @@ class Popup extends Template {
     }
 
     createDomNode() {
-        this.dom = document.createElement('div')
-
         this.currentPos = [100, 100] // TODO depend on current pos
 
         this.classList.add(this.__className)
@@ -58,7 +56,7 @@ class Popup extends Template {
         titleBar.style.color = 'white'
         titleBar.style.position = 'absolute'
         // popup draggin
-        titleBar.setAttribute('draggable', true)
+        titleBar.draggable = true
         titleBar.addEventListener('dragstart', (ev) => {
             ev.stopPropagation
             this.startDragTitleBar(ev)

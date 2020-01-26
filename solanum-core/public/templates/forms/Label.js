@@ -6,8 +6,9 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Label extends Template {
     static defaultSize = [100, 20]
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
+        /** @type {HTMLDivElement} */ this.dom
         this.properties.text.addChangeListener((newValue) => {
             this.dom.innerText = newValue
         })

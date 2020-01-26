@@ -6,8 +6,8 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 class Button extends Template {
     static defaultSize = [100, 20]
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.properties.text.addChangeListener((newValue) => {
             this.__innerButton.innerText = newValue
         })
