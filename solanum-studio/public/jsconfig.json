@@ -1,6 +1,9 @@
 {
     "extends": "../../jsconfig.json",
-    "include": [
-        "../../solanum-core/public"
-    ]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "/*": ["../../solanum-core/public/*", "./*"]
+        }
+    }
 }

@@ -10,8 +10,8 @@ import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 import {getChildAst} from '/lib/AstNavigator.js'
 
 class StudioWindow extends Template {
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
         this.cnt = 1
     }

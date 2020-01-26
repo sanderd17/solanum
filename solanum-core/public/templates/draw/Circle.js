@@ -10,8 +10,8 @@ class Circle extends Template {
     dom = document.createElementNS(ns, "svg")
     elNode = document.createElementNS(ns, "circle")
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 
