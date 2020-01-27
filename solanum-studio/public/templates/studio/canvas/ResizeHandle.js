@@ -3,8 +3,8 @@ import Prop from '/lib/ComponentProp.js'
 import Rect from '/templates/draw/Rect.js'
 
 class ResizeHandle extends Template {
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 

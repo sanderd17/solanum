@@ -6,8 +6,8 @@ import ts from '/lib/TagSet.js'
 import Icon from "/templates/draw/Icon.js"
 
 class MainWindow extends Template {
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
 
         this.addChild('label', new Label({

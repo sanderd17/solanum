@@ -19,15 +19,17 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
   * @typedef {Object} TemplateConstructParams
   * @property {Template} parent Link to the parent, null for the top template
   * @property {TemplatePosition} position position of the element
-  * @property {{string}} properties custom property bindings
-  * @property {{string}} style custom style bindings
-  * @property {Object<string, (Event, Template) => void>} eventHandlers event handling functions
+  * @property {{string}} [properties] custom property bindings
+  * @property {{string}} [style] custom style bindings
+  * @property {Object<string, (Event, Template) => void>} [eventHandlers] event handling functions
   */
 
 /**
  * Template
  */
 class Template {
+    static defaultSize = [100, 100]
+
     /** 
      * @type {HTMLElement|SVGElement}
      * Reference to the dom node in the document

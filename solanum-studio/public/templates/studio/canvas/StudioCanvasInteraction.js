@@ -5,9 +5,10 @@ import SelectionRect from "/templates/studio/canvas/SelectionRect.js"
 
 class StudioCanvasInteraction extends Template {
 
-    constructor(...args) {
-        super(...args)
-        /** @type Array<string> */
+    constructor(args) {
+        super(args)
+        /** @type {HTMLDivElement} */
+        this.dom
 
         this.eventHandlers.click = (ev) => {ev.stopPropagation(); this.prop.selection = []}
         this.eventHandlers.dragstart = (ev) => this.startedDrag = ev
@@ -21,8 +22,8 @@ class StudioCanvasInteraction extends Template {
                 this.removeSelectedChildren(ev)
         }
         this.addEventHandlers()
-        this.dom.setAttribute('draggable', true) // draggable is required to allow selection drag
-        this.dom.setAttribute('tabindex', 0) // Tabindex is required to register keydown events
+        this.dom.draggable = true // draggable is required to allow selection drag
+        this.dom.setAttribute('tabindex', '0') // Tabindex is required to register keydown events
         this.init()
     }
 
@@ -135,7 +136,7 @@ class StudioCanvasInteraction extends Template {
 
     async removeSelectedChildren(ev) {
         this.dispatchEvent('deletedchildren', {childIds: this.prop.selection})
-        this.reloadSelectionRects()
+        this.reloadSelectionRects() // FIXME doesn't work anymore since removing the parent link; should message the parent about removed children
     }
 
     updateSelectionDraw() {

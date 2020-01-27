@@ -10,8 +10,8 @@ class StudioCanvas extends Template {
         },
     }
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 
@@ -19,14 +19,36 @@ class StudioCanvas extends Template {
         cmpSelection: new Prop('{}')
     }
 
-    /**
+    children = {
+        interaction: new StudioCanvasInteraction({
+            parent: this,
+            position: {left: '10px', width: '100px', top:'10px', height: '100px'},
+            properties: {selection: "Object.keys(Prop('cmpSelection') || {})"},
+            eventHandlers: {
+                childpositionchanged: (ev) => this.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
+                droppedchild: (ev) => this.addNewChild(ev.detail.childId, {
+                    type: ev.detail.type,
+                    position: ev.detail.position,
+                }),
+                deletedchildren: (ev) => this.removeChildren(ev.detail.childIds)
+            },
+            style: {
+                zIndex: '10' // make sure it's in front of the preview
+            }
+        })
+    }
+
+    /*
      * @param {new({}) => *} cls Class to construct the preview
+     */
+    /**
+     * 
+     * @param {typeof Template} cls 
      */
     setComponent(cls) {
         // load the module from the Studio API
         // cnt ensures a reload by using a different URL
         this.removeChild('preview')
-        this.removeChild('interaction')
         try {
             let [width, height] = cls.defaultSize
             this.addChild('preview', new cls({
@@ -34,21 +56,9 @@ class StudioCanvas extends Template {
                 position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
             }))
 
-            this.addChild('interaction', new StudioCanvasInteraction({
-                parent: this,
-                position: {left: '10px', width: width + 'px', top:'10px', height: height + 'px'},
-                properties: {elWidth: `'${width}'`, elHeight: `'${height}'`, selection: "Object.keys(Prop('cmpSelection'))"},
-                eventHandlers: {
-                    childpositionchanged: (ev) => this.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
-                    droppedchild: (ev) => this.addNewChild(ev.detail.childId, {
-                        type: ev.detail.type,
-                        position: ev.detail.position,
-                    }),
-                    deletedchildren: (ev) => this.removeChildren(ev.detail.childIds)
-                },
-            }))
-
             this.children.preview.disableEventHandlers()
+
+            this.children.interaction.setPosition({left: '10px', width: width + 'px', top:'10px', height: height + 'px'})
             this.children.interaction.reloadSelectionRects(this.children.preview.children)
         } catch (e) {
             console.error(`Error while loading component ${cls.name}:`)
@@ -66,7 +76,7 @@ class StudioCanvas extends Template {
     addNewChild(id, childDefinition) {
         this.children.preview.addChild(id, childDefinition)
 
-        this.children.interaction.reloadSelectionRects()
+        this.children.interaction.reloadSelectionRects(this.children.preview.children)
     }
 
     setChildPosition(id, newPosition, previewOnly=false) {

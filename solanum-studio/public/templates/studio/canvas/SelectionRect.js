@@ -6,8 +6,8 @@ import ResizeHandle from '/templates/studio/canvas/ResizeHandle.js'
 
 
 class SelectionRect extends Template {
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 
