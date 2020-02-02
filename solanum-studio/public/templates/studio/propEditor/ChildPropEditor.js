@@ -15,14 +15,12 @@ class ChildPropEditor extends Template {
         componentInfo: new Prop('null'),
     }
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 
     static defaultSize = [300, 150]
-    children  = {
-    }
     
     propNames = []
     resetSelectionProps() {

@@ -20,8 +20,8 @@ const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
   * @property {Template} parent Link to the parent, null for the top template
   * @property {TemplatePosition} position position of the element
   * @property {{string}} [properties] custom property bindings
-  * @property {{string}} [style] custom style bindings
-  * @property {Object<string, (Event, Template) => void>} [eventHandlers] event handling functions
+  * @property {CSSStyleDeclaration} [style] custom style bindings
+  * @property {Object<string, (ev: Event, tmp: Template) => void>} [eventHandlers] event handling functions
   */
 
 /**
@@ -31,8 +31,8 @@ class Template {
     static defaultSize = [100, 100]
 
     /** 
-     * @type {HTMLElement|SVGElement}
      * Reference to the dom node in the document
+     * @type {HTMLElement|SVGElement}
      */
     dom = document.createElement('div')
 
@@ -74,10 +74,16 @@ class Template {
 
     /**
      * Custom styling for this node
-     * @type {CSSStyleDeclaration}
      */
     get style() {
         return this.dom.style
+    }
+
+    /**
+     * Access to the dom class list
+     */
+    get classList() {
+        return this.dom.classList
     }
 
     /**
@@ -102,8 +108,10 @@ class Template {
     init() {
         this.createDomNode()
         for (let [id, child] of Object.entries(this.children)) {
-            child.classList.add(id)
-            this.dom.appendChild(child.dom)
+            if (child) {
+                child.classList.add(id)
+                this.dom.appendChild(child.dom)
+            }
         }
         this.addEventHandlers()
 
@@ -174,9 +182,33 @@ class Template {
     }
 
     /**
+     * @type {number} Height of the object
+     * This will return the calculated height of the object
+     * When setting the height, it will override the heigt deduced from the position
+     */
+    get height() {
+        return this.dom.clientHeight
+    }
+    set height(height) {
+        this.style.height = height + 'px'
+    }
+
+    /**
+     * @type {number} Width of the object
+     * This will return the calculated width of the object
+     * When setting the width, it will override the heigt deduced from the position
+     */
+    get width() {
+        return this.dom.clientWidth
+    }
+    set width(width) {
+        this.style.width = width + 'px'
+    }
+
+    /**
      * Send a CustomEvent from this dom node
      * @param {string} eventName Custom event name
-     * @param {*} detail Extra data to pass on the event
+     * @param {*} [detail] Extra data to pass on the event
      */
     dispatchEvent(eventName, detail) {
         this.dom.dispatchEvent(new CustomEvent(eventName, {bubbles: true, detail}))
@@ -235,12 +267,6 @@ class Template {
         }
         this.children = null
         this.properties = null
-    }
-
-    // QUICK ACCESS PROPS //
-
-    get classList() {
-        return this.dom.classList
     }
 }
 

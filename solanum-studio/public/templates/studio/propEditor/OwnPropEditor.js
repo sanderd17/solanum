@@ -24,9 +24,6 @@ class OwnPropEditor extends Template {
 
     static defaultSize = [300, 150]
 
-    children  = {
-    }
-
     /** @type {Property[]} */
     propertiesAst = null
     loadModuleProperties() {
