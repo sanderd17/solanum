@@ -6,9 +6,11 @@ const TITLE_HEIGHT = 15
 
 class CollapsibleTemplate extends Template {
     properties = {
-        collapsed: new Prop('false', (newValue) => {
-            if (this.children.subTemplate)
-                this.children.subTemplate.style.visibility = newValue ? 'hidden' : 'visible'
+        collapsed: new Prop('false', (collapsed) => {
+            if (!this.children.subTemplate) {
+                return // TODO throw error?
+            }
+            this.children.subTemplate.style.visibility = collapsed? 'hidden' : 'visible'
             this.dispatchEvent('heightChanged')
         }),
         title: new Prop("Title"),
@@ -44,13 +46,16 @@ class CollapsibleTemplate extends Template {
      * @param {Template} tmp
      */
     setTemplate(tmp) {
-        let height = tmp.height 
         tmp.style.top = TITLE_HEIGHT + 'px'
         tmp.style.visibility = this.prop.collapsed ? 'hidden' : 'visible'
         this.addChild('subTemplate', tmp)
     }
 
-    getRequestedHeight() {
+    /**
+     * Override the height property to depend on the child heights
+     * Height is not settable
+     */
+    get height() {
         let height = this.children.titleBar.height
         if (!this.prop.collapsed) {
             height += this.children.subTemplate.height

@@ -44,7 +44,7 @@ class CollapseList extends Template {
     repositionChildren() {
         let currentPos = 0
         for (let child of this.orderedChildren) {
-            let height = child.getRequestedHeight()
+            let height = child.height
             child.setPosition({left: '0px', right: '0px', top: currentPos + 'px', height: height + 'px'})
             currentPos += height
         }

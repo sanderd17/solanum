@@ -151,6 +151,10 @@ class Template {
         }
     }
 
+    /**
+     * @param {string} id
+     * @param {Template} child
+     */
     addChild(id, child) {
         this.children[id] = child
         child.classList.add(id)
