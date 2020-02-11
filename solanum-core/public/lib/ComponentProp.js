@@ -77,7 +77,12 @@ class Prop {
      * @param {string} expression Syntactically valid JS expression
      */
     setBinding(expression) {
-        this.bindingFunction = Function(`return ({Prop, Tag}) => (${expression})`)()
+        try {
+            this.bindingFunction = Function(`return ({Prop, Tag}) => (${expression})`)()
+        } catch (e) {
+            console.error(`Error parsing expression as function:\n` , expression)
+            throw e
+        }
     }
 
     /**

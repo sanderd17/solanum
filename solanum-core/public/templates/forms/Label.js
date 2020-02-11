@@ -16,11 +16,10 @@ class Label extends Template {
     }
 
     properties = {
-        text: new Prop("'Label'")
-    }
-
-    createDomNode() {
-        super.createDomNode()
+        text: new Prop("'Label'"),
+        draggable: new Prop('false', (newValue) => {
+            this.dom.draggable = newValue
+        })
     }
 }
 

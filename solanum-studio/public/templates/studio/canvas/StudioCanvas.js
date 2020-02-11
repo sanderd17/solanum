@@ -16,14 +16,18 @@ class StudioCanvas extends Template {
     }
 
     properties = {
-        cmpSelection: new Prop('{}')
+        cmpSelection: new Prop('{}'),
+        positionUnit: new Prop("'px'")
     }
 
     children = {
         interaction: new StudioCanvasInteraction({
             parent: this,
             position: {left: '10px', width: '100px', top:'10px', height: '100px'},
-            properties: {selection: "Object.keys(Prop('cmpSelection') || {})"},
+            properties: {
+                selection: "Object.keys(Prop('cmpSelection') || {})",
+                positionUnit: "Prop('positionUnit')"
+            },
             eventHandlers: {
                 childpositionchanged: (ev) => this.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
                 droppedchild: (ev) => this.addNewChild(ev.detail.childId, {
@@ -74,7 +78,11 @@ class StudioCanvas extends Template {
     }
 
     addNewChild(id, childDefinition) {
-        this.children.preview.addChild(id, childDefinition)
+        let child = new childDefinition.type({
+            parent: this.children.preview,
+            position: childDefinition.position
+        })
+        this.children.preview.addChild(id, child)
 
         this.children.interaction.reloadSelectionRects(this.children.preview.children)
     }

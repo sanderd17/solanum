@@ -25,6 +25,20 @@ class Motor extends Template {
     }
 
     children = {
+        dldfjasd: new Circle({
+            parent: this,
+
+            position: {
+                left: "5px",
+                top: "15px",
+                width: "20px",
+                height: "20px"
+            },
+
+            properties: {},
+            eventHandlers: {}
+        }),
+
         icon: new Circle({
             parent: this,
             position: {
@@ -53,6 +67,20 @@ class Motor extends Template {
             },
             properties: {fill: "\"blue\" "},
             eventHandlers: { }
+        }),
+
+        oisdj: new Circle({
+            parent: this,
+
+            position: {
+                left: "7px",
+                top: "68px",
+                width: "20px",
+                height: "20px"
+            },
+
+            properties: {},
+            eventHandlers: {}
         })
     }
 

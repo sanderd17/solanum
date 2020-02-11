@@ -34,6 +34,10 @@ class Solanum {
         this.app.use('/scripts', 
             express.static(path.join(__dirname, '../node_modules')))
 
+        // add font directories
+        this.app.use('/fonts',
+            express.static(path.join(__dirname, './node_modules/material-design-icons/iconfont')))
+
         this.app.get('/icons', (req, res) => {
             iconManager.getIcon(req, res)
         })

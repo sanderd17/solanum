@@ -35,7 +35,8 @@ class StudioWindow extends Template {
 
                 this.children.codeEditor.highlightLoc(childKeyLoc)
             }
-        })
+        }),
+        positionUnit: new Prop("'px'")
     }
 
     children = {
@@ -52,6 +53,7 @@ class StudioWindow extends Template {
             position: {left: "300px", right: "300px", top: "20px", bottom: "0px"},
             properties: {
                 cmpSelection: "Prop('cmpSelection')",
+                positionUnit: "Prop('positionUnit')",
             },
             eventHandlers: {
                 click: (ev) => {
@@ -160,8 +162,6 @@ class StudioWindow extends Template {
             },
         }),
     }
-
-    positionUnit = 'px'
 
     async openComponent(moduleName, componentName) {
         this.prop.moduleName = moduleName

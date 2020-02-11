@@ -36,6 +36,7 @@ class StudioCanvasInteraction extends Template {
             }
             this.updateSelectionDraw()
         }),
+        positionUnit: new Prop("'px'")
     }
 
     /**
@@ -107,9 +108,7 @@ class StudioCanvasInteraction extends Template {
         const moduleNewCmp = await import(childPath)
         const clsNewCmp = moduleNewCmp.default
 
-
-
-        let unit = this.parent.parent.positionUnit
+        let unit = this.prop.positionUnit
         let [width, height] = clsNewCmp.defaultSize
         if (unit == '%') {
             let {width: parentWidth, height: parentHeight} = this.dom.getBoundingClientRect()
