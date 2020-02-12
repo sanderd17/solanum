@@ -133,9 +133,8 @@ class StudioCanvasInteraction extends Template {
         })
     }
 
-    async removeSelectedChildren(ev) {
+    removeSelectedChildren(ev) {
         this.dispatchEvent('deletedchildren', {childIds: this.prop.selection})
-        this.reloadSelectionRects() // FIXME doesn't work anymore since removing the parent link; should message the parent about removed children
     }
 
     updateSelectionDraw() {

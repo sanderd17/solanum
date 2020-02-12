@@ -104,6 +104,7 @@ class StudioCanvas extends Template {
         for (let id of childIds) {
             this.children.preview.removeChild(id)
         }
+        this.children.interaction.reloadSelectionRects(this.children.preview.children)
     }
 }
 

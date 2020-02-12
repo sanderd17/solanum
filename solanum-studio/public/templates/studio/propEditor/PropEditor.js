@@ -12,14 +12,16 @@ class PropEditor extends Template {
         super(args)
         this.init()
 
+        this.positionPropEditor = new PositionPropEditor({
+                parent: this,
+                position: {left: '0px', right: '0px', top: '0px', height: '150px'},
+                properties: {cmpSelection: "Prop('cmpSelection')"},
+            })
+
         this.children.collapsibleTemplates.setTemplates([
             {
                 title: 'Position',
-                template: new PositionPropEditor({
-                    parent: this,
-                    position: {left: '0px', right: '0px', top: '0px', height: '150px'},
-                    properties: {cmpSelection: "Prop('cmpSelection')"},
-                }),
+                template: this.positionPropEditor,
                 collapsed: false
             },
             {
@@ -71,7 +73,7 @@ class PropEditor extends Template {
     }
 
     recalcPositionParameters() {
-        this.children.positionPropEditor.recalcPositionParameters()
+        this.positionPropEditor.recalcPositionParameters()
     }
 }
 
