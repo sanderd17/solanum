@@ -76,8 +76,8 @@ class StudioWindow extends Template {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
-                    this.setCode(newCode)
-                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+                    this.openComponent(this.prop.moduleName, this.prop.componentName)
+                    // TODO optimize loading changes
                 },
                 droppedchild: async (ev) => {
                     let newCode = await this.callStudioApi('addChildComponent', {
@@ -86,11 +86,13 @@ class StudioWindow extends Template {
                         childPath: ev.detail.childPath,
                         position: ev.detail.position,
                     })
-                    this.setCode(newCode)
-                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+                    this.openComponent(this.prop.moduleName, this.prop.componentName)
+                    // TODO optimize loading changes
                 },
                 deletedchildren: async (ev) => {
                     let newCode = await this.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
+                    this.openComponent(this.prop.moduleName, this.prop.componentName)
+                    // TODO optimize loading changes
                 },
             },
         }),
@@ -123,8 +125,8 @@ class StudioWindow extends Template {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
-                    this.setCode(newCode)
-                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+                    this.openComponent(this.prop.moduleName, this.prop.componentName)
+                    // TODO optimize loading changes
                 },
                 ownPropChanged: async (ev) => {
                     this.children.canvas.setOwnPropBinding(ev.detail.propertyName, ev.detail.newBinding)
@@ -132,7 +134,8 @@ class StudioWindow extends Template {
                         propertyName: ev.detail.propertyName,
                         newBinding: ev.detail.newBinding,
                     })
-                    this.setCode(newCode)
+                    this.openComponent(this.prop.moduleName, this.prop.componentName)
+                    // TODO optimize loading changes
                 },
                 childPropChanged: async (ev) => {
                     let newCode = await this.callStudioApi('setChildProp', {
@@ -140,8 +143,8 @@ class StudioWindow extends Template {
                         propName: ev.detail.propName,
                         value: ev.detail.value,
                     })
-                    this.setCode(newCode)
-                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
+                    this.openComponent(this.prop.moduleName, this.prop.componentName)
+                    // TODO optimize loading changes
                 },
             },
         }),
@@ -155,9 +158,9 @@ class StudioWindow extends Template {
                         oldCode: ev.detail.oldCode,
                         newCode: ev.detail.newCode,
                     })
-                    this.children.canvas.setComponent(this.prop.moduleName, this.prop.componentName)
+                    this.openComponent(this.prop.moduleName, this.prop.componentName)
+                    // TODO optimize loading changes
                     this.children.propEditor.cmpSelection = []
-                    // TODO do something with the return value. Can be used to distinguish between updates coming from this instance and external updates
                 }
             },
         }),
@@ -180,10 +183,6 @@ class StudioWindow extends Template {
 
         let ast = mdl.ast
         this.prop.componentInfo = {ast, code}
-    }
-
-    setCode(newCode) {
-        this.children.codeEditor.code = newCode
     }
 
     /**
