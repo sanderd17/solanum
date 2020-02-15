@@ -24,7 +24,7 @@ Syntax validation should be done before saving the code, in case of a syntax err
 class StudioAPI {
     /**
      * Construct the editor interface of the app
-     * @param {Express.Application} app 
+     * @param {import('express').Application} app 
      * @param {*} config JSON configuration
      */
     constructor(app, config) {
@@ -38,8 +38,8 @@ class StudioAPI {
     /**
      * Finds all files from the config.editableDirs
      * and returns the paths.
-     * @param {Express.Request} req
-     * @param {Express.Response} res
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async getComponentPaths(req, res) {
         let filesPerModule = await this.componentStore.getComponentPaths()
@@ -48,8 +48,8 @@ class StudioAPI {
 
     /**
      * Get the component file to load into the editor
-     * @param {Request} req 
-     * @param {Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async openComponent(req, res) {
         let cmpFile = this.componentStore.getFile(req.query.module, req.query.component)
@@ -67,9 +67,8 @@ class StudioAPI {
     // Component modifications
 
     /**
-     * 
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async setComponentCode(req, res) {
         const body = req.body
@@ -82,8 +81,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async setOwnPropBinding(req, res) {
         const body = req.body
@@ -100,8 +99,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async addChildComponent(req, res) {
         const body = req.body
@@ -118,8 +117,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async removeChildComponent(req, res) {
         const body = req.body
@@ -137,8 +136,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async removeChildComponents(req, res) {
         const body = req.body
@@ -158,8 +157,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async setChildPosition(req, res) {
         const body = req.body
@@ -177,8 +176,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async setChildProp(req, res) {
         const body = req.body
@@ -196,8 +195,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async setChildEventHandler(req, res) {
         const body = req.body
@@ -215,8 +214,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async removeChildEventHandler(req, res) {
         const body = req.body
@@ -234,8 +233,8 @@ class StudioAPI {
     }
 
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async setDefaultProp(req, res) {
         const body = req.body
@@ -252,8 +251,8 @@ class StudioAPI {
         res.send(newCmpCode)
     }
     /**
-     * @param {Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     async removeDefaultProp(req, res) {
         const body = req.body
