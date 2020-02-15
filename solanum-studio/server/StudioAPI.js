@@ -64,10 +64,9 @@ class StudioAPI {
     // Component modifications
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async setComponentCode(req) {
-        const body = req.body
+    async setComponentCode(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
         // TODO perform some diffing?
@@ -77,10 +76,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async setOwnPropBinding(req) {
-        const body = req.body
+    async setOwnPropBinding(body) {
         console.log(body.propertyName, body.newBinding)
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
@@ -94,10 +92,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async addChildComponent(req) {
-        const body = req.body
+    async addChildComponent(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -111,11 +108,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async removeChildComponent(req) {
-        const body = req.body
-
+    async removeChildComponent(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -129,11 +124,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async removeChildComponents(req) {
-        const body = req.body
-
+    async removeChildComponents(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -149,11 +142,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async setChildPosition(req) {
-        const body = req.body
-
+    async setChildPosition(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -167,11 +158,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async setChildProp(req) {
-        const body = req.body
-
+    async setChildProp(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -185,11 +174,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async setChildEventHandler(req) {
-        const body = req.body
-
+    async setChildEventHandler(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -203,11 +190,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async removeChildEventHandler(req) {
-        const body = req.body
-
+    async removeChildEventHandler(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -221,11 +206,9 @@ class StudioAPI {
     }
 
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async setDefaultProp(req) {
-        const body = req.body
-
+    async setDefaultProp(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
@@ -238,11 +221,9 @@ class StudioAPI {
         return newCmpCode
     }
     /**
-     * @param {import('express').Request} req 
+     * @param {*} body
      */
-    async removeDefaultProp(req) {
-        const body = req.body
-
+    async removeDefaultProp(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 

@@ -31,7 +31,7 @@ class Motor extends Template {
                 left: "7%",
                 width: "88%",
                 height: "88%",
-                top: "7%"
+                top: "6%"
             },
             properties: {fill: "Tag(`Motors/${Prop(\"motor\")}`, \"red\")", prop2: '`Motors/${Prop("motor")}`'},
             eventHandlers: {
