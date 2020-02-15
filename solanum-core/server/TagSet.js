@@ -8,99 +8,106 @@ import Tag from './Tag.js'
  * @property {any} defaultValue
  */
 
-function TagSet(config) {
-    this.activeSendTimer = null
-    this.changedTags = new Set()
-    /** @type {Map<string, Tag>} */
-    this.tags = new Map()
-    this.subscribedTags = new WeakMap()// link clients to their subscribed tags
-}
+class TagSet {
 
-TagSet.prototype.initMessageHandlers = function () {
-    // Let clients set their subscribed tags
-    ClientConnection.on(
-        'TagSet:setSubscriptions',
-        /**
-         * On subscription, store the subscribed tags,
-         * and resend all tags now subscribed to
-         * @param {ClientConnection} client
-         * @param {string[]} subscriptionList
-         */
-        (client, subscriptionList) => {
-            this.subscribedTags.set(client, subscriptionList)
+    /**
+     * @param {import('express').Application} app The express application
+     * @param {*} config  The full config file
+     */
+    constructor(app, config) {
+        this.activeSendTimer = null
+        this.changedTags = new Set()
+        /** @type {Map<string, Tag>} */
+        this.tags = new Map()
+        this.subscribedTags = new WeakMap()// link clients to their subscribed tags
+    }
 
-            let tags = new Set(subscriptionList)
-            this.sendTags(new Set([client]), tags)
-        }
-    )
-    ClientConnection.on(
-        'TagSet:writeTag',
-        /**
-         * @param {ClientConnection} client
-         * @param {{path: string, value: object}} data
-         */
-        (client, data) => {
-            let tag = this.tags.get(data.path)
-            if (!tag) {
-                console.error(`Could not find tag with path ${data.path}`)
-                return
+    initMessageHandlers() {
+        // Let clients set their subscribed tags
+        ClientConnection.on(
+            'TagSet:setSubscriptions',
+            /**
+             * On subscription, store the subscribed tags,
+             * and resend all tags now subscribed to
+             * @param {ClientConnection} client
+             * @param {string[]} subscriptionList
+             */
+            (client, subscriptionList) => {
+                this.subscribedTags.set(client, subscriptionList)
+
+                let tags = new Set(subscriptionList)
+                this.sendTags(new Set([client]), tags)
             }
-            tag.write(data.value)
+        )
+        ClientConnection.on(
+            'TagSet:writeTag',
+            /**
+             * @param {ClientConnection} client
+             * @param {{path: string, value: object}} data
+             */
+            (client, data) => {
+                let tag = this.tags.get(data.path)
+                if (!tag) {
+                    console.error(`Could not find tag with path ${data.path}`)
+                    return
+                }
+                tag.write(data.value)
+            }
+        )
+    }
+
+    /**
+     * @param {object} tagList 
+     */
+    setTags(tagList) {
+        for (let tagpath in tagList) {
+            this.addTag(tagpath, tagList[tagpath])
         }
-    )
-}
-
-/**
- * @param {object} tagList 
- */
-TagSet.prototype.setTags = function (tagList) {
-    for (let tagpath in tagList) {
-        this.addTag(tagpath, tagList[tagpath])
     }
-}
 
-/**
- * 
- * @param {string} tagpath 
- * @param {TagDescription} tagDescr 
- */
-TagSet.prototype.addTag = function (tagpath, tagDescr) {
-    let tagType = tagDescr.type
-    let tag = new tagType(this, tagpath, tagDescr)
-    this.tags.set(tagpath, tag)
-    tag.init()
-}
+    /**
+     * 
+     * @param {string} tagpath 
+     * @param {TagDescription} tagDescr 
+     */
+    addTag(tagpath, tagDescr) {
+        let tagType = tagDescr.type
+        let tag = new tagType(this, tagpath, tagDescr)
+        this.tags.set(tagpath, tag)
+        tag.init()
+    }
 
-/**
- * @param {Tag} tag 
- */
-TagSet.prototype.triggerChange = function (tag) {
-    this.changedTags.add(tag.tagPath)
-    if (!this.activeSendTimer) {
-        // notify clients at the end of the eval loop
-        this.activeSendTimer = setTimeout(() => this.sendTags(), 0)
+    /**
+     * @param {Tag} tag 
+     */
+    triggerChange(tag) {
+        this.changedTags.add(tag.tagPath)
+        if (!this.activeSendTimer) {
+            // notify clients at the end of the eval loop
+            this.activeSendTimer = setTimeout(() => this.sendTags(), 0)
+        }
     }
-}
 
-/**
- * 
- * @param {Set<ClientConnection>} clients 
- * @param {Set<string>} tagPaths 
- */
-TagSet.prototype.sendTags = function (clients = clientList, tagPaths = null) {
-    let specificPaths = tagPaths || this.changedTags // default to changed tags
-    this.activeSendTimer = 0
-    /** @type {Object<string,{value: any}>} */
-    let tagsToSend = {}
-    for (let path of specificPaths) {
-        let tag = this.tags.get(path)
-        tagsToSend[path] = { "value": tag ? tag.value : null }
+    /**
+     * 
+     * @param {Set<ClientConnection>} clients 
+     * @param {Set<string>} tagPaths 
+     */
+    sendTags(clients = clientList, tagPaths = null) {
+        let specificPaths = tagPaths || this.changedTags // default to changed tags
+        this.activeSendTimer = 0
+        /** @type {Object<string,{value: any}>} */
+        let tagsToSend = {}
+        for (let path of specificPaths) {
+            let tag = this.tags.get(path)
+            tagsToSend[path] = { "value": tag ? tag.value : null }
+        }
+        for (let client of clients) {
+            client.sendMessage({ 'TagSet:updateTags': tagsToSend })//.then(() => {})
+        }
+        if (!tagPaths)
+            this.changedTags.clear()
     }
-    for (let client of clients) {
-        client.sendMessage({ 'TagSet:updateTags': tagsToSend })//.then(() => {})
-    }
-    if (!tagPaths)
-        this.changedTags.clear()
 }
 
 // Should only be instanced by the main Solanum class

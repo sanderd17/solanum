@@ -35,8 +35,14 @@ class SolanumStudio {
         this.app.get('/API/Studio/:call',
             checkValidRequest, 
             async (req, res) => {
+                let call = req.params.call
+                if (call == 'openComponent') {
+                    await studio.openComponent(req, res)
+                    return
+                }
                 try{
-                    await studio[req.params.call](req, res)
+                    let result = await studio[call](req, res)
+                    res.send(result)
                 } catch(e) {
                     res.status(500).send(`Error happened processing ${req.params.call}: ${e}` + '\n' + e.stack)
                 }
@@ -46,7 +52,8 @@ class SolanumStudio {
             checkValidRequest, 
             async (req, res) => {
                 try{
-                    await studio[req.params.call](req, res)
+                    let result = await studio[req.params.call](req, res)
+                    res.send(result)
                 } catch(e) {
                     res.status(500).send(`Error happened processing ${req.params.call}: ${e}` + '\n' + e.stack)
                 }

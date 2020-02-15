@@ -2,7 +2,7 @@ import MemoryTag from 'solanum-core/server/MemoryTag.js'
 import OpcUaTag from 'solanum-opcua/server/OpcUaTag.js'
 
 /**
- * @type {Object<string, import ('../../solanum-core/server/TagSet.js.js').TagDescription>}
+ * @type {Object<string, import ('../../solanum-core/server/TagSet.js').TagDescription>}
  */
 let tags = {
     'testMemoryTag': {

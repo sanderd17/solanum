@@ -38,12 +38,9 @@ class StudioAPI {
     /**
      * Finds all files from the config.editableDirs
      * and returns the paths.
-     * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async getComponentPaths(req, res) {
-        let filesPerModule = await this.componentStore.getComponentPaths()
-        res.send(filesPerModule)
+    async getComponentPaths() {
+        return await this.componentStore.getComponentPaths()
     }
 
     /**
@@ -68,23 +65,21 @@ class StudioAPI {
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async setComponentCode(req, res) {
+    async setComponentCode(req) {
         const body = req.body
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
         // TODO perform some diffing?
         let newCmpCode = body.newCode
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async setOwnPropBinding(req, res) {
+    async setOwnPropBinding(req) {
         const body = req.body
         console.log(body.propertyName, body.newBinding)
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -95,14 +90,13 @@ class StudioAPI {
         cmpMod.setOwnPropBinding(body.propertyName, body.newBinding)
         let newCmpCode = cmpMod.print()
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async addChildComponent(req, res) {
+    async addChildComponent(req) {
         const body = req.body
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
@@ -113,14 +107,13 @@ class StudioAPI {
 
         let newCmpCode = cmpMod.print()
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async removeChildComponent(req, res) {
+    async removeChildComponent(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -132,14 +125,13 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async removeChildComponents(req, res) {
+    async removeChildComponents(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -153,14 +145,13 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async setChildPosition(req, res) {
+    async setChildPosition(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -172,14 +163,13 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async setChildProp(req, res) {
+    async setChildProp(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -191,14 +181,13 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async setChildEventHandler(req, res) {
+    async setChildEventHandler(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -210,14 +199,13 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async removeChildEventHandler(req, res) {
+    async removeChildEventHandler(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -229,14 +217,13 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async setDefaultProp(req, res) {
+    async setDefaultProp(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -248,13 +235,12 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
     /**
      * @param {import('express').Request} req 
-     * @param {import('express').Response} res 
      */
-    async removeDefaultProp(req, res) {
+    async removeDefaultProp(req) {
         const body = req.body
 
         let cmpFile = this.componentStore.getFile(body.module, body.component)
@@ -266,7 +252,7 @@ class StudioAPI {
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)
-        res.send(newCmpCode)
+        return newCmpCode
     }
 }
 

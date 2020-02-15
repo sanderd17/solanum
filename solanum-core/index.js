@@ -15,10 +15,14 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 class Solanum {
+    /**
+     * @param {express.Application} app 
+     * @param {*} config 
+     */
     constructor(app, config) {
         this.app = app
         this.config = config
-        this.ts = new TagSet(config)
+        this.ts = new TagSet(app, config)
         this.ts.initMessageHandlers()
 
         this.modules = []
