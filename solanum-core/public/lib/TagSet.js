@@ -90,9 +90,10 @@ TagSet.prototype.getCachedTagValue = function(tagPath) {
  * @param {string} tagPath
  */
 TagSet.prototype.removePropSubscription = function(componentProp, tagPath) {
-    if (!this.subscriptionLookup.has(tagPath)) 
+    if (!this.subscriptionLookup.has(tagPath)) {
         console.error(`Cannot remove tagpath ${tagPath} from tag subscriptions. Was it already removed?`)
         return
+    }
 
     let subscribedElements = this.subscriptionLookup.get(tagPath)
     subscribedElements.delete(componentProp)
