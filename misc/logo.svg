@@ -1,14 +1,24 @@
 <svg id="logo" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 200 200" preserveAspectRatio="xMidyMid meet">
   <!-- nodejs green  background -->
-  <circle cx="100" cy="100" r="100"  fill="#8CC84B"/>
+  <!--<circle cx="100" cy="100" r="100"  fill="#8CC84B"/>-->
+  <rect x='0' y='0' width='200' height='200' rx='20' ry='20' fill='#8cc84b'/>
   <!-- grey leafs as circle arcs-->
+  <g transform='scale(0.9)translate(10,15)'>
   <path d="M 4.89 69.1
     A 117.56 117.56 0 0 0 195.11 69.1
     A 117.56 117.56 0 0 0 41.22 180.9
     A 117.56 117.56 0 0 0 100 0
     A 117.56 117.56 0 0 0 158.78 180.9
-    A 117.56 117.56 0 0 0 4.89 69.1"
+    A 117.56 117.56 0 0 0 4.89 69.1 Z"
+    fill="none" stroke='#A0A0A0' stroke-width='9'/>
+  <path  d="M 4.89 69.1
+    A 117.56 117.56 0 0 0 195.11 69.1
+    A 117.56 117.56 0 0 0 41.22 180.9
+    A 117.56 117.56 0 0 0 100 0
+    A 117.56 117.56 0 0 0 158.78 180.9
+    A 117.56 117.56 0 0 0 4.89 69.1 Z"
     fill="#F7F7F7"/>
   <!-- ES/JS yellow  centre -->
   <circle cx="100" cy="100" r="20.9" fill="#E9D44D"/>
+  </g>
 </svg>
