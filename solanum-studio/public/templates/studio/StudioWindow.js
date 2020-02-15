@@ -59,7 +59,6 @@ class StudioWindow extends Template {
                 click: (ev) => {
                     // click in the grey area, remove selection
                     this.prop.cmpSelection = {}
-                    //this.children.canvas.children.interaction.prop.selection = []
                 },
                 selectionchanged: (ev) => {
                     let cmpSelection = {}
@@ -151,16 +150,18 @@ class StudioWindow extends Template {
         codeEditor: new CodeEditor({
             parent: this,
             position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
-            properties: {},
+            properties: {
+                componentInfo: "Prop('componentInfo')",
+            },
             eventHandlers: {
                 codeContentChanged: async (ev) => {
                     let newCode = await this.callStudioApi('setComponentCode', {
                         oldCode: ev.detail.oldCode,
                         newCode: ev.detail.newCode,
                     })
+                    this.prop.cmpSelection = {}
                     this.openComponent(this.prop.moduleName, this.prop.componentName)
                     // TODO optimize loading changes
-                    this.children.propEditor.cmpSelection = []
                 }
             },
         }),

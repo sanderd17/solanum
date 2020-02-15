@@ -22,19 +22,20 @@ class CodeEditor extends Template {
 
     static defaultSize = [200, 50]
 
-    constructor(...args) {
-		super(...args)
+    constructor(args) {
+		super(args)
 		this.createDomNode()
 		// create editor after loading dom
 		setTimeout(() => this.createMonacoEditor())
 	}
 	
-	properties = {
-		code: new Prop('null', (newValue) => {
-			if (newValue)
-				// TODO bring complete custom field setter into property
-				this.code = newValue
-		})
+    properties = {
+		componentInfo: new Prop("{ast: '', code: ''}", (newValue) => {
+			// TODO bring complete custom field setter into property
+			this.code = newValue.code
+			console.log("Set code")
+			console.log(this.code)
+		}),
 	}
 
 	eventTimerId = null

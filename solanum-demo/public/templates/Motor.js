@@ -53,7 +53,7 @@ class Motor extends Template {
             },
             properties: {fill: "\"blue\" "},
             eventHandlers: { }
-        })
+        }),
     }
 
     static defaultSize = [100, 100]
