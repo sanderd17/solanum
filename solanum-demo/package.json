@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "node-opcua": "^2.1.9",
+    "node-opcua": "^2.4.4",
     "solanum-core": "file:../solanum-core",
     "solanum-opcua": "file:../solanum-opcua",
     "solanum-studio": "file:../solanum-studio"
