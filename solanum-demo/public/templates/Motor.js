@@ -28,12 +28,12 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "7%",
+                left: "5%",
                 width: "88%",
                 height: "88%",
-                top: "6%"
+                top: "10%"
             },
-            properties: {fill: "Tag(`Motors/${Prop(\"motor\")}`, \"red\")", prop2: '`Motors/${Prop("motor")}`'},
+            properties: {fill: "Tag(`Motors/${Prop(\"motor\")}`, \"blue\")", prop2: '`Motors/${Prop("motor")}`'},
             eventHandlers: {
                 /**@param {Event} ev */ 
                 click: (ev) => {
@@ -46,14 +46,14 @@ class Motor extends Template {
         icon2: new Circle({
             parent: this,
             position: {
-                left: "73%",
+                left: "70%",
                 width: "25%",
-                top: "67%",
+                top: "70%",
                 height: "25%"
             },
             properties: {fill: "\"blue\" "},
             eventHandlers: { }
-        }),
+        })
     }
 
     static defaultSize = [100, 100]

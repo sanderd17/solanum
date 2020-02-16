@@ -24,17 +24,16 @@ class CodeEditor extends Template {
 
     constructor(args) {
 		super(args)
-		this.createDomNode()
+		this.init()
 		// create editor after loading dom
 		setTimeout(() => this.createMonacoEditor())
 	}
 	
     properties = {
 		componentInfo: new Prop("{ast: '', code: ''}", (newValue) => {
-			// TODO bring complete custom field setter into property
+			if (newValue == null)
+				return
 			this.code = newValue.code
-			console.log("Set code")
-			console.log(this.code)
 		}),
 	}
 
@@ -52,7 +51,9 @@ class CodeEditor extends Template {
 		} else {
 			this.eventOldCode = oldCode
 		}
+		console.log("Send message in 2s")
 		this.eventTimerId = setTimeout(() => {
+			console.log("Send message")
 			this.dispatchEvent('codeContentChanged', {newCode, oldCode: this.eventOldCode})
 			this.eventTimerId = null
 		}, 2000)

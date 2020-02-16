@@ -1,5 +1,11 @@
 import ComponentStore from './ComponentStore.js'
-import ComponentModifier from './ComponentModifier.js';
+import ComponentModifier from './ComponentModifier.js'
+
+import jsonschema from 'jsonschema'
+import * as schema from './StudioApiSchema.js'
+
+import ClientList from '../../solanum-core/server/ClientList.js' // TODO fix loading from related modules; Use a module loader with URL support?
+import ClientConnection from '../../solanum-core/server/ClientConnection.js'
 
 /*
 Studio should provide methods to set different parts of the code:
@@ -33,6 +39,14 @@ class StudioAPI {
         /** Object representing locked files */
         this.locks = {}
         this.componentStore = new ComponentStore(config)
+
+        let handleClientMessage = (client, data, messageName) => this.handleClientMessage(client, data, messageName)
+        ClientConnection.on('studio/setComponentCode', handleClientMessage)
+        ClientConnection.on('studio/setChildPosition', handleClientMessage)
+        ClientConnection.on('studio/addChildComponent', handleClientMessage)
+        ClientConnection.on('studio/removeChildComponents', handleClientMessage)
+        ClientConnection.on('studio/setOwnPropBinding', handleClientMessage)
+        ClientConnection.on('studio/setChildProp', handleClientMessage)
     }
 
     /**
@@ -60,6 +74,46 @@ class StudioAPI {
         res.type('application/javascript')
         res.send(cmpCode)
     }
+
+    /**
+     * @param {ClientConnection} sourceClient
+     * @param {*} data
+     * @param {string} messageName
+     */
+    async handleClientMessage(sourceClient, data, messageName) {
+        let functionName = messageName.split('/')[1]
+        if (!this[functionName]) {
+            console.error("Got a request for an unknown message in studio: ", messageName)
+            sourceClient.sendMessage({'studio' : "ERROR: Received unknown message type " + messageName})
+            return
+        }
+
+        let result = jsonschema.validate(data, schema[functionName], {throwError: false})
+        if (!result.valid) {
+            console.error(`Could not validate json schema for function ${functionName}`, data)
+            sourceClient.sendMessage({'studio' : "ERROR: Received invalid data for studio function " + functionName})
+            return
+        }
+
+        let code = await this[functionName](data)
+        // TODO can the ComponentModifier be reused from the modifying function, is the AST clean enough?
+        let ast = new ComponentModifier(code).ast
+
+        let message = {}
+        message[messageName] = {
+            data,
+            code,
+            ast,
+        }
+        for (let client of ClientList) {
+            if (client != sourceClient)
+                client.sendMessage(message)
+        }
+        // notify the source separately
+        message[messageName].isChangeSource = true
+        sourceClient.sendMessage(message)
+    }
+
 
     // Component modifications
 

@@ -7,6 +7,7 @@ import PropEditor from '/templates/studio/propEditor/PropEditor.js'
 import LayoutBar from "/templates/studio/menuBars/LayoutBar.js"
 import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 
+import messager from '/lib/Messager.js'
 import {getChildAst} from '/lib/AstNavigator.js'
 
 class StudioWindow extends Template {
@@ -14,6 +15,35 @@ class StudioWindow extends Template {
         super(args)
         this.init()
         this.cnt = 1
+
+        // Handling messages coming from the server
+        let setChangedCode = (data) => {
+            //this.children.codeEditor.code = data.code
+            let ast = data.ast
+            let code = data.code
+            this.prop.componentInfo = {ast, code}
+            // TODO also perform the update on the component if this isn't the source client, otherwise the update is already done
+        }
+
+        // Register messagges
+        messager.registerMessageHandler('studio/setComponentCode', (data) => {
+            if (this.prop.moduleName != null && this.prop.componentName != null) {
+                // TODO don't refresh the code of the source client, that code is already up-to-date, and people like to follow their cursor
+                this.openComponent(this.prop.moduleName, this.prop.componentName)
+            }
+        })
+        messager.registerMessageHandler('studio/setChildPosition', setChangedCode)
+        messager.registerMessageHandler('studio/addChildComponent', setChangedCode)
+        messager.registerMessageHandler('studio/removeChildComponents', setChangedCode)
+        messager.registerMessageHandler('studio/setOwnPropBinding', setChangedCode)
+        messager.registerMessageHandler('studio/setChildProp', setChangedCode)
+
+        // Reload component after a reconnect due to a network issue
+        messager.registerOnopenHandler(() => {
+            if (this.prop.moduleName != null && this.prop.componentName != null) {
+                this.openComponent(this.prop.moduleName, this.prop.componentName)
+            }
+        })
     }
 
     properties = {
@@ -71,27 +101,21 @@ class StudioWindow extends Template {
                     if (ev.detail.previewOnly)
                         return // don't update the server for only a preview
                     this.children.propEditor.recalcPositionParameters()
-                    let newCode = await this.callStudioApi('setChildPosition', {
+                    await this.callStudioApi('setChildPosition', {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
-                    this.openComponent(this.prop.moduleName, this.prop.componentName)
-                    // TODO optimize loading changes
                 },
                 droppedchild: async (ev) => {
-                    let newCode = await this.callStudioApi('addChildComponent', {
+                    await this.callStudioApi('addChildComponent', {
                         childId: ev.detail.childId,
                         childClassName: ev.detail.childClassName, 
                         childPath: ev.detail.childPath,
                         position: ev.detail.position,
                     })
-                    this.openComponent(this.prop.moduleName, this.prop.componentName)
-                    // TODO optimize loading changes
                 },
                 deletedchildren: async (ev) => {
-                    let newCode = await this.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
-                    this.openComponent(this.prop.moduleName, this.prop.componentName)
-                    // TODO optimize loading changes
+                    await this.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
                 },
             },
         }),
@@ -120,30 +144,24 @@ class StudioWindow extends Template {
             eventHandlers: {
                 positionpropchanged: async (ev) => {
                     this.children.canvas.setChildPosition(ev.detail.childId, ev.detail.newPosition)
-                    let newCode = await this.callStudioApi('setChildPosition', {
+                    await this.callStudioApi('setChildPosition', {
                         childId: ev.detail.childId,
                         position: ev.detail.newPosition,
                     })
-                    this.openComponent(this.prop.moduleName, this.prop.componentName)
-                    // TODO optimize loading changes
                 },
                 ownPropChanged: async (ev) => {
                     this.children.canvas.setOwnPropBinding(ev.detail.propertyName, ev.detail.newBinding)
-                    let newCode = await this.callStudioApi('setOwnPropBinding', {
+                    await this.callStudioApi('setOwnPropBinding', {
                         propertyName: ev.detail.propertyName,
                         newBinding: ev.detail.newBinding,
                     })
-                    this.openComponent(this.prop.moduleName, this.prop.componentName)
-                    // TODO optimize loading changes
                 },
                 childPropChanged: async (ev) => {
-                    let newCode = await this.callStudioApi('setChildProp', {
+                    await this.callStudioApi('setChildProp', {
                         childId: ev.detail.childId,
                         propName: ev.detail.propName,
                         value: ev.detail.value,
                     })
-                    this.openComponent(this.prop.moduleName, this.prop.componentName)
-                    // TODO optimize loading changes
                 },
             },
         }),
@@ -155,13 +173,11 @@ class StudioWindow extends Template {
             },
             eventHandlers: {
                 codeContentChanged: async (ev) => {
-                    let newCode = await this.callStudioApi('setComponentCode', {
+                    await this.callStudioApi('setComponentCode', {
                         oldCode: ev.detail.oldCode,
                         newCode: ev.detail.newCode,
                     })
                     this.prop.cmpSelection = {}
-                    this.openComponent(this.prop.moduleName, this.prop.componentName)
-                    // TODO optimize loading changes
                 }
             },
         }),
@@ -171,6 +187,7 @@ class StudioWindow extends Template {
         this.prop.moduleName = moduleName
         this.prop.componentName = componentName
 
+        console.log("Open component", moduleName, componentName)
         this.cnt++
         let mdl = await import(`/API/Studio/openComponent?module=${moduleName}&component=${componentName}&v=${this.cnt}`)
 
@@ -178,11 +195,7 @@ class StudioWindow extends Template {
         this.prop.componentClass = mdl.default
         this.prop.componentInstance = this.children.canvas.setComponent(this.prop.componentClass)
         
-        let code = mdl.code
-        // TODO turn into valid property, and pass as property binding
-        this.children.codeEditor.code = code
-
-        let ast = mdl.ast
+        let {code, ast} = mdl
         this.prop.componentInfo = {ast, code}
     }
 
@@ -192,25 +205,13 @@ class StudioWindow extends Template {
      * @param  {object} args any additional arguments to send to the body
      */
     async callStudioApi(apiFunction, args) {
-        let body = {
+        let message = {}
+        message['studio/' + apiFunction] = {
             module: this.prop.moduleName,
             component: this.prop.componentName,
             ...args
         }
-        let result = await fetch(`/API/studio/${apiFunction}`, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'same-origin', // no-cors, cors, *same-origin
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // no-referrer, *client
-            body: JSON.stringify(body), // body data type must match "Content-Type" header
-        })
-        return await result.text()
+        await messager.sendMessage(message)
     }
 }
 

@@ -43,7 +43,7 @@ ClientConnection.prototype.handleMessage = function(msg) {
             continue
         }
         for (let handler of ClientConnection.messageTypes[key]){
-            handler(this, msg[key])
+            handler(this, msg[key], key)
         }
     }
 }
@@ -71,7 +71,7 @@ ClientConnection.prototype.sendMessage = function(msg) {
 }
 
 /**
- * @typedef {(c: ClientConnection, o: object) => void} MessageHandler
+ * @typedef {(client: ClientConnection, data: object, [messageName]: string) => void} MessageHandler
  */
 
 /** @type {Object<string,Array<MessageHandler>>} */
