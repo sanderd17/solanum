@@ -6,7 +6,7 @@ import CollapsibleTemplate from '/templates/containers/CollapsibleTemplate.js'
  * @typedef {Object} CollapsibleChild
  * @property {string} title
  * @property {Template} template
- * @property {[boolean]} collapsed
+ * @property {boolean?} collapsed
  */
 
 class CollapseList extends Template {

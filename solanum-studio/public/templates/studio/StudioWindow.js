@@ -235,7 +235,7 @@ class StudioWindow extends Template {
             return
         this.prop.componentInfo = {ast, code}
         this.children.canvas.setOwnPropBinding(data.propertyName, data.newBinding)
-        // TODO also update text in propEditor
+        this.children.propEditor.setOwnPropBinding(data.propertyName, data.newBinding)
     }
 
     /**

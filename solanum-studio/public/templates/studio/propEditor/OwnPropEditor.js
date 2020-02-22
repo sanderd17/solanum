@@ -11,8 +11,8 @@ const VMARGIN = 5
 
 class OwnPropEditor extends Template {
 
-    constructor(...args) {
-        super(...args)
+    constructor(args) {
+        super(args)
         this.init()
     }
 
@@ -54,7 +54,7 @@ class OwnPropEditor extends Template {
             } else if (el.value.arguments[0].type != 'Literal') {
                 console.error(`Property with name ${name} has no literal string as first argument`)
             } else {
-                binding = el.value.arguments[0].value
+                binding = el.value.arguments[0].value.toString()
             }
 
             this.addChild('key_' + i, new Textbox({
@@ -68,7 +68,7 @@ class OwnPropEditor extends Template {
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
-                eventHandlers: { change: (ev, child) => this.setPropValue(name, child) },
+                eventHandlers: { change: (ev, child) => this.propValueChanged(name, child) },
             }))
             this.children['binding_' + i].prop.value = binding
         }
@@ -86,11 +86,20 @@ class OwnPropEditor extends Template {
      * @param {string} propertyName
      * @param {Textbox} textBox 
      */
-    setPropValue(propertyName, textBox) {
+    propValueChanged(propertyName, textBox) {
         let newBinding = textBox.prop.value
 
         console.log(propertyName, newBinding)
         this.dispatchEvent('ownPropChanged', {propertyName, newBinding})
+    }
+
+    /**
+     * Set a prop binding from outside
+     * @param {string} propertyName
+     * @param {string} newBinding
+     */
+    setPropBinding(propertyName, newBinding) {
+        this.children['binding_' + propertyName].prop.value = newBinding
     }
 }
 

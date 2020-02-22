@@ -13,10 +13,18 @@ class PropEditor extends Template {
         this.init()
 
         this.positionPropEditor = new PositionPropEditor({
-                parent: this,
-                position: {left: '0px', right: '0px', top: '0px', height: '150px'},
-                properties: {cmpSelection: "Prop('cmpSelection')"},
-            })
+            parent: this,
+            position: {left: '0px', right: '0px', top: '0px', height: '150px'},
+            properties: {cmpSelection: "Prop('cmpSelection')"},
+        })
+
+        this.ownPropEditor = new OwnPropEditor({
+            parent: this,
+            position: {left: '0px', right: '0px', top: '300px', height: '140px'},
+            properties: {
+                componentInfo: 'Prop("componentInfo")',
+            }
+        })
 
         this.children.collapsibleTemplates.setTemplates([
             {
@@ -38,13 +46,7 @@ class PropEditor extends Template {
             },
             {
                 title: 'Own Properties',
-                template: new OwnPropEditor({
-                    parent: this,
-                    position: {left: '0px', right: '0px', top: '300px', height: '140px'},
-                    properties: {
-                        componentInfo: 'Prop("componentInfo")',
-                    }
-                }),
+                template: this.ownPropEditor,
                 collapsed: false
             },
             {
@@ -75,6 +77,15 @@ class PropEditor extends Template {
     recalcPositionParameters() {
         this.positionPropEditor.recalcPositionParameters()
     }
+
+    /**
+     * @param {string} propName
+     * @param {string} newBinding
+     */
+    setOwnPropBinding(propName, newBinding) {
+        this.ownPropEditor.setPropBinding(propName, newBinding)
+    }
+
 }
 
 export default PropEditor

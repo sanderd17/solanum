@@ -17,7 +17,7 @@ export function getPropertyKeyName(objectProperty) {
     if (key.type == "Identifier")
         return key.name
     if (key.type == "Literal")
-        return key.value
+        return key.value.toString()
 }
 
 /**
