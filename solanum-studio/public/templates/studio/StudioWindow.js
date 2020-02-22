@@ -10,20 +10,22 @@ import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 import messager from '/lib/Messager.js'
 import {getChildAst} from '/lib/AstNavigator.js'
 
+/**
+ * StudioWindow is responsible for all synchronisation between the components and with the server
+ * 
+ * When a component has an update caused by user interaction, it must send a message over the DOM
+ * The StudioWindow will pass the message on to the server
+ * The server will respond to all connected studio instances
+ * Upon response from the server, all related child components will be updated:
+ *  * The souce code will be updated
+ *  * The visuals will be updated
+ *  * The visible data will be updated
+ */
 class StudioWindow extends Template {
     constructor(args) {
         super(args)
         this.init()
         this.cnt = 1
-
-        // Handling messages coming from the server
-        let setChangedCode = (data) => {
-            //this.children.codeEditor.code = data.code
-            let ast = data.ast
-            let code = data.code
-            this.prop.componentInfo = {ast, code}
-            // TODO also perform the update on the component if this isn't the source client, otherwise the update is already done
-        }
 
         // Register messagges
         messager.registerMessageHandler('studio/setComponentCode', (data) => {
@@ -32,11 +34,11 @@ class StudioWindow extends Template {
                 this.openComponent(this.prop.moduleName, this.prop.componentName)
             }
         })
-        messager.registerMessageHandler('studio/setChildPosition', setChangedCode)
-        messager.registerMessageHandler('studio/addChildComponent', setChangedCode)
-        messager.registerMessageHandler('studio/removeChildComponents', setChangedCode)
-        messager.registerMessageHandler('studio/setOwnPropBinding', setChangedCode)
-        messager.registerMessageHandler('studio/setChildProp', setChangedCode)
+        messager.registerMessageHandler('studio/setChildPosition', reply => this.updatePositionFromServer(reply))
+        messager.registerMessageHandler('studio/addChildComponent', reply => this.addChildFromServer(reply))
+        messager.registerMessageHandler('studio/removeChildComponents', reply => this.removeChildFromServer(reply))
+        messager.registerMessageHandler('studio/setOwnPropBinding', reply => this.updateOwnPropBindingFromServer(reply))
+        messager.registerMessageHandler('studio/setChildProp', reply => this.updateChildPropBindingFromServer(reply))
 
         // Reload component after a reconnect due to a network issue
         messager.registerOnopenHandler(() => {
@@ -97,26 +99,9 @@ class StudioWindow extends Template {
                     }
                     this.prop.cmpSelection = cmpSelection
                 },
-                childpositionchanged: async (ev) => {
-                    if (ev.detail.previewOnly)
-                        return // don't update the server for only a preview
-                    this.children.propEditor.recalcPositionParameters()
-                    await this.callStudioApi('setChildPosition', {
-                        childId: ev.detail.childId,
-                        position: ev.detail.newPosition,
-                    })
-                },
-                droppedchild: async (ev) => {
-                    await this.callStudioApi('addChildComponent', {
-                        childId: ev.detail.childId,
-                        childClassName: ev.detail.childClassName, 
-                        childPath: ev.detail.childPath,
-                        position: ev.detail.position,
-                    })
-                },
-                deletedchildren: async (ev) => {
-                    await this.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
-                },
+                childpositionchanged: (ev) => this.updatePositionFromUser(ev),
+                droppedchild: async (ev) => this.addChildFromUser(ev),
+                deletedchildren: async (ev) => this.removeChildFromUser(ev),
             },
         }),
         projectBrowser: new ProjectBrowser({
@@ -142,27 +127,9 @@ class StudioWindow extends Template {
                 cmpSelection: "Prop('cmpSelection')",
             },
             eventHandlers: {
-                positionpropchanged: async (ev) => {
-                    this.children.canvas.setChildPosition(ev.detail.childId, ev.detail.newPosition)
-                    await this.callStudioApi('setChildPosition', {
-                        childId: ev.detail.childId,
-                        position: ev.detail.newPosition,
-                    })
-                },
-                ownPropChanged: async (ev) => {
-                    this.children.canvas.setOwnPropBinding(ev.detail.propertyName, ev.detail.newBinding)
-                    await this.callStudioApi('setOwnPropBinding', {
-                        propertyName: ev.detail.propertyName,
-                        newBinding: ev.detail.newBinding,
-                    })
-                },
-                childPropChanged: async (ev) => {
-                    await this.callStudioApi('setChildProp', {
-                        childId: ev.detail.childId,
-                        propName: ev.detail.propName,
-                        value: ev.detail.value,
-                    })
-                },
+                positionpropchanged: (ev) => this.updatePositionFromUser(ev),
+                ownPropChanged: (ev) => this.updateOwnPropBindingFromUser(ev),
+                childPropChanged: (ev) => this.updateChildPropBindingFromUser(ev),
             },
         }),
         codeEditor: new CodeEditor({
@@ -212,6 +179,124 @@ class StudioWindow extends Template {
             ...args
         }
         await messager.sendMessage(message)
+    }
+
+    /**
+     * @param {CustomEvent} ev
+     */
+    updatePositionFromUser(ev) {
+        if (ev.detail.previewOnly)
+            return // don't update the server for only a preview
+        this.callStudioApi('setChildPosition', {
+            childId: ev.detail.childId,
+            position: ev.detail.newPosition,
+        })
+    }
+
+    /** 
+     * @typedef {Object} StudioReply
+     * @property {any} ast
+     * @property {string} code
+     * @property {{
+     *  module: string,
+     *  component: string,
+     *  childId?: string,
+     *  position?: any,
+     *  propertyName?: string,
+     *  newBinding?: string
+     * }} data
+     */
+    /**
+     * @param {StudioReply} reply 
+     */
+    updatePositionFromServer({data, ast, code}) {
+        if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
+            return
+        this.prop.componentInfo = {ast, code}
+        this.children.canvas.setChildPosition(data.childId, data.position)
+        this.children.propEditor.recalcPositionParameters()
+    }
+
+    /**
+     * @param {CustomEvent} ev
+     */
+    updateOwnPropBindingFromUser(ev) {
+        this.callStudioApi('setOwnPropBinding', {
+            propertyName: ev.detail.propertyName,
+            newBinding: ev.detail.newBinding,
+        })
+    }
+
+    /**
+     * @param {StudioReply} reply 
+     */
+    updateOwnPropBindingFromServer({data, ast, code}) {
+        if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
+            return
+        this.prop.componentInfo = {ast, code}
+        this.children.canvas.setOwnPropBinding(data.propertyName, data.newBinding)
+        // TODO also update text in propEditor
+    }
+
+    /**
+     * @param {CustomEvent} ev
+     */
+    updateChildPropBindingFromUser(ev) {
+        this.callStudioApi('setChildProp', {
+            childId: ev.detail.childId,
+            propName: ev.detail.propName,
+            value: ev.detail.value,
+        })
+    }
+
+    /**
+     * @param {StudioReply} reply 
+     */
+    updateChildPropBindingFromServer({data, ast, code}) {
+        if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
+            return
+        this.prop.componentInfo = {ast, code}
+        // TODO also update the visualisation
+        // TODO also update text in propEditor
+    }
+
+    /**
+     * @param {CustomEvent} ev
+     */
+    addChildFromUser(ev) {
+        this.callStudioApi('addChildComponent', {
+            childId: ev.detail.childId,
+            childClassName: ev.detail.childClassName, 
+            childPath: ev.detail.childPath,
+            position: ev.detail.position,
+        })
+    }
+
+    /**
+     * @param {StudioReply} reply 
+     */
+    addChildFromServer({data, ast, code}) {
+        if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
+            return
+        this.prop.componentInfo = {ast, code}
+        // TODO also update the visualisation
+    }
+
+    /**
+     * @param {CustomEvent} ev
+     */
+    removeChildFromUser(ev) {
+        this.callStudioApi('removeChildComponents', {childIds: ev.detail.childIds})
+    }
+
+    /**
+     * @param {StudioReply} reply 
+     */
+    removeChildFromServer({data, ast, code}) {
+        if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
+            return
+        this.prop.componentInfo = {ast, code}
+        // TODO also update the visualisation
     }
 }
 

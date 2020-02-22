@@ -122,8 +122,7 @@ class StudioAPI {
      */
     async setComponentCode(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
-        let cmpCode = await cmpFile.read()
-        // TODO perform some diffing?
+        // TODO support some diffing?
         let newCmpCode = body.newCode
         await cmpFile.write(newCmpCode)
         return newCmpCode
