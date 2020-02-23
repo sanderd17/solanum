@@ -77,6 +77,23 @@ class StudioCanvas extends Template {
         prop.recalcValue()
     }
 
+    /**
+     * 
+     * @param {[string]} childIds 
+     * @param {string} propertyName 
+     * @param {string} newBinding 
+     */
+    setChildPropBinding(childIds, propertyName, newBinding) {
+        let children = this.children.preview.children
+        for (let id in children) {
+            if (!childIds.includes(id))
+                continue
+            let prop = children[id].properties[propertyName]
+            prop.setBinding(newBinding)
+            prop.recalcValue()
+        }
+    }
+
     addNewChild(id, childDefinition) {
         let child = new childDefinition.type({
             parent: this.children.preview,

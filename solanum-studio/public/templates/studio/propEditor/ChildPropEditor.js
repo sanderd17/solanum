@@ -65,45 +65,74 @@ class ChildPropEditor extends Template {
         this.propNames = Object.keys(commonProps).sort()
         for (let [i, name] of Object.entries(this.propNames)) {
             let binding = commonProps[name]
-            this.addChild('key_' + i, new Textbox({
+            this.addChild('key_' + name, new Textbox({
                 parent: this,
                 position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''", datalist: "['test1','test2']" }, // TODO get all possible property names into the datalist
-                eventHandlers: { change: (ev, child) => this.setKeyName(name, child) },
+                eventHandlers: { change: (ev, textBox) => this.setKeyName(name, textBox) },
             }))
-            this.children['key_' + i].prop.value = name
-            this.addChild('binding_' + i, new Textbox({
+            this.children['key_' + name].prop.value = name
+            this.addChild('binding_' + name, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 style: { background: "'#FFFFFF'" },
-                eventHandlers: { change: (ev, child) => this.setPropBinding(name, child) },
+                eventHandlers: {
+                    change: (ev, textBox) => this.propValueChanged(name, textBox),
+                    input: (ev, textBox) => this.checkValidFunction(name, textBox),
+                },
             }))
-            this.children['binding_' + i].prop.value = binding
+            this.children['binding_' + name].prop.value = binding
         }
     }
 
     /**
-     * @param {string} propName 
+     * @param {string} propertyName 
      * @param {Textbox} textBox 
      */
-    setPropBinding(propName, textBox) {
+    checkValidFunction(propertyName, textBox) {
         let value = textBox.prop.value
         try {
             let f = new Function(value)
         } catch (e) {
-            console.error(e)
+            console.error(e) // TODO format and display in tooltip
             textBox.style.background = '#FF8080'
-            return
+            return false
         }
-
         textBox.style.background = '#FFFFFF'
+        return true
+    }
 
-        for (let childId in this.prop.cmpSelection) {
-            let childInstance = this.prop.cmpSelection[childId]
-            childInstance.properties[propName].setBinding(value)
-            childInstance.properties[propName].recalcValue()
-            this.dispatchEvent('childPropChanged', {childId, propName, value})
+    /**
+     * @param {string} propertyName 
+     * @param {Textbox} textBox 
+     */
+    propValueChanged(propertyName, textBox) {
+        if (!this.checkValidFunction(propertyName, textBox))
+            return
+
+        let value = textBox.prop.value
+        this.dispatchEvent('childPropChanged', {childIds: Object.keys(this.prop.cmpSelection), propertyName, value})
+    }
+
+    /**
+     * @param {[string]} childIds
+     * @param {string} propertyName 
+     * @param {string} newBinding 
+     */
+    setPropbinding(childIds, propertyName, newBinding) {
+        for (let childId of childIds) {
+            if (!(childId in this.prop.cmpSelection)) {
+                // not related to the current selection
+                return
+            }
+
+            if (Object.keys(this.prop.cmpSelection).length > 1) {
+                // TODO support update to one of multiple children
+                return
+            }
+
+            this.children['binding_' + propertyName].prop.value = newBinding
         }
     }
 }

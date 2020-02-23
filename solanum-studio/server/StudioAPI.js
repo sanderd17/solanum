@@ -46,7 +46,7 @@ class StudioAPI {
         ClientConnection.on('studio/addChildComponent', handleClientMessage)
         ClientConnection.on('studio/removeChildComponents', handleClientMessage)
         ClientConnection.on('studio/setOwnPropBinding', handleClientMessage)
-        ClientConnection.on('studio/setChildProp', handleClientMessage)
+        ClientConnection.on('studio/setChildPropBinding', handleClientMessage)
     }
 
     /**
@@ -88,6 +88,7 @@ class StudioAPI {
             return
         }
 
+        console.log(data)
         let result = jsonschema.validate(data, schema[functionName], {throwError: false})
         if (!result.valid) {
             console.error(`Could not validate json schema for function ${functionName}`, data)
@@ -213,13 +214,15 @@ class StudioAPI {
     /**
      * @param {*} body
      */
-    async setChildProp(body) {
+    async setChildPropBinding(body) {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
         let cmpMod = new ComponentModifier(cmpCode)
 
-        cmpMod.setChildProp(body.childId, body.propName, body.value)
+        for (let childId of body.childIds) {
+            cmpMod.setChildProp(childId, body.propertyName, body.newBinding)
+        }
         let newCmpCode = cmpMod.print()
 
         await cmpFile.write(newCmpCode)

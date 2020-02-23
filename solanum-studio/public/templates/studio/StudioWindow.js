@@ -38,7 +38,7 @@ class StudioWindow extends Template {
         messager.registerMessageHandler('studio/addChildComponent', reply => this.addChildFromServer(reply))
         messager.registerMessageHandler('studio/removeChildComponents', reply => this.removeChildFromServer(reply))
         messager.registerMessageHandler('studio/setOwnPropBinding', reply => this.updateOwnPropBindingFromServer(reply))
-        messager.registerMessageHandler('studio/setChildProp', reply => this.updateChildPropBindingFromServer(reply))
+        messager.registerMessageHandler('studio/setChildPropBinding', reply => this.updateChildPropBindingFromServer(reply))
 
         // Reload component after a reconnect due to a network issue
         messager.registerOnopenHandler(() => {
@@ -201,6 +201,7 @@ class StudioWindow extends Template {
      *  module: string,
      *  component: string,
      *  childId?: string,
+     *  childIds?: [string],
      *  position?: any,
      *  propertyName?: string,
      *  newBinding?: string
@@ -242,10 +243,12 @@ class StudioWindow extends Template {
      * @param {CustomEvent} ev
      */
     updateChildPropBindingFromUser(ev) {
-        this.callStudioApi('setChildProp', {
-            childId: ev.detail.childId,
-            propName: ev.detail.propName,
-            value: ev.detail.value,
+        console.log(ev.detail)
+        console.log("Send childPropBinding")
+        this.callStudioApi('setChildPropBinding', {
+            childIds: ev.detail.childIds,
+            propertyName: ev.detail.propertyName,
+            newBinding: ev.detail.value,
         })
     }
 
@@ -253,11 +256,12 @@ class StudioWindow extends Template {
      * @param {StudioReply} reply 
      */
     updateChildPropBindingFromServer({data, ast, code}) {
+        console.log("Receive childPropBinding")
         if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
             return
         this.prop.componentInfo = {ast, code}
-        // TODO also update the visualisation
-        // TODO also update text in propEditor
+        this.children.propEditor.setChildPropBinding(data.childIds, data.propertyName, data.newBinding)
+        this.children.canvas.setChildPropBinding(data.childIds, data.propertyName, data.newBinding)
     }
 
     /**

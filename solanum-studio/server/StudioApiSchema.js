@@ -83,14 +83,14 @@ export const setChildPosition = {
     }
 }
 
-export const setChildProp = {
+export const setChildPropBinding = {
     type: 'object',
     properties: {
         module:         {type: 'string', required: true},
         component:      {type: 'string', required: true},
-        childId:        {type: 'string', required: true},
-        propName:       {type: 'string', required: true},
-        value:          {type: 'string', required: true},
+        childIds:       {type: 'array',  required: true},
+        propertyName:   {type: 'string', required: true},
+        newBinding:     {type: 'string', required: true},
     }
 }
 

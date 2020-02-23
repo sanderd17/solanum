@@ -18,7 +18,7 @@ class OwnPropEditor extends Template {
 
     properties = {
         componentInfo: new Prop('null', () => {
-            this.loadModuleProperties()
+            this.loadModuleProperties() // TODO causes unwanted refreshes on any change to the component
         }),
     }
 
@@ -57,20 +57,20 @@ class OwnPropEditor extends Template {
                 binding = el.value.arguments[0].value.toString()
             }
 
-            this.addChild('key_' + i, new Textbox({
+            this.addChild('key_' + name, new Textbox({
                 parent: this,
                 position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, child) => this.setKeyName(name, child) },
             }))
-            this.children['key_' + i].prop.value = name
-            this.addChild('binding_' + i, new Textbox({
+            this.children['key_' + name].prop.value = name
+            this.addChild('binding_' + name, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
                 properties: { value: "''" },
                 eventHandlers: { change: (ev, child) => this.propValueChanged(name, child) },
             }))
-            this.children['binding_' + i].prop.value = binding
+            this.children['binding_' + name].prop.value = binding
         }
     }
 

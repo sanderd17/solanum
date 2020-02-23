@@ -26,6 +26,15 @@ class PropEditor extends Template {
             }
         })
 
+        this.childPropEditor = new ChildPropEditor({
+            parent: this,
+            position: {left: '0px', right: '0px', top: '160px', height: '140px'},
+            properties: {
+                cmpSelection: 'Prop("cmpSelection")',
+                componentInfo: 'Prop("componentInfo")',
+            },
+        }),
+
         this.children.collapsibleTemplates.setTemplates([
             {
                 title: 'Position',
@@ -34,14 +43,7 @@ class PropEditor extends Template {
             },
             {
                 title: 'Child Properties',
-                template: new ChildPropEditor({
-                    parent: this,
-                    position: {left: '0px', right: '0px', top: '160px', height: '140px'},
-                    properties: {
-                        cmpSelection: 'Prop("cmpSelection")',
-                        componentInfo: 'Prop("componentInfo")',
-                    },
-                }),
+                template: this.childPropEditor,
                 collapsed: false
             },
             {
@@ -79,13 +81,21 @@ class PropEditor extends Template {
     }
 
     /**
-     * @param {string} propName
+     * @param {string} propertyName
      * @param {string} newBinding
      */
-    setOwnPropBinding(propName, newBinding) {
-        this.ownPropEditor.setPropBinding(propName, newBinding)
+    setOwnPropBinding(propertyName, newBinding) {
+        this.ownPropEditor.setPropBinding(propertyName, newBinding)
     }
 
+    /**
+     * @param {[string]} childIds
+     * @param {string} propertyName
+     * @param {string} newBinding
+     */
+    setChildPropBinding(childIds, propertyName, newBinding) {
+        this.childPropEditor.setPropbinding(childIds, propertyName, newBinding)
+    }
 }
 
 export default PropEditor

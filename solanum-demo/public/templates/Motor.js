@@ -11,7 +11,7 @@ class Motor extends Template {
 
     properties = {
         ...this.properties,
-        motor: new Prop("'M0'"),
+        motor: new Prop("'M1'"),
     }
 
     static styles = {
@@ -28,10 +28,10 @@ class Motor extends Template {
         icon: new Circle({
             parent: this,
             position: {
-                left: "10%",
+                left: "1%",
                 width: "90%",
                 height: "88%",
-                top: "11%"
+                top: "4%"
             },
             properties: {fill: "Tag(`Motors/${Prop(\"motor\")}`, \"blue\")", prop2: '`Motors/${Prop("motor")}`'},
             eventHandlers: {
