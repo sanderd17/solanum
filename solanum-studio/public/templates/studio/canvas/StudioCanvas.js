@@ -34,7 +34,6 @@ class StudioCanvas extends Template {
                     type: ev.detail.type,
                     position: ev.detail.position,
                 }),
-                deletedchildren: (ev) => this.removeChildren(ev.detail.childIds)
             },
             style: {
                 zIndex: '10' // make sure it's in front of the preview

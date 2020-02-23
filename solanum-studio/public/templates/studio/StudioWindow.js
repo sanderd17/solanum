@@ -300,7 +300,7 @@ class StudioWindow extends Template {
         if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
             return
         this.prop.componentInfo = {ast, code}
-        // TODO also update the visualisation
+        this.children.canvas.removeChildren(data.childIds)
     }
 }
 
