@@ -30,10 +30,6 @@ class StudioCanvas extends Template {
             },
             eventHandlers: {
                 childpositionchanged: (ev) => this.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),
-                droppedchild: (ev) => this.addNewChild(ev.detail.childId, {
-                    type: ev.detail.type,
-                    position: ev.detail.position,
-                }),
             },
             style: {
                 zIndex: '10' // make sure it's in front of the preview
@@ -93,12 +89,14 @@ class StudioCanvas extends Template {
         }
     }
 
-    addNewChild(id, childDefinition) {
-        let child = new childDefinition.type({
+    async addNewChild({childId, childPath, position}) {
+        const moduleNewCmp = await import(childPath)
+        const clsNewCmp = moduleNewCmp.default
+        let child = new clsNewCmp({
             parent: this.children.preview,
-            position: childDefinition.position
+            position: position
         })
-        this.children.preview.addChild(id, child)
+        this.children.preview.addChild(childId, child)
 
         this.children.interaction.reloadSelectionRects(this.children.preview.children)
     }

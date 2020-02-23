@@ -268,12 +268,7 @@ class StudioWindow extends Template {
      * @param {CustomEvent} ev
      */
     addChildFromUser(ev) {
-        this.callStudioApi('addChildComponent', {
-            childId: ev.detail.childId,
-            childClassName: ev.detail.childClassName, 
-            childPath: ev.detail.childPath,
-            position: ev.detail.position,
-        })
+        this.callStudioApi('addChildComponent', ev.detail)
     }
 
     /**
@@ -283,7 +278,7 @@ class StudioWindow extends Template {
         if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
             return
         this.prop.componentInfo = {ast, code}
-        // TODO also update the visualisation
+        this.children.canvas.addNewChild(data)
     }
 
     /**

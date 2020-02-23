@@ -19,7 +19,7 @@ class StudioCanvasInteraction extends Template {
         this.eventHandlers.dragenter = (ev) => ev.preventDefault()
         this.eventHandlers.keydown = (ev) => {
             if (ev.code == 'Delete')
-                this.removeSelectedChildren(ev)
+                this.dispatchEvent('deletedchildren', {childIds: this.prop.selection})
         }
         this.addEventHandlers()
         this.dom.draggable = true // draggable is required to allow selection drag
@@ -120,21 +120,16 @@ class StudioCanvasInteraction extends Template {
         let position = {
             left: ev.offsetX + unit,
             top: ev.offsetY + unit,
-            width: clsNewCmp.defaultSize[0] + unit,
-            height: clsNewCmp.defaultSize[1] + unit,
+            width: width + unit,
+            height: height + unit,
         }
 
         this.dispatchEvent('droppedchild', {
             childId,
-            type: clsNewCmp,
             childClassName: clsNewCmp.name, 
             childPath,
             position,
         })
-    }
-
-    removeSelectedChildren(ev) {
-        this.dispatchEvent('deletedchildren', {childIds: this.prop.selection})
     }
 
     updateSelectionDraw() {
@@ -234,10 +229,12 @@ class StudioCanvasInteraction extends Template {
     }
 
     /**
-     * 
-     * @param {Array<string>} directions
-     * @param {DragEvent} startDragEv 
-     * @param {DragEvent} endDragEv 
+     * @param {{
+     *   directions: Array<string>,
+     *   startDragEv: DragEvent,
+     *   endDragEv: DragEvent,
+     *   previewOnly: boolean
+     * }} arg
      */
     async endHandleDrag({directions, startDragEv, endDragEv, previewOnly}) {
         endDragEv.stopPropagation()

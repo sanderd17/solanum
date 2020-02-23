@@ -88,7 +88,6 @@ class StudioAPI {
             return
         }
 
-        console.log(data)
         let result = jsonschema.validate(data, schema[functionName], {throwError: false})
         if (!result.valid) {
             console.error(`Could not validate json schema for function ${functionName}`, data)
