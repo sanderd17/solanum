@@ -10,6 +10,7 @@ import CodeEditor from '/templates/studio/codeEditor/Editor.js'
 import messager from '/lib/Messager.js'
 import {getChildAst} from '/lib/AstNavigator.js'
 
+// TODO messaging to the studio API should go into a singleton class that can be imported from other classes it should have a link to this StudioWindow to have access to the needed children
 /**
  * StudioWindow is responsible for all synchronisation between the components and with the server
  * 

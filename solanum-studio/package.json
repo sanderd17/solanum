@@ -15,13 +15,14 @@
     "node": ">=12.10"
   },
   "dependencies": {
-    "solanum-core": "file:../solanum-core",
     "express": "^4.17.1",
     "flow-parser": "^0.118.0",
     "jsonschema": "^1.2.5",
     "monaco-editor": "^0.20.0",
     "recast": "^0.18.5",
     "recursive-readdir": "^2.2.2",
+    "solanum-core": "file:../solanum-core",
+    "sqlite3": "^4.1.1",
     "steno": "^0.4.4",
     "xml-js": "^1.6.11"
   },

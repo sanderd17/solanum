@@ -7,6 +7,8 @@ import * as schema from './StudioApiSchema.js'
 import ClientList from '../../solanum-core/server/ClientList.js' // TODO fix loading from related modules; Use a module loader with URL support?
 import ClientConnection from '../../solanum-core/server/ClientConnection.js'
 
+import ComponentHistorian from './ComponentHistorian.js'
+
 /*
 Studio should provide methods to set different parts of the code:
 
@@ -39,6 +41,7 @@ class StudioAPI {
         /** Object representing locked files */
         this.locks = {}
         this.componentStore = new ComponentStore(config)
+        this.componentHistorian = new ComponentHistorian()
 
         let handleClientMessage = (client, data, messageName) => this.handleClientMessage(client, data, messageName)
         ClientConnection.on('studio/setComponentCode', handleClientMessage)
@@ -99,6 +102,7 @@ class StudioAPI {
         // TODO can the ComponentModifier be reused from the modifying function, is the AST clean enough?
         let ast = new ComponentModifier(code).ast
 
+
         let message = {}
         message[messageName] = {
             data,
@@ -136,6 +140,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.setOwnPropBinding(body.propertyName, body.newBinding)
@@ -151,6 +156,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.addChildComponent(body.childId, body.childClassName, body.childPath, body.position)
@@ -167,6 +173,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.removeChildComponent(body.childId)
@@ -183,6 +190,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         for (let id of body.childIds) {
@@ -201,6 +209,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.setChildPosition(body.childId, body.position)
@@ -217,6 +226,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         for (let childId of body.childIds) {
@@ -235,6 +245,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.setChildEventHandler(body.childId, body.eventId, body.eventHandler)
@@ -251,6 +262,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.removeChildEventHandler(body.childId, body.eventId)
@@ -267,6 +279,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.setDefaultProp(body.propName, body.value)
@@ -282,6 +295,7 @@ class StudioAPI {
         let cmpFile = this.componentStore.getFile(body.module, body.component)
         let cmpCode = await cmpFile.read()
 
+        this.componentHistorian.registerChange(body.module, body.component, cmpCode, body)
         let cmpMod = new ComponentModifier(cmpCode)
 
         cmpMod.removeDefaultProp(body.propName)
