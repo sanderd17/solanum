@@ -18,11 +18,19 @@ class TagBrowser extends Template {
     constructor(args) {
         super(args)
         this.init()
-        //this.loadTags()
+        this.loadTags()
     }
 
     async loadTags() {
-        let response = await fetch('/API/studio/getTagPaths', {
+        let tree = await this.getTagTree('')
+        this.children.tree.initTree(tree)
+    }
+
+    /**
+     * @param {string} parentpath
+     */
+    async getTagTree(parentpath) {
+        let response = await fetch('/API/studio/getSubTags?parentpath=' + encodeURIComponent(parentpath), {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'same-origin', // no-cors, cors, *same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -33,8 +41,29 @@ class TagBrowser extends Template {
             },
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // no-referrer, *client
+            //body: JSON.stringify(parentpath)
         })
         let tagpaths = await response.json()
+        let tree = []
+        for (let child of tagpaths) {
+
+            let cmpNode = {
+                id: child.name,
+                template: Label,
+                templateArgs: {
+                    position: {height: '25px'},
+                    properties: {
+                        text: JSON.stringify(child.name),
+                        draggable: 'true',
+                    },
+                },
+                getSubtree: async () => {
+                    return await this.getTagTree(child.path)
+                }
+            }
+            tree.push(cmpNode)
+        }
+        return tree
     }
 }
 

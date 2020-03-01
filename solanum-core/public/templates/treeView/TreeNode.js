@@ -14,7 +14,7 @@ class TreeNode extends Template {
                     parent: this,
                     position: {left: this.prop.indentation + 'px', right: '0px', top: tmpHeight + 'px'},
                     properties: {indentation: "Prop('indentation')"},
-                    style: {visibility: "Prop('isOpen') ? 'visible' : 'hidden'"}
+                    style: {visibility: "Prop('isOpen') ? 'inherit' : 'hidden'"}
                 })
                 tree.initTree(this.subtree)
                 this.addChild('tree', tree)

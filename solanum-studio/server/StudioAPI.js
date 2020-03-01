@@ -36,12 +36,18 @@ class StudioAPI {
      * @param {*} config JSON configuration
      */
     constructor(app, config) {
+        this.app = app
         /** Configuration of the app (see /config.js)*/
         this.config = config
         /** Object representing locked files */
         this.locks = {}
         this.componentStore = new ComponentStore(config)
         this.componentHistorian = new ComponentHistorian()
+    }
+
+    initMessageHandlers() {
+        this.app.get('/API/Studio/openComponent', async (req, res) => await this.openComponent(req, res))
+        this.app.get('/API/Studio/getComponentPaths', async (req, res) => res.send(await this.getComponentPaths()))
 
         let handleClientMessage = (client, data, messageName) => this.handleClientMessage(client, data, messageName)
         ClientConnection.on('studio/setComponentCode', handleClientMessage)
@@ -72,6 +78,7 @@ class StudioAPI {
 
         // Add own code as string, and add ast tree for editor
         // Avoid version differences by including the same loaded file
+        // FIXME: don't do this...
         cmpCode += '\n;export let code = ' + JSON.stringify(cmpCode)
         cmpCode += '\n;export let ast = ' + JSON.stringify(cmpMod.ast)
         res.type('application/javascript')

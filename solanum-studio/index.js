@@ -1,9 +1,8 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import jsonschema from 'jsonschema'
 import StudioAPI from './server/StudioAPI.js'
-import * as schema from './server/StudioApiSchema.js'
+import TagAPI from './server/TagAPI.js'
 
 
 
@@ -18,14 +17,12 @@ class SolanumStudio {
     }
 
     async init() {
-        const studio = new StudioAPI(this.app, this.config)
+        const studioAPI = new StudioAPI(this.app, this.config)
+        const tagAPI = new TagAPI(this.app, this.config)
 
-        // Allow calling any function defined in the Studio API, but do check if the request is valid
-        this.app.get('/API/Studio/openComponent', async (req, res) => await studio.openComponent(req, res))
-        this.app.get('/API/Studio/getComponentPaths', async (req, res) => {
-            let result = await studio.getComponentPaths()
-            res.send(result)
-        })
+        studioAPI.initMessageHandlers()
+        tagAPI.initMessageHandlers()
+
         this.app.use('/monaco', express.static(path.join(__dirname, 'node_modules/monaco-editor/')))
     }
 }
