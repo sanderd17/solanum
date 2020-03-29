@@ -1,8 +1,15 @@
 
 class TagAPI {
-    constructor(app, config) {
+    /**
+     * 
+     * @param {import('express').Application} app 
+     * @param {*} config 
+     * @param {import('../../solanum-core/server/TagSet').default} ts 
+     */
+    constructor(app, config, ts) {
         this.app = app
         this.config = config
+        this.ts = ts
     }
 
     initMessageHandlers() {

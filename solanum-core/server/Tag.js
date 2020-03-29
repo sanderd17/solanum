@@ -3,7 +3,7 @@ import TagSet from './TagSet.js'
 class Tag {
     /**
      * @param {TagSet} tagSet
-     * @param {string} tagPath 
+     * @param {string[]} tagPath 
      * @param {{defaultValue: Object}} data 
      */
     constructor(tagSet, tagPath, data) {
@@ -14,6 +14,13 @@ class Tag {
 
     triggerChange() {
         this.ts.triggerChange(this)
+    }
+
+    serialize() {
+        return {
+            value: this.value,
+            tagpath: this.tagPath,
+        }
     }
 
     /**

@@ -9,6 +9,16 @@ let tags = {
         type: MemoryTag,
         defaultValue: 0,
     },
+    Motors: {
+        M1: {
+            type: MemoryTag,
+            defaultValue: 1
+        }
+    },
+    'Motors.M2': {
+        type: MemoryTag,
+        defaultValue: 2
+    }
 }
 
 for (let i = 0; i < 3000; i++) {
@@ -35,5 +45,7 @@ tags.watchDog = {
                     ns: 4,
                 }
     },*/
+
+
 
 export default tags

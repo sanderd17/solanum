@@ -8,6 +8,86 @@ import Tag from './Tag.js'
  * @property {any} defaultValue
  */
 
+class TagFolder {
+    constructor() {
+        /** @type {Map<string, Tag|TagFolder>} */
+        this.children = new Map()
+    }
+
+    get size() {
+        return this.children.size
+    }
+
+    /**
+     * 
+     * @param {string[]} tagPath 
+     * @param {Tag} tag 
+     */
+    addTag(tagPath, tag) {
+        let key
+        [key, ...tagPath] = tagPath
+        let child = this.children.get(key)
+        if (!child) {
+            // create a new tag or folder
+            if (tagPath.length > 0) {
+                let newFolder = new TagFolder()
+                newFolder.addTag(tagPath, tag)
+                this.children.set(key, newFolder)
+            } else {
+                this.children.set(key, tag)
+            }
+            return
+        }
+        
+        if (tagPath.length == 0) {
+            // leaf node found, can't replace a tag, should be deleted first
+            throw new Error("Asked to add a tag with a tagpath that already exists")
+        }
+
+        if (child instanceof Tag) {
+            throw new Error("Asked to add a tag as subtag of another tag")
+        }
+        child.addTag(tagPath, tag)
+    }
+
+    /**
+     * 
+     * @param {string[]} tagpath
+     * @returns {Tag|undefined} 
+     */
+    getTag(tagpath) {
+        let key = tagpath.shift()
+        let child = this.children.get(key)
+        if (!child)
+            return undefined // tag not found
+
+        if (!(child instanceof TagFolder)) {
+            if (tagpath.length == 0) {
+                // leaf node found, should be a tag
+                return child
+            }
+            throw new Error("Tag was not the leaf of the given tagpath")
+        }
+
+        return child.getTag(tagpath)
+    }
+
+    /**
+     * @param {string[]} tagPath 
+     */
+    hasTag(tagPath) {
+        return this.getTag(tagPath) != undefined
+    }
+
+    /**
+     * @param {string[]} tagPath 
+     */
+    deleteTag(tagPath) {
+        // TODO implement
+    }
+}
+
+
 class TagSet {
 
     /**
@@ -17,8 +97,8 @@ class TagSet {
     constructor(app, config) {
         this.activeSendTimer = null
         this.changedTags = new Set()
-        /** @type {Map<string, Tag>} */
-        this.tags = new Map()
+        this.root = new TagFolder()
+        /** @type {WeakMap<ClientConnection, Set<string|string[]>>} */
         this.subscribedTags = new WeakMap()// link clients to their subscribed tags
     }
 
@@ -33,10 +113,8 @@ class TagSet {
              * @param {string[]} subscriptionList
              */
             (client, subscriptionList) => {
-                this.subscribedTags.set(client, subscriptionList)
-
-                let tags = new Set(subscriptionList)
-                this.sendTags(new Set([client]), tags)
+                this.subscribedTags.set(client, new Set(subscriptionList))
+                this.sendTagsToClient(client, subscriptionList)
             }
         )
         ClientConnection.on(
@@ -46,7 +124,7 @@ class TagSet {
              * @param {{path: string, value: object}} data
              */
             (client, data) => {
-                let tag = this.tags.get(data.path)
+                let tag = this.getTag(data.path)
                 if (!tag) {
                     console.error(`Could not find tag with path ${data.path}`)
                     return
@@ -57,56 +135,92 @@ class TagSet {
     }
 
     /**
-     * @param {object} tagList 
+     * @param {object} tagDefinitions
+     * @param {Array<string>} prefix
      */
-    setTags(tagList) {
-        for (let tagpath in tagList) {
-            this.addTag(tagpath, tagList[tagpath])
+    setTags(tagDefinitions, prefix=[]) {
+        if (typeof tagDefinitions != 'object')
+            throw new Error(`Expected an object as tag definition, but got << ${tagDefinitions} >>`)
+            
+        for (let tagpath in tagDefinitions) {
+            let tagDefinition = tagDefinitions[tagpath]
+            if (tagDefinition.type && typeof tagDefinition.type == 'function') {
+                // a final tag
+                this.addTag(prefix.concat(tagpath.split('.')), tagDefinition)
+            } else {
+                // a collection of tags
+                this.setTags(tagDefinition, prefix.concat(tagpath.split('.')))
+            }
         }
     }
 
     /**
-     * 
-     * @param {string} tagpath 
+     * @param {string|string[]} tagpath 
      * @param {TagDescription} tagDescr 
      */
     addTag(tagpath, tagDescr) {
+        if (typeof tagpath == 'string') {
+            tagpath = tagpath.split('.')
+        }
         let tagType = tagDescr.type
         let tag = new tagType(this, tagpath, tagDescr)
-        this.tags.set(tagpath, tag)
         tag.init()
+        this.root.addTag(tagpath, tag)
+    }
+
+    /**
+     * @param {string|string[]} tagpath 
+     */
+    getTag(tagpath) {
+        if (typeof tagpath == 'string') {
+            tagpath = tagpath.split('.')
+        }
+        return this.root.getTag(tagpath)
     }
 
     /**
      * @param {Tag} tag 
      */
     triggerChange(tag) {
-        this.changedTags.add(tag.tagPath)
+        console.log('TAGPATH', tag.tagPath)
+        this.changedTags.add(tag.tagPath.join('.'))
         if (!this.activeSendTimer) {
             // notify clients at the end of the eval loop
-            this.activeSendTimer = setTimeout(() => this.sendTags(), 0)
+            this.activeSendTimer = setTimeout(() => this.sendChangedTags(), 0)
         }
+    }
+    
+    /**
+     * @param {string[]} tagpaths 
+     */
+    getSerializedTags(tagpaths) {
+        let ret = {}
+        for (let path of tagpaths) {
+            let tag = this.getTag(path)
+            ret[path] = tag ? tag.serialize() : null
+        }
+        return ret
     }
 
     /**
-     * 
-     * @param {Set<ClientConnection>} clients 
-     * @param {Set<string>} tagPaths 
+     * Send all changed tags to all listening clients
      */
-    sendTags(clients = clientList, tagPaths = null) {
-        let specificPaths = tagPaths || this.changedTags // default to changed tags
+    sendChangedTags() {
         this.activeSendTimer = 0
-        /** @type {Object<string,{value: any}>} */
-        let tagsToSend = {}
-        for (let path of specificPaths) {
-            let tag = this.tags.get(path)
-            tagsToSend[path] = { "value": tag ? tag.value : null }
+        for (let client of clientList) {
+            // TODO filter on subscribed tags
+            this.sendTagsToClient(client, [...this.changedTags])
         }
-        for (let client of clients) {
-            client.sendMessage({ 'TagSet:updateTags': tagsToSend })//.then(() => {})
-        }
-        if (!tagPaths)
-            this.changedTags.clear()
+        this.changedTags.clear()
+    }
+
+    /**
+     * @param {ClientConnection} client 
+     * @param {string[]} tagpaths
+     */
+    sendTagsToClient(client, tagpaths) {
+        let serializedTags = this.getSerializedTags(tagpaths)
+        client.sendMessage({'TagSet:updateTags': serializedTags})//.then(() => {}) // TODO disconnect on failure > client will automatically reconnect and query all tags again
     }
 }
 

@@ -2,6 +2,8 @@
 import assert from 'assert'
 
 import TagSet from '../../solanum-core/server/TagSet.js'
+import MemoryTag from '../../solanum-core/server/MemoryTag.js'
+import clientList from '../../solanum-core/server/ClientList.js'
 
 
 let DummyTag = function(tagSet, tagPath, otherArgs) {
@@ -19,8 +21,6 @@ export default function({describe, it}) {
             assert.equal(ts.activeSendTimer, null)
             assert.equal(ts.changedTags.constructor, Set)
             assert.equal(ts.changedTags.size, 0)
-            assert.equal(ts.tags.constructor, Map)
-            assert.equal(ts.tags.size, 0)
         })
     }),
     describe('addTag', function() {
@@ -28,8 +28,8 @@ export default function({describe, it}) {
             let ts = new TagSet()
             ts.addTag('testTp', {type: DummyTag, arg: 'testArg'})
 
-            assert.equal(ts.tags.size, 1)
-            let t = ts.tags.get('testTp')
+            assert.equal(ts.root.size, 1)
+            let t = ts.getTag('testTp')
             assert.equal(t.constructor, DummyTag)
             assert.equal(t.tagPath, 'testTp')
             assert.equal(t.otherArgs.arg, 'testArg')
@@ -38,7 +38,7 @@ export default function({describe, it}) {
     describe('setTags', function() {
         it('should add all tags', function() {
             let ts = new TagSet()
-            let testObj = {'descr': 'described'}
+            let testObj = {'descr': 'described', 'type': MemoryTag}
             ts.addTag = function(tagpath, tagDescr) {
                 assert.equal(tagpath, 'testTp')
                 assert.equal(tagDescr, testObj)
@@ -51,12 +51,12 @@ export default function({describe, it}) {
         it('should queue changed tags', function() {
             let ts = new TagSet()
 
-            ts.triggerChange({tagPath: 'testTp1', value: 'newValue1'})
+            ts.triggerChange({tagPath: ['testTp1'], value: 'newValue1'})
             assert.notEqual(ts.activeSendTimer, null)
             let timerId = ts.activeSendTimer
             assert.equal(ts.changedTags.size, 1)
             // Make sure only one notification is send for 2 changes in the same event loop
-            ts.triggerChange({tagPath: 'testTp2', value: 'newValue2'})
+            ts.triggerChange({tagPath: ['testTp2'], value: 'newValue2'})
             assert.equal(ts.changedTags.size, 2)
             assert.equal(ts.activeSendTimer, timerId)
             // @ts-ignore
@@ -64,32 +64,38 @@ export default function({describe, it}) {
             clearInterval(timerId)
         })
     }),
-    describe('sendTags', function() {
+    describe('sendChamgedTags', function() {
         it('should notify a list of clients', function() {
             let ts = new TagSet()
 
-            ts.tags.set('testTp1', {value: 'newValue1'})
-            ts.tags.set('testTp2', {value: 'newValue2'})
-            ts.changedTags.add('testTp1')
-            ts.changedTags.add('testTp2')
+            ts.setTags({
+                'testTp1': {type: MemoryTag},
+                'testTp2': {type: MemoryTag},
+            })
+
+            ts.getTag('testTp1').write('newValue1')
+            ts.getTag('testTp2').write('newValue2')
             let called = 0
 
-            let dummyClientList = new Set([
+            clientList.add(
                 {sendMessage: (msg) => {
-                    assert.equal(msg['TagSet:updateTags'].testTp1.value, 'newValue1')
-                    assert.equal(msg['TagSet:updateTags'].testTp2.value, 'newValue2')
-                    called++
-                }},
-                {sendMessage: (msg) => {
+                    console.log(msg)
                     assert.equal(msg['TagSet:updateTags'].testTp1.value, 'newValue1')
                     assert.equal(msg['TagSet:updateTags'].testTp2.value, 'newValue2')
                     called++
                 }}
-            ])
-
-            ts.sendTags(dummyClientList)
+            )
+            clientList.add(
+               {sendMessage: (msg) => {
+                    assert.equal(msg['TagSet:updateTags'].testTp1.value, 'newValue1')
+                    assert.equal(msg['TagSet:updateTags'].testTp2.value, 'newValue2')
+                    called++
+                }}
+            )
+            ts.sendChangedTags()
             assert.equal(called, 2)
             assert.equal(ts.changedTags.size, 0)
+            clientList.clear()
         })
     })
 }

@@ -17,8 +17,8 @@ class IconSet {
     }
 
     /**
-     * @param {Express.Request} req 
-     * @param {Express.Response} res 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
      */
     getIcon(req, res) {
         // TODO make sure only files in the basedir can be queried 
