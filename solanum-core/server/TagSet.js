@@ -1,5 +1,6 @@
 import clientList from './ClientList.js'
 import ClientConnection from './ClientConnection.js'
+import TagFolder from './TagFolder.js'
 import Tag from './Tag.js'
 
 /**
@@ -7,86 +8,6 @@ import Tag from './Tag.js'
  * @property {typeof Tag} type
  * @property {any} defaultValue
  */
-
-class TagFolder {
-    constructor() {
-        /** @type {Map<string, Tag|TagFolder>} */
-        this.children = new Map()
-    }
-
-    get size() {
-        return this.children.size
-    }
-
-    /**
-     * 
-     * @param {string[]} tagPath 
-     * @param {Tag} tag 
-     */
-    addTag(tagPath, tag) {
-        let key
-        [key, ...tagPath] = tagPath
-        let child = this.children.get(key)
-        if (!child) {
-            // create a new tag or folder
-            if (tagPath.length > 0) {
-                let newFolder = new TagFolder()
-                newFolder.addTag(tagPath, tag)
-                this.children.set(key, newFolder)
-            } else {
-                this.children.set(key, tag)
-            }
-            return
-        }
-        
-        if (tagPath.length == 0) {
-            // leaf node found, can't replace a tag, should be deleted first
-            throw new Error("Asked to add a tag with a tagpath that already exists")
-        }
-
-        if (child instanceof Tag) {
-            throw new Error("Asked to add a tag as subtag of another tag")
-        }
-        child.addTag(tagPath, tag)
-    }
-
-    /**
-     * 
-     * @param {string[]} tagpath
-     * @returns {Tag|undefined} 
-     */
-    getTag(tagpath) {
-        let key = tagpath.shift()
-        let child = this.children.get(key)
-        if (!child)
-            return undefined // tag not found
-
-        if (!(child instanceof TagFolder)) {
-            if (tagpath.length == 0) {
-                // leaf node found, should be a tag
-                return child
-            }
-            throw new Error("Tag was not the leaf of the given tagpath")
-        }
-
-        return child.getTag(tagpath)
-    }
-
-    /**
-     * @param {string[]} tagPath 
-     */
-    hasTag(tagPath) {
-        return this.getTag(tagPath) != undefined
-    }
-
-    /**
-     * @param {string[]} tagPath 
-     */
-    deleteTag(tagPath) {
-        // TODO implement
-    }
-}
-
 
 class TagSet {
 
@@ -97,7 +18,7 @@ class TagSet {
     constructor(app, config) {
         this.activeSendTimer = null
         this.changedTags = new Set()
-        this.root = new TagFolder()
+        this.root = new TagFolder(this, [], {})
         /** @type {WeakMap<ClientConnection, Set<string|string[]>>} */
         this.subscribedTags = new WeakMap()// link clients to their subscribed tags
     }
@@ -139,22 +60,12 @@ class TagSet {
      * @param {Array<string>} prefix
      */
     setTags(tagDefinitions, prefix=[]) {
-        if (typeof tagDefinitions != 'object')
-            throw new Error(`Expected an object as tag definition, but got << ${tagDefinitions} >>`)
-            
-        for (let tagpath in tagDefinitions) {
-            let tagDefinition = tagDefinitions[tagpath]
-            if (tagDefinition.type && typeof tagDefinition.type == 'function') {
-                // a final tag
-                this.addTag(prefix.concat(tagpath.split('.')), tagDefinition)
-            } else {
-                // a collection of tags
-                this.setTags(tagDefinition, prefix.concat(tagpath.split('.')))
-            }
+        for (let key in tagDefinitions) {
+            this.addTag(key, tagDefinitions[key])
         }
     }
 
-    /**
+    /*
      * @param {string|string[]} tagpath 
      * @param {TagDescription} tagDescr 
      */
@@ -162,10 +73,7 @@ class TagSet {
         if (typeof tagpath == 'string') {
             tagpath = tagpath.split('.')
         }
-        let tagType = tagDescr.type
-        let tag = new tagType(this, tagpath, tagDescr)
-        tag.init()
-        this.root.addTag(tagpath, tag)
+        this.root.addTag(tagpath, tagDescr)
     }
 
     /**
@@ -182,8 +90,7 @@ class TagSet {
      * @param {Tag} tag 
      */
     triggerChange(tag) {
-        console.log('TAGPATH', tag.tagPath)
-        this.changedTags.add(tag.tagPath.join('.'))
+        this.changedTags.add(tag.tagpath.join('.'))
         if (!this.activeSendTimer) {
             // notify clients at the end of the eval loop
             this.activeSendTimer = setTimeout(() => this.sendChangedTags(), 0)

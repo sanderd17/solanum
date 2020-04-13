@@ -41,6 +41,10 @@ function showError({numError, err, file, descriptor, action}) {
     console.log()
     console.log(chalk.bgRed(`(${numError})`) + chalk.bold.red(` ${file} :: ${descriptor} :: ${action}`))
     let stack = err.stack
+    if (!stack) {
+        console.error(err)
+        return
+    }
     let stackList = stack.split('\n')
     stackList[0] = chalk.bold(stackList[0])
     stackList.splice(stackList.length - 3, 3)
@@ -48,6 +52,7 @@ function showError({numError, err, file, descriptor, action}) {
         stackList[i] = chalk.dim(stackList[i])
     }
     console.log(stackList.join('\n'))
+
 }
 
 

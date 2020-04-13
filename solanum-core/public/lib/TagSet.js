@@ -40,6 +40,8 @@ TagSet.prototype.refreshAllTags = function() {
  */
 TagSet.prototype.updateTags = function(tags) {
     for (let path in tags) {
+        if (!tags[path])
+            continue
         this.tagCache.set(path, tags[path].value)
         if (!this.subscriptionLookup.has(path))
             continue

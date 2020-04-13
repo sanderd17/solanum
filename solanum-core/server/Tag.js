@@ -1,13 +1,11 @@
-import TagSet from './TagSet.js'
-
 class Tag {
     /**
      * @param {TagSet} tagSet
-     * @param {string[]} tagPath 
-     * @param {{defaultValue: Object}} data 
+     * @param {string[]} tagpath 
+     * @param {any} data 
      */
-    constructor(tagSet, tagPath, data) {
-        this.tagPath = tagPath
+    constructor(tagSet, tagpath, data) {
+        this.tagpath = tagpath
         this.value = data.defaultValue
         this.ts = tagSet
     }
@@ -19,8 +17,24 @@ class Tag {
     serialize() {
         return {
             value: this.value,
-            tagpath: this.tagPath,
+            tagpath: this.tagpath,
         }
+    }
+
+    /**
+     * @param {string[]} tagpath The relative path starting from this tag
+     * @returns {Tag} 
+     */
+    getTag(tagpath) {
+        if (tagpath.length == 0)
+            return this
+    }
+
+    /**
+     * @param {string[]} tagpath The relative path starting from this tag
+     */
+    hasTag(tagpath) {
+        return this.getTag(tagpath) != undefined
     }
 
     /**
@@ -34,7 +48,7 @@ class Tag {
      * @returns {void}
      */
     write(value) {
-        throw 'Not implemented'
+        throw new Error('Not implemented')
     }
 }
 
