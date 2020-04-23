@@ -34,16 +34,43 @@ export function getObjectPropertyByName(objectExpression, propName) {
 }
 
 /**
+ * Get the 
  * @param {File} ast 
  */
-export function getClassAst(ast) {
+export function getDefaultExportDefinition(ast) {
     const astBody = ast.program.body
+    let objects = []
+    let exportStatement
     for (let statement of astBody) {
-        if (statement.type != 'ClassDeclaration')
-            continue
-
-        return statement.body
+        // Find variableDeclaration wit ObjectExpression as init
+        if (statement.type == 'ExportDefaultDeclaration') {
+            exportStatement = statement
+        }
     }
+    if (!exportStatement)
+        throw new Error(`No default export found`)
+    if (exportStatement.declaration.type == 'AssignmentExpression') {
+        return exportStatement.declaration.right
+    }
+    if (exportStatement.declaration.type == 'Identifier') {
+        // TODO find initialisation of identifier
+    }
+    throw new Error(`Cannot yet find value of export declaration of type ${exportStatement.declaration.type}`)
+}
+
+/**
+ * Returns the classes found at the root of the AST
+ * @param {File} ast 
+ */
+export function getClassesAst(ast) {
+    const astBody = ast.program.body
+    let classes = []
+    for (let statement of astBody) {
+        if (statement.type == 'ClassDeclaration') {
+            classes.push(statement.body)
+        }
+    }
+    return classes
 }
 
 /**
@@ -53,7 +80,11 @@ export function getClassAst(ast) {
  * @returns {ClassProperty?} class field with give name
  */
 export function getClassField(ast, fieldName) {
-    let classAst = getClassAst(ast);
+    let classesAst = getClassesAst(ast);
+    if (classesAst.length != 1) {
+        throw new Error(`${classesAst.length} classes found, only one expected`)
+    }
+    let classAst = classesAst[0]
 
     for (let statement of classAst.body) {
         if (statement.type != 'ClassProperty')
