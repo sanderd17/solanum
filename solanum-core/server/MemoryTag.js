@@ -20,5 +20,6 @@ class MemoryTag extends Tag {
     }
 }
 
+
 export default MemoryTag
 
