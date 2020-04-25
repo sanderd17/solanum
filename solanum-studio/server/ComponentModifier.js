@@ -1,7 +1,7 @@
 import recast from 'recast'
 import flow from 'flow-parser'
 
-import {getObjectPropertyByName, getClassField, getOwnPropertiesAst, getChildDefinition, getChildProps} from '../public/lib/AstNavigator.js'
+import {getObjectPropertyByName, getClassField, getOwnPropertiesAst, getChildDefinition, getChildProps, sortObjectProperties} from '../public/lib/AstNavigator.js'
 
 const parseOptions = {
     'parser': {
@@ -110,7 +110,7 @@ class ComponentModifier {
             )
         )
         children.value.properties.splice(0, 0, newChildProperty)
-        this.sortObjectProperties(children.value)
+        sortObjectProperties(children.value)
         this.setChildPosition(childId, position)
     }
 
@@ -164,7 +164,7 @@ class ComponentModifier {
         if (property == undefined) { 
             let newProp = b.property('init', b.identifier(propName), valueToAst(value))
             childProps.properties.splice(0, 0, newProp)
-            this.sortObjectProperties(childProps)
+            sortObjectProperties(childProps)
         } else {
             property.value = valueToAst(value)
         }
@@ -193,7 +193,7 @@ class ComponentModifier {
         if (eventHandlers == undefined) {
             eventHandlers = b.property('init', b.identifier('eventHandlers'), b.objectExpression([]))
             childArg.properties.splice(0, 0, eventHandlers)
-            this.sortObjectProperties(childArg)
+            sortObjectProperties(childArg)
         }
 
         if (eventHandlers.value.type != 'ObjectExpression')
@@ -203,7 +203,7 @@ class ComponentModifier {
         if (existingHandler == undefined) {
             let newHandlerProperty = b.property('init', b.identifier(eventId), newEventhandlerAst)
             eventHandlers.value.properties.splice(0, 0, newHandlerProperty)
-            this.sortObjectProperties(eventHandlers.value)
+            sortObjectProperties(eventHandlers.value)
         } else {
             existingHandler.value = newEventhandlerAst
         }
@@ -249,7 +249,7 @@ class ComponentModifier {
                 )
             )
             propertiesAst.properties.splice(0, 0, newPropertyAst)
-            this.sortObjectProperties(propertiesAst)
+            sortObjectProperties(propertiesAst)
         } else {
             if (property.value.type != "NewExpression")
                 throw new Error(`Property ${propName} is not a new object`)
@@ -290,36 +290,6 @@ class ComponentModifier {
                 break
             }
         }
-    }
-
-    /**
-     * 
-     * @param {recast.types.namedTypes.ObjectExpression} objectExpression 
-     */
-    sortObjectProperties(objectExpression) {
-        objectExpression.properties.sort((a, b) => {
-            let keyNameA = undefined
-            let keyNameB = undefined
-            if (a.type != 'Property')
-                return 0 // cannot sort this
-            if (b.type != 'Property')
-                return 0 // cannot sort this
-            if (a.key.type == 'Identifier')
-                keyNameA = a.key.name
-            if (a.key.type == 'Literal')
-                keyNameA = a.key.value
-            if (b.key.type == 'Identifier')
-                keyNameB = b.key.name
-            if (b.key.type == 'Literal')
-                keyNameB = b.key.value
-            if (keyNameA == undefined || keyNameB == undefined)
-                return 0 // no keys defined?
-            if(keyNameA < keyNameB)
-                return -1
-            if(keyNameA > keyNameB)
-                return 1
-            return 0
-        })
     }
 
     /**

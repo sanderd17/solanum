@@ -171,3 +171,84 @@ export function getChildProps(ast, childId) {
         throw new Error(`Child with id ${childId} has no object as properties parameter`)
     return propertiesAst.value
 }
+
+/**
+ * Sort keys of the object alphabetically
+ * @param {import('recast').types.namedTypes.ObjectExpression} objectExpression 
+ */
+export function sortObjectProperties(objectExpression) {
+    const getKeyName = (key) => {
+        if (key.type == 'Identifier')
+            return key.name
+        if (key.type == 'Literal')
+            return key.value
+    }
+
+    objectExpression.properties.sort((a, b) => {
+        if (a.type != 'Property')
+            return 0 // cannot sort this
+        if (b.type != 'Property')
+            return 0 // cannot sort this
+
+        let keyNameA = getKeyName(a.key)
+        let keyNameB = getKeyName(b.key)
+        
+        if(keyNameA < keyNameB)
+            return -1
+        if(keyNameA > keyNameB)
+            return 1
+        return 0
+    })
+}
+
+/**
+ * Convert an object to an objectExpression in AST
+ * Supports only the known JSON datatypes (string, number, array and object) as properties
+ * @param {Object} obj 
+ * @param {import('recast').types.builders} b 
+ * @returns {import('recast').types.namedTypes.ObjectExpression} objectAst
+ */
+export function objectToAst(obj, b) {
+    let properties = []
+    for (let [key, value] of Object.entries(obj)) {
+        let keyAst
+        let valueAst
+        if (/^[a-zA-Z_]\w*$/.test(key)) {
+            keyAst = b.identifier(key)
+        } else {
+            keyAst = b.literal(key)
+        }
+        if (typeof value == "number" || typeof value == "string") {
+            valueAst = b.literal(value)
+        } else if (value instanceof Array) {
+            valueAst = arrayToAst(value, b)
+        } else {
+            // value is an object, recursive call
+            valueAst = objectToAst(value, b)
+        }
+        properties.push(b.property('init', keyAst, valueAst))
+    }
+    return b.objectExpression(properties)
+}
+
+/**
+ * Convert an array to an arrayExpression in AST
+ * Supports only the known JSON datatypes (string, number, array and object) as elements
+ * @param {Array} arr
+ * @param {import('recast').types.builders} b 
+ * @returns {import('recast').types.namedTypes.ArrayExpression} objectAst
+ */
+export function arrayToAst(arr, b) {
+    let elements = []
+    for (let value of arr) {
+        if (typeof value == "number" || typeof value == "string") {
+            elements.push(b.literal(value))
+        } else if (value instanceof Array) {
+            elements.push(arrayToAst(value, b))
+        } else {
+            // value is an object, recursive call
+            elements.push(objectToAst(value, b))
+        }
+    }
+    return b.arrayExpression(elements)
+}
