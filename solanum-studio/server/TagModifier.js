@@ -75,6 +75,12 @@ class TagModifier {
         let existingTag = getObjectPropertyByName(tagsObject, firstPath)
 
         if (tagpath.length > 0) {
+            if (existingTag == null) {
+                existingTag = b.property('init', b.identifier(firstPath), b.objectExpression([]))
+                tagsObject.properties.splice(0, 0, existingTag)
+                sortObjectProperties(tagsObject)
+            }
+
             if (existingTag.value.type != 'ObjectExpression') {
                 throw new Error(`Found tag with unknown type ${existingTag.value.type}`)
             }
@@ -90,7 +96,7 @@ class TagModifier {
         newTagDefinition.properties.splice(0, 0, typeProperty)
 
         let tagProperty = b.property('init', b.identifier(firstPath), newTagDefinition)
-        this.tagsObject.properties.splice(0,0,tagProperty)
+        tagsObject.properties.splice(0,0,tagProperty)
         sortObjectProperties(tagsObject)
     }
 }

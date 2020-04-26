@@ -84,7 +84,7 @@ export default function({describe, it}) {
             assert.includes(newCode, 'memTag3: {')
             assert.includes(newCode, 'defaultValue: 4')
         })
-        it.skip('Adds a tag to a dotted subdirectory', () => {
+        it('Adds a tag to a dotted subdirectory', () => {
             let tagModifier = new TagModifier(initialCode)
             tagModifier.addTag('tagDirectory.memTag3', 'NewTagType', {
                 'defaultValue': 4
@@ -95,7 +95,7 @@ export default function({describe, it}) {
             assert.includes(newCode, 'memTag3: {')
             assert.includes(newCode, 'defaultValue: 4')
         })
-        it.skip('Creates a dotted subdirectory', () => {
+        it('Creates a dotted subdirectory', () => {
             let tagModifier = new TagModifier(initialCode)
             tagModifier.addTag('tagDirectory2.memTag3', 'NewTagType', {
                 'defaultValue': 4
