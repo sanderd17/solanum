@@ -22,7 +22,7 @@
     "recast": "^0.18.5",
     "recursive-readdir": "^2.2.2",
     "solanum-core": "file:../solanum-core",
-    "sqlite3": "^4.1.1",
+    "sqlite3": "^4.2.0",
     "steno": "^0.4.4",
     "xml-js": "^1.6.11"
   },
