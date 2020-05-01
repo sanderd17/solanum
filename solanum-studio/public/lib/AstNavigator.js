@@ -202,53 +202,30 @@ export function sortObjectProperties(objectExpression) {
 }
 
 /**
- * Convert an object to an objectExpression in AST
- * Supports only the known JSON datatypes (string, number, array and object) as properties
- * @param {Object} obj 
+ * Convert a JS value into printable AST.
+ * Supports only JSON compatible types: number, string, Object and Array
+ * @param {number|string|Object|Array} val 
  * @param {import('recast').types.builders} b 
- * @returns {import('recast').types.namedTypes.ObjectExpression} objectAst
+ * @return {import('recast').types.namedTypes.ObjectExpression | import('recast').types.namedTypes.ArrayExpression | import('recast').types.namedTypes.Literal}
  */
-export function objectToAst(obj, b) {
+export function valueToAst(val, b) {
+    if (typeof val == "number" || typeof val == "string") {
+        return b.literal(val)
+    }
+    if (val instanceof Array) {
+        let elements = val.map((el) => valueToAst(el, b))
+        return b.arrayExpression(elements)
+    }
+    // val is Object
     let properties = []
-    for (let [key, value] of Object.entries(obj)) {
+    for (let [key, value] of Object.entries(val)) {
         let keyAst
-        let valueAst
         if (/^[a-zA-Z_]\w*$/.test(key)) {
             keyAst = b.identifier(key)
         } else {
             keyAst = b.literal(key)
         }
-        if (typeof value == "number" || typeof value == "string") {
-            valueAst = b.literal(value)
-        } else if (value instanceof Array) {
-            valueAst = arrayToAst(value, b)
-        } else {
-            // value is an object, recursive call
-            valueAst = objectToAst(value, b)
-        }
-        properties.push(b.property('init', keyAst, valueAst))
+        properties.push(b.property('init', keyAst, valueToAst(value, b)))
     }
     return b.objectExpression(properties)
-}
-
-/**
- * Convert an array to an arrayExpression in AST
- * Supports only the known JSON datatypes (string, number, array and object) as elements
- * @param {Array} arr
- * @param {import('recast').types.builders} b 
- * @returns {import('recast').types.namedTypes.ArrayExpression} objectAst
- */
-export function arrayToAst(arr, b) {
-    let elements = []
-    for (let value of arr) {
-        if (typeof value == "number" || typeof value == "string") {
-            elements.push(b.literal(value))
-        } else if (value instanceof Array) {
-            elements.push(arrayToAst(value, b))
-        } else {
-            // value is an object, recursive call
-            elements.push(objectToAst(value, b))
-        }
-    }
-    return b.arrayExpression(elements)
 }

@@ -1,7 +1,7 @@
 import recast from 'recast'
 import flow from 'flow-parser'
 
-import {getDefaultExportDefinition, getObjectPropertyByName, getClassField, getOwnPropertiesAst, getChildDefinition, getChildProps, objectToAst, sortObjectProperties} from '../public/lib/AstNavigator.js'
+import {getDefaultExportDefinition, getObjectPropertyByName, getClassField, getOwnPropertiesAst, getChildDefinition, getChildProps, valueToAst, sortObjectProperties} from '../public/lib/AstNavigator.js'
 
 const parseOptions = {
     'parser': {
@@ -13,14 +13,6 @@ const parseOptions = {
 }
 
 const b = recast.types.builders
-function valueToAst(value) {
-    if (value instanceof Array)
-        throw new Error('Array props are not implemented yet')
-    if (value instanceof Object)
-        throw new Error('Object props are not implemented yet')
-    // primitive value
-    return b.literal(value)
-}
 
 /**
  * Class to allow modifications to tag files.
@@ -67,7 +59,7 @@ class TagModifier {
             tagpath = tagpath.split('.')
         }
         if (tagpath.length == 0) {
-            return directoryAst // no subtag needed
+            return directoryAst // no subtag needed, return itself
         }
         tagpath = [...tagpath] // clone to avoid changes to the original element
 
@@ -107,13 +99,38 @@ class TagModifier {
         if (existingTag != undefined) 
             throw new Error(`There is already a tag defined with tagpath ${tagpath}`)
 
-        let newTagDefinition = objectToAst(description, b)
+        let newTagDefinition = valueToAst(description, b)
+        if (newTagDefinition.type != "ObjectExpression") {
+            throw new Error(`addTag receifec a description of type ${newTagDefinition.type} while an object was expected`)
+        }
         let typeProperty = b.property('init', b.identifier('type'), b.identifier(tagtype))
         newTagDefinition.properties.splice(0, 0, typeProperty)
 
         let tagProperty = b.property('init', b.identifier(tagname), newTagDefinition)
         directoryAst.properties.splice(0,0,tagProperty)
         sortObjectProperties(directoryAst)
+    }
+
+    /**
+     * @param {string|string[]} tagpath 
+     * @param {string} parameterName 
+     * @param {*} parameterValue 
+     */
+    setTagParameter(tagpath, parameterName, parameterValue) {
+        if (typeof tagpath == "string") {
+            tagpath = tagpath.split('.')
+        }
+
+        let tagAst = this.getTagAst(tagpath, this.tagsObject)
+
+        let parameterAst = getObjectPropertyByName(tagAst, parameterName)
+        if (parameterAst == null) {
+            parameterAst = b.property('init', b.identifier(parameterName), valueToAst(parameterValue, b))
+            tagAst.properties.splice(0, 0, parameterAst)
+            sortObjectProperties(tagAst)
+        } else {
+            parameterAst.value = valueToAst(parameterValue, b)
+        }
     }
 }
 

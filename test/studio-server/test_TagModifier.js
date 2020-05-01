@@ -113,8 +113,13 @@ export default function({describe, it}) {
     describe('deleteTag', () => {
         it.skip('Should be tested')
     })
-    describe('alterTag', () => {
-        it.skip('Should be tested')
+    describe('setTagParameter', () => {
+        it('Should add a tag parameter', () => {
+            let tagModifier = new TagModifier(initialCode)
+            tagModifier.setTagParameter('memTag1', 'customParameter', 1302)
+            let newCode = tagModifier.print()
+            assert.includes(newCode, 'customParameter: 1302')
+        })
     })
     describe('bulkAddTags', () => {
         it.skip('Should parse the code once, and add multiple tags', () => {
