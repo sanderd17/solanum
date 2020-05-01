@@ -59,35 +59,51 @@ class TagModifier {
 
     /**
      * @param {string|string[]} tagpath 
-     * @param {string} tagtype
-     * @param {Object} description 
-     * @param {recast.types.namedTypes.ObjectExpression?} [tagsObject]
+     * @param {recast.types.namedTypes.ObjectExpression?} directoryAst Starting directory
+     * @param {boolean} [createWhenNotFound]
      */
-    addTag(tagpath, tagtype, description, tagsObject) {
+    getTagAst(tagpath, directoryAst, createWhenNotFound) {
         if (typeof tagpath == "string") {
             tagpath = tagpath.split('.')
         }
-        if (tagsObject == null) {
-            tagsObject = this.tagsObject
+        if (tagpath.length == 0) {
+            return directoryAst // no subtag needed
         }
+        tagpath = [...tagpath] // clone to avoid changes to the original element
 
         let firstPath = tagpath.shift()
-        let existingTag = getObjectPropertyByName(tagsObject, firstPath)
-
-        if (tagpath.length > 0) {
-            if (existingTag == null) {
-                existingTag = b.property('init', b.identifier(firstPath), b.objectExpression([]))
-                tagsObject.properties.splice(0, 0, existingTag)
-                sortObjectProperties(tagsObject)
+        let subdirectoryAst = getObjectPropertyByName(directoryAst, firstPath)?.value
+        // find or create the subdirectory
+        if (subdirectoryAst == null) {
+            if (createWhenNotFound) {
+                let newProperty = b.property('init', b.identifier(firstPath), b.objectExpression([]))
+                directoryAst.properties.splice(0, 0, newProperty)
+                subdirectoryAst = newProperty.value
+                sortObjectProperties(directoryAst)
+            } else {
+                throw new Error(`Directory with the name ${firstPath} not found`)
             }
-
-            if (existingTag.value.type != 'ObjectExpression') {
-                throw new Error(`Found tag with unknown type ${existingTag.value.type}`)
-            }
-            this.addTag(tagpath, tagtype, description, existingTag.value)
-            return
         }
 
+        if (subdirectoryAst.type != 'ObjectExpression') {
+            throw new Error(`Found tag with unknown type ${subdirectoryAst.type}`)
+        }
+        return this.getTagAst(tagpath, subdirectoryAst, createWhenNotFound)
+    }
+
+    /**
+     * @param {string|string[]} tagpath 
+     * @param {string} tagtype
+     * @param {Object} description 
+     */
+    addTag(tagpath, tagtype, description) {
+        if (typeof tagpath == "string") {
+            tagpath = tagpath.split('.')
+        }
+        let tagname = tagpath.pop() // last part of the tagpath is the tag name
+        let directoryAst = this.getTagAst(tagpath, this.tagsObject, true) // get directory based on the rest of the tagpath
+
+        let existingTag = getObjectPropertyByName(directoryAst, tagname)
         if (existingTag != undefined) 
             throw new Error(`There is already a tag defined with tagpath ${tagpath}`)
 
@@ -95,9 +111,9 @@ class TagModifier {
         let typeProperty = b.property('init', b.identifier('type'), b.identifier(tagtype))
         newTagDefinition.properties.splice(0, 0, typeProperty)
 
-        let tagProperty = b.property('init', b.identifier(firstPath), newTagDefinition)
-        tagsObject.properties.splice(0,0,tagProperty)
-        sortObjectProperties(tagsObject)
+        let tagProperty = b.property('init', b.identifier(tagname), newTagDefinition)
+        directoryAst.properties.splice(0,0,tagProperty)
+        sortObjectProperties(directoryAst)
     }
 }
 
