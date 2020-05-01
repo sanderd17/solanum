@@ -111,7 +111,26 @@ export default function({describe, it}) {
         })
     })
     describe('deleteTag', () => {
-        it.skip('Should be tested')
+        it('Should delete a tag on the root', () => {
+            let tagModifier = new TagModifier(initialCode)
+            tagModifier.deleteTag('memTag1')
+            let newCode = tagModifier.print()
+            assert(!newCode.includes('memTag1'))
+        })
+        it('Should delete a tag in a subdirectory', () => {
+            let tagModifier = new TagModifier(initialCode)
+            tagModifier.deleteTag('tagDirectory.nestedMemTag')
+            let newCode = tagModifier.print()
+            assert(!newCode.includes('nestedMemTag'))
+            assert.includes(newCode, 'tagDirectory')
+        })
+        it('Can delete a complete directory with contents', () => {
+            let tagModifier = new TagModifier(initialCode)
+            tagModifier.deleteTag('tagDirectory')
+            let newCode = tagModifier.print()
+            assert(!newCode.includes('nestedMemTag'))
+            assert(!newCode.includes('tagDirectory'))
+        })
     })
     describe('setTagParameter', () => {
         it('Should add a tag parameter', () => {
@@ -119,6 +138,18 @@ export default function({describe, it}) {
             tagModifier.setTagParameter('memTag1', 'customParameter', 1302)
             let newCode = tagModifier.print()
             assert.includes(newCode, 'customParameter: 1302')
+        })
+        it('Should overwrite a tag parameter', () => {
+            let tagModifier = new TagModifier(initialCode)
+            tagModifier.setTagParameter('memTag1', 'defaultValue', 1302)
+            let newCode = tagModifier.print()
+            assert.includes(newCode, 'defaultValue: 1302')
+        })
+        it('Should handle a string value', () => {
+            let tagModifier = new TagModifier(initialCode)
+            tagModifier.setTagParameter('memTag1', 'customParameter', '1302')
+            let newCode = tagModifier.print()
+            assert.includes(newCode, 'customParameter: "1302"')
         })
     })
     describe('bulkAddTags', () => {

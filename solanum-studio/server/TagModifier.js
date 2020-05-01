@@ -53,6 +53,7 @@ class TagModifier {
      * @param {string|string[]} tagpath 
      * @param {recast.types.namedTypes.ObjectExpression?} directoryAst Starting directory
      * @param {boolean} [createWhenNotFound]
+     * @return {recast.types.namedTypes.ObjectExpression}
      */
     getTagAst(tagpath, directoryAst, createWhenNotFound) {
         if (typeof tagpath == "string") {
@@ -109,6 +110,37 @@ class TagModifier {
         let tagProperty = b.property('init', b.identifier(tagname), newTagDefinition)
         directoryAst.properties.splice(0,0,tagProperty)
         sortObjectProperties(directoryAst)
+    }
+
+    /**
+     * @param {string|string[]} tagpath 
+     */
+    deleteTag(tagpath) {
+        if (typeof tagpath == "string") {
+            tagpath = tagpath.split('.')
+        }
+        let tagname = tagpath.pop() // last part of the tagpath is the tag name
+        let directoryAst = this.getTagAst(tagpath, this.tagsObject) // get directory based on the rest of the tagpath
+
+        for (let i = 0; i < directoryAst.properties.length; i++) {
+            let p = directoryAst.properties[i]
+            if (p.type != "Property") {
+                continue
+            }
+            let keyName
+            if (p.key.type == 'Identifier') {
+                keyName = p.key.name
+            } else if (p.key.type == "Literal") {
+                keyName = p.key.value
+            } else {
+                throw new Error("Uknown key type: " + p.key.type)
+            }
+            if (keyName == tagname) {
+                // tag found, delete the tag
+                directoryAst.properties.splice(i, 1)
+                return
+            }
+        }
     }
 
     /**
