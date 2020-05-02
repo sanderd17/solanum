@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "jsonschema": "^1.2.5",
-    "node-opcua": "^2.4.4",
+    "jsonschema": "^1.2.6",
+    "node-opcua": "^2.5.9",
     "solanum-core": "file:../solanum-core"
   },
   "devDependencies": {
     "@types/express": "^4.17.2",
     "@types/node": "^12.12.27",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   }
 }

@@ -16,19 +16,19 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "flow-parser": "^0.118.0",
-    "jsonschema": "^1.2.5",
+    "flow-parser": "^0.123.0",
+    "jsonschema": "^1.2.6",
     "monaco-editor": "^0.20.0",
-    "recast": "^0.18.5",
+    "recast": "^0.19.0",
     "recursive-readdir": "^2.2.2",
     "solanum-core": "file:../solanum-core",
     "sqlite3": "^4.2.0",
-    "steno": "^0.4.4",
+    "steno": "^0.5.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@types/express": "^4.17.2",
-    "@types/node": "^13.7.1",
-    "typescript": "^3.7.5"
+    "@types/express": "^4.17.6",
+    "@types/node": "^13.13.4",
+    "typescript": "^3.8.3"
   }
 }
