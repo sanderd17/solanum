@@ -6,7 +6,7 @@ class Tag {
      */
     constructor(tagSet, tagpath, data) {
         this.tagpath = tagpath
-        this.value = data.defaultValue
+        this.data = data
         this.ts = tagSet
     }
 
@@ -16,7 +16,7 @@ class Tag {
 
     serialize() {
         return {
-            value: this.value,
+            data: this.data,
             tagpath: this.tagpath,
         }
     }

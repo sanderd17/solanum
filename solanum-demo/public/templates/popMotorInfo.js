@@ -21,7 +21,7 @@ class PopMotorInfo extends Template {
             eventHandlers: {
                 click: (ev) => {
                     console.log(this.prop.path)
-                    ts.writeTag(this.prop.path, 'lightgreen')
+                    ts.writeTag(this.prop.path + '.sColor', 'lightgreen')
                 }
             }
         }),
@@ -30,7 +30,7 @@ class PopMotorInfo extends Template {
             position: {left: '10%', right: '10%', top: '40px', height: '25px'},
             properties: {text: '"Stop"'},
             eventHandlers: {
-                click: (ev) => ts.writeTag(this.prop.path, 'gray')
+                click: (ev) => ts.writeTag(this.prop.path + '.sColor', 'gray')
             }
         }),
     }

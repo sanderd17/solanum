@@ -1,9 +1,7 @@
 import MemoryTag from 'solanum-core/server/MemoryTag.js'
 import OpcUaTag from 'solanum-opcua/server/OpcUaTag.js'
+import ST_Motor from '../server/tagTypes/ST_Motor.js'
 
-/**
- * @type {Object<string, import ('../../solanum-core/server/TagSet.js').TagDescription>}
- */
 let tags = {
     'testMemoryTag': {
         type: MemoryTag,
@@ -13,9 +11,9 @@ let tags = {
 
 for (let i = 0; i < 3000; i++) {
     tags[`Motors/M${i}`] = {
-        type: MemoryTag,
-        //defaultValue: `hsl(0, 100%, 50%)`
-        defaultValue: `hsl(${(i) % 360}, 100%, 50%)`
+        type: ST_Motor,
+        sId: `M${i}`,
+        i: i,
     }
 }
 tags.watchDog = {

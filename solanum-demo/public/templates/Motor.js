@@ -33,7 +33,7 @@ class Motor extends Template {
                 height: "78%",
                 top: "11%"
             },
-            properties: {fill: "Tag(`Motors/${Prop(\"motor\")}`, \"blue\")", prop2: '`Motors/${Prop("motor")}`'},
+            properties: {fill: "Tag(`Motors/${Prop(\"motor\")}.sColor`, \"blue\")", prop2: '`Motors/${Prop("motor")}.sId`'},
             eventHandlers: {
                 /**@param {Event} ev */ 
                 click: (ev) => {
