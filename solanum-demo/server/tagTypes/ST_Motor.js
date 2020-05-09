@@ -18,7 +18,7 @@ class ST_Motor extends TagFolder {
             },
             sColor: {
                 type: MemoryTag,
-            defaultValue: `hsl(${(data.i) % 360}, 100%, 50%)`,
+                defaultValue: `hsl(${(data.i) % 360}, 100%, 50%)`,
             }
         })
     }
