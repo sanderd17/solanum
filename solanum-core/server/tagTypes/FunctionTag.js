@@ -1,8 +1,8 @@
 import Tag from '../Tag.js'
 
 class FunctionTag extends Tag{
-    constructor(tagset, tagpath, data) {
-        super(tagset, tagpath, data)
+    constructor(data) {
+        super(data)
 
         this.value = 0
         if (data.pollRate) {
@@ -17,7 +17,8 @@ class FunctionTag extends Tag{
         }
     }
 
-    async init() {
+    async init(tagSet, tagpath) {
+        await super.init(tagSet, tagpath)
         this.value = await this.data.function()
         this.triggerChange()
     }

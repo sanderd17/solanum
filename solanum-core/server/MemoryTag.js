@@ -6,8 +6,8 @@ class MemoryTag extends Tag {
      * @param {string} tagPath 
      * @param {{defaultValue: object}} data 
      */
-    constructor(tagSet, tagPath, data) {
-        super(tagSet, tagPath, data)
+    constructor(data) {
+        super(data)
         this.quality = 'GOOD'
         this.value = data.defaultValue
     }

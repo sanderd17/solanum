@@ -2,8 +2,8 @@ import TagFolder from 'solanum-core/server/TagFolder.js'
 import MemoryTag from 'solanum-core/server/MemoryTag.js'
 
 class ST_Motor extends TagFolder {
-    constructor(tagset, tagpath, data) {
-        super(tagset, tagpath, {
+    constructor(data) {
+        super({
             sId: {
                 type: MemoryTag,
                 defaultValue: data.sId

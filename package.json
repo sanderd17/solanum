@@ -7,7 +7,7 @@
   "repository": "https://github.com/sanderd17/solanum",
   "type": "module",
   "scripts": {
-    "start": "node solanum-demo/index.js",
+    "start": "node --unhandled-rejections=strict solanum-demo/index.js",
     "inspect": "node --inspect index.js",
     "sample-server": "node tools/sample-server.js",
     "test": "node --loader ./test/solanumTestLoader.mjs ./test/solanumTestRunner.js",

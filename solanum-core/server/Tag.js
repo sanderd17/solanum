@@ -4,10 +4,19 @@ class Tag {
      * @param {string[]} tagpath 
      * @param {any} data 
      */
-    constructor(tagSet, tagpath, data) {
-        this.tagpath = tagpath
+    constructor(data) {
         this.data = data
+    }
+    
+    /**
+     * Init function (optional)
+     * called when the tag is added to the tagset
+     * @param {TagSet} tagSet
+     * @param {string[]} tagpath
+     */
+    async init(tagSet, tagpath) {
         this.ts = tagSet
+        this.tagpath = tagpath
     }
 
     triggerChange() {
@@ -36,12 +45,6 @@ class Tag {
     hasTag(tagpath) {
         return this.getTag(tagpath) != undefined
     }
-
-    /**
-     * Init function (optional)
-     * called when the tag is added to the tagset
-     */
-    async init() {}
 
     /**
      * @param {object} value 

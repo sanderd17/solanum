@@ -18,7 +18,8 @@ class TagSet {
     constructor(app, config) {
         this.activeSendTimer = null
         this.changedTags = new Set()
-        this.root = new TagFolder(this, [], {})
+        this.root = new TagFolder({})
+        this.root.init(this, [])
         /** @type {WeakMap<ClientConnection, Set<string|string[]>>} */
         this.subscribedTags = new WeakMap()// link clients to their subscribed tags
     }

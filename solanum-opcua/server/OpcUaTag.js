@@ -10,8 +10,8 @@ class OpcUaTag extends Tag {
      * @param {string} tagPath 
      * @param {{defaultValue: object}} data 
      */
-    constructor(tagSet, tagPath, data) {
-        super(tagSet, tagPath, data)
+    constructor(data) {
+        super(data)
         this.value = data.defaultValue
         this.connectionName = data.connection
         this.subscriptionName = data.subscription
@@ -19,7 +19,11 @@ class OpcUaTag extends Tag {
         this.quality = 'INIT'
     }
 
-    async init() {
+    /**
+     * @override
+     */
+    async init(tagSet, tagpath) {
+        await super.init(tagSet, tagpath)
         await connectionManager.subscribeTag(this.connectionName, this.subscriptionName, this.nodeId, (value) => {
             this.value = value.value.value
             this.triggerChange()
