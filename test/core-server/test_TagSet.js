@@ -8,8 +8,8 @@ import clientList from '../../solanum-core/server/ClientList.js'
 
 class DummyTag extends Tag {
 
-    constructor(tagset, tagpath, data) {
-        super(tagset, tagpath, data)
+    constructor(data) {
+        super(data)
         this.otherArgs = data
     }
 
