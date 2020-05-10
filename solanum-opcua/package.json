@@ -17,12 +17,12 @@
   "dependencies": {
     "express": "^4.17.1",
     "jsonschema": "^1.2.6",
-    "node-opcua": "^2.5.9",
+    "node-opcua": "^2.5.12",
     "solanum-core": "file:../solanum-core"
   },
   "devDependencies": {
-    "@types/express": "^4.17.2",
-    "@types/node": "^12.12.27",
+    "@types/express": "^4.17.6",
+    "@types/node": "^13.13.5",
     "typescript": "^3.8.3"
   }
 }
