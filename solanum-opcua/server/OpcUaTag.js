@@ -6,9 +6,7 @@ import connectionManager from './OpcUaConnectionManager.js'
 
 class OpcUaTag extends Tag {
     /**
-     * @param {TagSet} tagSet
-     * @param {string} tagPath 
-     * @param {{defaultValue: object}} data 
+     * @param {any} data 
      */
     constructor(data) {
         super(data)
@@ -28,6 +26,12 @@ class OpcUaTag extends Tag {
             this.value = value.value.value
             this.triggerChange()
         })
+    }
+
+    serialize() {
+        return {
+            value: this.value
+        }
     }
 
     triggerChange() {

@@ -17,6 +17,13 @@ class MainWindow extends Template {
             eventHandlers: {}
         }))
 
+        this.addChild('label2', new Label({
+            parent: this,
+            position: {right: '10px', width: '100px', top: '30px', height: '20px'},
+            properties: {text: 'Tag("watchDog")'},
+            eventHandlers: {}
+        }))
+
         this.addChild('icon', new Icon({
             parent: this,
             position: {right: '10px', top: '40px', width: '15px', height: '15px'},

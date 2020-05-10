@@ -62,6 +62,9 @@ class TagFolder extends Tag {
             tf.init(this.ts, this.tagpath.concat([key]))
             tf.addTag(tagpath, tagDescription)
             tag = tf
+        } else if (tagDescription instanceof Tag) {
+            tag = tagDescription
+            tag.init(this.ts, this.tagpath.concat([key]))
         } else {
             // create tag from type
             /** @type {typeof Tag} */

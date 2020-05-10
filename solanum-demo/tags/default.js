@@ -3,26 +3,23 @@ import OpcUaTag from 'solanum-opcua/server/OpcUaTag.js'
 import ST_Motor from '../server/tagTypes/ST_Motor.js'
 
 let tags = {
-    'testMemoryTag': {
-        type: MemoryTag,
+    'testMemoryTag': new MemoryTag({
         defaultValue: 0,
-    },
+    }),
 }
 
 for (let i = 0; i < 3000; i++) {
-    tags[`Motors/M${i}`] = {
-        type: ST_Motor,
+    tags[`Motors/M${i}`] = new ST_Motor({
         sId: `M${i}`,
         i: i,
-    }
+    })
 }
-tags.watchDog = {
-        type: OpcUaTag,
-        connection: "DemoServer",
-        subscription: "default",
-        ns: 1,
-        nodeId: "ns=1;s=iWatchDog",
-}
+tags.watchDog = new OpcUaTag({
+    connection: "DemoServer",
+    subscription: "default",
+    ns: 1,
+    nodeId: "ns=1;s=iWatchDog",
+})
     /*
     testUdtInst: {
             type: "UdtInstance",

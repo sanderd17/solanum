@@ -2,24 +2,23 @@ import TagFolder from 'solanum-core/server/TagFolder.js'
 import MemoryTag from 'solanum-core/server/MemoryTag.js'
 
 class ST_Motor extends TagFolder {
+    /**
+     * @param {*} data 
+     */
     constructor(data) {
         super({
-            sId: {
-                type: MemoryTag,
+            sId: new MemoryTag({
                 defaultValue: data.sId
-            },
-            bFwdMan: {
-                type: MemoryTag,
+            }),
+            bFwdMan: new MemoryTag({
                 defaultValue: false
-            },
-            bRvsMan: {
-                type: MemoryTag,
+            }),
+            bRvsMan: new MemoryTag({
                 defaultValue: false
-            },
-            sColor: {
-                type: MemoryTag,
+            }),
+            sColor: new MemoryTag({
                 defaultValue: `hsl(${(data.i) % 360}, 100%, 50%)`,
-            }
+            })
         })
     }
 }

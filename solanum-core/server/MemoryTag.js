@@ -2,8 +2,6 @@ import Tag from './Tag.js'
 
 class MemoryTag extends Tag {
     /**
-     * @param {TagSet} tagSet
-     * @param {string} tagPath 
      * @param {{defaultValue: object}} data 
      */
     constructor(data) {

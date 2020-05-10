@@ -23,19 +23,16 @@ import tagtypes from 'solanum-core/server/TagTypes.js'
 const {MemoryTag} = tagtypes
 
 export default tags = {
-    'memTag1': {
-        type: MemoryTag,
+    'memTag1': new MemoryTag({
         defaultValue: 0,
-    },
-    memTag2: {
-            type: MemoryTag,
+    }),
+    memTag2: new MemoryTag({
             defaultValue: 10
-    },
+    }),
     tagDirectory: {
-        'memTagNested': {
-            type: MemoryTag,
+        'memTagNested': new MemoryTag({
             defaultValue: 255
-        }
+        })
     }
 }
 `
@@ -62,8 +59,7 @@ export default function({describe, it}) {
                 'defaultValue': 4
             })
             let newCode = tagModifier.print()
-            assert.includes(newCode, 'type: NewTagType')
-            assert.includes(newCode, 'memTag3: {')
+            assert.includes(newCode, 'memTag3: new NewTagType(')
             assert.includes(newCode, 'defaultValue: 4')
         })
         it.skip('Adds a tag to the active tags', () => {
@@ -79,9 +75,8 @@ export default function({describe, it}) {
                 'defaultValue': 4
             })
             let newCode = tagModifier.print()
-            assert.includes(newCode, 'type: NewTagType')
             assert.includes(newCode, 'tagDirectory: {')
-            assert.includes(newCode, 'memTag3: {')
+            assert.includes(newCode, 'memTag3: new NewTagType(')
             assert.includes(newCode, 'defaultValue: 4')
         })
         it('Adds a tag to a dotted subdirectory', () => {
@@ -90,9 +85,8 @@ export default function({describe, it}) {
                 'defaultValue': 4
             })
             let newCode = tagModifier.print()
-            assert.includes(newCode,'type: NewTagType')
             assert.includes(newCode, 'tagDirectory: {')
-            assert.includes(newCode, 'memTag3: {')
+            assert.includes(newCode, 'memTag3: new NewTagType(')
             assert.includes(newCode, 'defaultValue: 4')
         })
         it('Creates a dotted subdirectory', () => {
@@ -101,9 +95,8 @@ export default function({describe, it}) {
                 'defaultValue': 4
             })
             let newCode = tagModifier.print()
-            assert.includes(newCode, 'type: NewTagType')
             assert.includes(newCode, 'tagDirectory2: {')
-            assert.includes(newCode, 'memTag3: {')
+            assert.includes(newCode, 'memTag3: new NewTagType(')
             assert.includes(newCode, 'defaultValue: 4')
         })
         it.skip('Should add a new import when needed', () => {

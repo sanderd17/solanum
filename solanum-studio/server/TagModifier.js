@@ -50,38 +50,68 @@ class TagModifier {
     }
 
     /**
-     * @param {string|string[]} tagpath 
-     * @param {recast.types.namedTypes.ObjectExpression?} directoryAst Starting directory
-     * @param {boolean} [createWhenNotFound]
-     * @return {recast.types.namedTypes.ObjectExpression}
+     * @param {string} tagname
+     * @param {recast.types.namedTypes.ObjectExpression?} directoryAst Directory that should contain the tag
+     * @return {recast.types.namedTypes.NewExpression} The folder object or new tag construction
      */
-    getTagAst(tagpath, directoryAst, createWhenNotFound) {
-        if (typeof tagpath == "string") {
-            tagpath = tagpath.split('.')
+    getTagAst(tagname, directoryAst) {
+
+        let tagAst = getObjectPropertyByName(directoryAst, tagname)?.value
+        // find or create the subdirectory
+        if (tagAst == null) {
+            return null
         }
+
+        if (tagAst.type != 'NewExpression') {
+            throw new Error(`Found tag with unknown type ${tagAst.type}`)
+        }
+        return tagAst
+    }
+
+    /**
+     * @param {string} tagname
+     * @param {recast.types.namedTypes.ObjectExpression?} directoryAst Directory that should contain the tag
+     * @return {recast.types.namedTypes.ObjectExpression} The folder object or new tag construction argument object
+     */
+    getTagParameterAst(tagname, directoryAst) {
+        let tagAst = this.getTagAst(tagname, directoryAst)
+        
+        if (tagAst.arguments.length != 1){
+            throw new Error(`Found ${tagAst.arguments.length} parameters; exactly 1 expected`)
+        }
+
+        let argAst = tagAst.arguments[0]
+        if (argAst.type != 'ObjectExpression') {
+            throw new Error(`Tag constructor argument should be an object, found ${tagAst.type} instead`)
+        }
+        return argAst
+    }
+
+    /**
+     * Recursively create a tag folder under the given directory
+     * @param {string[]} tagpath 
+     * @param {recast.types.namedTypes.ObjectExpression} directoryAst 
+     * @return {recast.types.namedTypes.ObjectExpression} the created directory
+     */
+    getTagDirectory(tagpath, directoryAst) {
         if (tagpath.length == 0) {
-            return directoryAst // no subtag needed, return itself
+            return directoryAst
         }
         tagpath = [...tagpath] // clone to avoid changes to the original element
 
         let firstPath = tagpath.shift()
-        let subdirectoryAst = getObjectPropertyByName(directoryAst, firstPath)?.value
+        let subTagAst = getObjectPropertyByName(directoryAst, firstPath)?.value
         // find or create the subdirectory
-        if (subdirectoryAst == null) {
-            if (createWhenNotFound) {
-                let newProperty = b.property('init', b.identifier(firstPath), b.objectExpression([]))
-                directoryAst.properties.splice(0, 0, newProperty)
-                subdirectoryAst = newProperty.value
-                sortObjectProperties(directoryAst)
-            } else {
-                throw new Error(`Directory with the name ${firstPath} not found`)
-            }
+        if (subTagAst == null) {
+            let newProperty = b.property('init', b.identifier(firstPath), b.objectExpression([]))
+            directoryAst.properties.splice(0, 0, newProperty)
+            subTagAst = newProperty.value
+            sortObjectProperties(directoryAst)
         }
-
-        if (subdirectoryAst.type != 'ObjectExpression') {
-            throw new Error(`Found tag with unknown type ${subdirectoryAst.type}`)
+        if (subTagAst.type != 'ObjectExpression') {
+            throw new Error(`Found tag with unknown type ${subTagAst.type}`)
         }
-        return this.getTagAst(tagpath, subdirectoryAst, createWhenNotFound)
+        return this.getTagDirectory(tagpath, subTagAst)
     }
 
     /**
@@ -94,20 +124,19 @@ class TagModifier {
             tagpath = tagpath.split('.')
         }
         let tagname = tagpath.pop() // last part of the tagpath is the tag name
-        let directoryAst = this.getTagAst(tagpath, this.tagsObject, true) // get directory based on the rest of the tagpath
+        let directoryAst = this.getTagDirectory(tagpath, this.tagsObject)
 
         let existingTag = getObjectPropertyByName(directoryAst, tagname)
         if (existingTag != undefined) 
             throw new Error(`There is already a tag defined with tagpath ${tagpath}`)
 
-        let newTagDefinition = valueToAst(description, b)
-        if (newTagDefinition.type != "ObjectExpression") {
-            throw new Error(`addTag receifec a description of type ${newTagDefinition.type} while an object was expected`)
+        let newTagParameters = valueToAst(description, b)
+        if (newTagParameters.type != "ObjectExpression") {
+            throw new Error(`addTag receifec a description of type ${newTagParameters.type} while an object was expected`)
         }
-        let typeProperty = b.property('init', b.identifier('type'), b.identifier(tagtype))
-        newTagDefinition.properties.splice(0, 0, typeProperty)
+        let tagConstruction = b.newExpression(b.identifier(tagtype), [newTagParameters])
 
-        let tagProperty = b.property('init', b.identifier(tagname), newTagDefinition)
+        let tagProperty = b.property('init', b.identifier(tagname), tagConstruction)
         directoryAst.properties.splice(0,0,tagProperty)
         sortObjectProperties(directoryAst)
     }
@@ -120,7 +149,7 @@ class TagModifier {
             tagpath = tagpath.split('.')
         }
         let tagname = tagpath.pop() // last part of the tagpath is the tag name
-        let directoryAst = this.getTagAst(tagpath, this.tagsObject) // get directory based on the rest of the tagpath
+        let directoryAst = this.getTagDirectory(tagpath, this.tagsObject) // get directory based on the rest of the tagpath
 
         for (let i = 0; i < directoryAst.properties.length; i++) {
             let p = directoryAst.properties[i]
@@ -153,7 +182,9 @@ class TagModifier {
             tagpath = tagpath.split('.')
         }
 
-        let tagAst = this.getTagAst(tagpath, this.tagsObject)
+        let tagname = tagpath.pop()
+        let tagDirectory = this.getTagDirectory(tagpath, this.tagsObject)
+        let tagAst = this.getTagParameterAst(tagname, tagDirectory)
 
         let parameterAst = getObjectPropertyByName(tagAst, parameterName)
         if (parameterAst == null) {
