@@ -46,9 +46,9 @@ class TagFolder extends Tag {
                     tag.addTag(tagpath, tagDescription)
                 } else {
                     // Loop over description to add possible subtags
-                    for (let subtagpath in tagDescription) {
-                        await this.addTag(subtagpath.split(DELIMITOR), tagDescription[subtagpath])
-                    }
+                    await Promise.all(
+                        Object.entries(tagDescription)
+                            .map(([subpath, desc]) => this.addTag(subpath.split(DELIMITOR), desc)))
                 }
             } else {
                 throw new Error(`Trying to add tag with path "${key}" to folder "${this.tagpath.join('.')}" while tag already existed (${tag})`)
