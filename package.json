@@ -31,6 +31,7 @@
     "prompts": "^2.3.2"
   },
   "devDependencies": {
+    "@types/express": "github:types/npm-express",
     "chalk": "^4.0.0",
     "flow-parser": "^0.124.0",
     "jsdom": "^16.2.2",
