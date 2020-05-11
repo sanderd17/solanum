@@ -2,7 +2,7 @@ import SQLiteDB from './utils/SQLiteDB.js'
 /**
  * The component historian keeps track of the changes that happen to component code
  */
-class TagHistorian {
+class ComponentHistorian {
     async init() {
         if (this.db)
             return
@@ -80,4 +80,4 @@ class TagHistorian {
     }
 }
 
-export default TagHistorian
+export default ComponentHistorian
