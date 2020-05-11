@@ -1,14 +1,18 @@
+import path from 'path'
+import { fileURLToPath } from 'url'
 import express from 'express'
 
-
 import config from './config.js'
-import tags from './tags/default.js'
-
 
 import Solanum from 'solanum-core'
 import SolanumOpcUa from 'solanum-opcua'
 import SolanumStudio from 'solanum-studio'
 import createDemoOpcServer from './server/OpcServer.js'
+
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 
 const app = express()
 
@@ -23,7 +27,7 @@ solanum.addModule(SolanumOpcUa)
 solanum.addModule(SolanumStudio)
 
 solanum.init()
-solanum.ts.setTags('default', tags)
+solanum.ts.setTags('default', path.join(__dirname, './tags/default.js'))
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)

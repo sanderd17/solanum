@@ -13,7 +13,6 @@ import IconManager from './server/IconManager.js'
 
 import tagtypes from './server/TagTypes.js'
 import MemoryTag from './server/MemoryTag.js'
-import systemTags from './server/tags/system.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -73,7 +72,7 @@ class Solanum {
         iconManager.addIconSet('material-design', path.join(__dirname, 'node_modules', 'material-design-icons'), '(.*)/svg/production/(.*)\\.svg')
 
         tagtypes['MemoryTag'] = MemoryTag
-        this.ts.setTags('system', systemTags)
+        await this.ts.setTags('system', path.join(__dirname, './server/tags/system.js'))
 
         for (let m of this.modules) {
             await m.init()

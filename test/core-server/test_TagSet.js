@@ -29,7 +29,8 @@ export default function({describe, it}) {
         })
     }),
     describe('setTags', function() {
-        it('should add all tags', async () => {
+        it.skip('should add all tags', async () => {
+            // TODO use fs.mkdtemp to create tag files in a temp directory
             let ts = new TagSet(null, null)
             let testObj = {'descr': 'described', 'type': DummyTag}
             await ts.setTags('root', {'testTp': testObj})

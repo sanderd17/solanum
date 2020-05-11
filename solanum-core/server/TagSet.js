@@ -58,11 +58,13 @@ class TagSet {
 
     /**
      * @param {string} setName
-     * @param {object} tagDefinitions
+     * @param {string} fileName
      */
-    async setTags(setName, tagDefinitions) {
-        // TODO don't receive definitions, but get an importable filename and load it to the tag folder
-        await this.root.addTag([setName], tagDefinitions)
+    async setTags(setName, fileName) {
+        console.log(fileName)
+        let tagFile = await import(fileName)
+        console.log("Tag definitions: ", tagFile)
+        await this.root.addTag([setName], tagFile.default)
     }
 
     /**
