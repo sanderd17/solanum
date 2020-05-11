@@ -8,18 +8,15 @@ class TagStore {
     }
 
     /**
-     * 
-     * @param {string} module 
-     * @param {string} component 
-     * @returns {string} absolute path to the component on disk
+     * @param {string} tagset 
+     * @returns {string} absolute path to the tag file on disk
      */
     getTagfilePath(module, component) {
-        const directory = this.config.editableDirs[module]
-        return path.join(directory, component)
+        return "TODO"
     }
 
-    getFile(module, component) {
-        let filePath = this.getTagfilePath(module, component)
+    getFile(tagset) {
+        let filePath = this.getTagfilePath(tagset)
         return new File(filePath)
     }
 
