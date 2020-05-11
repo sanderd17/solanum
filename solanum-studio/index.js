@@ -2,7 +2,6 @@ import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import StudioAPI from './server/StudioAPI.js'
-import TagAPI from './server/TagAPI.js'
 
 
 
@@ -22,10 +21,8 @@ class SolanumStudio {
 
     async init() {
         const studioAPI = new StudioAPI(this.app, this.config)
-        const tagAPI = new TagAPI(this.app, this.config, this.ts)
 
         studioAPI.initMessageHandlers()
-        tagAPI.initMessageHandlers()
 
         this.app.use('/monaco', express.static(path.join(__dirname, 'node_modules/monaco-editor/')))
     }

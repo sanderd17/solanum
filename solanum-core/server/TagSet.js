@@ -57,13 +57,11 @@ class TagSet {
     }
 
     /**
+     * @param {string} setName
      * @param {object} tagDefinitions
-     * @param {Array<string>} prefix
      */
-    setTags(tagDefinitions, prefix=[]) {
-        for (let key in tagDefinitions) {
-            this.addTag(key, tagDefinitions[key])
-        }
+    async setTags(setName, tagDefinitions) {
+        await this.root.addTag([setName], tagDefinitions)
     }
 
     /*

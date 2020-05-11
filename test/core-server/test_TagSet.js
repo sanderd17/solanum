@@ -29,9 +29,9 @@ export default function({describe, it}) {
         })
     }),
     describe('addTag', function() {
-        it('should instantiate a tag', function() {
+        it('should instantiate a tag', async () => {
             let ts = new TagSet(null, null)
-            ts.addTag('testTp', {type: DummyTag, arg: 'testArg'})
+            await ts.addTag('testTp', {type: DummyTag, arg: 'testArg'})
 
             assert.equal(ts.root.size, 1)
             let t = ts.getTag('testTp')
@@ -41,15 +41,13 @@ export default function({describe, it}) {
         })
     }),
     describe('setTags', function() {
-        it('should add all tags', function() {
+        it('should add all tags', async () => {
             let ts = new TagSet(null, null)
             let testObj = {'descr': 'described', 'type': DummyTag}
-            ts.addTag = function(tagpath, tagDescr) {
-                assert.equal(tagpath, 'testTp')
-                assert.equal(tagDescr, testObj)
-            }
-
-            ts.setTags({'testTp': testObj})
+            await ts.setTags('root', {'testTp': testObj})
+            let tag = ts.getTag('root.testTp')
+            assert(tag instanceof DummyTag)
+            assert.equal(tag.tagpath.join('.'), 'root.testTp')
         })
     }),
     describe('triggerChange', function() {
@@ -70,11 +68,11 @@ export default function({describe, it}) {
         })
     }),
     describe('sendChangedTags', function() {
-        it('should notify a list of clients', function() {
+        it('should notify a list of clients', async () => {
             let ts = new TagSet(null, null)
 
-            ts.addTag('testTp1', {type: MemoryTag, arg: 'testArg'})
-            ts.addTag('testTp2', {type: MemoryTag, arg: 'testArg'})
+            await ts.addTag('testTp1', {type: MemoryTag, arg: 'testArg'})
+            await ts.addTag('testTp2', {type: MemoryTag, arg: 'testArg'})
 
             ts.getTag('testTp1').write('newValue1')
             ts.getTag('testTp2').write('newValue2')

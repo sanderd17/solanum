@@ -23,7 +23,7 @@ solanum.addModule(SolanumOpcUa)
 solanum.addModule(SolanumStudio)
 
 solanum.init()
-solanum.ts.setTags(tags)
+solanum.ts.setTags('default', tags)
 
 app.listen(config.app.port);
 console.log(`Listening on port ${config.app.port}`)

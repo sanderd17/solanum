@@ -22,7 +22,7 @@ class TagFolder extends Tag {
     async init(tagSet, tagpath) {
         await super.init(tagSet, tagpath)
         for (let subtagpath in this.data) {
-            this.addTag(subtagpath.split(DELIMITOR), this.data[subtagpath])
+            await this.addTag(subtagpath.split(DELIMITOR), this.data[subtagpath])
         }
     }
 
@@ -31,7 +31,7 @@ class TagFolder extends Tag {
      * @param {string[]} tagpath 
      * @param {Object} tagDescription 
      */
-    addTag(tagpath, tagDescription) {
+    async addTag(tagpath, tagDescription) {
         if (typeof tagDescription != "object") {
             throw new Error(`Cannot set ${tagDescription} as tag description`)
         }
@@ -47,7 +47,7 @@ class TagFolder extends Tag {
                 } else {
                     // Loop over description to add possible subtags
                     for (let subtagpath in tagDescription) {
-                        this.addTag(subtagpath.split(DELIMITOR), tagDescription[subtagpath])
+                        await this.addTag(subtagpath.split(DELIMITOR), tagDescription[subtagpath])
                     }
                 }
             } else {
@@ -64,13 +64,13 @@ class TagFolder extends Tag {
             tag = tf
         } else if (tagDescription instanceof Tag) {
             tag = tagDescription
-            tag.init(this.ts, this.tagpath.concat([key]))
+            await tag.init(this.ts, this.tagpath.concat([key]))
         } else {
             // create tag from type
             /** @type {typeof Tag} */
             let Tagtype = tagDescription.type || TagFolder
             tag = new Tagtype(tagDescription)
-            tag.init(this.ts, this.tagpath.concat([key]))
+            await tag.init(this.ts, this.tagpath.concat([key]))
         }
         this.children.set(key, tag)
     }

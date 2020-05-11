@@ -73,7 +73,7 @@ class Solanum {
         iconManager.addIconSet('material-design', path.join(__dirname, 'node_modules', 'material-design-icons'), '(.*)/svg/production/(.*)\\.svg')
 
         tagtypes['MemoryTag'] = MemoryTag
-        this.ts.setTags(systemTags)
+        this.ts.setTags('system', systemTags)
 
         for (let m of this.modules) {
             await m.init()
