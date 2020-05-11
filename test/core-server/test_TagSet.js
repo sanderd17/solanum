@@ -28,18 +28,6 @@ export default function({describe, it}) {
             assert.equal(ts.changedTags.size, 0)
         })
     }),
-    describe('addTag', function() {
-        it('should instantiate a tag', async () => {
-            let ts = new TagSet(null, null)
-            await ts.addTag('testTp', {type: DummyTag, arg: 'testArg'})
-
-            assert.equal(ts.root.size, 1)
-            let t = ts.getTag('testTp')
-            assert.equal(t.constructor, DummyTag)
-            assert.equal(t.tagpath, 'testTp')
-            assert.equal(t.otherArgs.arg, 'testArg')
-        })
-    }),
     describe('setTags', function() {
         it('should add all tags', async () => {
             let ts = new TagSet(null, null)
@@ -71,8 +59,8 @@ export default function({describe, it}) {
         it('should notify a list of clients', async () => {
             let ts = new TagSet(null, null)
 
-            await ts.addTag('testTp1', {type: MemoryTag, arg: 'testArg'})
-            await ts.addTag('testTp2', {type: MemoryTag, arg: 'testArg'})
+            await ts.root.addTag(['testTp1'], {type: MemoryTag, arg: 'testArg'})
+            await ts.root.addTag(['testTp2'], {type: MemoryTag, arg: 'testArg'})
 
             ts.getTag('testTp1').write('newValue1')
             ts.getTag('testTp2').write('newValue2')

@@ -61,18 +61,8 @@ class TagSet {
      * @param {object} tagDefinitions
      */
     async setTags(setName, tagDefinitions) {
+        // TODO don't receive definitions, but get an importable filename and load it to the tag folder
         await this.root.addTag([setName], tagDefinitions)
-    }
-
-    /*
-     * @param {string|string[]} tagpath 
-     * @param {TagDescription} tagDescr 
-     */
-    addTag(tagpath, tagDescr) {
-        if (typeof tagpath == 'string') {
-            tagpath = tagpath.split('.')
-        }
-        this.root.addTag(tagpath, tagDescr)
     }
 
     /**
