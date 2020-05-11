@@ -1,5 +1,10 @@
 import ComponentStore from './ComponentStore.js'
 import ComponentModifier from './ComponentModifier.js'
+import ComponentHistorian from './ComponentHistorian.js'
+
+import TagStore from './TagStore.js'
+import TagModifier from './TagModifier.js'
+import TagHistorian from './TagHistorian.js'
 
 import jsonschema from 'jsonschema'
 import * as schema from './StudioApiSchema.js'
@@ -7,7 +12,6 @@ import * as schema from './StudioApiSchema.js'
 import ClientList from '../../solanum-core/server/ClientList.js' // TODO fix loading from related modules; Use a module loader with URL support?
 import ClientConnection from '../../solanum-core/server/ClientConnection.js'
 
-import ComponentHistorian from './ComponentHistorian.js'
 
 /*
 Studio should provide methods to set different parts of the code:
@@ -43,19 +47,32 @@ class StudioAPI {
         this.locks = {}
         this.componentStore = new ComponentStore(config)
         this.componentHistorian = new ComponentHistorian()
+
+        this.tagStore = new TagStore(config)
+        this.tagHistorian = new TagHistorian()
     }
 
     initMessageHandlers() {
+        // Components
         this.app.get('/API/Studio/openComponent', async (req, res) => await this.openComponent(req, res))
         this.app.get('/API/Studio/getComponentPaths', async (req, res) => res.send(await this.getComponentPaths()))
+        // Tags
+        this.app.get('/API/Studio/getSubTags', async (req, res) => await this.getSubTags(req, res))
 
         let handleClientMessage = (client, data, messageName) => this.handleClientMessage(client, data, messageName)
+        // Components
         ClientConnection.on('studio/setComponentCode', handleClientMessage)
         ClientConnection.on('studio/setChildPosition', handleClientMessage)
         ClientConnection.on('studio/addChildComponent', handleClientMessage)
         ClientConnection.on('studio/removeChildComponents', handleClientMessage)
         ClientConnection.on('studio/setOwnPropBinding', handleClientMessage)
         ClientConnection.on('studio/setChildPropBinding', handleClientMessage)
+        // Tags
+        ClientConnection.on('studio/addTag', handleClientMessage)
+        ClientConnection.on('studio/deleteTag', handleClientMessage)
+        ClientConnection.on('studio/moveTag', handleClientMessage)
+        ClientConnection.on('studio/setTagParam', handleClientMessage)
+        ClientConnection.on('studio/setTagType', handleClientMessage)
     }
 
     /**
@@ -310,6 +327,23 @@ class StudioAPI {
 
         await cmpFile.write(newCmpCode)
         return newCmpCode
+    }
+
+    /**
+     * @param {*} body
+     */
+    async addTag(body) {
+        let tagFile = this.tagStore.getFile(body.tagfile)
+        let tagCode = await tagFile.read()
+
+        this.tagHistorian.registerChange(body.tagfile, body.component, tagCode)
+        let tagMod = new TagModifier(tagCode)
+
+        tagMod.addTag(body.tagpath, body.tagType, body.tagDescription)
+        let newTagCode = tagMod.print()
+
+        await tagFile.write(newTagCode)
+        return newTagCode
     }
 }
 

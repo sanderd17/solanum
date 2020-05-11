@@ -13,12 +13,10 @@ class ComponentStore {
     constructor(config) {
         /** Configuration of the app (see /config.js)*/
         this.config = config
-        /** Object representing locked files */
-        this.locks = {}
     }
 
     /**
-     * @returns {object} List of templates wrapped in an object per module
+     * @returns {Promise<Object>} List of templates wrapped in an object per module
      */
     async getComponentPaths() {
         // TODO candidate for caching?
