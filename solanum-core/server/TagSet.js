@@ -20,8 +20,10 @@ class TagSet {
         this.changedTags = new Set()
         this.root = new TagFolder({})
         this.root.init(this, [])
-        /** @type {WeakMap<ClientConnection, Set<string|string[]>>} */
-        this.subscribedTags = new WeakMap()// link clients to their subscribed tags
+        /** @type {WeakMap<ClientConnection, Set<string|string[]>>} link clients to their subscribed tags*/
+        this.subscribedTags = new WeakMap() 
+        /** @type {Object<string,string>} keep track of the files that define the tag folders */
+        this.tagFiles = {}
     }
 
     initMessageHandlers() {
@@ -61,10 +63,25 @@ class TagSet {
      * @param {string} fileName
      */
     async setTags(setName, fileName) {
-        console.log(fileName)
+        if (!/^[a-zA-Z_]\w*$/.test(setName)) {
+            throw new Error(`Only keywords accepted as root folders, got a name ${setName}`)
+        }
+        if (this.root.getTag([setName])) {
+            throw new Error(`A root folder can only be defined once, there was already a folder with name ${setName}`)
+        }
+        this.tagFiles[setName] = fileName
         let tagFile = await import(fileName)
-        console.log("Tag definitions: ", tagFile)
         await this.root.addTag([setName], tagFile.default)
+    }
+
+    /**
+     * @param {string|string[]} tagpath 
+     */
+    getTagFileName(tagpath) {
+        if (typeof tagpath == "string") {
+            tagpath = tagpath.split(".")
+        }
+        return this.tagFiles[tagpath[0]]
     }
 
     /**
