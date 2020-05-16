@@ -3,6 +3,8 @@ import Prop from '/lib/ComponentProp.js'
 import Icon from '/templates/draw/Icon.js'
 import Tree from '/templates/treeView/Tree.js'
 
+
+
 class TreeNode extends Template {
     properties = {
         indentation: new Prop("5"),
@@ -25,27 +27,44 @@ class TreeNode extends Template {
         this.addChild('template', template)
         let icon = new Icon({
             parent: this,
-            position: {left: '0px', top: '0px', width: '25px', height: '25px'},
+            position: {left: '5px', top: '5px', width: '15px', height: '15px'},
             properties: {
                 iconSet: '"material-design"',
                 iconPath: 'Prop("isOpen") ? "navigation/svg/production/ic_expand_more_24px.svg" : "navigation/svg/production/ic_chevron_right_24px.svg"'
             },
-            eventHandlers: {click: async () => {
-                this.prop.isOpen = !this.prop.isOpen
-                if (this.prop.isOpen && !this.children.tree) {
-                    let subtree = await this.eventHandlers.getSubtree()
-                    let tmpHeight = this.children.template.height
-                    let tree = new Tree({
-                        parent: this,
-                        position: {left: this.prop.indentation + 'px', right: '0px', top: tmpHeight + 'px'},
-                        properties: {indentation: "Prop('indentation')"},
-                        style: {visibility: "Prop('isOpen') ? 'inherit' : 'hidden'"}
-                    })
-                    tree.initTree(subtree)
-                    this.addChild('tree', tree)
+            style: {visibility: "'hidden'"},
+            eventHandlers: {
+                click: async () => {
+                    if (!this.tree) {
+                        return // tree not loaded yet
+                    }
+                    this.prop.isOpen = !this.prop.isOpen
+                    if (this.children.tree) {
+                        this.dispatchEvent('heightChanged')
+                    } else if (this.prop.isOpen) {
+                        // create the tree
+                        let tmpHeight = this.children.template.height
+                        let tree = new Tree({
+                            parent: this,
+                            position: {left: this.prop.indentation + 'px', right: '0px', top: tmpHeight + 'px'},
+                            properties: {indentation: "Prop('indentation')"},
+                            style: {visibility: "Prop('isOpen') ? 'inherit' : 'hidden'"}
+                        })
+                        tree.initTree(this.tree)
+                        this.addChild('tree', tree)
+                    }
+                },
+                intersectionChangeObserved: async (ev) => {
+                    if (this.tree || !ev.detail.isIntersecting)
+                        return
+
+                    this.tree = await this.eventHandlers.getSubtree()
+
+                    if (this.tree && this.tree.length > 0) {
+                        this.children.icon.style.visibility = 'inherit'
+                    }
                 }
-                this.dispatchEvent('heightChanged')
-            }}
+            },
         })
         this.addChild('icon', icon)
     }

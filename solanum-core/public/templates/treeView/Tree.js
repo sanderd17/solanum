@@ -2,6 +2,8 @@ import Template from '/lib/template.js'
 import Prop from '/lib/ComponentProp.js'
 import TreeNode from './TreeNode.js'
 
+const wait = async (ms) => {return new Promise(resolve => setTimeout(resolve, ms))}
+
 
 /**
  * Tree data example
@@ -46,11 +48,16 @@ class Tree extends Template {
     }
 
     /**
-     * @param {*} tree 
+     * @param {[]} tree 
+     * @param {number?} index
      */
-    initTree(tree) { // TODO why pass the tree here? can we figure out props that have access to the tempates? Have access to 'this' as the binding definer?
+    initTree(tree, index) { // TODO why pass the tree here? can we figure out props that have access to the tempates? Have access to 'this' as the binding definer?
+        const batchsize = 100
         this.tree = tree // TODO allow altering tree nodes?
-        for (let el of tree) {
+        index = index || 0
+        let endIndex = Math.min(tree.length, index + batchsize) // size of first batch
+        while (index < endIndex) {
+            let el = tree[index]
             let node = new TreeNode({
                 parent: this,
                 properties: {
@@ -65,7 +72,7 @@ class Tree extends Template {
                         } else if (el.getSubtree) {
                             return await el.getSubtree()
                         }
-                        return null
+                        return []
                     }
                 },
             })
@@ -73,8 +80,16 @@ class Tree extends Template {
             let template = new el.template(el.templateArgs)
             node.setTemplate(template)
             this.addChild(el.id, node)
+            index++
         }
-        requestAnimationFrame(() => this.repositionChildren())
+        requestAnimationFrame(() => {
+            this.repositionChildren()
+            this.dispatchEvent('heightChanged')
+        })
+        if (index < tree.length) {
+            // process the following batch after a given timer
+            setTimeout(() => this.initTree(tree, index), 0)
+        }
     }
 
     repositionChildren() {

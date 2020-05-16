@@ -3,6 +3,13 @@ import ts from './TagSet.js'
 import Prop from './ComponentProp.js'
 import {DomProp, StyleProp} from './ComponentProp.js'
 
+// Observe dom objects for coming into the viewport
+const intersectionObserver = new IntersectionObserver((entries, observer) =>
+    entries.forEach((entry) => 
+        entry.target.dispatchEvent(new CustomEvent('intersectionChangeObserved', {bubbles: false, detail:entry}))
+    )
+)
+
 const positionKeys = ['left', 'right', 'top', 'bottom', 'width', 'height']
 /**
  * @typedef {{
@@ -107,6 +114,7 @@ class Template {
      */
     init() {
         this.createDomNode()
+        intersectionObserver.observe(this.dom)
         for (let [id, child] of Object.entries(this.children)) {
             if (child) {
                 child.classList.add(id)
