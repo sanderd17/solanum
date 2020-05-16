@@ -53,24 +53,28 @@ class Tree extends Template {
         for (let el of tree) {
             let node = new TreeNode({
                 parent: this,
-                properties: {indentation: "Prop('indentation')"},
+                properties: {
+                    indentation: "Prop('indentation')",
+                },
                 eventHandlers: {
-                    heightChanged: () => this.repositionChildren()
+                    heightChanged: () => this.repositionChildren(),
+                    getSubtree: async () => {
+                        // FIXME dirty hack to pass a function, functions should ideally be passable as arguments
+                        if (el.subtree) {
+                            return el.subtree
+                        } else if (el.getSubtree) {
+                            return await el.getSubtree()
+                        }
+                        return null
+                    }
                 },
             })
 
             let template = new el.template(el.templateArgs)
             node.setTemplate(template)
             this.addChild(el.id, node)
-            if (el.subtree) {
-                node.setSubtree(el.subtree)
-            } else if (el.getSubtree) {
-                el.getSubtree()
-                    .then(subtree => node.setSubtree(subtree))
-                    .catch(err => console.error(`Error reading subtree ${el.id}`, err))
-            }
         }
-        setTimeout(() => this.repositionChildren())
+        requestAnimationFrame(() => this.repositionChildren())
     }
 
     repositionChildren() {

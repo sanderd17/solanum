@@ -20,7 +20,7 @@ class SolanumStudio {
     }
 
     async init() {
-        const studioAPI = new StudioAPI(this.app, this.config)
+        const studioAPI = new StudioAPI(this.app, this.config, this.ts)
 
         studioAPI.initMessageHandlers()
 

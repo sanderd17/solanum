@@ -28,7 +28,7 @@ class StudioWindow extends Template {
         this.init()
         this.cnt = 1
 
-        // Register messagges
+        // Register messagges from the server
         messager.registerMessageHandler('studio/setComponentCode', (data) => {
             if (this.prop.moduleName != null && this.prop.componentName != null) {
                 // TODO don't refresh the code of the source client, that code is already up-to-date, and people like to follow their cursor

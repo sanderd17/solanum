@@ -9,7 +9,7 @@ let tags = {
 }
 
 for (let i = 0; i < 3000; i++) {
-    tags[`Motors/M${i}`] = new ST_Motor({
+    tags[`Motors.M${i}`] = new ST_Motor({
         sId: `M${i}`,
         i: i,
     })

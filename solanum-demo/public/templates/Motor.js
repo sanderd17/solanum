@@ -33,11 +33,11 @@ class Motor extends Template {
                 height: "78%",
                 top: "11%"
             },
-            properties: {fill: "Tag(`default.Motors/${Prop(\"motor\")}.sColor`, \"blue\")", prop2: '`default.Motors/${Prop("motor")}.sId`'},
+            properties: {fill: "Tag(`default.Motors.${Prop(\"motor\")}.sColor`, \"blue\")", prop2: '`default.Motors.${Prop("motor")}.sId`'},
             eventHandlers: {
                 /**@param {Event} ev */ 
                 click: (ev) => {
-                    let path = `"default.Motors/${this.prop.motor}"`
+                    let path = `"default.Motors.${this.prop.motor}"`
                     solanum.openPopup('popMotorInfo', {path})
                 }
             },

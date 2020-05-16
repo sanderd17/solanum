@@ -6,21 +6,7 @@ import Tree from '/templates/treeView/Tree.js'
 class TreeNode extends Template {
     properties = {
         indentation: new Prop("5"),
-        isOpen: new Prop('false', (isOpen) => {
-            // add parent in a lazy way
-            if (isOpen && !this.children.tree) {
-                let tmpHeight = this.children.template.height
-                let tree = new Tree({
-                    parent: this,
-                    position: {left: this.prop.indentation + 'px', right: '0px', top: tmpHeight + 'px'},
-                    properties: {indentation: "Prop('indentation')"},
-                    style: {visibility: "Prop('isOpen') ? 'inherit' : 'hidden'"}
-                })
-                tree.initTree(this.subtree)
-                this.addChild('tree', tree)
-            }
-            this.dispatchEvent('heightChanged')
-        })
+        isOpen: new Prop('false'),
     }
 
     constructor(args) {
@@ -37,29 +23,38 @@ class TreeNode extends Template {
         template.style.top = '0px'
         template.style.right = '0px'
         this.addChild('template', template)
+        let icon = new Icon({
+            parent: this,
+            position: {left: '0px', top: '0px', width: '25px', height: '25px'},
+            properties: {
+                iconSet: '"material-design"',
+                iconPath: 'Prop("isOpen") ? "navigation/svg/production/ic_expand_more_24px.svg" : "navigation/svg/production/ic_chevron_right_24px.svg"'
+            },
+            eventHandlers: {click: async () => {
+                this.prop.isOpen = !this.prop.isOpen
+                if (this.prop.isOpen && !this.children.tree) {
+                    let subtree = await this.eventHandlers.getSubtree()
+                    let tmpHeight = this.children.template.height
+                    let tree = new Tree({
+                        parent: this,
+                        position: {left: this.prop.indentation + 'px', right: '0px', top: tmpHeight + 'px'},
+                        properties: {indentation: "Prop('indentation')"},
+                        style: {visibility: "Prop('isOpen') ? 'inherit' : 'hidden'"}
+                    })
+                    tree.initTree(subtree)
+                    this.addChild('tree', tree)
+                }
+                this.dispatchEvent('heightChanged')
+            }}
+        })
+        this.addChild('icon', icon)
     }
 
     setSubtree(subtree) {
-        if (this.subtree) {
-            // remove the existing tree
-            if (this.children.tree) {
-                this.children.tree.destroy()
-            }
-        } else {
-            // add a new open/close icon
-            let icon = new Icon({
-                parent: this,
-                position: {left: '0px', top: '0px', width: '25px', height: '25px'},
-                properties: {
-                    iconSet: '"material-design"',
-                    iconPath: 'Prop("isOpen") ? "navigation/svg/production/ic_expand_more_24px.svg" : "navigation/svg/production/ic_chevron_right_24px.svg"'
-                },
-                eventHandlers: {click: () => {this.prop.isOpen = !this.prop.isOpen}}
-            })
-            this.addChild('icon', icon)
+        if (this.subtree && this.children.tree) {
+            this.children.tree.destroy()
         }
         this.subtree = subtree
-        // actual subtree will be added in a lazy way
     }
 
     /**

@@ -24,6 +24,7 @@ class TagBrowser extends Template {
     async loadTags() {
         let tree = await this.getTagTree('')
         this.children.tree.initTree(tree)
+        this.children.tree.repositionChildren()
     }
 
     /**

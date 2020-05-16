@@ -11,6 +11,7 @@ import * as schema from './StudioApiSchema.js'
 
 import ClientList from '../../solanum-core/server/ClientList.js' // TODO fix loading from related modules; Use a module loader with URL support?
 import ClientConnection from '../../solanum-core/server/ClientConnection.js'
+import TagFolder from '../../solanum-core/server/TagFolder.js'
 
 
 /*
@@ -38,11 +39,14 @@ class StudioAPI {
      * Construct the editor interface of the app
      * @param {import('express').Application} app 
      * @param {*} config JSON configuration
+     * @param {import('../../solanum-core/server/TagSet').default} ts
      */
-    constructor(app, config) {
+    constructor(app, config, ts) {
         this.app = app
         /** Configuration of the app (see /config.js)*/
         this.config = config
+        /** Tagset */
+        this.ts = ts
         /** Object representing locked files */
         this.locks = {}
         this.componentStore = new ComponentStore(config)
@@ -327,6 +331,32 @@ class StudioAPI {
 
         await cmpFile.write(newCmpCode)
         return newCmpCode
+    }
+
+    /**
+     * Get all sub tags of a certain path
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
+     */
+    async getSubTags(req, res) {
+        let parentpath = req.query.parentpath
+    
+        let folder = this.ts.getTag(parentpath)
+        if (!folder || !(folder instanceof TagFolder)) {
+            res.send([])
+            return
+        }
+        let children = folder.children
+        let ret = []
+        for (let [name, subtag] of children) {
+            ret.push({
+                name,
+                path: subtag.tagpath.join('.'),
+                type: subtag.constructor.toString(),
+                parameters: {}
+            })
+        }
+        res.send(ret)
     }
 
     /**

@@ -86,6 +86,9 @@ class TagFolder extends Tag {
         }
         let key
         [key, ...tagpath] = tagpath // clone tagpath to not alter the object
+        if (key == '') {
+            return this.getTag(tagpath)
+        }
         let child = this.children.get(key)
         if (!child) {
             return undefined
