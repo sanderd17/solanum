@@ -191,6 +191,9 @@ class Template {
      * When setting the height, it will override the heigt deduced from the position
      */
     get height() {
+        if (this.style.height && this.style.height.endsWith('px')) {
+            return parseInt(this.style.height.substring(0, this.style.length - 2))
+        }
         return this.dom.clientHeight
     }
     set height(height) {
