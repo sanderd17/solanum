@@ -53,10 +53,14 @@ class Tree extends Template {
      */
     initTree(tree, index) { // TODO why pass the tree here? can we figure out props that have access to the tempates? Have access to 'this' as the binding definer?
         const batchsize = 100
+        const maxTime = 50 //ms
+        let startTime = +(new Date())
         this.tree = tree // TODO allow altering tree nodes?
         index = index || 0
-        let endIndex = Math.min(tree.length, index + batchsize) // size of first batch
-        while (index < endIndex) {
+        while (index < tree.length) {
+            if (+(new Date()) - startTime > maxTime) {
+                break
+            }
             let el = tree[index]
             let node = new TreeNode({
                 parent: this,
