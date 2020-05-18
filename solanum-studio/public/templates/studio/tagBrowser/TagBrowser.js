@@ -1,5 +1,5 @@
 import Template from "/lib/template.js"
-import Label from "/templates/forms/Label.js"
+import TagTreeElement from "./TagTreeElement.js"
 import Tree from "/templates/treeView/Tree.js"
 
 class TagBrowser extends Template {
@@ -50,11 +50,12 @@ class TagBrowser extends Template {
 
             let cmpNode = {
                 id: child.name,
-                template: Label,
+                template: TagTreeElement,
                 templateArgs: {
                     position: {height: '25px'},
                     properties: {
                         text: JSON.stringify(child.name),
+                        tagpath: JSON.stringify(child.path),
                         draggable: 'true',
                     },
                 },

@@ -77,7 +77,7 @@ class Tree extends Template {
                             return await el.getSubtree()
                         }
                         return []
-                    }
+                    },
                 },
             })
 

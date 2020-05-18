@@ -1,11 +1,7 @@
 import Template from "/lib/template.js"
 import Prop from "/lib/ComponentProp.js"
-import StudioCanvas from '/templates/studio/canvas/StudioCanvas.js'
-import ProjectBrowser from '/templates/studio/projectBrowser/ProjectBrowser.js'
 import TagBrowser from '/templates/studio/tagBrowser/TagBrowser.js'
-import PropEditor from '/templates/studio/propEditor/PropEditor.js'
-import LayoutBar from "/templates/studio/menuBars/LayoutBar.js"
-import CodeEditor from '/templates/studio/codeEditor/Editor.js'
+import Label from '/templates/forms/Label.js'
 
 import messager from '/lib/Messager.js'
 import {getChildAst} from '/lib/AstNavigator.js'
@@ -34,13 +30,34 @@ class StudioWindow extends Template {
         messager.registerMessageHandler('studio/setTagType', reply => this.setTagType(reply))
     }
 
+    properties = {
+        tagSelection: new Prop("''", (newSelection) => {
+            if (!newSelection)
+                return
+
+            // TODO set info on other pane
+        }),
+        positionUnit: new Prop("'px'")
+    }
+
     children = {
         tagBrowser: new TagBrowser({
             parent: this,
-            position: {left: "0px", width: "300px", bottom: "0px", height: "100%"},
+            position: {left: "0px", width: "300px", top: "0px", bottom: "0px"},
             properties: {},
-            eventHandlers: {},
+            eventHandlers: {
+                selectionchanged: (ev) => {
+                    this.prop.tagSelection = ev.detail.selection
+                },
+            },
         }),
+        label: new Label({
+            parent: this,
+            position: {left: '400px', top: '20px', width: '200px', height: '20px'},
+            properties: {
+                text: "Prop('tagSelection')"
+            }
+        })
     }
 }
 
