@@ -49,7 +49,7 @@ class Tree extends Template {
 
     /**
      * @param {[]} tree 
-     * @param {number?} index
+     * @param {number?} index Starting index of the tree, will be used on recursive calls when the tree takes too long to build
      */
     initTree(tree, index) { // TODO why pass the tree here? can we figure out props that have access to the tempates? Have access to 'this' as the binding definer?
         const batchsize = 100

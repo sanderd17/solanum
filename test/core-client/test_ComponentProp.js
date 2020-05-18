@@ -9,6 +9,13 @@ export default function({describe, it, beforeEach}) {
     let ctx = {} // create default context
     beforeEach(() => {
         ctx = {properties: {}}
+        const d = new JSDOM('', {
+            url: 'http://solanum.org/',
+        })
+        global.document = d.window.document
+        global.window = d.window
+        window.IntersectionObserver = function() {}
+        window.IntersectionObserver.prototype.observe = function() {}
     })
     describe('Basic props', () => {
         it('Evaluates a number string', () => {

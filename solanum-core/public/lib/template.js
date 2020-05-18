@@ -4,7 +4,7 @@ import Prop from './ComponentProp.js'
 import {DomProp, StyleProp} from './ComponentProp.js'
 
 // Observe dom objects for coming into the viewport
-const intersectionObserver = new IntersectionObserver((entries, observer) =>
+const intersectionObserver = new window.IntersectionObserver((entries, observer) =>
     entries.forEach((entry) => 
         entry.target.dispatchEvent(new CustomEvent('intersectionChangeObserved', {bubbles: false, detail:entry}))
     )
