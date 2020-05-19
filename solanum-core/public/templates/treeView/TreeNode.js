@@ -1,6 +1,7 @@
 import Template from '/lib/template.js'
 import Prop from '/lib/ComponentProp.js'
 import Icon from '/templates/draw/Icon.js'
+import Label from '/templates/forms/Label.js'
 import Tree from '/templates/treeView/Tree.js'
 
 
@@ -25,12 +26,11 @@ class TreeNode extends Template {
         template.style.top = '0px'
         template.style.right = '0px'
         this.addChild('template', template)
-        let icon = new Icon({
+        let icon = new Label({
             parent: this,
-            position: {left: '5px', top: '5px', width: '15px', height: '15px'},
+            position: {left: '5px', top: '0px', width: '15px', height: '15px'},
             properties: {
-                iconSet: '"material-design"',
-                iconPath: 'Prop("isOpen") ? "navigation/svg/production/ic_expand_more_24px.svg" : "navigation/svg/production/ic_chevron_right_24px.svg"'
+                text: 'Prop("isOpen") ? "⊟" : "⊞"'
             },
             style: {visibility: "'hidden'"},
             eventHandlers: {

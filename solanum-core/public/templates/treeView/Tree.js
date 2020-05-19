@@ -39,7 +39,7 @@ const wait = async (ms) => {return new Promise(resolve => setTimeout(resolve, ms
 
 class Tree extends Template {
     properties = {
-        indentation: new Prop("5"),
+        indentation: new Prop("15"),
     }
 
     constructor(args) {
