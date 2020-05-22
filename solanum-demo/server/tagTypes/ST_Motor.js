@@ -1,7 +1,7 @@
-import TagFolder from 'solanum-core/server/TagFolder.js'
+import CustomTagType from 'solanum-core/server/tagTypes/CustomTagType.js'
 import MemoryTag from 'solanum-core/server/MemoryTag.js'
 
-class ST_Motor extends TagFolder {
+class ST_Motor extends CustomTagType {
     /**
      * @param {*} data 
      */
