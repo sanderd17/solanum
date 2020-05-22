@@ -62,6 +62,7 @@ class StudioAPI {
         this.app.get('/API/Studio/getComponentPaths', async (req, res) => res.send(await this.getComponentPaths()))
         // Tags
         this.app.get('/API/Studio/getSubTags', async (req, res) => await this.getSubTags(req, res))
+        this.app.get('/API/Studio/getTagParams', async (req, res) => await this.getTagParams(req, res))
 
         let handleClientMessage = (client, data, messageName) => this.handleClientMessage(client, data, messageName)
         // Components
@@ -357,6 +358,17 @@ class StudioAPI {
             })
         }
         res.send(ret)
+    }
+
+    /**
+     * Get all sub tags of a certain path
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
+     */
+    async getTagParams(req, res) {
+        let tagpath = req.query.tagpath
+
+        res.send({defaultValue: 'test'})
     }
 
     /**
