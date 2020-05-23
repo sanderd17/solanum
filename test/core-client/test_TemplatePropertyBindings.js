@@ -27,7 +27,7 @@ export default function({describe, it, beforeEach}) {
                 this.init()
             }
             properties = {
-                myProp: new Prop("'a'")
+                myProp: new Prop('a')
             }
         }
         parent = class extends Template {
@@ -40,7 +40,7 @@ export default function({describe, it, beforeEach}) {
                     parent: this,
                     position: {},
                     properties: {
-                        myProp: "'b'"
+                        myProp: 'b',
                     }
                 })
             }

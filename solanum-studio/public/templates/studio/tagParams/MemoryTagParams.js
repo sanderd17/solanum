@@ -25,7 +25,7 @@ class MemoryTagParameters extends Template {
             parent: this,
             position: {left: '0px', width: '150px', top: '0px', height: '20px'},
             properties: {
-                text: "'defaultValue'"
+                text: 'defaultValue',
             },
             eventHandlers: {
                 click: () => {

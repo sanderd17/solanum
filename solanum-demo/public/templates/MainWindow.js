@@ -13,21 +13,21 @@ class MainWindow extends Template {
         this.addChild('label', new Label({
             parent: this,
             position: {right: '10px', width: '100px', top: '10px', height: '20px'},
-            properties: {text: 'Tag("system.hostname")'},
+            properties: {text: ({Tag}) => Tag("system.hostname")},
             eventHandlers: {}
         }))
 
         this.addChild('label2', new Label({
             parent: this,
             position: {right: '10px', width: '100px', top: '30px', height: '20px'},
-            properties: {text: 'Tag("default.watchDog")'},
+            properties: {text: ({Tag}) => Tag("default.watchDog")},
             eventHandlers: {}
         }))
 
         this.addChild('icon', new Icon({
             parent: this,
             position: {right: '10px', top: '40px', width: '15px', height: '15px'},
-            properties: {iconSet: '"material-design"', iconPath: '"device/svg/production/ic_battery_80_24px.svg"'}
+            properties: {iconSet: 'material-design', iconPath: 'device/svg/production/ic_battery_80_24px.svg'}
         }))
 
         let size = 15
@@ -36,7 +36,7 @@ class MainWindow extends Template {
                 parent: this,
                 position: {left: (size * Math.floor(i/60)) + 'px', width: size + 'px', top: (size * (i % 60)) + 'px', height: size + 'px'},
                 properties: {
-                    motor: `"M${i}"`,
+                    motor: `M${i}`,
                 },
                 eventHandlers: {}
             })

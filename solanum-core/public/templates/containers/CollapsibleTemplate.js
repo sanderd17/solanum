@@ -19,7 +19,7 @@ class CollapsibleTemplate extends Template {
             parent: this,
             position: {left: '0px', width: '100%', top: '0px', height: TITLE_HEIGHT + 'px'},
             properties: {
-                title: "(Prop('collapsed') ? '[+] ' : '[-] ') +  Prop('title')"
+                title: ({Prop}) => (Prop('collapsed') ? '[+] ' : '[-] ') +  Prop('title'),
             },
             eventHandlers: {
                 click: (ev) => {

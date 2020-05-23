@@ -25,8 +25,8 @@ class LayoutBar extends Template {
                 height: "20px"
             },
             properties: {
-                selected: 'false',
-                text: 'Prop("positionUnit")'
+                selected: false,
+                text: ({Prop}) => Prop("positionUnit"),
             },
             eventHandlers: {
                 click: (ev, child) => {

@@ -15,14 +15,14 @@ class PropEditor extends Template {
         this.positionPropEditor = new PositionPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '0px', height: '150px'},
-            properties: {cmpSelection: "Prop('cmpSelection')"},
+            properties: {cmpSelection: ({Prop}) => Prop('cmpSelection')},
         })
 
         this.ownPropEditor = new OwnPropEditor({
             parent: this,
             position: {left: '0px', right: '0px', top: '300px', height: '140px'},
             properties: {
-                componentInfo: 'Prop("componentInfo")',
+                componentInfo: ({Prop}) => Prop("componentInfo"),
             }
         })
 
@@ -30,8 +30,8 @@ class PropEditor extends Template {
             parent: this,
             position: {left: '0px', right: '0px', top: '160px', height: '140px'},
             properties: {
-                cmpSelection: 'Prop("cmpSelection")',
-                componentInfo: 'Prop("componentInfo")',
+                cmpSelection: ({Prop}) => Prop("cmpSelection"),
+                componentInfo: ({Prop}) => Prop("componentInfo"),
             },
         }),
 

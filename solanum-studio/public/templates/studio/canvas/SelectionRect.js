@@ -31,7 +31,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {left: "0%", width: "100%", top: "0%", height: "100%"},
             properties: {
-                'fill': '"#00000000"',
+                fill: "#00000000",
             },
             eventHandlers: {},
         }),
@@ -39,7 +39,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {left: "0%", width: "4px", top: "0%", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),
@@ -51,7 +51,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {left: "calc(50% - 2px)", width: "4px", top: "0%", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),
@@ -63,7 +63,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {right: "0%", width: "4px", top: "0%", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),
@@ -75,7 +75,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {right: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),
@@ -87,7 +87,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {right: "0%", width: "4px", bottom: "0%", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),
@@ -99,7 +99,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {left: "calc(50% - 2px)", width: "4px", bottom: "0%", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),
@@ -111,7 +111,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {left: "0%", width: "4px", bottom: "0%", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),
@@ -123,7 +123,7 @@ class SelectionRect extends Template {
             parent: this,
             position: {left: "0%", width: "4px", top: "calc(50% - 2px)", height: "4px"},
             properties: {
-                'visible': "false",
+                visible: false,
             },
             eventHandlers: {
                 dragstart: (ev) => this.startHandleDrag(ev),

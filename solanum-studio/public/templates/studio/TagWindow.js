@@ -57,14 +57,14 @@ class StudioWindow extends Template {
             parent: this,
             position: {left: '400px', top: '20px', width: '200px', height: '20px'},
             properties: {
-                text: "Prop('tagSelection')"
+                text: ({Prop}) => Prop('tagSelection'),
             }
         }),
         tagParams: new MemoryTagParams({
             parent:this,
             position: {left: '400px', top: '60px', width: '600px', height: '600px'},
             properties: {
-                tagpath: "Prop('tagSelection')",
+                tagpath: ({Prop}) => Prop('tagSelection'),
             }
         }),
     }

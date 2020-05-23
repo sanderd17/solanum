@@ -34,7 +34,7 @@ export default function({describe, it, beforeEach}) {
     describe('Static function props', () => {
         it('Evaluates a mathematical expression', () => {
             let p = new Prop(0)
-            p.setBinding('2+3')
+            p.setBinding(() => 2+3)
             p.setContext(ctx)
             assert.equal(p.value, 5)
             assert.equal(typeof p.bindingFunction, "function")
@@ -53,7 +53,7 @@ export default function({describe, it, beforeEach}) {
                 }
             }
             let p = new Prop(0, null, ts)
-            p.setBinding("Tag('myTagPath', 0)")
+            p.setBinding(({Tag}) => Tag('myTagPath', 0))
             p.setContext(ctx)
             assert.equal(p.value, 0)
             assert.equal(numCalls, 1)
@@ -74,7 +74,7 @@ export default function({describe, it, beforeEach}) {
                 },
             }
             let p = new Prop(0, null, ts)
-            p.setBinding("Tag('myTagPath')")
+            p.setBinding(({Tag}) => Tag('myTagPath'))
             p.setContext(ctx)
             assert(p.subscribedTags.has('myTagPath'))
 
@@ -84,7 +84,7 @@ export default function({describe, it, beforeEach}) {
                 numCalls++
             }
 
-            p.setBinding('123')
+            p.setBinding(123)
             p.recalcValue()
             assert.equal(p.value, 123)
             assert.equal(numCalls, 1)
@@ -94,27 +94,11 @@ export default function({describe, it, beforeEach}) {
     describe('Bound props', () => {
         it('Has access to the component props', () => {
             let p = new Prop(0)
-            p.setBinding("Prop('a')")
+            p.setBinding(({Prop}) => Prop('a'))
             ctx.properties.a = {value: 123}
             p.setContext(ctx)
             assert.equal(p.value, 123)
             assert(p.subscribedProps.has('a'))
-        })
-    })
-    describe('Invalid props', () => {
-        it("Throws an error on unaccessible variable name", () => {
-            assert.throws(() => {
-                let p = new Prop("")
-                p.setBinding("unaccessibleVariableName")
-                p.setContext(ctx)
-            })
-        })
-        it('Throws an error on a syntax fault', () => {
-            assert.throws(() => {
-                let p = new Prop("")
-                p.setBinding("(")
-                p.setContext(ctx)
-            })
         })
     })
     describe('value setter', () => {
@@ -177,7 +161,7 @@ export default function({describe, it, beforeEach}) {
         })
         it('Acts on real recalc updates', () => {
             let p = new Prop("")
-            p.setBinding("Prop('a')")
+            p.setBinding(({Prop}) => Prop('a'))
             let numCalls = 0
             let cb = () => {numCalls++}
             p.addChangeListener(cb)

@@ -77,11 +77,11 @@ class Prop {
      * @param {string} expression Syntactically valid JS expression
      */
     setBinding(expression) {
-        try {
-            this.bindingFunction = Function(`return ({Prop, Tag}) => (${expression})`)()
-        } catch (e) {
-            console.error(`Error parsing expression as function:\n` , expression)
-            throw e
+        if (typeof expression == 'function') {
+            this.bindingFunction = expression
+        } else {
+            this.bindingFunction = null
+            this.cachedValue = expression
         }
     }
 
@@ -104,6 +104,13 @@ class Prop {
      */
     recalcValue() {
         if (!this.bindingFunction) {
+            // Remove subscription to all tags tag paths
+            for (let tagPath of this.subscribedTags) {
+                this.subscribedTags.delete(tagPath)
+                this.ts.removePropSubscription(this, tagPath)
+            }
+            this.subscribedTags.clear()
+            this.subscribedProps.clear()
             return // nothing to calculate
         }
         let subscribedTags = new Set()

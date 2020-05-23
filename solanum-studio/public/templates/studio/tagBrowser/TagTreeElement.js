@@ -19,7 +19,7 @@ class TagTreeElement extends Template {
             parent: this,
             position: {left: '0px', right: '0px', top: '0px'},
             properties: {
-                text: "Prop('text')"
+                text: ({Prop}) => Prop('text'),
             },
             eventHandlers: {
                 click: () => {

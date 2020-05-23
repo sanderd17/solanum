@@ -17,28 +17,28 @@ class StyleBlock extends Template {
         tglHov: new ToggleButton({
             parent: this,
             position: {right: '0px', width: '50px', top: '0px', height: '20px'},
-            props: {
-                text: '":hov"'
+            properties: {
+                text: ':hov'
             }
         }),
         tglAct: new ToggleButton({
             parent: this,
             position: {right: '55px', width: '50px', top: '0px', height: '20px'},
-            props: {
-                text: '":act"'
+            properties: {
+                text: ':act'
             }
         }),
         tglFoc: new ToggleButton({
             parent: this,
             position: {right: '110px', width: '50px', top: '0px', height: '20px'},
-            props: {
-                text: '":foc"'
+            properties: {
+                text: ':foc'
             }
         }),
         txtClasses: new Textbox({
             parent: this,
             position: {left: '0px', width: '100%', top: '25px', height: '20px'},
-            props: {
+            properties: {
 
             }
         })

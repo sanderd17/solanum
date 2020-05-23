@@ -54,9 +54,9 @@ class TagBrowser extends Template {
                 templateArgs: {
                     position: {height: '25px'},
                     properties: {
-                        text: JSON.stringify(child.name),
-                        tagpath: JSON.stringify(child.path),
-                        draggable: 'true',
+                        text: child.name,
+                        tagpath: child.path,
+                        draggable: true,
                     },
                 },
                 getSubtree: async () => {

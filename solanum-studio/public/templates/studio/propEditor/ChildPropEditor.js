@@ -68,15 +68,15 @@ class ChildPropEditor extends Template {
             this.addChild('key_' + name, new Textbox({
                 parent: this,
                 position: { left: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
-                properties: { value: "''", datalist: "['test1','test2']" }, // TODO get all possible property names into the datalist
+                properties: { value: '', datalist: ['test1','test2'] }, // TODO get all possible property names into the datalist
                 eventHandlers: { change: (ev, textBox) => this.setKeyName(name, textBox) },
             }))
             this.children['key_' + name].prop.value = name
             this.addChild('binding_' + name, new Textbox({
                 parent: this,
                 position: { right: '1px', top: (+i * (ROWHEIGHT + VMARGIN))  + 'px', height: ROWHEIGHT + 'px', width: '48%' },
-                properties: { value: "''" },
-                style: { background: "'#FFFFFF'" },
+                properties: { value: '' },
+                style: { background: '#FFFFFF' },
                 eventHandlers: {
                     change: (ev, textBox) => this.propValueChanged(name, textBox),
                     input: (ev, textBox) => this.checkValidFunction(name, textBox),

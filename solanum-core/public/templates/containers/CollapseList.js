@@ -27,8 +27,8 @@ class CollapseList extends Template {
                 parent: this,
                 position: {left: '0px', width: '100%', top: '0px', height: '100px'},
                 properties: {
-                    title: JSON.stringify(conf.title),
-                    collapsed: JSON.stringify(conf.collapsed),
+                    title: conf.title,
+                    collapsed: conf.collapsed,
                 },
                 eventHandlers: {
                     heightChanged: () => this.repositionChildren()

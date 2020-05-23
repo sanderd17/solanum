@@ -101,7 +101,7 @@ class ProjectBrowser extends Template {
                 templateArgs: {
                     position: {height: '25px'},
                     properties: {
-                        text: JSON.stringify(mod)
+                        text: mod
                     },
                 }
             }
