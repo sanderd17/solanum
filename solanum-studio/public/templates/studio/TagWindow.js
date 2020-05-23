@@ -33,13 +33,13 @@ class StudioWindow extends Template {
     }
 
     properties = {
-        tagSelection: new Prop("''", (newSelection) => {
+        tagSelection: new Prop('', (newSelection) => {
             if (!newSelection)
                 return
 
             // TODO set info on other pane
         }),
-        positionUnit: new Prop("'px'")
+        positionUnit: new Prop('px')
     }
 
     children = {

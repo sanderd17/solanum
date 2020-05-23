@@ -3,10 +3,10 @@ import Prop, {StyleProp} from '/lib/ComponentProp.js'
 
 class TitleBar extends Template {
     properties = {
-        title: new Prop("'Title'", (newTitle) => {
+        title: new Prop('Title', (newTitle) => {
             this.dom.innerHTML = newTitle
         }),
-        height: new Prop('"15px"')
+        height: new Prop('15px')
     }
 
     static styles = {

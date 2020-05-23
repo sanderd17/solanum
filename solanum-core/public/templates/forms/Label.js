@@ -16,8 +16,8 @@ class Label extends Template {
     }
 
     properties = {
-        text: new Prop("'Label'"),
-        draggable: new Prop('false', (newValue) => {
+        text: new Prop('Label'),
+        draggable: new Prop(false, (newValue) => {
             this.dom.draggable = newValue
         })
     }

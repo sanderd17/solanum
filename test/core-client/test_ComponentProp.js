@@ -18,22 +18,23 @@ export default function({describe, it, beforeEach}) {
         window.IntersectionObserver.prototype.observe = function() {}
     })
     describe('Basic props', () => {
-        it('Evaluates a number string', () => {
-            let p = new Prop("123")
+        it('Evaluates a number', () => {
+            let p = new Prop(123)
             p.setContext(ctx)
             assert.equal(p.value, 123)
-            assert.equal(typeof p.bindingFunction, "function")
+            assert.equal(p.bindingFunction, undefined)
         })
-        it('Evaluates a string string', () => {
-            let p = new Prop("'test'")
+        it('Evaluates a string', () => {
+            let p = new Prop('test')
             p.setContext({})
             assert.equal(p.value, "test")
-            assert.equal(typeof p.bindingFunction, "function")
+            assert.equal(p.bindingFunction, undefined)
         })
     })
-    describe('Static expressions', () => {
+    describe('Static function props', () => {
         it('Evaluates a mathematical expression', () => {
-            let p = new Prop("2 + 3")
+            let p = new Prop(0)
+            p.setBinding('2+3')
             p.setContext(ctx)
             assert.equal(p.value, 5)
             assert.equal(typeof p.bindingFunction, "function")
@@ -51,7 +52,8 @@ export default function({describe, it, beforeEach}) {
                     return undefined
                 }
             }
-            let p = new Prop("Tag('myTagPath', 0)", null, ts)
+            let p = new Prop(0, null, ts)
+            p.setBinding("Tag('myTagPath', 0)")
             p.setContext(ctx)
             assert.equal(p.value, 0)
             assert.equal(numCalls, 1)
@@ -71,7 +73,8 @@ export default function({describe, it, beforeEach}) {
                     return undefined
                 },
             }
-            let p = new Prop("Tag('myTagPath')", null, ts)
+            let p = new Prop(0, null, ts)
+            p.setBinding("Tag('myTagPath')")
             p.setContext(ctx)
             assert(p.subscribedTags.has('myTagPath'))
 
@@ -90,7 +93,8 @@ export default function({describe, it, beforeEach}) {
     })
     describe('Bound props', () => {
         it('Has access to the component props', () => {
-            let p = new Prop("Prop('a')")
+            let p = new Prop(0)
+            p.setBinding("Prop('a')")
             ctx.properties.a = {value: 123}
             p.setContext(ctx)
             assert.equal(p.value, 123)
@@ -100,53 +104,43 @@ export default function({describe, it, beforeEach}) {
     describe('Invalid props', () => {
         it("Throws an error on unaccessible variable name", () => {
             assert.throws(() => {
-                let p = new Prop("unaccessibleVariableName")
+                let p = new Prop("")
+                p.setBinding("unaccessibleVariableName")
                 p.setContext(ctx)
             })
         })
         it('Throws an error on a syntax fault', () => {
-            assert.throws(() => {let p = new Prop("(")})
+            assert.throws(() => {
+                let p = new Prop("")
+                p.setBinding("(")
+                p.setContext(ctx)
+            })
         })
     })
     describe('value setter', () => {
         it('Sets an int value to an int prop', () => {
-            let p = new Prop("123")
+            let p = new Prop(123)
             p.setContext(ctx)
             p.value = 456
             assert.equal(p.value, 456)
         })
         it('Can change data type', () => {
-            let p = new Prop("'test'")
+            let p = new Prop('test')
             p.setContext(ctx)
             p.value = 456
             assert.equal(p.value, 456)
         })
         it("Doesn't change the value of a recalc", () => {
-            let p = new Prop("'test'")
+            let p = new Prop("test")
             p.setContext(ctx)
             p.value = 456
             p.recalcValue()
-            assert.equal(p.value, 'test')
+            assert.equal(p.value, 456)
         })
     })
     describe('Change listener', () => {
-        it('Acts on setting context', () => {
-            let p = new Prop("123")
-            let numCalls = 0
-            let setValues = {}
-            let cb = (newValue, oldValue) => {
-                setValues = {newValue, oldValue}
-                numCalls += 1
-            }
-            p.addChangeListener(cb)
-            assert(p.changeListeners.has(cb))
-            p.setContext(ctx)
-            assert.equal(p.value, 123)
-            assert.equal(numCalls, 1)
-            assert.deepStrictEqual(setValues, {newValue: 123, oldValue: undefined})
-        })
         it('Allows to register two callbacks', () => {
-            let p = new Prop("123")
+            let p = new Prop(123)
             let cb1Called = false
             let cb2Called = false
             let cb1 = () => {cb1Called = true}
@@ -156,11 +150,12 @@ export default function({describe, it, beforeEach}) {
             assert(p.changeListeners.has(cb1))
             assert(p.changeListeners.has(cb2))
             p.setContext(ctx)
+            p.value = 456
             assert.equal(cb1Called, true)
             assert.equal(cb2Called, true)
         })
         it('Can remove callbacks', () => {
-            let p = new Prop("123")
+            let p = new Prop(123)
             let cbCalled = false
             let cb = () => {cbCalled = true}
             p.addChangeListener(cb)
@@ -171,24 +166,23 @@ export default function({describe, it, beforeEach}) {
             assert.equal(cbCalled, false)
         })
         it('Acts on setting value', () => {
-            let p = new Prop("123")
+            let p = new Prop(123)
             let numCalls = 0
             let cb = () => {numCalls++}
             p.addChangeListener(cb)
             p.setContext(ctx)
-            assert.equal(numCalls, 1)
 
             p.value = 456
-            assert.equal(numCalls, 2)
+            assert.equal(numCalls, 1)
         })
         it('Acts on real recalc updates', () => {
-            let p = new Prop("Prop('a')")
+            let p = new Prop("")
+            p.setBinding("Prop('a')")
             let numCalls = 0
             let cb = () => {numCalls++}
             p.addChangeListener(cb)
             ctx.properties.a = {value: 123}
             p.setContext(ctx)
-            assert.equal(numCalls, 1)
 
             p.recalcValue() // value didn't change, call didn't happen
             assert.equal(numCalls, 1)

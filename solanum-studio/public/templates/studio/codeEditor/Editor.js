@@ -30,7 +30,7 @@ class CodeEditor extends Template {
 	}
 	
     properties = {
-		componentInfo: new Prop("{ast: '', code: ''}", (newValue) => {
+		componentInfo: new Prop({ast: '', code: ''}, (newValue) => {
 			if (newValue == null)
 				return
 			this.code = newValue.code

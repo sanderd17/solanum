@@ -17,7 +17,7 @@ class OwnPropEditor extends Template {
     }
 
     properties = {
-        componentInfo: new Prop('null', () => {
+        componentInfo: new Prop(null, () => {
             this.loadModuleProperties() // TODO causes unwanted refreshes on any change to the component
         }),
     }

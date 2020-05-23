@@ -7,7 +7,7 @@ import Prop from '/lib/ComponentProp.js'
 class LayoutBar extends Template {
 
     properties = {
-        positionUnit: new Prop('"%"')
+        positionUnit: new Prop("%")
     }
 
     constructor(...args) {

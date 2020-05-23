@@ -10,7 +10,7 @@ class PopMotorInfo extends Template {
     }
 
     properties = {
-        path: new Prop("''")
+        path: new Prop('')
     }
 
     children = {

@@ -8,8 +8,8 @@ import Tree from '/templates/treeView/Tree.js'
 
 class TreeNode extends Template {
     properties = {
-        indentation: new Prop("5"),
-        isOpen: new Prop('false'),
+        indentation: new Prop(5),
+        isOpen: new Prop(false),
     }
 
     constructor(args) {

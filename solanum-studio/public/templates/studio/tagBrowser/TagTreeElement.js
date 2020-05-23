@@ -10,8 +10,8 @@ class TagTreeElement extends Template {
     }
 
     properties = {
-        text: new Prop("''"),
-        tagpath: new Prop("''")
+        text: new Prop(''),
+        tagpath: new Prop('')
     }
 
     children = {

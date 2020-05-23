@@ -6,7 +6,7 @@ import Textbox from '/templates/forms/Textbox.js'
 class PositionPropEditor extends Template {
 
     properties = {
-        cmpSelection: new Prop('{}', () => {
+        cmpSelection: new Prop({}, () => {
             this.recalcPositionParameters()
         })
     }

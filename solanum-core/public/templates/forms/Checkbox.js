@@ -11,7 +11,7 @@ class Checkbox extends Template {
     innerNode = document.createElement("input")
 
     properties = {
-        text: new Prop("'Checkbox'", (text) => {
+        text: new Prop('Checkbox', (text) => {
             let found = false
             for (let child of this.dom.childNodes) {
                 if (child.nodeName == 'INPUT')

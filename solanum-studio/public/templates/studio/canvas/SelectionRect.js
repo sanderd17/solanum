@@ -12,7 +12,7 @@ class SelectionRect extends Template {
     }
 
     properties = {
-        selected: new Prop("false", (newValue) => {
+        selected: new Prop(false, (newValue) => {
             this.dom.setAttribute('draggable', newValue)
             this.dom.style['z-index'] = newValue ? 1 : 0 // raise selection rect when selected
             this.classList.toggle('selected', newValue)

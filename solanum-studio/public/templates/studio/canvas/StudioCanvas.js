@@ -16,8 +16,8 @@ class StudioCanvas extends Template {
     }
 
     properties = {
-        cmpSelection: new Prop('{}'),
-        positionUnit: new Prop("'px'")
+        cmpSelection: new Prop({}),
+        positionUnit: new Prop('px')
     }
 
     children = {

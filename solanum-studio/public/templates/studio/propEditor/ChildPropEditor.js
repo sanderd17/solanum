@@ -9,10 +9,10 @@ const VMARGIN = 5
 class ChildPropEditor extends Template {
 
     properties = {
-        cmpSelection: new Prop('{}', (v) => {
+        cmpSelection: new Prop({}, (v) => {
             this.resetSelectionProps()
         }),
-        componentInfo: new Prop('null'),
+        componentInfo: new Prop(null),
     }
 
     constructor(args) {

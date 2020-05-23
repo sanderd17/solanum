@@ -11,7 +11,7 @@ class MemoryTagParameters extends Template {
     }
 
     properties = {
-        tagpath: new Prop("''", async (newValue) => {
+        tagpath: new Prop('', async (newValue) => {
             console.log(newValue)
             let response = await fetch(`/API/Studio/getTagParams?tagpath=${newValue}`)
             let tagParams = await response.json()

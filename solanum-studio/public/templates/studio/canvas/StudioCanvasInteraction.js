@@ -28,7 +28,7 @@ class StudioCanvasInteraction extends Template {
     }
 
     properties = {
-        selection: new Prop('[]', (newSelection, oldSelection) => {
+        selection: new Prop([], (newSelection, oldSelection) => {
             if (oldSelection && oldSelection.length > 1 && newSelection.length <= 1) {
                 // there were multiple objects selected, hide the multi select rect again
                 this.children['#multiSelectRect'].selected = false

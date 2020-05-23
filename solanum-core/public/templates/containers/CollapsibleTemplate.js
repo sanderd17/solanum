@@ -6,7 +6,7 @@ const TITLE_HEIGHT = 15
 
 class CollapsibleTemplate extends Template {
     properties = {
-        collapsed: new Prop('false', (collapsed) => {
+        collapsed: new Prop(false, (collapsed) => {
             if (this.children.subTemplate)
                 this.children.subTemplate.style.visibility = collapsed? 'hidden' : 'visible'
             this.dispatchEvent('heightChanged')

@@ -11,7 +11,7 @@ class Motor extends Template {
 
     properties = {
         ...this.properties,
-        motor: new Prop("'M1'"),
+        motor: new Prop('M1'),
     }
 
     static styles = {

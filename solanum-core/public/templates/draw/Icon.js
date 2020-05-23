@@ -8,8 +8,8 @@ class Icon extends Template {
     dom = document.createElement("img")
 
     properties = {
-        iconSet: new Prop("''"),
-        iconPath: new Prop("''"),
+        iconSet: new Prop(''),
+        iconPath: new Prop(''),
     }
 
     constructor(args) {

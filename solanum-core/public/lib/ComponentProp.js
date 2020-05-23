@@ -5,11 +5,11 @@ import ts from './TagSet.js';
 class Prop {
     /**
      * Constructs a dynamic property
-     * @param {string} expression A valid JS expression
+     * @param {*} value Default value
      * @param {((newValue: any, oldValue: any) => void)=} changeListener
      * @param {TagSet=} tsMock mock for unit testing purposes
      */
-    constructor(expression, changeListener, tsMock) {
+    constructor(value, changeListener, tsMock) {
         if (tsMock) {
             this.ts = tsMock
         } else {
@@ -26,7 +26,7 @@ class Prop {
         }
         /** @type {Template} */
         this.ctx = null
-        this.setBinding(expression)
+        this.cachedValue = value
     }
 
     /**
@@ -103,6 +103,9 @@ class Prop {
      * This should not be called in other occasions to make sure the cached value remains intact
      */
     recalcValue() {
+        if (!this.bindingFunction) {
+            return // nothing to calculate
+        }
         let subscribedTags = new Set()
         /** local function to subscribe to tags
          * @param {string} tagPath 

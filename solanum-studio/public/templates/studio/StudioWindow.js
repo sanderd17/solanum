@@ -50,13 +50,13 @@ class StudioWindow extends Template {
     }
 
     properties = {
-        moduleName: new Prop('null'),
-        componentName: new Prop('null'),
-        componentClass: new Prop('null'),
-        componentInstance: new Prop('null'),
-        componentInfo: new Prop('null'),
+        moduleName: new Prop(null),
+        componentName: new Prop(null),
+        componentClass: new Prop(null),
+        componentInstance: new Prop(null),
+        componentInfo: new Prop(null),
 
-        cmpSelection: new Prop('{}', (newSelection) => {
+        cmpSelection: new Prop({}, (newSelection) => {
             if (!newSelection)
                 return
 
@@ -69,7 +69,7 @@ class StudioWindow extends Template {
                 this.children.codeEditor.highlightLoc(childKeyLoc)
             }
         }),
-        positionUnit: new Prop("'px'")
+        positionUnit: new Prop('px')
     }
 
     children = {
