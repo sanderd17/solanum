@@ -10,7 +10,7 @@ class Textbox extends Template {
     dom = document.createElement("input")
 
     properties = {
-        value: new DomProp(this.dom, 'value', "''"),
+        value: new DomProp(this.dom, 'value', ''),
         disabled: new DomProp(this.dom, 'disabled', 'false'),
         type: new Prop('text'),
         step: new Prop(1),
