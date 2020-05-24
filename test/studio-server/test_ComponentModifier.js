@@ -32,13 +32,13 @@ class TestComponent extends Template {
         child1: new Child({
             parent: this,
             position: {left: '0', width: '100%', top: '0', height: '100%'},
-            properties: {childProp: "0"},
+            properties: {childProp: 0},
             eventHandlers: {ev1: () => {}}
         })
     }
 
     properties = {
-        "prop1" = new Prop("'val1'")
+        "prop1" = new Prop('val1')
     }
 }
 
@@ -99,7 +99,7 @@ export default function({describe, it}) {
             let newCode = cmpMod.print()
 
             assert(newCode.includes('myProp:'))
-            assert(newCode.includes("'myVal'"))
+            assert(newCode.includes('myVal'))
         })
     })
     describe('removeChildProp', function() {

@@ -48,7 +48,7 @@ class ComponentModifier {
     }
 
     setOwnPropBinding(propertyName, newBinding) {
-        let newBindingAst = recast.parse(newBinding, parseOptions)
+        let newBindingAst = recast.parse(newBinding, parseOptions).program.body[0].expression
 
         let propertiesAst = getClassField(this.ast, 'properties')
         if (!propertiesAst) {
@@ -161,13 +161,14 @@ class ComponentModifier {
 
         let childProps = getChildProps(this.ast, childId)
 
+        let astValue = recast.parse(value, parseOptions).program.body[0].expression
         let property = getObjectPropertyByName(childProps, propName)
         if (property == undefined) { 
-            let newProp = b.property('init', b.identifier(propName), recast.parse(value, parseOptions))
+            let newProp = b.property('init', b.identifier(propName), astValue)
             childProps.properties.splice(0, 0, newProp)
             sortObjectProperties(childProps)
         } else {
-            property.value = recast.parse(value, parseOptions)
+            property.value = astValue
         }
     }
 
