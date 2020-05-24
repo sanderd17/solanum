@@ -1,7 +1,7 @@
 import Template from "/lib/template.js"
 import Prop from "/lib/ComponentProp.js"
 import Textbox from '/templates/forms/Textbox.js'
-import {getChildProps, getPropertyKeyName} from '/lib/AstNavigator.js'
+import {getChildProps, getPropertyKeyName, codeLocToString} from '/lib/AstNavigator.js'
 
 const ROWHEIGHT = 20
 const VMARGIN = 5
@@ -33,6 +33,7 @@ class ChildPropEditor extends Template {
             return // No component loaded
 
         let ast = this.prop.componentInfo.ast
+        let code = this.prop.componentInfo.code
 
         let childPropList = []
         let cmpSelection = this.prop.cmpSelection
@@ -41,9 +42,7 @@ class ChildPropEditor extends Template {
             let propsAst = getChildProps(ast, childId)
             for (let p of propsAst.properties) {
                 let keyName = getPropertyKeyName(p)
-                if (p.value.type != 'Literal' || typeof p.value.value != 'string')
-                    throw new Error(`Property ${keyName} doesn't have a literal string als value`)
-                propBinding[keyName] = p.value.value
+                propBinding[keyName] = codeLocToString(code, p.value.loc)
             }
             childPropList.push(propBinding)
         }

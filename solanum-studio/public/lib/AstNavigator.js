@@ -229,3 +229,16 @@ export function valueToAst(val, b) {
     }
     return b.objectExpression(properties)
 }
+
+/**
+ * 
+ * @param {string} code 
+ * @param {{start: {line: number, column: number}, end: {line: number, column: number}}} loc 
+ */
+export function codeLocToString(code, loc) {
+    let lines = code.split(/\r|\n|\r\n/)
+    let codeLines = lines.splice(loc.start.line - 1, loc.end.line - loc.start.line + 1)
+    codeLines[0] = codeLines[0].substr(loc.start.column)
+    codeLines[codeLines.length - 1] = codeLines[codeLines.length - 1].substr(0, loc.end.column)
+    return codeLines.join('\n')
+}
