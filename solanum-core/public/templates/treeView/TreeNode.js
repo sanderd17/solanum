@@ -34,7 +34,7 @@ class TreeNode extends Template {
             },
             style: {visibility: "'hidden'"},
             eventHandlers: {
-                click: async () => {
+                click: () => {
                     if (!this.tree) {
                         return // tree not loaded yet
                     }

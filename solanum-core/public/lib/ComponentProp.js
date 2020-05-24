@@ -26,7 +26,7 @@ class Prop {
         }
         /** @type {Template} */
         this.ctx = null
-        this.cachedValue = value
+        this.setBinding(value)
     }
 
     /**
