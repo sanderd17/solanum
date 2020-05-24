@@ -155,9 +155,10 @@ export default function({describe, it, beforeEach}) {
             let cb = () => {numCalls++}
             p.addChangeListener(cb)
             p.setContext(ctx)
+            assert.equal(numCalls, 1)
 
             p.value = 456
-            assert.equal(numCalls, 1)
+            assert.equal(numCalls, 2)
         })
         it('Acts on real recalc updates', () => {
             let p = new Prop("")

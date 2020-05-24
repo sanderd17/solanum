@@ -37,7 +37,13 @@ class Prop {
         this.ctx = ctx
     
         // Do a first recalc, will subscribe to the original tags, and store which props to use
-        this.recalcValue()
+        if (this.bindingFunction) {
+            this.recalcValue()
+        } else {
+            for (let fn of this.changeListeners) {
+                fn(this.value, undefined)
+            }
+        }
     }
 
     /**

@@ -40,7 +40,7 @@ class Motor extends Template {
             eventHandlers: {
                 /**@param {Event} ev */ 
                 click: (ev) => {
-                    let path = `"default.Motors.${this.prop.motor}"`
+                    let path = `default.Motors.${this.prop.motor}`
                     solanum.openPopup('popMotorInfo', {path})
                 }
             },
