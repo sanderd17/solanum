@@ -40,9 +40,10 @@ class Prop {
         if (this.bindingFunction) {
             this.recalcValue()
         } else {
-            for (let fn of this.changeListeners) {
-                fn(this.value, undefined)
-            }
+            // trick to let the value setter work for a first time
+            let value = this.cachedValue
+            this.cachedValue = undefined
+            this.value = value
         }
     }
 

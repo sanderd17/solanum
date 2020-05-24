@@ -32,7 +32,7 @@ class TreeNode extends Template {
             properties: {
                 text: ({Prop}) => Prop("isOpen") ? "⊟" : "⊞",
             },
-            style: {visibility: "'hidden'"},
+            style: {visibility: 'hidden'},
             eventHandlers: {
                 click: () => {
                     if (!this.tree) {
