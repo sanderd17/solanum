@@ -2,7 +2,7 @@
 import Template from "/lib/template.js"
 import Prop from "/lib/ComponentProp.js"
 import Textbox from '/templates/forms/Textbox.js'
-import {getPropertyKeyName, getOwnPropertiesAst} from '/lib/AstNavigator.js'
+import {getPropertyKeyName, getOwnPropertiesAst, codeLocToString} from '/lib/AstNavigator.js'
  
 /** @typedef { import('recast').types.namedTypes.Property} Property */
 
@@ -51,10 +51,8 @@ class OwnPropEditor extends Template {
                 console.error(`Property with name ${name} isn't constructed with a Prop constructor`)
             } else if (el.value.arguments.length < 1) {
                 console.error(`Property with name ${name} has no arguments in constructor`)
-            } else if (el.value.arguments[0].type != 'Literal') {
-                console.error(`Property with name ${name} has no literal string as first argument`)
             } else {
-                binding = el.value.arguments[0].value.toString()
+                binding = codeLocToString(this.prop.componentInfo.code ,el.value.arguments[0].loc)
             }
 
             this.addChild('key_' + name, new Textbox({

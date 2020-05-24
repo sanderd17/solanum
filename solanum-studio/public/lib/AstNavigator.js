@@ -238,7 +238,7 @@ export function valueToAst(val, b) {
 export function codeLocToString(code, loc) {
     let lines = code.split(/\r|\n|\r\n/)
     let codeLines = lines.splice(loc.start.line - 1, loc.end.line - loc.start.line + 1)
-    codeLines[0] = codeLines[0].substr(loc.start.column)
     codeLines[codeLines.length - 1] = codeLines[codeLines.length - 1].substr(0, loc.end.column)
+    codeLines[0] = codeLines[0].substr(loc.start.column)
     return codeLines.join('\n')
 }
