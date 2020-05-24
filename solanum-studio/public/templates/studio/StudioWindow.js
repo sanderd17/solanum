@@ -236,7 +236,7 @@ class StudioWindow extends Template {
         if (data.module != this.prop.moduleName || data.component != this.prop.componentName)
             return
         this.prop.componentInfo = {ast, code}
-        this.children.canvas.setOwnPropBinding(data.propertyName, data.newBinding)
+        this.children.canvas.setOwnPropBinding(data.propertyName, eval(data.newBinding))
         this.children.propEditor.setOwnPropBinding(data.propertyName, data.newBinding)
     }
 
@@ -262,7 +262,7 @@ class StudioWindow extends Template {
             return
         this.prop.componentInfo = {ast, code}
         this.children.propEditor.setChildPropBinding(data.childIds, data.propertyName, data.newBinding)
-        this.children.canvas.setChildPropBinding(data.childIds, data.propertyName, data.newBinding)
+        this.children.canvas.setChildPropBinding(data.childIds, data.propertyName, eval(data.newBinding))
     }
 
     /**

@@ -48,6 +48,8 @@ class ComponentModifier {
     }
 
     setOwnPropBinding(propertyName, newBinding) {
+        let newBindingAst = recast.parse(newBinding, parseOptions)
+
         let propertiesAst = getClassField(this.ast, 'properties')
         if (!propertiesAst) {
             // TODO add new properties to class
@@ -64,13 +66,7 @@ class ComponentModifier {
         if (existingProperty.value.type != "NewExpression" || existingProperty.value.callee.type != "Identifier" || existingProperty.value.callee.name != 'Prop') {
             throw new Error(`Property ${propertyName} is not a new Prop object`)
         }
-
-        let propArgs = existingProperty.value.arguments
-        if (propArgs.length < 1 || propArgs[0].type != 'Literal') {
-            throw new Error(`The first argumment for property ${propertyName} is not a string`)
-        }
-        
-        propArgs[0].value = newBinding
+        existingProperty.value.arguments[0] = newBindingAst
     }
 
     /**
@@ -153,6 +149,11 @@ class ComponentModifier {
         positionProperty.value = objAst
     }
 
+    /**
+     * @param {string} childId
+     * @param {string} propName
+     * @param {string} value
+     */
     setChildProp(childId, propName, value) {
         if (!this.testValidPropName(propName)) {
             throw new Error(`Cannot add prop with name ${propName}. Only ASCII characters are allowed, starting with a letter and only containing letters, underscores and numbers`)
@@ -162,11 +163,11 @@ class ComponentModifier {
 
         let property = getObjectPropertyByName(childProps, propName)
         if (property == undefined) { 
-            let newProp = b.property('init', b.identifier(propName), valueToAst(value))
+            let newProp = b.property('init', b.identifier(propName), recast.parse(value, parseOptions))
             childProps.properties.splice(0, 0, newProp)
             sortObjectProperties(childProps)
         } else {
-            property.value = valueToAst(value)
+            property.value = recast.parse(value, parseOptions)
         }
     }
 

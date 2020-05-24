@@ -88,7 +88,11 @@ class Prop {
             this.bindingFunction = expression
         } else {
             this.bindingFunction = null
-            this.cachedValue = expression
+            if (this.ctx) {
+                this.value = expression
+            } else {
+                this.cachedValue = expression
+            }
         }
     }
 
@@ -180,7 +184,7 @@ class DomProp extends Prop {
      * Constructs a dynamic property
      * @param {HTMLElement|SVGElement} boundNode
      * @param {string} boundAttribute
-     * @param {string} expression A valid JS expression
+     * @param {*} expression A valid JS expression
      * @param {((newValue: any, oldValue: any) => void)=} changeListener
      * @param {TagSet=} tsMock mock for unit testing purposes
      */

@@ -11,7 +11,7 @@ class Textbox extends Template {
 
     properties = {
         value: new DomProp(this.dom, 'value', ''),
-        disabled: new DomProp(this.dom, 'disabled', 'false'),
+        disabled: new DomProp(this.dom, 'disabled', false),
         type: new Prop('text'),
         step: new Prop(1),
         datalist: new Prop(null, (datalist) => {this.setDatalist(datalist)})
