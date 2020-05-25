@@ -16,8 +16,9 @@ class ST_Motor extends CustomTagType {
             bRvsMan: new MemoryTag({
                 defaultValue: false
             }),
+
             sColor: new MemoryTag({
-                defaultValue: `hsl(${(data.i) % 360}, 100%, 50%)`,
+                defaultValue: `hsl(${(data.sId.match(/[0-9]+/)[0]) % 360}, 100%, 50%)`,
             })
         })
     }
