@@ -53,6 +53,19 @@ export function getDefaultExportDefinition(ast) {
         return exportStatement.declaration.right
     }
     if (exportStatement.declaration.type == 'Identifier') {
+        let identifierName = exportStatement.declaration.name
+        for (let statement of astBody) {
+            if (statement.type != "VariableDeclaration")
+                continue
+            for (let declaration of statement.declarations) {
+                if (declaration.type != "VariableDeclarator")
+                    continue
+                if (declaration.id.type != "Identifier")
+                    continue
+                if (declaration.id.name == identifierName)
+                    return declaration.init
+            }
+        }
         // TODO find initialisation of identifier
     }
     throw new Error(`Cannot yet find value of export declaration of type ${exportStatement.declaration.type}`)

@@ -13,6 +13,8 @@ import ClientList from '../../solanum-core/server/ClientList.js' // TODO fix loa
 import ClientConnection from '../../solanum-core/server/ClientConnection.js'
 import TagFolder from '../../solanum-core/server/TagFolder.js'
 
+import {codeLocToString, getPropertyKeyName} from '../public/lib/AstNavigator.js'
+
 
 /*
 Studio should provide methods to set different parts of the code:
@@ -52,7 +54,7 @@ class StudioAPI {
         this.componentStore = new ComponentStore(config)
         this.componentHistorian = new ComponentHistorian()
 
-        this.tagStore = new TagStore(config)
+        this.tagStore = new TagStore(config, ts)
         this.tagHistorian = new TagHistorian()
     }
 
@@ -366,9 +368,28 @@ class StudioAPI {
      * @param {import('express').Response} res 
      */
     async getTagParams(req, res) {
-        let tagpath = req.query.tagpath
+        let [tagset, ...tagpath] = req.query.tagpath.split('.')
+        
+        let tag = this.ts.getTag(req.query.tagpath)
 
-        res.send({defaultValue: 'test'})
+        let parameters = {}
+        parameters.description = tag.constructor.parameters
+        
+        let tagFile = this.tagStore.getFile(tagset)
+        let tagCode = await tagFile.read_NOLOCK()
+
+        let tagMod = new TagModifier(tagCode)
+        let tagParamAst = tagMod.getTagParameterAst(tagpath, tagMod.tagsObject)
+
+        parameters.values = {}
+        for (let prop of tagParamAst.properties) {
+            if (prop.type != "Property")
+                continue
+            let key = getPropertyKeyName(prop)
+            parameters.values[key] = codeLocToString(tagCode, prop.value.loc)
+        }
+
+        res.send(parameters)
     }
 
     /**

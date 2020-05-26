@@ -3,7 +3,7 @@ import Prop from "/lib/ComponentProp.js"
 import TagBrowser from '/templates/studio/tagBrowser/TagBrowser.js'
 import Label from '/templates/forms/Label.js'
 
-import MemoryTagParams from './tagParams/MemoryTagParams.js'
+import TagParams from './tagParams/TagParams.js'
 
 import messager from '/lib/Messager.js'
 import {getChildAst} from '/lib/AstNavigator.js'
@@ -60,7 +60,7 @@ class StudioWindow extends Template {
                 text: ({Prop}) => Prop('tagSelection'),
             }
         }),
-        tagParams: new MemoryTagParams({
+        tagParams: new TagParams({
             parent:this,
             position: {left: '400px', top: '60px', width: '600px', height: '600px'},
             properties: {

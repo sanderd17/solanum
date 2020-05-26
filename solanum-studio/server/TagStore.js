@@ -1,18 +1,21 @@
+import File, {writeFile} from './utils/LockableFile.js'
 
 class TagStore {
     /**
      * @param {*} config 
+     * @param {import('../../solanum-core/server/TagSet').default} ts
      */
-    constructor(config) {
+    constructor(config, ts) {
         this.config = config
+        this.ts = ts
     }
 
     /**
-     * @param {string} tagset 
+     * @param {string} tagsetName
      * @returns {string} absolute path to the tag file on disk
      */
-    getTagfilePath(module, component) {
-        return "TODO"
+    getTagfilePath(tagsetName) {
+        return this.ts.tagFiles[tagsetName]
     }
 
     getFile(tagset) {

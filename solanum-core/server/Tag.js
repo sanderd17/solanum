@@ -1,7 +1,11 @@
 class Tag {
     /**
-     * @param {TagSet} tagSet
-     * @param {string[]} tagpath 
+     * Description of the parameters passed on to the construction
+     * @type {{name: string, description: string, type: string}[]}
+     */
+    static parameters = []
+
+    /**
      * @param {any} data 
      */
     constructor(data) {

@@ -1,6 +1,15 @@
 import Tag from './Tag.js'
 
 class MemoryTag extends Tag {
+
+    static parameters = [
+        {
+            name: "defaultValue",
+            description: "The initial value of the tag",
+            type: "string"
+        }
+    ]
+
     /**
      * @param {{defaultValue: object}} data 
      */
