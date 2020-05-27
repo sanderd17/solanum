@@ -52,6 +52,20 @@ export default function({describe, it}) {
             
         })
     })
+    describe('getTag', () => {
+        it('Gets a tag in the root', () => {
+            let tagModifier = new TagModifier(initialCode)
+            let tagAst = tagModifier.getTagAst(['memTag1'])
+            assert.equal(tagAst.arguments.length, 1)
+            assert.equal(tagAst.arguments[0].type, "ObjectExpression")
+        })
+        it('Gets a tag in a subdirectory', () => {
+            let tagModifier = new TagModifier(initialCode)
+            let tagAst = tagModifier.getTagAst(['tagDirectory', 'memTagNested'])
+            assert.equal(tagAst.arguments.length, 1)
+            assert.equal(tagAst.arguments[0].type, "ObjectExpression")
+        })
+    })
     describe('addTag', () => {
         it('Adds a tag to the root directory', () => {
             let tagModifier = new TagModifier(initialCode)

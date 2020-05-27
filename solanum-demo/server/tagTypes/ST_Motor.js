@@ -3,12 +3,14 @@ import MemoryTag from 'solanum-core/server/MemoryTag.js'
 
 class ST_Motor extends CustomTagType {
 
-    static parameters = {
-        sId: {
+    static parameters = [
+        {
+            name: "sId",
             description: "Motor id",
             type: "String",
-        }
-    }
+        }   
+    ]
+
     /**
      * @param {*} data 
      */
