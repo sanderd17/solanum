@@ -181,23 +181,23 @@ class TagModifier {
 
     /**
      * @param {string|string[]} tagpath 
-     * @param {string} parameterName 
-     * @param {*} parameterValue 
+     * @param {string} paramName 
+     * @param {string} newValue 
      */
-    setTagParameter(tagpath, parameterName, parameterValue) {
+    setTagParam(tagpath, paramName, newValue) {
         if (typeof tagpath == "string") {
             tagpath = tagpath.split('.')
         }
 
         let tagAst = this.getTagParameterAst(tagpath)
 
-        let parameterAst = getObjectPropertyByName(tagAst, parameterName)
+        let parameterAst = getObjectPropertyByName(tagAst, paramName)
         if (parameterAst == null) {
-            parameterAst = b.property('init', b.identifier(parameterName), valueToAst(parameterValue, b))
+            parameterAst = b.property('init', b.identifier(paramName), valueToAst(newValue, b))
             tagAst.properties.splice(0, 0, parameterAst)
             sortObjectProperties(tagAst)
         } else {
-            parameterAst.value = valueToAst(parameterValue, b)
+            parameterAst.value = valueToAst(newValue, b)
         }
     }
 }

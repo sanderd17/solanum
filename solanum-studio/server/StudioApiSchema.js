@@ -133,3 +133,12 @@ export const removeDefaultProp = {
         propName:       {type: 'string', required: true},
     }
 }
+
+export const setTagParam = {
+    type: 'object',
+    properties: {
+        tagpath:        {type: 'string', required: true},
+        paramName:      {type: 'string', required: true},
+        newValue:       {type: 'string', required: true},
+    }
+}

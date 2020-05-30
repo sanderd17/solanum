@@ -25,11 +25,11 @@ class StudioWindow extends Template {
         super(args)
         this.init()
 
-        messager.registerMessageHandler('studio/addTag', reply => this.addTag(reply))
-        messager.registerMessageHandler('studio/deleteTag', reply => this.deleteTag(reply))
-        messager.registerMessageHandler('studio/moveTag', reply => this.moveTag(reply))
-        messager.registerMessageHandler('studio/setTagParam', reply => this.setTagParam(reply))
-        messager.registerMessageHandler('studio/setTagType', reply => this.setTagType(reply))
+        //messager.registerMessageHandler('studio/addTag', reply => this.addTag(reply))
+        //messager.registerMessageHandler('studio/deleteTag', reply => this.deleteTag(reply))
+        //messager.registerMessageHandler('studio/moveTag', reply => this.moveTag(reply))
+        //messager.registerMessageHandler('studio/setTagParam', reply => this.setTagParam(reply))
+        //messager.registerMessageHandler('studio/setTagType', reply => this.setTagType(reply))
     }
 
     properties = {
@@ -65,8 +65,28 @@ class StudioWindow extends Template {
             position: {left: '400px', top: '60px', width: '600px', height: '600px'},
             properties: {
                 tagpath: ({Prop}) => Prop('tagSelection'),
-            }
+            },
+            eventHandlers: {
+                tagParamChanged: (ev) => {
+                    this.callStudioApi('setTagParam', ev.detail)
+                }
+            },
         }),
+    }
+
+    /**
+     * Call an api function on the studio API
+     * @param {string} apiFunction  function name of the Studio API
+     * @param  {object} args any additional arguments to send to the body
+     */
+    async callStudioApi(apiFunction, args) {
+        let message = {}
+        message['studio/' + apiFunction] = {
+            module: this.prop.moduleName,
+            component: this.prop.componentName,
+            ...args
+        }
+        await messager.sendMessage(message)
     }
 }
 

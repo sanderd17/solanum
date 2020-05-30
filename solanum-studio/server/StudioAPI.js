@@ -129,16 +129,22 @@ class StudioAPI {
             return
         }
 
+        // modify the code and write the modification to disk
         let code = await this[functionName](data)
-        // TODO can the ComponentModifier be reused from the modifying function, is the AST clean enough?
-        let ast = new ComponentModifier(code).ast
-
 
         let message = {}
-        message[messageName] = {
-            data,
-            code,
-            ast,
+        if (code) {
+            // TODO can the ComponentModifier be reused from the modifying function, is the AST clean enough?
+            let ast = new ComponentModifier(code).ast
+
+
+            message[messageName] = {
+                data,
+                code,
+                ast,
+            }
+        } else {
+            message[messageName] = data
         }
         for (let client of ClientList) {
             if (client != sourceClient)
@@ -407,6 +413,22 @@ class StudioAPI {
 
         await tagFile.write(newTagCode)
         return newTagCode
+    }
+
+    async setTagParam(body) {
+        let [tagset, ...tagpath] = body.tagpath.split('.')
+        
+        let tagFile = this.tagStore.getFile(tagset)
+        let tagCode = await tagFile.read()
+
+        //this.tagHistorian.registerChange(body.tagfile, body.component, tagCode)
+        let tagMod = new TagModifier(tagCode)
+
+        tagMod.setTagParam(tagpath, body.paramName, body.newValue)
+        let newTagCode = tagMod.print()
+
+        await tagFile.write(newTagCode)
+        return null
     }
 }
 

@@ -12,10 +12,8 @@ class TagParameters extends Template {
 
     properties = {
         tagpath: new Prop('', async (newValue) => {
-            console.log(newValue)
             let response = await fetch(`/API/Studio/getTagParams?tagpath=${newValue}`)
             let tagParams = await response.json()
-            console.log(tagParams)
 
             for (let childId in this.children) {
                 this.removeChild(childId)
@@ -23,7 +21,7 @@ class TagParameters extends Template {
 
             for (let i = 0; i < tagParams.description.length; i++) {
                 let paramName = tagParams.description[i].name
-                this.addChild("label" + i, new Label({
+                this.addChild(`label_${i}`, new Label({
                     parent: this,
                     position: {left: '0px', width: '150px', top: (i*25) + 'px', height: '20px'},
                     properties: {
@@ -32,16 +30,23 @@ class TagParameters extends Template {
                     eventHandlers: {},
                 }))
 
-                this.addChild("label" + i, new Textbox({
+                this.addChild(`value_${i}`, new Textbox({
                     parent: this,
                     position: {left: '150px', width: '300px', top: (i*25) + 'px', height: '20px'},
                     properties: {
                         value: tagParams.values[paramName] || '',
                     },
-                    eventHandlers: {},
+                    eventHandlers: {
+                        change: (ev) => {
+                            this.dispatchEvent('tagParamChanged', {
+                                tagpath: this.prop.tagpath,
+                                paramName,
+                                newValue: ev.target.value
+                            })
+                        }
+                    },
                 }))
             }
-            //this.children.input.prop.value = tagParams.defaultValue
         })
     }
 }
