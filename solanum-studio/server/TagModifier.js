@@ -1,7 +1,7 @@
 import recast from 'recast'
 import flow from 'flow-parser'
 
-import {getDefaultExportDefinition, getObjectPropertyByName, getClassField, getOwnPropertiesAst, getChildDefinition, getChildProps, valueToAst, sortObjectProperties} from '../public/lib/AstNavigator.js'
+import {getDefaultExportDefinition, getObjectPropertyByName, getClassField, getOwnPropertiesAst, getChildDefinition, getChildProps, expressionToAst, valueToAst, sortObjectProperties} from '../public/lib/AstNavigator.js'
 
 const parseOptions = {
     'parser': {
@@ -193,11 +193,11 @@ class TagModifier {
 
         let parameterAst = getObjectPropertyByName(tagAst, paramName)
         if (parameterAst == null) {
-            parameterAst = b.property('init', b.identifier(paramName), valueToAst(newValue, b))
+            parameterAst = b.property('init', b.identifier(paramName), expressionToAst(newValue, recast))
             tagAst.properties.splice(0, 0, parameterAst)
             sortObjectProperties(tagAst)
         } else {
-            parameterAst.value = valueToAst(newValue, b)
+            parameterAst.value = expressionToAst(newValue, recast)
         }
     }
 }

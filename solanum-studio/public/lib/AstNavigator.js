@@ -215,13 +215,35 @@ export function sortObjectProperties(objectExpression) {
 }
 
 /**
+ * Convert a JS expression into printable AST.
+ * @param {string} expression 
+ * @param {import('recast')} recast
+ * @return {import('recast').types.namedTypes.ObjectExpression | import('recast').types.namedTypes.ArrayExpression | import('recast').types.namedTypes.Literal}
+ */
+export function expressionToAst(expression, recast) {
+
+    let ast = recast.parse(expression)
+
+    if (ast.program.body.length != 1) {
+        throw new Error(`${ast.program.body.length} expressions found in ${expression}, only one expected`)
+    }
+
+    let expressionAst = ast.program.body[0]
+
+    if (expressionAst.type == 'ExpressionStatement') {
+        return expressionAst.expression
+    }
+    throw new Error(`${expressionAst.type} not implemented yet`)
+}
+
+/**
  * Convert a JS value into printable AST.
- * Supports only JSON compatible types: number, string, Object and Array
- * @param {number|string|Object|Array} val 
- * @param {import('recast').types.builders} b 
+ * @param {string} val 
+ * @param {import('recast').builders} b
  * @return {import('recast').types.namedTypes.ObjectExpression | import('recast').types.namedTypes.ArrayExpression | import('recast').types.namedTypes.Literal}
  */
 export function valueToAst(val, b) {
+
     if (typeof val == "number" || typeof val == "string") {
         return b.literal(val)
     }

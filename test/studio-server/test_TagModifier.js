@@ -142,19 +142,19 @@ export default function({describe, it}) {
     describe('setTagParameter', () => {
         it('Should add a tag parameter', () => {
             let tagModifier = new TagModifier(initialCode)
-            tagModifier.setTagParameter('memTag1', 'customParameter', 1302)
+            tagModifier.setTagParam('memTag1', 'customParameter', "1302")
             let newCode = tagModifier.print()
             assert.includes(newCode, 'customParameter: 1302')
         })
         it('Should overwrite a tag parameter', () => {
             let tagModifier = new TagModifier(initialCode)
-            tagModifier.setTagParameter('memTag1', 'defaultValue', 1302)
+            tagModifier.setTagParam('memTag1', 'defaultValue', "1302")
             let newCode = tagModifier.print()
             assert.includes(newCode, 'defaultValue: 1302')
         })
         it('Should handle a string value', () => {
             let tagModifier = new TagModifier(initialCode)
-            tagModifier.setTagParameter('memTag1', 'customParameter', '1302')
+            tagModifier.setTagParam('memTag1', 'customParameter', '"1302"')
             let newCode = tagModifier.print()
             assert.includes(newCode, 'customParameter: "1302"')
         })
