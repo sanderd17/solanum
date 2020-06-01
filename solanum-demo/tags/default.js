@@ -4,7 +4,7 @@ import ST_Motor from '../server/tagTypes/ST_Motor.js'
 
 let tags = {
     testMemoryTag: new MemoryTag({
-        defaultValue: "ad153sdf",
+        defaultValue: 123,
     }),
     Motors: {
         M0   : new ST_Motor({sId:    'M0'}),

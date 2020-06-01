@@ -29,7 +29,7 @@ class Motor extends Template {
             parent: this,
             position: {
                 left: "4%",
-                width: "79%",
+                width: "77%",
                 height: "78%",
                 top: "13%"
             },

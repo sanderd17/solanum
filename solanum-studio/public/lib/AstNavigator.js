@@ -238,12 +238,12 @@ export function expressionToAst(expression, recast) {
 
 /**
  * Convert a JS value into printable AST.
- * @param {string} val 
- * @param {import('recast').builders} b
+ * Supports only JSON compatible types: number, string, Object and Array
+ * @param {number|string|Object|Array} val 
+ * @param {import('recast').types.builders} b 
  * @return {import('recast').types.namedTypes.ObjectExpression | import('recast').types.namedTypes.ArrayExpression | import('recast').types.namedTypes.Literal}
  */
 export function valueToAst(val, b) {
-
     if (typeof val == "number" || typeof val == "string") {
         return b.literal(val)
     }
