@@ -3,7 +3,9 @@ import Template from "/lib/template.js"
 import Prop from '/lib/ComponentProp.js'
 import solanum from '/lib/solanum.js'
 
-class TagTreeElement extends Template {
+class TagContextMenu extends Template {
+
+    static defaultSize = [100, 100]
 
     constructor(args) {
         super(args)
@@ -11,8 +13,7 @@ class TagTreeElement extends Template {
     }
 
     properties = {
-        text: new Prop(''),
-        tagpath: new Prop('')
+        text: new Prop('text'),
     }
 
     children = {
@@ -24,14 +25,12 @@ class TagTreeElement extends Template {
             },
             eventHandlers: {
                 click: () => {
-                    this.dispatchEvent('selectionchanged', {selection: this.prop.tagpath})
+                    console.log("CLICKED")
+                    solanum.closeContextMenu()
                 },
-                contextmenu: (ev) => {
-                    solanum.openContextMenu(ev, 'studio/tagBrowser/TagContextMenu', {})
-                }
             },
         })
     }
 }
 
-export default TagTreeElement
+export default TagContextMenu

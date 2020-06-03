@@ -224,9 +224,13 @@ class Template {
      * Send a CustomEvent from this dom node
      * @param {string} eventName Custom event name
      * @param {*} [detail] Extra data to pass on the event
+     * @param {boolean} [bubbles] Whether this event should bubble up the tree, default = true
      */
-    dispatchEvent(eventName, detail) {
-        this.dom.dispatchEvent(new CustomEvent(eventName, {bubbles: true, detail}))
+    dispatchEvent(eventName, detail, bubbles) {
+        if (bubbles == undefined) {
+            bubbles = true
+        }
+        this.dom.dispatchEvent(new CustomEvent(eventName, {bubbles, detail}))
     }
 
     addEventHandlers() {
