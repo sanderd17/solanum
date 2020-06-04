@@ -21,7 +21,7 @@ class TagContextMenu extends Template {
             parent: this,
             position: {left: '0px', right: '0px', top: '0px'},
             properties: {
-                text: ({Prop}) => Prop('text'),
+                text: () => this.prop.text,
             },
             eventHandlers: {
                 click: () => {

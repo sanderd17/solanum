@@ -85,8 +85,8 @@ class StudioWindow extends Template {
             parent: this,
             position: {left: "300px", right: "300px", top: "20px", bottom: "0px"},
             properties: {
-                cmpSelection: ({Prop}) => Prop('cmpSelection'),
-                positionUnit: ({Prop}) => Prop('positionUnit'),
+                cmpSelection: () => this.prop.cmpSelection,
+                positionUnit: () => this.prop.positionUnit,
             },
             eventHandlers: {
                 click: (ev) => {
@@ -123,9 +123,9 @@ class StudioWindow extends Template {
             parent: this,
             position: {right: "0px", width: "300px", top: "20px", bottom: "0px"},
             properties: {
-                module: ({Prop}) => Prop('moduleName'),
-                componentInfo: ({Prop}) => Prop('componentInfo'),
-                cmpSelection: ({Prop}) => Prop('cmpSelection'),
+                module: () => this.prop.moduleName,
+                componentInfo: () => this.prop.componentInfo,
+                cmpSelection: () => this.prop.cmpSelection,
             },
             eventHandlers: {
                 positionpropchanged: (ev) => this.updatePositionFromUser(ev),
@@ -137,7 +137,7 @@ class StudioWindow extends Template {
             parent: this,
             position: {left: '300px', right: '300px', height: '300px', bottom: '0px'},
             properties: {
-                componentInfo: ({Prop}) => Prop('componentInfo'),
+                componentInfo: () => this.prop.componentInfo,
             },
             eventHandlers: {
                 codeContentChanged: async (ev) => {

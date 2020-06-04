@@ -34,8 +34,8 @@ class Motor extends Template {
                 top: "13%"
             },
             properties: {
-                fill: ({Tag, Prop}) => Tag(`default.Motors.${Prop("motor")}.sColor`, "blue"),
-                prop2: ({Prop}) => `default.Motors.${Prop("motor")}.sId`,
+                fill: ({Tag}) => Tag(`default.Motors.${this.prop.motor}.sColor`, "blue"),
+                prop2: () => `default.Motors.${this.prop.motor}.sId`,
             },
             eventHandlers: {
                 /**@param {Event} ev */ 

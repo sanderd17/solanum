@@ -65,7 +65,7 @@ class Tree extends Template {
             let node = new TreeNode({
                 parent: this,
                 properties: {
-                    indentation: ({Prop}) => Prop('indentation'),
+                    indentation: () => this.prop.indentation,
                 },
                 eventHandlers: {
                     heightChanged: () => this.repositionChildren(),

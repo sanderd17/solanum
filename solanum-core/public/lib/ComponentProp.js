@@ -137,23 +137,10 @@ class Prop {
             return tagValue
         }
 
-        this.subscribedProps.clear()
-        /** local function to subscibe to props
-         * @param {string} propName */
-        let Prop = (propName) => {
-            this.subscribedProps.add(propName)
-            if (!this.ctx) {
-                console.error(`Prop requested before context was initialised`)
-                return undefined
-            }
-            if (!this.ctx.properties || !this.ctx.properties[propName]) {
-                console.error(`Prop with name ${propName} is not defined on context`)
-                return undefined
-            }
-            return this.ctx.properties[propName].value
-        }
-
+        this.ctx.accessedProps = []
         let newValue = this.bindingFunction({Prop, Tag})
+
+        this.subscribedProps = new Set(this.ctx.accessedProps)
 
         // Remove unused tag paths
         for (let tagPath of this.subscribedTags) {

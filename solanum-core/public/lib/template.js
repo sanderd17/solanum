@@ -57,6 +57,7 @@ class Template {
             if (typeof key == 'symbol')
                 return undefined
             if (key in cmp.properties) {
+                cmp.accessedProps.push(key)
                 return cmp.properties[key].value
             }
             return undefined
@@ -104,6 +105,8 @@ class Template {
         /** @type {Object<string,function>} */
         this.eventHandlers = p.eventHandlers || {}
         this.eventHandlersEnabled = true
+
+        this.accessedProps = []
 
         this.__className = style.registerClassStyle(this.constructor)
     }

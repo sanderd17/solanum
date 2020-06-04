@@ -8,7 +8,19 @@ import Prop from '/lib/ComponentProp.js'
 export default function({describe, it, beforeEach}) {
     let ctx = {} // create default context
     beforeEach(() => {
-        ctx = {properties: {}}
+        ctx = {properties: {}, accessedProps: []}
+        ctx.prop = new Proxy({}, {
+            // get the property value
+            get(target, key) {
+                if (typeof key == 'symbol')
+                    return undefined
+                if (key in ctx.properties) {
+                    ctx.accessedProps.push(key)
+                    return ctx.properties[key].value
+                }
+                return undefined
+            },
+        })
         const d = new JSDOM('', {
             url: 'http://solanum.org/',
         })
@@ -94,7 +106,7 @@ export default function({describe, it, beforeEach}) {
     describe('Bound props', () => {
         it('Has access to the component props', () => {
             let p = new Prop(0)
-            p.setBinding(({Prop}) => Prop('a'))
+            p.setBinding(() => ctx.prop.a)
             ctx.properties.a = {value: 123}
             p.setContext(ctx)
             assert.equal(p.value, 123)
@@ -162,7 +174,7 @@ export default function({describe, it, beforeEach}) {
         })
         it('Acts on real recalc updates', () => {
             let p = new Prop("")
-            p.setBinding(({Prop}) => Prop('a'))
+            p.setBinding(() => ctx.prop.a)
             let numCalls = 0
             let cb = () => {numCalls++}
             p.addChangeListener(cb)

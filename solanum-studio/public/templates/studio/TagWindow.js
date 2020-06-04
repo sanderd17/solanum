@@ -57,14 +57,14 @@ class StudioWindow extends Template {
             parent: this,
             position: {left: '400px', top: '20px', width: '200px', height: '20px'},
             properties: {
-                text: ({Prop}) => Prop('tagSelection'),
+                text: () => this.prop.tagSelection,
             }
         }),
         tagParams: new TagParams({
             parent:this,
             position: {left: '400px', top: '60px', width: '600px', height: '600px'},
             properties: {
-                tagpath: ({Prop}) => Prop('tagSelection'),
+                tagpath: () => this.prop.tagSelection,
             },
             eventHandlers: {
                 tagParamChanged: (ev) => {

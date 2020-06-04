@@ -25,8 +25,8 @@ class StudioCanvas extends Template {
             parent: this,
             position: {left: '10px', width: '100px', top:'10px', height: '100px'},
             properties: {
-                selection: ({Prop}) => Object.keys(Prop('cmpSelection') || {}),
-                positionUnit: ({Prop}) => Prop('positionUnit'),
+                selection: () => Object.keys(this.prop.cmpSelection || {}),
+                positionUnit: () => this.prop.positionUnit,
             },
             eventHandlers: {
                 childpositionchanged: (ev) => this.setChildPosition(ev.detail.childId, ev.detail.newPosition, ev.detail.previewOnly),

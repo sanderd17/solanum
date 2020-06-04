@@ -30,7 +30,7 @@ class TreeNode extends Template {
             parent: this,
             position: {left: '5px', top: '0px', width: '15px', height: '15px'},
             properties: {
-                text: ({Prop}) => Prop("isOpen") ? "⊟" : "⊞",
+                text: () => this.prop.isOpen ? "⊟" : "⊞",
             },
             style: {visibility: 'hidden'},
             eventHandlers: {
@@ -47,8 +47,8 @@ class TreeNode extends Template {
                         let tree = new Tree({
                             parent: this,
                             position: {left: this.prop.indentation + 'px', right: '0px', top: tmpHeight + 'px'},
-                            properties: {indentation: ({Prop}) => Prop('indentation')},
-                            style: {visibility: ({Prop}) => Prop('isOpen') ? 'inherit' : 'hidden'},
+                            properties: {indentation: () => this.prop.indentation},
+                            style: {visibility: () => this.prop.isOpen ? 'inherit' : 'hidden'},
                         })
                         tree.initTree(this.tree)
                         this.addChild('tree', tree)
