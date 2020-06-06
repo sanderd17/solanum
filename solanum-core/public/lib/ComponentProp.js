@@ -1,4 +1,5 @@
-import ts from './TagSet.js';
+import ts from './TagSet.js'
+import tag, {subscribedTags} from './Tag.js'
 
 /** @typedef { import('./template').default } Template */
 
@@ -6,8 +7,8 @@ class Prop {
     /**
      * Constructs a dynamic property
      * @param {*} value Default value
-     * @param {((newValue: any, oldValue: any) => void)=} changeListener
-     * @param {TagSet=} tsMock mock for unit testing purposes
+     * @param {((newValue: any, oldValue: any) => void)} changeListener
+     * @param {typeof ts} tsMock mock for unit testing purposes
      */
     constructor(value, changeListener, tsMock) {
         if (tsMock) {
@@ -85,27 +86,18 @@ class Prop {
      */
     setBinding(expression) {
         if (typeof expression == 'function') {
+            // set a dynamic function
             this.bindingFunction = expression
         } else {
             this.bindingFunction = null
             if (this.ctx) {
+                // Assign to the value, and let the context be notified
                 this.value = expression
             } else {
+                // No context defined yet (initial set): just set the cached value
                 this.cachedValue = expression
             }
         }
-    }
-
-    /**
-     * Keep track of the used props, and return the actual value
-     * @param {string} propName 
-     * @param {Template} cmp 
-     * @param {Set<string>} subscribedProps
-     */
-    getPropertyValue(propName, cmp, subscribedProps) {
-        let val = cmp.properties[propName].value
-        subscribedProps.add(propName)
-        return val
     }
 
     /**
@@ -124,13 +116,12 @@ class Prop {
             this.subscribedProps.clear()
             return // nothing to calculate
         }
-        let subscribedTags = new Set()
+        subscribedTags.clear()
         /** local function to subscribe to tags
          * @param {string} tagPath 
          * @param {any} defaultValue */
         let Tag = (tagPath, defaultValue) => {
             subscribedTags.add(tagPath)
-            this.ts.addPropSubscription(this, tagPath)
             let tagValue = this.ts.getCachedTagValue(tagPath)
             if (tagValue === undefined)
                 return defaultValue
@@ -138,7 +129,7 @@ class Prop {
         }
 
         this.ctx.accessedProps = []
-        let newValue = this.bindingFunction({Prop, Tag})
+        let newValue = this.bindingFunction({Tag})
 
         this.subscribedProps = new Set(this.ctx.accessedProps)
 
@@ -149,7 +140,14 @@ class Prop {
                 this.ts.removePropSubscription(this, tagPath)
             }
         }
-        this.subscribedTags = subscribedTags
+
+        // Add new subscribed tag paths
+        for (let tagpath of subscribedTags) {
+            if (!this.subscribedTags.has(tagpath)) {
+                this.subscribedTags.add(tagpath)
+                this.ts.addPropSubscription(this, tagpath)
+            }
+        }
 
         this.value = newValue
     }
