@@ -50,8 +50,6 @@ export const subscribedTags = new Set()
 const tag = new Proxy(new Tag(subscribedTags), proxyHandler)
 export default tag
 
-window['tag'] = tag
-
 /* Use like
 await tag.default.motors.M1.color.read()
 */
