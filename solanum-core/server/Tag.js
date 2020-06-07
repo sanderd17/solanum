@@ -28,10 +28,7 @@ class Tag {
     }
 
     serialize() {
-        return {
-            data: this.data,
-            tagpath: this.tagpath,
-        }
+        return {}
     }
 
     /**

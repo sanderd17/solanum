@@ -2,7 +2,7 @@
 import Template from "/lib/template.js"
 import Motor from "/templates/Motor.js"
 import Label from "/templates/forms/Label.js"
-import ts from '/lib/TagSet.js'
+import tag from '/lib/Tag.js'
 import Icon from "/templates/draw/Icon.js"
 
 class MainWindow extends Template {
@@ -13,14 +13,14 @@ class MainWindow extends Template {
         this.addChild('label', new Label({
             parent: this,
             position: {right: '10px', width: '100px', top: '10px', height: '20px'},
-            properties: {text: ({Tag}) => Tag("system.hostname")},
+            properties: {text: tag.system.hostname},
             eventHandlers: {}
         }))
 
         this.addChild('label2', new Label({
             parent: this,
             position: {right: '10px', width: '100px', top: '30px', height: '20px'},
-            properties: {text: ({Tag}) => Tag("default.watchDog")},
+            properties: {text: tag.default.watchDog},
             eventHandlers: {}
         }))
 

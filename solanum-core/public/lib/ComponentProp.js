@@ -1,5 +1,5 @@
 import ts from './TagSet.js'
-import tag, {subscribedTags} from './Tag.js'
+import {Tag, subscribedTags} from './Tag.js'
 
 /** @typedef { import('./template').default } Template */
 
@@ -7,8 +7,8 @@ class Prop {
     /**
      * Constructs a dynamic property
      * @param {*} value Default value
-     * @param {((newValue: any, oldValue: any) => void)} changeListener
-     * @param {typeof ts} tsMock mock for unit testing purposes
+     * @param {((newValue: any, oldValue: any) => void)} [changeListener]
+     * @param {typeof ts} [tsMock] mock for unit testing purposes
      */
     constructor(value, changeListener, tsMock) {
         if (tsMock) {
@@ -82,12 +82,14 @@ class Prop {
 
     /**
      * Set the binding function for this prop
-     * @param {string} expression Syntactically valid JS expression
+     * @param {*} expression Syntactically valid JS expression
      */
     setBinding(expression) {
         if (typeof expression == 'function') {
             // set a dynamic function
             this.bindingFunction = expression
+        } else if (expression instanceof Tag) {
+            this.bindingFunction = () => expression
         } else {
             this.bindingFunction = null
             if (this.ctx) {
@@ -105,7 +107,7 @@ class Prop {
      * This needs to be called any time a subscribed tag or prop value has changed
      * This should not be called in other occasions to make sure the cached value remains intact
      */
-    recalcValue() {
+    async recalcValue() {
         if (!this.bindingFunction) {
             // Remove subscription to all tags tag paths
             for (let tagPath of this.subscribedTags) {
@@ -117,19 +119,20 @@ class Prop {
             return // nothing to calculate
         }
         subscribedTags.clear()
-        /** local function to subscribe to tags
-         * @param {string} tagPath 
-         * @param {any} defaultValue */
-        let Tag = (tagPath, defaultValue) => {
-            subscribedTags.add(tagPath)
-            let tagValue = this.ts.getCachedTagValue(tagPath)
-            if (tagValue === undefined)
-                return defaultValue
-            return tagValue
-        }
 
         this.ctx.accessedProps = []
-        let newValue = this.bindingFunction({Tag})
+        let newValue = this.bindingFunction()
+
+        let promiseValue = null
+        // FIXME Allow async bindings: requires subscribed props and tags to be in the function scope
+        if (newValue instanceof Tag) { 
+            // resolving the promise here causes issues with the accessedProps and subscribedtags objects: they get overwritten by other async calls
+            // Solution: 
+            // * keep tags and props bound to the component
+            // * let the component subscribe to tags
+            // * on any tag or prop change that happens to somethint the component is subscribed to: recalc all props that have this component as context
+            promiseValue = newValue.read()
+        }
 
         this.subscribedProps = new Set(this.ctx.accessedProps)
 
@@ -147,6 +150,10 @@ class Prop {
                 this.subscribedTags.add(tagpath)
                 this.ts.addPropSubscription(this, tagpath)
             }
+        }
+
+        if (promiseValue) {
+            newValue = (await promiseValue).value
         }
 
         this.value = newValue

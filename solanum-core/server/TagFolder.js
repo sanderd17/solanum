@@ -4,9 +4,6 @@ const DELIMITOR = '.'
 
 class TagFolder extends Tag {
     /**
-     * 
-     * @param {TagSet} tagset 
-     * @param {string[]} tagpath 
      * @param {any} tagDescription 
      */
     constructor(tagDescription) {
@@ -24,6 +21,14 @@ class TagFolder extends Tag {
         for (let subtagpath in this.data) {
             await this.addTag(subtagpath.split(DELIMITOR), this.data[subtagpath])
         }
+    }
+
+    serialize() {
+        let r = {}
+        for (let [key, tag] of this.children) {
+            r[key] = tag.serialize()
+        }
+        return r
     }
 
     /**

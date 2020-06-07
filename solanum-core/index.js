@@ -26,14 +26,14 @@ class Solanum {
         this.app = app
         this.config = config
         this.ts = new TagSet(app, config)
-        this.ts.initMessageHandlers()
 
         this.modules = []
     }
 
     async init() {
-        expressWs(this.app)
         this.app.use(bodyParser.json({'limit': '10MB'})) // auto parse json into req.body
+        this.ts.initMessageHandlers()
+        expressWs(this.app)
 
         for (let dir of this.config.publicDirs) {
             this.app.use(express.static(dir))

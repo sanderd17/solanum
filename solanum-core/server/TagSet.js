@@ -16,6 +16,7 @@ class TagSet {
      * @param {*} config  The full config file
      */
     constructor(app, config) {
+        this.app = app
         this.activeSendTimer = null
         this.changedTags = new Set()
         this.root = new TagFolder({})
@@ -56,6 +57,10 @@ class TagSet {
                 tag.write(data.value)
             }
         )
+
+        this.app.post('/API/TagSet/readTags', (req, res) => {
+            res.send(this.getSerializedTags(req.body))
+        })
     }
 
     /**

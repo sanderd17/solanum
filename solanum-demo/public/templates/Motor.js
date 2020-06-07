@@ -2,6 +2,7 @@ import Template from '/lib/template.js'
 import Circle from '/templates/draw/Circle.js'
 import solanum from '/lib/solanum.js'
 import Prop from '/lib/ComponentProp.js'
+import tag from '/lib/Tag.js'
 
 class Motor extends Template {
     constructor(args) {
@@ -34,7 +35,7 @@ class Motor extends Template {
                 top: "13%"
             },
             properties: {
-                fill: ({Tag}) => Tag(`default.Motors.${this.prop.motor}.sColor`, "blue"),
+                fill: () => tag.default.Motors[this.prop.motor].sColor,
                 prop2: () => `default.Motors.${this.prop.motor}.sId`,
             },
             eventHandlers: {

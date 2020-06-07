@@ -117,7 +117,6 @@ class Template {
      */
     init() {
         this.createDomNode()
-        intersectionObserver.observe(this.dom)
         for (let [id, child] of Object.entries(this.children)) {
             if (child) {
                 child.classList.add(id)
@@ -237,6 +236,9 @@ class Template {
     }
 
     addEventHandlers() {
+        if ('intersectionChangeObserved' in this.eventHandlers) {
+            intersectionObserver.observe(this.dom)
+        }   
         if (this.__handleEvent == null) {
             /** @param {Event} ev */
             this.__handleEvent = (ev) => {
